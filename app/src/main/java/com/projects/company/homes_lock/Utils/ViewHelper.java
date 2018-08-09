@@ -1,8 +1,23 @@
 package com.projects.company.homes_lock.Utils;
 
 /**
- * Created by PHD on 8/9/2018.
+ * This is Helper Class helps Views
  */
 
 public class ViewHelper {
+
+    //region Declare Constants
+    //endregion Declare Constants
+
+    //region Declare Variables
+    //endregion Declare Variables
+
+    //region Declare Objects
+    //endregion Declare Objects
+
+    //region Declare Views
+    //endregion Declare Views
+
+    //region Declare Methods
+    //endregion Declare Methods
 }

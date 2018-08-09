@@ -8,24 +8,44 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.projects.company.homes_lock.Base.BaseActivity;
 import com.projects.company.homes_lock.R;
 
-public class LockActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class LockActivity extends BaseActivity implements LockActivityContract.mMvpView, NavigationView.OnNavigationItemSelectedListener {
+
+    //region Declare Constants
+    //endregion Declare Constants
+
+    //region Declare Variables
+    //endregion Declare Variables
+
+    //region Declare Objects
+    //endregion Declare Objects
+
+    //region Declare Views
+    //endregion Declare Views
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //region Initialize Variables
+        //endregion Initialize Variables
+
+        //region Initialize Objects
+        //endregion Initialize Objects
+
+        //region Initialize Views
+        //endregion Initialize Views
+
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,4 +120,7 @@ public class LockActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    //region Declare Methods
+    //endregion Declare Methods
 }

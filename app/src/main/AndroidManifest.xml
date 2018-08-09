@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Ui.AboutUs.AboutUs.AboutUs" />
+        <activity android:name=".Ui.Login.Activity.LoginActivity" />
+        <activity android:name=".Ui.ProServices.Activity.ProServicesActivity" />
+        <activity android:name=".Ui.AboutUs.AboutUsActivity"></activity>
     </application>
 
 </manifest>
