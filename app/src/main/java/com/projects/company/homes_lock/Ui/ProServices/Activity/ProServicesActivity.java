@@ -10,19 +10,22 @@ public class ProServicesActivity extends BaseActivity implements ProServicesActi
     //region Declare Constants
     //endregion Declare Constants
 
+    //region Declare Views
+    //endregion Declare Views
+
     //region Declare Variables
     //endregion Declare Variables
 
     //region Declare Objects
     //endregion Declare Objects
 
-    //region Declare Views
-    //endregion Declare Views
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pro_services);
+
+        //region Initialize Views
+        //endregion Initialize Views
 
         //region Initialize Variables
         //endregion Initialize Variables
@@ -30,8 +33,8 @@ public class ProServicesActivity extends BaseActivity implements ProServicesActi
         //region Initialize Objects
         //endregion Initialize Objects
 
-        //region Initialize Views
-        //endregion Initialize Views
+        //region Setup Views
+        //endregion Setup Views
     }
 
     //region Declare Methods

@@ -18,14 +18,14 @@ public class LoginFragment extends Fragment implements LoginFragmentContract.mMv
     //region Declare Constants
     //endregion Declare Constants
 
+    //region Declare Views
+    //endregion Declare Views
+
     //region Declare Variables
     //endregion Declare Variables
 
     //region Declare Objects
     //endregion Declare Objects
-
-    //region Declare Views
-    //endregion Declare Views
 
     public LoginFragment() {
         // Required empty public constructor
@@ -54,6 +54,9 @@ public class LoginFragment extends Fragment implements LoginFragmentContract.mMv
 
         //region Initialize Views
         //endregion Initialize Views
+
+        //region Setup Views
+        //endregion Setup Views
     }
 
     //region Declare Methods

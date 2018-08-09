@@ -18,14 +18,14 @@ public class NoLockFragment extends Fragment {
     //region Declare Constants
     //endregion Declare Constants
 
+    //region Declare Views
+    //endregion Declare Views
+
     //region Declare Variables
     //endregion Declare Variables
 
     //region Declare Objects
     //endregion Declare Objects
-
-    //region Declare Views
-    //endregion Declare Views
 
     public NoLockFragment() {
         // Required empty public constructor
@@ -54,6 +54,9 @@ public class NoLockFragment extends Fragment {
 
         //region Initialize Views
         //endregion Initialize Views
+
+        //region Setup Views
+        //endregion Setup Views
     }
 
     //region Declare Methods

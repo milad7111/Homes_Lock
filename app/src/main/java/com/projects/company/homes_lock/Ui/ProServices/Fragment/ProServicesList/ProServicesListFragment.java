@@ -19,14 +19,14 @@ public class ProServicesListFragment extends Fragment implements ProServicesActi
     //region Declare Constants
     //endregion Declare Constants
 
+    //region Declare Views
+    //endregion Declare Views
+
     //region Declare Variables
     //endregion Declare Variables
 
     //region Declare Objects
     //endregion Declare Objects
-
-    //region Declare Views
-    //endregion Declare Views
 
     public ProServicesListFragment() {
         // Required empty public constructor
@@ -46,7 +46,7 @@ public class ProServicesListFragment extends Fragment implements ProServicesActi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pro_services, container, false);
+        return inflater.inflate(R.layout.fragment_pro_services_list, container, false);
     }
 
     @Override
@@ -55,6 +55,9 @@ public class ProServicesListFragment extends Fragment implements ProServicesActi
 
         //region Initialize Views
         //endregion Initialize Views
+
+        //region Setup Views
+        //endregion Setup Views
     }
 
     //region Declare Methods

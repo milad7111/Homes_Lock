@@ -1,11 +1,31 @@
 <resources>
     <string name="app_name">Homes_Lock</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    //region Content Description
+    <string name="content_description_navigation_drawer_open">Open navigation drawer</string>
+    <string name="content_description_navigation_drawer_close">Close navigation drawer</string>
+    <string name="content_description_nav_header_img_avatar">This is avatar</string>
+    //endregion Content Description
 
+    //region Activity and Fragment Titles
+    //endregion Activity and Fragment Titles
+
+    //region Dialog Buttons
+    //endregion Dialog Buttons
+
+    //region EditText Hints
+    //endregion EditText Hints
+
+    //region Messages
+    //endregion Messages
+
+    //region Actions and Menu Items and Nav Header
     <string name="action_settings">Settings</string>
+    <string name="nav_header_title">Homes Lock</string>
+    <string name="nav_header_subtitle">Homes.lock.org</string>
+    //endregion Actions and Menu Items and Nav Header
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    //region Urls
+    //endregion Urls
+
 </resources>

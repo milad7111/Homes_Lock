@@ -10,14 +10,14 @@ public class AboutUsActivity extends BaseActivity {
     //region Declare Constants
     //endregion Declare Constants
 
+    //region Declare Views
+    //endregion Declare Views
+
     //region Declare Variables
     //endregion Declare Variables
 
     //region Declare Objects
     //endregion Declare Objects
-
-    //region Declare Views
-    //endregion Declare Views
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
