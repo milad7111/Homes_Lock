@@ -19,5 +19,8 @@ public class ViewHelper {
     //endregion Declare Views
 
     //region Declare Methods
+    public static boolean isValidDevice() {
+        return true;
+    }
     //endregion Declare Methods
 }

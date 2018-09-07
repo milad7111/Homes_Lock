@@ -25,6 +25,7 @@ public class AddLockFragment extends Fragment implements AddLockFragmentContract
     //endregion Declare Variables
 
     //region Declare Objects
+    AddLockFragmentPresenter mAddLockFragmentPresenter;
     //endregion Declare Objects
 
     public AddLockFragment() {
@@ -39,6 +40,7 @@ public class AddLockFragment extends Fragment implements AddLockFragmentContract
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mAddLockFragmentPresenter = new AddLockFragmentPresenter(this);
         //endregion Initialize Objects
     }
 
@@ -57,6 +59,11 @@ public class AddLockFragment extends Fragment implements AddLockFragmentContract
 
         //region Setup Views
         //endregion Setup Views
+    }
+
+    @Override
+    public void saveDevice() {
+        mAddLockFragmentPresenter.saveDevice();
     }
 
     //region Declare Methods

@@ -25,6 +25,7 @@ public class LockPageFragment extends Fragment implements LockPageFragmentContra
     //endregion Declare Variables
 
     //region Declare Objects
+    LockPageFragmentPresenter mLockPageFragmentPresenter;
     //endregion Declare Objects
 
     public LockPageFragment() {
@@ -39,6 +40,7 @@ public class LockPageFragment extends Fragment implements LockPageFragmentContra
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mLockPageFragmentPresenter = new LockPageFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

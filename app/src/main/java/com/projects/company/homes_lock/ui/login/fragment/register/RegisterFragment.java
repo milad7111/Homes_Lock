@@ -25,6 +25,7 @@ public class RegisterFragment extends Fragment implements RegisterFragmentContra
     //endregion Declare Variables
 
     //region Declare Objects
+    RegisterFragmentPresenter mRegisterFragmentPresenter;
     //endregion Declare Objects
 
     public RegisterFragment() {
@@ -39,6 +40,7 @@ public class RegisterFragment extends Fragment implements RegisterFragmentContra
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mRegisterFragmentPresenter = new RegisterFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

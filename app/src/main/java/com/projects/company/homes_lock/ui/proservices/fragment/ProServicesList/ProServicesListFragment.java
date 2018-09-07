@@ -14,7 +14,7 @@ import com.projects.company.homes_lock.ui.proservices.activity.ProServicesActivi
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProServicesListFragment extends Fragment implements ProServicesActivityContract.mMvpView {
+public class ProServicesListFragment extends Fragment implements ProServicesListFragmentContract.mMvpView {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -26,6 +26,7 @@ public class ProServicesListFragment extends Fragment implements ProServicesActi
     //endregion Declare Variables
 
     //region Declare Objects
+    ProServicesListFragmentPresenter mProServicesListFragmentPresenter;
     //endregion Declare Objects
 
     public ProServicesListFragment() {
@@ -40,6 +41,7 @@ public class ProServicesListFragment extends Fragment implements ProServicesActi
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mProServicesListFragmentPresenter = new ProServicesListFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

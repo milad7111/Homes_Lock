@@ -17,6 +17,7 @@ public class ProServicesActivity extends BaseActivity implements ProServicesActi
     //endregion Declare Variables
 
     //region Declare Objects
+    ProServicesActivityPresenter mProServicesActivityPresenter;
     //endregion Declare Objects
 
     @Override
@@ -31,6 +32,7 @@ public class ProServicesActivity extends BaseActivity implements ProServicesActi
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mProServicesActivityPresenter = new ProServicesActivityPresenter(ProServicesActivity.this);
         //endregion Initialize Objects
 
         //region Setup Views

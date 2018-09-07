@@ -24,7 +24,9 @@
         <activity android:name=".ui.proservices.activity.ProServicesActivity" />
         <activity android:name=".ui.aboutus.AboutUsActivity" />
         <activity android:name=".ui.splash.SplashActivity" />
-        <activity android:name=".ui.support.SupportActivity"></activity>
+        <activity android:name=".ui.support.SupportActivity" />
+        <activity android:name=".ui.notification.activity.NotificationActivity" />
+        <activity android:name=".ui.setting.activity.SettingActivity"></activity>
     </application>
 
 </manifest>

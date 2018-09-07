@@ -25,6 +25,7 @@ public class GrantProServicesFragment extends Fragment implements GrantProServic
     //endregion Declare Variables
 
     //region Declare Objects
+    GrantProServicesFragmentPresenter mGrantProServicesFragmentPresenter;
     //endregion Declare Objects
 
     public GrantProServicesFragment() {
@@ -39,6 +40,7 @@ public class GrantProServicesFragment extends Fragment implements GrantProServic
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mGrantProServicesFragmentPresenter = new GrantProServicesFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

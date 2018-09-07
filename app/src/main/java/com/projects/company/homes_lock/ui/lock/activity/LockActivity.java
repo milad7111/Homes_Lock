@@ -35,6 +35,7 @@ public class LockActivity extends BaseActivity
     //endregion Declare Variables
 
     //region Declare Objects
+    private LockActivityPresenter mLockActivityPresenter;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     //endregion Declare Objects
 
@@ -54,6 +55,7 @@ public class LockActivity extends BaseActivity
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mLockActivityPresenter = new LockActivityPresenter(LockActivity.this);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 _activityLock_drawer_layout,

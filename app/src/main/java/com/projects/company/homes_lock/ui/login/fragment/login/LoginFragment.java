@@ -25,6 +25,7 @@ public class LoginFragment extends Fragment implements LoginFragmentContract.mMv
     //endregion Declare Variables
 
     //region Declare Objects
+    LoginFragmentPresenter mLoginFragmentPresenter;
     //endregion Declare Objects
 
     public LoginFragment() {
@@ -39,6 +40,7 @@ public class LoginFragment extends Fragment implements LoginFragmentContract.mMv
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mLoginFragmentPresenter = new LoginFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

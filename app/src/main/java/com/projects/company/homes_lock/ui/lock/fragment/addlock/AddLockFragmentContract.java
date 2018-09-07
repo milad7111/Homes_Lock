@@ -6,8 +6,10 @@ package com.projects.company.homes_lock.ui.lock.fragment.addlock;
 
 public interface AddLockFragmentContract {
     interface mMvpView {
+        public void saveDevice();
     }
 
     interface mMvpPresenter {
+        public void saveDevice();
     }
 }

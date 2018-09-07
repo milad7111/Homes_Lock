@@ -25,6 +25,7 @@ public class ManageUserFragment extends Fragment implements ManageUserFragmentCo
     //endregion Declare Variables
 
     //region Declare Objects
+    ManageUserFragmentPresenter mManageUserFragmentPresenter;
     //endregion Declare Objects
 
     public ManageUserFragment() {
@@ -39,6 +40,7 @@ public class ManageUserFragment extends Fragment implements ManageUserFragmentCo
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mManageUserFragmentPresenter = new ManageUserFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

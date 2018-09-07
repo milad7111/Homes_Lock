@@ -17,6 +17,7 @@ public class LoginActivity extends BaseActivity implements LoginActivityContract
     //endregion Declare Variables
 
     //region Declare Objects
+    LoginActivityPresenter mLoginActivityPresenter;
     //endregion Declare Objects
 
     @Override
@@ -31,6 +32,7 @@ public class LoginActivity extends BaseActivity implements LoginActivityContract
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mLoginActivityPresenter = new LoginActivityPresenter(LoginActivity.this);
         //endregion Initialize Objects
 
         //region Setup Views
