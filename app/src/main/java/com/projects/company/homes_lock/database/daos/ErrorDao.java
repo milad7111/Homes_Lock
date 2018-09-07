@@ -8,24 +8,25 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.Error;
 
 import java.util.List;
 
 @Dao
-public interface DeviceDao {
+public interface ErrorDao {
 
     @Insert
-    void insert(Device device);
+    void insert(Error error);
 
     @Delete
-    void delete(Device... devices);
+    void delete(Error... errors);
 
     @Update
-    void update(Device... devices);
+    void update(Error... errors);
 
-    @Query("DELETE FROM device")
+    @Query("DELETE FROM error")
     void deleteAll();
 
-    @Query("SELECT * FROM device")
-    LiveData<List<Device>> getAllDevices();
+    @Query("SELECT * FROM error")
+    LiveData<List<Device>> getAllErrors();
 }

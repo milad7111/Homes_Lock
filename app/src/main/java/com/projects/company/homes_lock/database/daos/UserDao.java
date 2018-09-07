@@ -19,10 +19,10 @@ public interface UserDao {
     void insert(User user);
 
     @Delete
-    void delete(User user);
+    void delete(User... users);
 
     @Update
-    void update(User user);
+    void update(User... users);
 
     @Query("DELETE FROM user")
     void deleteAll();

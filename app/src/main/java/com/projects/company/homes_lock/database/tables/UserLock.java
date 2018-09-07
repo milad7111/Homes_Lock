@@ -2,10 +2,25 @@ package com.projects.company.homes_lock.database.tables;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "userLock")
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "userLock",
+        foreignKeys = {
+                @ForeignKey(
+                        entity = Device.class,
+                        parentColumns = "objectId",
+                        childColumns = "objectId",
+                        onDelete = CASCADE),
+                @ForeignKey(
+                        entity = User.class,
+                        parentColumns = "objectId",
+                        childColumns = "objectId",
+                        onDelete = CASCADE)
+        })
 public class UserLock {
 
     @PrimaryKey

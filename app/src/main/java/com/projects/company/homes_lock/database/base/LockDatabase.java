@@ -5,16 +5,20 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.projects.company.homes_lock.database.daos.DeviceDao;
+import com.projects.company.homes_lock.database.daos.DeviceErrorDao;
+import com.projects.company.homes_lock.database.daos.ErrorDao;
 import com.projects.company.homes_lock.database.daos.UserDao;
+import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.DeviceError;
+import com.projects.company.homes_lock.database.tables.Error;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 
-@Database(entities = {Device.class, UserLock.class, User.class}, version = 1, exportSchema = false)
+@Database(entities = {Device.class, DeviceError.class, Error.class, User.class, UserLock.class, }, version = 1, exportSchema = false)
 public abstract class LockDatabase extends RoomDatabase {
 
     //region declare Objects
@@ -23,6 +27,12 @@ public abstract class LockDatabase extends RoomDatabase {
     public abstract DeviceDao deviceDao();
 
     public abstract UserDao userDao();
+
+    public abstract DeviceErrorDao deviceErrorDao();
+
+    public abstract ErrorDao errorDao();
+
+    public abstract UserLockDao userLockDao();
     //endregion declare Objects
 
     public static LockDatabase getDatabase(final Context context) {
