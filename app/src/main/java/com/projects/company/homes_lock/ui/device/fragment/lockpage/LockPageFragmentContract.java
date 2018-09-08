@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.lock.fragment.lockpage;
+package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
 /**
  * This is Contract for {@link LockPageFragment} and {@link LockPageFragmentPresenter}

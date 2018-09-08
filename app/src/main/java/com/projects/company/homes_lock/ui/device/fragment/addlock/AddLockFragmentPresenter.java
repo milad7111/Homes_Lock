@@ -1,5 +1,10 @@
-package com.projects.company.homes_lock.ui.lock.fragment.addlock;
+package com.projects.company.homes_lock.ui.device.fragment.addlock;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.v4.app.FragmentActivity;
+
+import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.ViewHelper;
 
 /**
@@ -16,6 +21,7 @@ public class AddLockFragmentPresenter implements AddLockFragmentContract.mMvpPre
 
     //region Declare Objects
     private AddLockFragmentContract.mMvpView mAddLockFragmentView;
+    private DeviceViewModel mDeviceViewModel;
     //endregion Declare Objects
 
     //region Declare Views
@@ -23,10 +29,12 @@ public class AddLockFragmentPresenter implements AddLockFragmentContract.mMvpPre
 
     AddLockFragmentPresenter(AddLockFragmentContract.mMvpView _mAddLockFragmentView) {
         this.mAddLockFragmentView = _mAddLockFragmentView;
+        this.mDeviceViewModel = ViewModelProviders.of((FragmentActivity) _mAddLockFragmentView).get(DeviceViewModel.class);
     }
 
     @Override
     public void saveDevice() {
-        if (ViewHelper.isValidDevice()) ;
+        if (ViewHelper.isValidDevice())
+            mDeviceViewModel.insertDevice(new Device());
     }
 }

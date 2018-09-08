@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.lock.fragment.nolock;
+package com.projects.company.homes_lock.ui.device.fragment.upgrade;
 
 
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NoLockFragment extends Fragment {
+public class UpgradeFragment extends Fragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -27,7 +27,7 @@ public class NoLockFragment extends Fragment {
     //region Declare Objects
     //endregion Declare Objects
 
-    public NoLockFragment() {
+    public UpgradeFragment() {
         // Required empty public constructor
     }
 
@@ -45,7 +45,7 @@ public class NoLockFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_no_lock, container, false);
+        return inflater.inflate(R.layout.fragment_upgrade, container, false);
     }
 
     @Override

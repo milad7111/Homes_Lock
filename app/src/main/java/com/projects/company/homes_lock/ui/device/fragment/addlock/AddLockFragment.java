@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.lock.fragment.upgrade;
+package com.projects.company.homes_lock.ui.device.fragment.addlock;
 
 
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UpgradeFragment extends Fragment {
+public class AddLockFragment extends Fragment implements AddLockFragmentContract.mMvpView {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -25,9 +25,10 @@ public class UpgradeFragment extends Fragment {
     //endregion Declare Variables
 
     //region Declare Objects
+    AddLockFragmentPresenter mAddLockFragmentPresenter;
     //endregion Declare Objects
 
-    public UpgradeFragment() {
+    public AddLockFragment() {
         // Required empty public constructor
     }
 
@@ -39,13 +40,14 @@ public class UpgradeFragment extends Fragment {
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mAddLockFragmentPresenter = new AddLockFragmentPresenter(this);
         //endregion Initialize Objects
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upgrade, container, false);
+        return inflater.inflate(R.layout.fragment_add_lock, container, false);
     }
 
     @Override
@@ -57,6 +59,11 @@ public class UpgradeFragment extends Fragment {
 
         //region Setup Views
         //endregion Setup Views
+    }
+
+    @Override
+    public void saveDevice() {
+        mAddLockFragmentPresenter.saveDevice();
     }
 
     //region Declare Methods

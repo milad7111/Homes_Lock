@@ -1,7 +1,7 @@
-package com.projects.company.homes_lock.ui.lock.activity;
+package com.projects.company.homes_lock.ui.device.activity;
 
 /**
- * This is Presenter for {@link LockActivity}
+ * This is Presenter for {@link DeviceActivity}
  */
 
 public class LockActivityPresenter implements LockActivityContract.mMvpPresenter {

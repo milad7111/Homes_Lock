@@ -2,6 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.projects.company.homes_lock.ui.lock.fragment.nolock.NoLockFragment">
+    tools:context="com.projects.company.homes_lock.ui.device.fragment.nolock.NoLockFragment">
 
 </FrameLayout>

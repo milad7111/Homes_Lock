@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.lock.fragment.manageuser;
+package com.projects.company.homes_lock.ui.device.fragment.manageuser;
 
 
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.lock.fragment.addlock;
+package com.projects.company.homes_lock.ui.device.fragment.nolock;
 
 
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddLockFragment extends Fragment implements AddLockFragmentContract.mMvpView {
+public class NoLockFragment extends Fragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -25,10 +25,9 @@ public class AddLockFragment extends Fragment implements AddLockFragmentContract
     //endregion Declare Variables
 
     //region Declare Objects
-    AddLockFragmentPresenter mAddLockFragmentPresenter;
     //endregion Declare Objects
 
-    public AddLockFragment() {
+    public NoLockFragment() {
         // Required empty public constructor
     }
 
@@ -40,14 +39,13 @@ public class AddLockFragment extends Fragment implements AddLockFragmentContract
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mAddLockFragmentPresenter = new AddLockFragmentPresenter(this);
         //endregion Initialize Objects
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_lock, container, false);
+        return inflater.inflate(R.layout.fragment_no_lock, container, false);
     }
 
     @Override
@@ -59,11 +57,6 @@ public class AddLockFragment extends Fragment implements AddLockFragmentContract
 
         //region Setup Views
         //endregion Setup Views
-    }
-
-    @Override
-    public void saveDevice() {
-        mAddLockFragmentPresenter.saveDevice();
     }
 
     //region Declare Methods
