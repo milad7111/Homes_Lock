@@ -63,8 +63,6 @@ public class Device {
     @ColumnInfo(name = "lockPosition")
     private int mLockPosition;
 
-    public Device(){}
-
     public Device(
             @NonNull String mObjectId,
             String mLockSSID,

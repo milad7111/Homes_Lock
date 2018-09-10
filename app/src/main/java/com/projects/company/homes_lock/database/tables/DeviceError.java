@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
@@ -33,9 +34,9 @@ public class DeviceError {
     private String mDescription;
 
     @ColumnInfo(name = "createdAt")
-    private Date mCreatedAt;
+    private String mCreatedAt;
 
-    public DeviceError(@NonNull String mObjectId, String mDescription, Date mCreatedAt) {
+    public DeviceError(@NonNull String mObjectId, String mDescription, String mCreatedAt) {
         this.mObjectId = mObjectId;
         this.mDescription = mDescription;
         this.mCreatedAt = mCreatedAt;
@@ -58,11 +59,11 @@ public class DeviceError {
         this.mDescription = mDescription;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return mCreatedAt;
     }
 
-    public void setCreatedAt(Date mCreatedAt) {
+    public void setCreatedAt(String mCreatedAt) {
         this.mCreatedAt = mCreatedAt;
     }
 }

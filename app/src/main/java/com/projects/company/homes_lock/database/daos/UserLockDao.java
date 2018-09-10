@@ -29,7 +29,7 @@ public interface UserLockDao {
     void deleteAll();
 
     @Query("SELECT * FROM userLock")
-    LiveData<List<Device>> getAllUserLocks();
+    LiveData<List<UserLock>> getAllUserLocks();
 
     @Query("SELECT * FROM userLock WHERE objectId=:deviceObjectId")
     List<UserLock> getUserLocksByDevice(final int deviceObjectId);

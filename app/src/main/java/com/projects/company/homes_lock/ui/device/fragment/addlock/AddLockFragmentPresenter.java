@@ -31,10 +31,4 @@ public class AddLockFragmentPresenter implements AddLockFragmentContract.mMvpPre
         this.mAddLockFragmentView = _mAddLockFragmentView;
         this.mDeviceViewModel = ViewModelProviders.of((FragmentActivity) _mAddLockFragmentView).get(DeviceViewModel.class);
     }
-
-    @Override
-    public void saveDevice() {
-        if (ViewHelper.isValidDevice())
-            mDeviceViewModel.insertDevice(new Device());
-    }
 }

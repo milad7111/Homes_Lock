@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.lock.activity;
+package com.projects.company.homes_lock.ui.device.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

@@ -61,11 +61,6 @@ public class AddLockFragment extends Fragment implements AddLockFragmentContract
         //endregion Setup Views
     }
 
-    @Override
-    public void saveDevice() {
-        mAddLockFragmentPresenter.saveDevice();
-    }
-
     //region Declare Methods
     //endregion Declare Methods
 }

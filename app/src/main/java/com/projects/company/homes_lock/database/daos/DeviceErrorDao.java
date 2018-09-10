@@ -30,11 +30,11 @@ public interface DeviceErrorDao {
     void deleteAll();
 
     @Query("SELECT * FROM deviceError")
-    LiveData<List<Device>> getAllDeviceErrors();
+    LiveData<List<DeviceError>> getAllDeviceErrors();
 
     @Query("SELECT * FROM deviceError WHERE objectId=:deviceObjectId")
     List<DeviceError> getDeviceErrorsByDevice(final int deviceObjectId);
 
     @Query("SELECT * FROM deviceError WHERE objectId=:deviceObjectId and createdAt>=:startDate")
-    List<DeviceError> getDeviceErrorsByDeviceAndDate(int deviceObjectId, Date startDate);
+    List<DeviceError> getDeviceErrorsByDeviceAndDate(int deviceObjectId, String startDate);
 }

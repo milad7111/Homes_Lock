@@ -28,5 +28,5 @@ public interface ErrorDao {
     void deleteAll();
 
     @Query("SELECT * FROM error")
-    LiveData<List<Device>> getAllErrors();
+    LiveData<List<Error>> getAllErrors();
 }
