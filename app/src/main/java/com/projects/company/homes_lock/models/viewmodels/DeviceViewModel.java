@@ -5,7 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.repositories.DeviceRepository;
+import com.projects.company.homes_lock.repositories.local.LocalRepository;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class DeviceViewModel extends AndroidViewModel {
     //endregion Declare Variables
 
     //region Declare Objects
-    private DeviceRepository mDeviceRepository;
+    private LocalRepository mLocalRepository;
     //endregion Declare Objects
 
     public DeviceViewModel(Application application) {
@@ -28,21 +28,21 @@ public class DeviceViewModel extends AndroidViewModel {
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mDeviceRepository = new DeviceRepository(application);
+        mLocalRepository = new LocalRepository(application);
         //endregion Initialize Objects
     }
 
     //region Device table
     public LiveData<List<Device>> getAllDevices() {
-        return mDeviceRepository.getAllDevices();
+        return mLocalRepository.getAllDevices();
     }
 
     public void insertDevice(Device device) {
-        mDeviceRepository.insertDevice(device);
+        mLocalRepository.insertDevice(device);
     }
 
     public void deleteDevice(Device device) {
-        mDeviceRepository.deleteDevice(device);
+        mLocalRepository.deleteDevice(device);
     }
     //endregion Device table
 }

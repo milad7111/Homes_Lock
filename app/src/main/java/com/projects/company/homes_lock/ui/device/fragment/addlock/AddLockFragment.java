@@ -9,11 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddLockFragment extends Fragment implements AddLockFragmentContract.mMvpView {
+public class AddLockFragment extends BaseFragment implements AddLockFragmentContract.mMvpView {
 
     //region Declare Constants
     //endregion Declare Constants

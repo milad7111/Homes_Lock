@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.repositories;
+package com.projects.company.homes_lock.repositories.local;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
@@ -10,7 +10,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 
 import java.util.List;
 
-public class DeviceRepository {
+public class LocalRepository {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -22,7 +22,7 @@ public class DeviceRepository {
     private DeviceDao mDeviceDao;
     //endregion Declare Objects
 
-    public DeviceRepository(Application application) {
+    public LocalRepository(Application application) {
         LockDatabase db = LockDatabase.getDatabase(application);
 
         //region Initialize Variables
