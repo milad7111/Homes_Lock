@@ -1,25 +1,42 @@
 package com.projects.company.homes_lock.ui.device.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseActivity;
+import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.utils.MQTTHandler;
+
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.List;
 
 public class LockActivity extends BaseActivity
         implements
-        LockActivityContract.mMvpView,
+        ILockActivity,
         NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        MqttCallback,
+        IMqttActionListener {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -35,14 +52,16 @@ public class LockActivity extends BaseActivity
     //endregion Declare Variables
 
     //region Declare Objects
-    private LockActivityPresenter mLockActivityPresenter;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
+    private DeviceViewModel mDeviceViewModel;
     //endregion Declare Objects
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
+
+        initMQTT();
 
         //region Initialize Views
         _appBarLock_toolbar = findViewById(R.id.appBarLock_toolbar);
@@ -55,13 +74,14 @@ public class LockActivity extends BaseActivity
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mLockActivityPresenter = new LockActivityPresenter(LockActivity.this);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 _activityLock_drawer_layout,
                 _appBarLock_toolbar,
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
+
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
         //endregion Initialize Objects
 
         //region Setup Views
@@ -75,6 +95,10 @@ public class LockActivity extends BaseActivity
         _activityLock_navigation_view.setNavigationItemSelectedListener(this);
         //endregion Setup Views
     }
+
+    private void initMQTT(){
+        MQTTHandler.setup(this, this);
+    };
 
     @Override
     public void onBackPressed() {
@@ -143,13 +167,53 @@ public class LockActivity extends BaseActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.appBarLock_fab_addLock:
-                Snackbar.make(
-                        view,
-                        "Replace with your own action",
-                        Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
                 break;
         }
+    }
+
+    @Override
+    public void getAllDevices() {
+//        this.mDeviceViewModel.getAllDevices().observe(this, new Observer<List<Device>>() {
+//            @Override
+//            public void onChanged(@Nullable final List<Device> words) {
+//                mMvpView.showAllWords(words);
+//            }
+//        });
+    }
+
+    @Override
+    public void insertDevice(Device device) {
+
+    }
+
+    @Override
+    public void deleteDevice(Device device) {
+
+    }
+
+    @Override
+    public void connectionLost(Throwable cause) {
+
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
+
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+
+    }
+
+    @Override
+    public void onSuccess(IMqttToken asyncActionToken) {
+        MQTTHandler.subscribe(this);
+    }
+
+    @Override
+    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
     }
 
     //region Declare Methods

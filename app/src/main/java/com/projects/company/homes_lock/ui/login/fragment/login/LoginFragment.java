@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements LoginFragmentContract.mMvpView {
+public class LoginFragment extends Fragment implements ILoginFragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -25,7 +25,6 @@ public class LoginFragment extends Fragment implements LoginFragmentContract.mMv
     //endregion Declare Variables
 
     //region Declare Objects
-    LoginFragmentPresenter mLoginFragmentPresenter;
     //endregion Declare Objects
 
     public LoginFragment() {
@@ -40,7 +39,6 @@ public class LoginFragment extends Fragment implements LoginFragmentContract.mMv
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mLoginFragmentPresenter = new LoginFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

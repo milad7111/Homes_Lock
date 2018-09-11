@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LockPageFragment extends Fragment implements LockPageFragmentContract.mMvpView {
+public class LockPageFragment extends Fragment implements ILockPageFragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -25,7 +25,6 @@ public class LockPageFragment extends Fragment implements LockPageFragmentContra
     //endregion Declare Variables
 
     //region Declare Objects
-    LockPageFragmentPresenter mLockPageFragmentPresenter;
     //endregion Declare Objects
 
     public LockPageFragment() {
@@ -40,7 +39,6 @@ public class LockPageFragment extends Fragment implements LockPageFragmentContra
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mLockPageFragmentPresenter = new LockPageFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

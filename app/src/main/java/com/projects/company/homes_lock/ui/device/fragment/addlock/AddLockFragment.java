@@ -14,7 +14,7 @@ import com.projects.company.homes_lock.base.BaseFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddLockFragment extends BaseFragment implements AddLockFragmentContract.mMvpView {
+public class AddLockFragment extends BaseFragment implements IAddLockFragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -26,7 +26,6 @@ public class AddLockFragment extends BaseFragment implements AddLockFragmentCont
     //endregion Declare Variables
 
     //region Declare Objects
-    AddLockFragmentPresenter mAddLockFragmentPresenter;
     //endregion Declare Objects
 
     public AddLockFragment() {
@@ -41,7 +40,6 @@ public class AddLockFragment extends BaseFragment implements AddLockFragmentCont
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mAddLockFragmentPresenter = new AddLockFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

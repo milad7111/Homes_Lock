@@ -2,10 +2,10 @@ package com.projects.company.homes_lock.ui.login.activity;
 
 import android.os.Bundle;
 
-import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseActivity;
 
-public class LoginActivity extends BaseActivity implements LoginActivityContract.mMvpView {
+public class LoginActivity extends BaseActivity implements ILoginActivity {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -17,7 +17,6 @@ public class LoginActivity extends BaseActivity implements LoginActivityContract
     //endregion Declare Variables
 
     //region Declare Objects
-    LoginActivityPresenter mLoginActivityPresenter;
     //endregion Declare Objects
 
     @Override
@@ -32,7 +31,6 @@ public class LoginActivity extends BaseActivity implements LoginActivityContract
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mLoginActivityPresenter = new LoginActivityPresenter(LoginActivity.this);
         //endregion Initialize Objects
 
         //region Setup Views

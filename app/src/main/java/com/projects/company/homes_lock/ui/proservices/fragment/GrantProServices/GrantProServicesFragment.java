@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GrantProServicesFragment extends Fragment implements GrantProServicesFragmentContract.mMvpView {
+public class GrantProServicesFragment extends Fragment implements IGrantProServicesFragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -25,7 +25,6 @@ public class GrantProServicesFragment extends Fragment implements GrantProServic
     //endregion Declare Variables
 
     //region Declare Objects
-    GrantProServicesFragmentPresenter mGrantProServicesFragmentPresenter;
     //endregion Declare Objects
 
     public GrantProServicesFragment() {
@@ -40,7 +39,6 @@ public class GrantProServicesFragment extends Fragment implements GrantProServic
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mGrantProServicesFragmentPresenter = new GrantProServicesFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

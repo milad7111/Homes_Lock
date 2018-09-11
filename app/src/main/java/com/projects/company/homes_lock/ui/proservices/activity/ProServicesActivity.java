@@ -2,10 +2,10 @@ package com.projects.company.homes_lock.ui.proservices.activity;
 
 import android.os.Bundle;
 
-import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseActivity;
 
-public class ProServicesActivity extends BaseActivity implements ProServicesActivityContract.mMvpView {
+public class ProServicesActivity extends BaseActivity implements IProServicesActivity {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -17,7 +17,6 @@ public class ProServicesActivity extends BaseActivity implements ProServicesActi
     //endregion Declare Variables
 
     //region Declare Objects
-    ProServicesActivityPresenter mProServicesActivityPresenter;
     //endregion Declare Objects
 
     @Override
@@ -32,7 +31,6 @@ public class ProServicesActivity extends BaseActivity implements ProServicesActi
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mProServicesActivityPresenter = new ProServicesActivityPresenter(ProServicesActivity.this);
         //endregion Initialize Objects
 
         //region Setup Views

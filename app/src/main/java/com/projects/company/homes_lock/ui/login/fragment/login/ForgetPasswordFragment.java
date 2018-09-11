@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ForgetPasswordFragment extends Fragment implements LoginFragmentContract.mMvpView {
+public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
 
     //region Declare Constants
     //endregion Declare Constants

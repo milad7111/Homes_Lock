@@ -3,6 +3,7 @@ package com.projects.company.homes_lock.repositories.remote;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.response.DeviceModel;
+import com.projects.company.homes_lock.models.datamodels.response.DevicesModel;
 import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 
 import java.util.List;

@@ -13,10 +13,10 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTTHandler {
-    private MqttAndroidClient client;
-    private String TAG = this.getClass().getSimpleName();
+    private static MqttAndroidClient client;
+    private static String TAG = "MQTTHandler Class";
 
-    private void setup(final MqttCallback mMqttCallbackListener, Context mContext) {
+    public static void setup(final MqttCallback mMqttCallbackListener, Context mContext) {
         MqttAndroidClient client = new MqttAndroidClient(
                 mContext,
                 "tcp://5.196.101.48:1883",
@@ -47,7 +47,7 @@ public class MQTTHandler {
         });
     }
 
-    public void connect() {
+    public static void connect(IMqttActionListener mIMqttActionListener) {
         try {
             MqttConnectOptions mMqttOptions = new MqttConnectOptions();
             IMqttToken mToken = client.connect(mMqttOptions);
@@ -69,7 +69,7 @@ public class MQTTHandler {
         }
     }
 
-    public void subscribe(final IMqttActionListener mIMqttActionListener) {
+    public static void subscribe(final IMqttActionListener mIMqttActionListener) {
         try {
             IMqttToken subToken = client.subscribe("response/toggle/123456789", 1);
 

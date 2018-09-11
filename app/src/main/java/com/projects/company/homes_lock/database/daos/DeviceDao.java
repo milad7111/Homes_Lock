@@ -12,16 +12,16 @@ import com.projects.company.homes_lock.database.tables.Device;
 import java.util.List;
 
 @Dao
-public interface DeviceDao {
+public interface DeviceDao extends BaseDao<Device> {
 
     @Insert
     void insert(Device device);
 
     @Delete
-    void delete(Device... devices);
+    void delete(Device... device);
 
     @Update
-    void update(Device... devices);
+    void update(Device... device);
 
     @Query("DELETE FROM device")
     void deleteAll();

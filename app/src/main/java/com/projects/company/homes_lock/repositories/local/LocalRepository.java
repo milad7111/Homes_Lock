@@ -39,33 +39,34 @@ public class LocalRepository {
     }
 
     public void insertDevice(Device device) {
-        new insertWordAsyncTask(mDeviceDao).execute(device);
+        new insertDeviceAsyncTask(mDeviceDao).execute(device);
     }
 
     public void deleteDevice(Device device) {
-        new deleteWordAsyncTask(mDeviceDao).execute(device);
+        new deleteDeviceAsyncTask(mDeviceDao).execute(device);
     }
 
-    private static class insertWordAsyncTask extends AsyncTask<Device, Void, Void> {
+    private static class insertDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
 
         private DeviceDao mDeviceDao;
 
-        insertWordAsyncTask(DeviceDao mDeviceDao) {
+        insertDeviceAsyncTask(DeviceDao mDeviceDao) {
             this.mDeviceDao = mDeviceDao;
         }
 
+        @SafeVarargs
         @Override
-        protected Void doInBackground(final Device... params) {
-            this.mDeviceDao.insert(params[0]);
+        protected final Void doInBackground(Device... device) {
+            this.mDeviceDao.insert(device);
             return null;
         }
     }
 
-    private static class deleteWordAsyncTask extends AsyncTask<Device, Void, Void> {
+    private static class deleteDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
 
         private DeviceDao mDeviceDao;
 
-        deleteWordAsyncTask(DeviceDao mDeviceDao) {
+        deleteDeviceAsyncTask(DeviceDao mDeviceDao) {
             this.mDeviceDao = mDeviceDao;
         }
 
@@ -75,5 +76,5 @@ public class LocalRepository {
             return null;
         }
     }
-    //endregion Word table
+    //endregion Device table
 }

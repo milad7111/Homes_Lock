@@ -9,12 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.ui.proservices.activity.ProServicesActivityContract;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProServicesListFragment extends Fragment implements ProServicesListFragmentContract.mMvpView {
+public class ProServicesListFragment extends Fragment implements IProServicesListFragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -26,7 +25,6 @@ public class ProServicesListFragment extends Fragment implements ProServicesList
     //endregion Declare Variables
 
     //region Declare Objects
-    ProServicesListFragmentPresenter mProServicesListFragmentPresenter;
     //endregion Declare Objects
 
     public ProServicesListFragment() {
@@ -41,7 +39,6 @@ public class ProServicesListFragment extends Fragment implements ProServicesList
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mProServicesListFragmentPresenter = new ProServicesListFragmentPresenter(this);
         //endregion Initialize Objects
     }
 

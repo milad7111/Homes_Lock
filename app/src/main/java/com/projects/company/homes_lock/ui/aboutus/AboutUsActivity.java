@@ -2,8 +2,8 @@ package com.projects.company.homes_lock.ui.aboutus;
 
 import android.os.Bundle;
 
-import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseActivity;
 
 public class AboutUsActivity extends BaseActivity {
 
