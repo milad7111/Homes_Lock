@@ -87,6 +87,19 @@ public class LockActivity extends BaseActivity
 
         _activityLock_navigation_view.setNavigationItemSelectedListener(this);
         //endregion Setup Views
+
+//        Toast.makeText(LockActivity.this, "salam", Toast.LENGTH_SHORT).show();
+
+//        mDeviceViewModel.getAllDevicesCount().observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(@Nullable final Integer count) {
+//                Toast.makeText(LockActivity.this, String.valueOf(count), Toast.LENGTH_LONG).show();
+//            }
+//        });
+    }
+
+    private void showToast(String md) {
+        Toast.makeText(LockActivity.this, md, Toast.LENGTH_SHORT).show();
     }
 
     private void initMQTT() {
@@ -160,6 +173,7 @@ public class LockActivity extends BaseActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.appBarLock_fab_addLock:
+                mDeviceViewModel.getAllServerDevices();
                 break;
         }
     }
@@ -194,8 +208,10 @@ public class LockActivity extends BaseActivity
         MessageModel mMessageModel;
         if (response instanceof MessageModel) {
             mMessageModel = (MessageModel) response;
-            if (mMessageModel.getTopic().equals("toggle/123456789"))
-                Toast.makeText(LockActivity.this, mMessageModel.getMqttMessagePayload(), Toast.LENGTH_LONG).show();
+            String payload = new String(mMessageModel.getMqttMessagePayload());
+            if (mMessageModel.getTopic().contains("d"))
+                showToast(mMessageModel.getTopic());
+//                Log.d("getMessages : ", mMessageModel.getTopic() + "  :  " + payload);
         }
     }
 
@@ -232,6 +248,16 @@ public class LockActivity extends BaseActivity
     @Override
     public void onPublishFailure(Object response) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (client != null) {
+            client.unregisterResources();
+            client.close();
+        }
+
+        super.onDestroy();
     }
 
     //region Declare Methods

@@ -3,16 +3,21 @@ package com.projects.company.homes_lock.models.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.util.Log;
 
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.response.DevicesModel;
+import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
+import com.projects.company.homes_lock.utils.DataHelper;
 
 import java.util.List;
 
-public class DeviceViewModel extends AndroidViewModel implements NetworkListener {
+public class DeviceViewModel extends AndroidViewModel
+        implements
+        NetworkListener.SingleNetworkListener,
+        NetworkListener.ListNetworkListener {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -38,13 +43,15 @@ public class DeviceViewModel extends AndroidViewModel implements NetworkListener
     }
 
     //region Device table
+    public LiveData<Integer> getAllDevicesCount(){
+        return mLocalRepository.getAllDevicesCount();
+    }
     public LiveData<List<Device>> getAllLocalDevices() {
         return mLocalRepository.getAllDevices();
     }
 
-    public LiveData<List<Device>> getAllServerDevices() {
+    public void getAllServerDevices() {
         mNetworkRepository.getAllDevices(this);
-        return mLocalRepository.getAllDevices();
     }
 
     public void insertLocalDevice(Device device) {
@@ -62,15 +69,19 @@ public class DeviceViewModel extends AndroidViewModel implements NetworkListener
 
     @Override
     public void onResponse(Object response) {
-        DevicesModel mDevicesModel;
-        if (response instanceof DevicesModel){
-            mDevicesModel = (DevicesModel) response;
-        }
+        if (DataHelper.isInstanceOf(response, Device.class.getName()))
+            insertLocalDevices((List<Device>) response);
+    }
+
+    @Override
+    public void onFailure(com.projects.company.homes_lock.models.datamodels.response.FailureModel response) {
+        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
     }
 
     @Override
     public void onFailure(Object response) {
-
+        FailureModel m = (FailureModel) response;
+        Log.i(this.getClass().getSimpleName(), m.getFailureMessage());
     }
     //endregion Device table
 }

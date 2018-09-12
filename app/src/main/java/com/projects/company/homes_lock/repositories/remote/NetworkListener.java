@@ -1,7 +1,19 @@
 package com.projects.company.homes_lock.repositories.remote;
 
-public interface NetworkListener<T> {
-    void onResponse(T response);
+import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 
-    void onFailure(T response);
+import java.util.List;
+
+public interface NetworkListener {
+    interface SingleNetworkListener<T> {
+        void onResponse(T response);
+
+        void onFailure(T response);
+    }
+
+    interface ListNetworkListener<T> {
+        void onResponse(T response);
+
+        void onFailure(FailureModel response);
+    }
 }

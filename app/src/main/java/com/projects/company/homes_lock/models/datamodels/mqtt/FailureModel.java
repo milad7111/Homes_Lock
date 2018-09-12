@@ -11,4 +11,8 @@ public class FailureModel extends BaseModel {
     public FailureModel(String mFailureMessage) {
         this.mFailureMessage = mFailureMessage;
     }
+
+    public String getFailureMessage() {
+        return mFailureMessage;
+    }
 }

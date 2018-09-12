@@ -2,83 +2,135 @@ package com.projects.company.homes_lock.database.tables;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import static android.arch.persistence.room.ForeignKey.CASCADE;
+import com.google.gson.annotations.SerializedName;
+import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
+import com.projects.company.homes_lock.models.datamodels.response.DeviceErrorModel;
+import com.projects.company.homes_lock.models.datamodels.response.UserLockModel;
+import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 
-@Entity(tableName = "device",
-        foreignKeys = @ForeignKey(
-                entity = User.class,
-                parentColumns = "objectId",
-                childColumns = "objectId",
-                onDelete = CASCADE))
-public class Device {
+import java.util.List;
+
+//,
+//        foreignKeys = @ForeignKey(
+//        entity = User.class,
+//        parentColumns = "objectId",
+//        childColumns = "objectId",
+//        onDelete = CASCADE)
+@Entity(tableName = "device")
+public class Device extends BaseModel {
 
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "objectId")
+    @SerializedName("objectId")
     private String mObjectId;
 
     @ColumnInfo(name = "lockSSID")
+    @SerializedName("lockSSID")
     private String mLockSSID;
 
     @ColumnInfo(name = "serialNumber")
+    @SerializedName("serialNumber")
     private String mSerialNumber;
 
     @ColumnInfo(name = "lockStatus")
-    private boolean mLockStatus;
+    @SerializedName("lockStatus")
+    private Boolean mLockStatus;
 
     @ColumnInfo(name = "doorStatus")
-    private boolean mDoorStatus;
+    @SerializedName("doorStatus")
+    private Boolean mDoorStatus;
 
     @ColumnInfo(name = "connectionStatus")
-    private boolean mConnectionStatus;
+    @SerializedName("connectionStatus")
+    private Boolean mConnectionStatus;
 
     @ColumnInfo(name = "batteryStatus")
-    private int mBatteryStatus;
+    @SerializedName("batteryStatus")
+    private Integer mBatteryStatus;
 
     @ColumnInfo(name = "wifiStatus")
-    private int mWifiStatus;
+    @SerializedName("wifiStatus")
+    private Integer mWifiStatus;
 
     @ColumnInfo(name = "meanPowerCons")
-    private int mMeanPowerCons;
+    @SerializedName("meanPowerCons")
+    private Integer mMeanPowerCons;
 
     @ColumnInfo(name = "temperature")
-    private int mTemperature;
+    @SerializedName("temperature")
+    private Integer mTemperature;
 
     @ColumnInfo(name = "humidity")
-    private int mHumidity;
+    @SerializedName("humidity")
+    private Integer mHumidity;
 
     @ColumnInfo(name = "coLevel")
-    private int mCOLevel;
+    @SerializedName("coLevel")
+    private Integer mCOLevel;
 
     @ColumnInfo(name = "deviceHealth")
-    private boolean mDeviceHealth;
+    @SerializedName("deviceHealth")
+    private Boolean mDeviceHealth;
 
     @ColumnInfo(name = "fwVersion")
-    private int mFWVersion;
+    @SerializedName("fwVersion")
+    private Integer mFWVersion;
 
     @ColumnInfo(name = "lockPosition")
-    private int mLockPosition;
+    @SerializedName("lockPosition")
+    private Integer mLockPosition;
+
+    //region other attributes
+    @Ignore
+    @SerializedName("created")
+    private Long mCreatedAt;
+
+    @Ignore
+    @SerializedName("ownerId")
+    private String mOwnerId;
+
+    @Ignore
+    @SerializedName("updated")
+    private Long mUpdated;
+
+    @Ignore
+    @SerializedName("___class")
+    private String mServerTableName;
+
+    @Ignore
+    @SerializedName("relatedUsers")
+    private List<UserLockModel> mRelatedUsers;
+
+    @Ignore
+    @SerializedName("relatedErrors")
+    private List<DeviceErrorModel> mRelatedErrors;
+
+    @Ignore
+    @SerializedName("user")
+    private UserModel mUser;
+    //endregion other attributes
 
     public Device(
             @NonNull String mObjectId,
             String mLockSSID,
             String mSerialNumber,
-            boolean mLockStatus,
-            boolean mDoorStatus,
-            boolean mConnectionStatus,
-            int mBatteryStatus,
-            int mWifiStatus,
-            int mMeanPowerCons,
-            int mTemperature,
-            int mHumidity,
-            int mCOLevel,
-            boolean mDeviceHealth,
-            int mFWVersion,
-            int mLockPosition) {
+            Boolean mLockStatus,
+            Boolean mDoorStatus,
+            Boolean mConnectionStatus,
+            Integer mBatteryStatus,
+            Integer mWifiStatus,
+            Integer mMeanPowerCons,
+            Integer mTemperature,
+            Integer mHumidity,
+            Integer mCOLevel,
+            Boolean mDeviceHealth,
+            Integer mFWVersion,
+            Integer mLockPosition) {
         this.mObjectId = mObjectId;
         this.mLockSSID = mLockSSID;
         this.mSerialNumber = mSerialNumber;
@@ -121,99 +173,99 @@ public class Device {
         this.mSerialNumber = mSerialNumber;
     }
 
-    public boolean getLockStatus() {
+    public Boolean getLockStatus() {
         return mLockStatus;
     }
 
-    public void setLockStatus(boolean mLockStatus) {
+    public void setLockStatus(Boolean mLockStatus) {
         this.mLockStatus = mLockStatus;
     }
 
-    public boolean getDoorStatus() {
+    public Boolean getDoorStatus() {
         return mDoorStatus;
     }
 
-    public void setDoorStatus(boolean mDoorStatus) {
+    public void setDoorStatus(Boolean mDoorStatus) {
         this.mDoorStatus = mDoorStatus;
     }
 
-    public boolean getConnectionStatus() {
+    public Boolean getConnectionStatus() {
         return mConnectionStatus;
     }
 
-    public void setConnectionStatus(boolean mConnectionStatus) {
+    public void setConnectionStatus(Boolean mConnectionStatus) {
         this.mConnectionStatus = mConnectionStatus;
     }
 
-    public int getBatteryStatus() {
+    public Integer getBatteryStatus() {
         return mBatteryStatus;
     }
 
-    public void setBatteryStatus(int mBatteryStatus) {
+    public void setBatteryStatus(Integer mBatteryStatus) {
         this.mBatteryStatus = mBatteryStatus;
     }
 
-    public int getWifiStatus() {
+    public Integer getWifiStatus() {
         return mWifiStatus;
     }
 
-    public void setWifiStatus(int mWifiStatus) {
+    public void setWifiStatus(Integer mWifiStatus) {
         this.mWifiStatus = mWifiStatus;
     }
 
-    public int getMeanPowerCons() {
+    public Integer getMeanPowerCons() {
         return mMeanPowerCons;
     }
 
-    public void setMeanPowerCons(int mMeanPowerCons) {
+    public void setMeanPowerCons(Integer mMeanPowerCons) {
         this.mMeanPowerCons = mMeanPowerCons;
     }
 
-    public int getTemperature() {
+    public Integer getTemperature() {
         return mTemperature;
     }
 
-    public void setTemperature(int mTemperature) {
+    public void setTemperature(Integer mTemperature) {
         this.mTemperature = mTemperature;
     }
 
-    public int getHumidity() {
+    public Integer getHumidity() {
         return mHumidity;
     }
 
-    public void setHumidity(int mHumidity) {
+    public void setHumidity(Integer mHumidity) {
         this.mHumidity = mHumidity;
     }
 
-    public int getCOLevel() {
+    public Integer getCOLevel() {
         return mCOLevel;
     }
 
-    public void setCOLevel(int mCOLevel) {
+    public void setCOLevel(Integer mCOLevel) {
         this.mCOLevel = mCOLevel;
     }
 
-    public boolean getDeviceHealth() {
+    public Boolean getDeviceHealth() {
         return mDeviceHealth;
     }
 
-    public void setDeviceHealth(boolean mDeviceHealth) {
+    public void setDeviceHealth(Boolean mDeviceHealth) {
         this.mDeviceHealth = mDeviceHealth;
     }
 
-    public int getFWVersion() {
+    public Integer getFWVersion() {
         return mFWVersion;
     }
 
-    public void setFWVersion(int mFWVersion) {
+    public void setFWVersion(Integer mFWVersion) {
         this.mFWVersion = mFWVersion;
     }
 
-    public int getLockPosition() {
+    public Integer getLockPosition() {
         return mLockPosition;
     }
 
-    public void setLockPosition(int mLockPosition) {
+    public void setLockPosition(Integer mLockPosition) {
         this.mLockPosition = mLockPosition;
     }
 }

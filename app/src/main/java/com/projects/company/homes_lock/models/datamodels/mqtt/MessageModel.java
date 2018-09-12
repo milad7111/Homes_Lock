@@ -21,7 +21,7 @@ public class MessageModel extends BaseModel {
         return mTopic;
     }
 
-    public String getMqttMessagePayload() {
-        return mMqttMessage.getPayload().toString();
+    public byte[] getMqttMessagePayload() {
+        return mMqttMessage.getPayload();
     }
 }

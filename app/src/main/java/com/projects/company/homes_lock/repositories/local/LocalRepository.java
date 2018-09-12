@@ -34,6 +34,10 @@ public class LocalRepository {
     }
 
     //region Device table
+    public LiveData<Integer> getAllDevicesCount() {
+        return mDeviceDao.getAllDevicesCount();
+    }
+
     public LiveData<List<Device>> getAllDevices() {
         return mDeviceDao.getAllDevices();
     }

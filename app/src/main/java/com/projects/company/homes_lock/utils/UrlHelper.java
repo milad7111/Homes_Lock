@@ -8,6 +8,6 @@ public class UrlHelper {
     public static String BACKENDLESS_BASE_URL_HTTPS_ANDROID = "https://api.backendless.com/" + BACKENDLESS_APPLICATION_ID + "/" + BACKENDLESS_ANDROID_API_KEY + "/";
     public static String BACKENDLESS_BASE_URL_HTTP_ANDROID = "http://api.backendless.com/" + BACKENDLESS_APPLICATION_ID + "/" + BACKENDLESS_ANDROID_API_KEY + "/";
 
-    public static String BACKENDLESS_BASE_URL_HTTPS_REST = "https://api.backendless.com/" + BACKENDLESS_APPLICATION_ID + "/" + BACKENDLESS_REST_API_KEY + "/";
+    public static String BACKENDLESS_BASE_URL_HTTPS_REST = "https://api.backendless.com/" + BACKENDLESS_APPLICATION_ID + "/" + BACKENDLESS_ANDROID_API_KEY + "/";
     public static String BACKENDLESS_BASE_URL_HTTP_REST = "http://api.backendless.com/" + BACKENDLESS_APPLICATION_ID + "/" + BACKENDLESS_REST_API_KEY + "/";
 }

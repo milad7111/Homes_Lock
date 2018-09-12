@@ -22,7 +22,7 @@ public class MQTTHandler {
     public static void setup(final IMQTTListener mIMQTTListener, Context mContext) {
         client = new MqttAndroidClient(
                 mContext,
-                "tcp://5.196.101.48:1883",
+                "tcp://broker.hivemq.com",
                 MqttClient.generateClientId());
 
         client.setCallback(new MqttCallback() {
@@ -36,7 +36,6 @@ public class MQTTHandler {
             public void messageArrived(String topic, MqttMessage message) {
                 try {
                     mIMQTTListener.onMessageArrived(new MessageModel(topic, message));
-                    Log.i(TAG, "New Message Arrived.");
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
                 }
@@ -79,7 +78,7 @@ public class MQTTHandler {
 
     public static void subscribe(final IMQTTListener mIMQTTListener) {
         try {
-            IMqttToken subToken = client.subscribe("toggle/123456789", 1);
+            IMqttToken subToken = client.subscribe("#", 1);
 
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
