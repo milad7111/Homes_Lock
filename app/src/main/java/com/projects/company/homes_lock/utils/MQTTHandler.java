@@ -2,7 +2,6 @@ package com.projects.company.homes_lock.utils;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.projects.company.homes_lock.models.datamodels.mqtt.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
@@ -24,7 +23,7 @@ public class MQTTHandler {
         client = new MqttAndroidClient(
                 mContext,
                 "tcp://5.196.101.48:1883",
-                "morteza@morteza");
+                MqttClient.generateClientId());
 
         client.setCallback(new MqttCallback() {
             @Override
@@ -56,8 +55,10 @@ public class MQTTHandler {
     public static void connect(final IMQTTListener mIMQTTListener) {
         try {
             MqttConnectOptions mMqttOptions = new MqttConnectOptions();
-            IMqttToken mToken = client.connect(mMqttOptions);
-            mToken.setActionCallback(new IMqttActionListener() {
+            mMqttOptions.setAutomaticReconnect(true);
+            mMqttOptions.setCleanSession(false);
+            mMqttOptions.setKeepAliveInterval(10);
+            client.connect(mMqttOptions).setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     mIMQTTListener.onConnectionSuccessful(asyncActionToken);

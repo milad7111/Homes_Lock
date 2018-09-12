@@ -3,16 +3,16 @@ package com.projects.company.homes_lock.models.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
 
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.response.DevicesModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
+import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 
 import java.util.List;
 
-public class DeviceViewModel extends AndroidViewModel {
+public class DeviceViewModel extends AndroidViewModel implements NetworkListener {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -43,7 +43,7 @@ public class DeviceViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Device>> getAllServerDevices() {
-//        mNetworkRepository.getAllDevices(this);
+        mNetworkRepository.getAllDevices(this);
         return mLocalRepository.getAllDevices();
     }
 
@@ -58,6 +58,19 @@ public class DeviceViewModel extends AndroidViewModel {
 
     public void deleteLocalDevice(Device device) {
         mLocalRepository.deleteDevice(device);
+    }
+
+    @Override
+    public void onResponse(Object response) {
+        DevicesModel mDevicesModel;
+        if (response instanceof DevicesModel){
+            mDevicesModel = (DevicesModel) response;
+        }
+    }
+
+    @Override
+    public void onFailure(Object response) {
+
     }
     //endregion Device table
 }

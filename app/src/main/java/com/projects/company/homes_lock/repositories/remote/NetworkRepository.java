@@ -1,16 +1,12 @@
 package com.projects.company.homes_lock.repositories.remote;
 
 import com.projects.company.homes_lock.base.BaseApplication;
-import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.mqtt.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
-import com.projects.company.homes_lock.models.datamodels.response.DeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.DevicesModel;
-import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.UserModel;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,16 +56,14 @@ public class NetworkRepository {
     }
 
     public void getAllDevices(final NetworkListener<BaseModel> listener) {
-        BaseApplication.getRetrofitAPI().getAllDevices().enqueue(new Callback<List<DeviceModel>>() {
+        BaseApplication.getRetrofitAPI().getAllDevices().enqueue(new Callback<DevicesModel>() {
             @Override
-            public void onResponse(Call<List<DeviceModel>> call, Response<List<DeviceModel>> response) {
-                if (response != null && response.body() != null) {
-                    listener.onResponse(DevicesModel.parseJSON(response.body().toString()));
-                }
+            public void onResponse(Call<DevicesModel> call, Response<DevicesModel> response) {
+                listener.onResponse(response.body());
             }
 
             @Override
-            public void onFailure(Call<List<DeviceModel>> call, Throwable t) {
+            public void onFailure(Call<DevicesModel> call, Throwable t) {
                 listener.onFailure(new FailureModel(t.getMessage()));
             }
         });

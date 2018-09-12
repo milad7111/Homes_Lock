@@ -2,11 +2,8 @@ package com.projects.company.homes_lock.repositories.remote;
 
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
-import com.projects.company.homes_lock.models.datamodels.response.DeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.DevicesModel;
 import com.projects.company.homes_lock.models.datamodels.response.UserModel;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -22,5 +19,5 @@ public interface IRetrofit {
     Call<UserModel> register(@Body RegisterModel parameter);
 
     @GET("/data/Device")
-    Call<List<DeviceModel>> getAllDevices();
+    Call<DevicesModel> getAllDevices();
 }

@@ -1,13 +1,9 @@
 package com.projects.company.homes_lock.ui.device.activity;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,13 +21,7 @@ import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.IMQTTListener;
 import com.projects.company.homes_lock.utils.MQTTHandler;
 
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.util.List;
+import org.eclipse.paho.android.service.MqttAndroidClient;
 
 public class LockActivity extends BaseActivity
         implements
@@ -56,6 +46,7 @@ public class LockActivity extends BaseActivity
     //region Declare Objects
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DeviceViewModel mDeviceViewModel;
+    private MqttAndroidClient client;
     //endregion Declare Objects
 
     @Override
