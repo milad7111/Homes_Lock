@@ -15,11 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.utils.IMQTTListener;
 import com.projects.company.homes_lock.utils.MQTTHandler;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -35,8 +38,7 @@ public class LockActivity extends BaseActivity
         ILockActivity,
         NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener,
-        MqttCallback,
-        IMqttActionListener {
+        IMQTTListener {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -96,9 +98,9 @@ public class LockActivity extends BaseActivity
         //endregion Setup Views
     }
 
-    private void initMQTT(){
+    private void initMQTT() {
         MQTTHandler.setup(this, this);
-    };
+    }
 
     @Override
     public void onBackPressed() {
@@ -192,27 +194,52 @@ public class LockActivity extends BaseActivity
     }
 
     @Override
-    public void connectionLost(Throwable cause) {
+    public void onConnectionToBrokerLost(Object response) {
 
     }
 
     @Override
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
+    public void onMessageArrived(Object response) {
+        MessageModel mMessageModel;
+        if (response instanceof MessageModel) {
+            mMessageModel = (MessageModel) response;
+            if (mMessageModel.getTopic().equals("toggle/123456789"))
+                Toast.makeText(LockActivity.this, mMessageModel.getMqttMessagePayload(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onDeliveryMessageComplete(Object response) {
 
     }
 
     @Override
-    public void deliveryComplete(IMqttDeliveryToken token) {
-
-    }
-
-    @Override
-    public void onSuccess(IMqttToken asyncActionToken) {
+    public void onConnectionSuccessful(Object response) {
         MQTTHandler.subscribe(this);
     }
 
     @Override
-    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+    public void onConnectionFailure(Object response) {
+
+    }
+
+    @Override
+    public void onSubscribeSuccessful(Object response) {
+
+    }
+
+    @Override
+    public void onSubscribeFailure(Object response) {
+
+    }
+
+    @Override
+    public void onPublishSuccessful(Object response) {
+
+    }
+
+    @Override
+    public void onPublishFailure(Object response) {
 
     }
 

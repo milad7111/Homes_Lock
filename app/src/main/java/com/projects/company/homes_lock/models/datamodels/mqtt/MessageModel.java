@@ -16,4 +16,12 @@ public class MessageModel extends BaseModel {
         this.mTopic = mTopic;
         this.mMqttMessage = mMqttMessage;
     }
+
+    public String getTopic() {
+        return mTopic;
+    }
+
+    public String getMqttMessagePayload() {
+        return mMqttMessage.getPayload().toString();
+    }
 }
