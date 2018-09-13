@@ -1,7 +1,9 @@
 package com.projects.company.homes_lock.ui.device.activity;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,8 +20,8 @@ import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.utils.IMQTTListener;
-import com.projects.company.homes_lock.utils.MQTTHandler;
+import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
+import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
@@ -88,18 +90,12 @@ public class LockActivity extends BaseActivity
         _activityLock_navigation_view.setNavigationItemSelectedListener(this);
         //endregion Setup Views
 
-//        Toast.makeText(LockActivity.this, "salam", Toast.LENGTH_SHORT).show();
-
-//        mDeviceViewModel.getAllDevicesCount().observe(this, new Observer<Integer>() {
-//            @Override
-//            public void onChanged(@Nullable final Integer count) {
-//                Toast.makeText(LockActivity.this, String.valueOf(count), Toast.LENGTH_LONG).show();
-//            }
-//        });
-    }
-
-    private void showToast(String md) {
-        Toast.makeText(LockActivity.this, md, Toast.LENGTH_SHORT).show();
+        mDeviceViewModel.getAllDevicesCount().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable final Integer count) {
+                Toast.makeText(LockActivity.this, String.valueOf(count), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void initMQTT() {
@@ -209,9 +205,6 @@ public class LockActivity extends BaseActivity
         if (response instanceof MessageModel) {
             mMessageModel = (MessageModel) response;
             String payload = new String(mMessageModel.getMqttMessagePayload());
-            if (mMessageModel.getTopic().contains("d"))
-                showToast(mMessageModel.getTopic());
-//                Log.d("getMessages : ", mMessageModel.getTopic() + "  :  " + payload);
         }
     }
 
@@ -261,5 +254,8 @@ public class LockActivity extends BaseActivity
     }
 
     //region Declare Methods
+    private void getAccessableBleDevices(){
+
+    }
     //endregion Declare Methods
 }

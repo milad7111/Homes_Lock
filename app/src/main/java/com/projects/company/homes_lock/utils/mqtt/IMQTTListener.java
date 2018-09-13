@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.utils;
+package com.projects.company.homes_lock.utils.mqtt;
 
 public interface IMQTTListener<T> {
     void onConnectionToBrokerLost(T response);

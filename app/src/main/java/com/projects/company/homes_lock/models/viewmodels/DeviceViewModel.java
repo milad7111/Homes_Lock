@@ -3,6 +3,11 @@ package com.projects.company.homes_lock.models.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.projects.company.homes_lock.database.tables.Device;
@@ -10,9 +15,10 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
-import com.projects.company.homes_lock.utils.DataHelper;
+import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
+import java.util.Observable;
 
 public class DeviceViewModel extends AndroidViewModel
         implements
@@ -46,6 +52,7 @@ public class DeviceViewModel extends AndroidViewModel
     public LiveData<Integer> getAllDevicesCount(){
         return mLocalRepository.getAllDevicesCount();
     }
+
     public LiveData<List<Device>> getAllLocalDevices() {
         return mLocalRepository.getAllDevices();
     }
@@ -84,4 +91,9 @@ public class DeviceViewModel extends AndroidViewModel
         Log.i(this.getClass().getSimpleName(), m.getFailureMessage());
     }
     //endregion Device table
+
+    //region BLE
+    public void getAllAccessableBLEDevices(){
+    }
+    //endregion BLE
 }

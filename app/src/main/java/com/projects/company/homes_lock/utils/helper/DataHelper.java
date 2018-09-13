@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.utils;
+package com.projects.company.homes_lock.utils.helper;
 
 import java.util.List;
 

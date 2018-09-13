@@ -16,7 +16,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.projects.company.homes_lock.utils.UrlHelper.BACKENDLESS_BASE_URL_HTTPS_REST;
+import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_BASE_URL_HTTPS_REST;
 
 public class BaseApplication extends Application {
 

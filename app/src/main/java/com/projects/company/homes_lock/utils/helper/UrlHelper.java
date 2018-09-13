@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.utils;
+package com.projects.company.homes_lock.utils.helper;
 
 public class UrlHelper {
     public static String BACKENDLESS_APPLICATION_ID = "43B8A63C-CC25-BE19-FFD0-A47A21B9BC00";
