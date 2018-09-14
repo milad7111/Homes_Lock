@@ -2,13 +2,19 @@ package com.projects.company.homes_lock.ui.device.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,27 +25,36 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
+import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
+import java.util.List;
+
+import static com.projects.company.homes_lock.utils.helper.DataHelper.ERROR_CODE_BLE_NOT_ENABLED;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ENABLE_BLUETOOTH;
 
 public class LockActivity extends BaseActivity
         implements
         ILockActivity,
         NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener,
-        IMQTTListener {
+        IMQTTListener,
+        IBleScanListener {
 
     //region Declare Constants
     //endregion Declare Constants
 
     //region Declare Views
-    private Toolbar _appBarLock_toolbar;
-    private DrawerLayout _activityLock_drawer_layout;
-    private NavigationView _activityLock_navigation_view;
-    private FloatingActionButton _appBarLock_fab_addLock;
+    private Toolbar appBarLockToolbar;
+    private DrawerLayout activityLockDrawerLayout;
+    private NavigationView activityLockNavigationView;
+    private FloatingActionButton appBarLockFabAddLock;
+    private RecyclerView rcvBleDevices;
+    private BroadcastReceiver mBroadcastReceiver;
     //endregion Declare Views
 
     //region Declare Variables
@@ -48,7 +63,7 @@ public class LockActivity extends BaseActivity
     //region Declare Objects
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DeviceViewModel mDeviceViewModel;
-    private MqttAndroidClient client;
+    private BleDeviceAdapter mBleDeviceAdapter;
     //endregion Declare Objects
 
     @Override
@@ -56,13 +71,14 @@ public class LockActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
 
-        initMQTT();
+//        initMQTT();
 
         //region Initialize Views
-        _appBarLock_toolbar = findViewById(R.id.appBarLock_toolbar);
-        _appBarLock_fab_addLock = findViewById(R.id.appBarLock_fab_addLock);
-        _activityLock_drawer_layout = findViewById(R.id.activityLock_drawer_layout);
-        _activityLock_navigation_view = findViewById(R.id.activityLock_navigation_view);
+        appBarLockToolbar = findViewById(R.id.appBarLock_toolbar);
+        appBarLockFabAddLock = findViewById(R.id.appBarLock_fab_addLock);
+        activityLockDrawerLayout = findViewById(R.id.activityLock_drawer_layout);
+        activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
+        rcvBleDevices = findViewById(R.id.rcv_ble_devices);
         //endregion Initialize Views
 
         //region Initialize Variables
@@ -71,8 +87,8 @@ public class LockActivity extends BaseActivity
         //region Initialize Objects
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
-                _activityLock_drawer_layout,
-                _appBarLock_toolbar,
+                activityLockDrawerLayout,
+                appBarLockToolbar,
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
 
@@ -80,14 +96,16 @@ public class LockActivity extends BaseActivity
         //endregion Initialize Objects
 
         //region Setup Views
-        setSupportActionBar(_appBarLock_toolbar);
+        setSupportActionBar(appBarLockToolbar);
 
-        _appBarLock_fab_addLock.setOnClickListener(this);
+        appBarLockFabAddLock.setOnClickListener(this);
 
-        _activityLock_drawer_layout.addDrawerListener(mActionBarDrawerToggle);
+        activityLockDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
 
-        _activityLock_navigation_view.setNavigationItemSelectedListener(this);
+        activityLockNavigationView.setNavigationItemSelectedListener(this);
+
+//        _lsv.setAdapter(mAdapterOfAvailableBluetoothName);
         //endregion Setup Views
 
         mDeviceViewModel.getAllDevicesCount().observe(this, new Observer<Integer>() {
@@ -104,8 +122,8 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if (_activityLock_drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            _activityLock_drawer_layout.closeDrawer(GravityCompat.START);
+        if (activityLockDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            activityLockDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -130,7 +148,7 @@ public class LockActivity extends BaseActivity
                 // Handle the action_settings
                 break;
             case android.R.id.home:
-                _activityLock_drawer_layout.openDrawer(GravityCompat.START);
+                activityLockDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
 
@@ -161,7 +179,7 @@ public class LockActivity extends BaseActivity
                 break;
         }
 
-        _activityLock_drawer_layout.closeDrawer(GravityCompat.START);
+        activityLockDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -169,7 +187,8 @@ public class LockActivity extends BaseActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.appBarLock_fab_addLock:
-                mDeviceViewModel.getAllServerDevices();
+                //mDeviceViewModel.getAllServerDevices();
+                getAccessibleBleDevices();
                 break;
         }
     }
@@ -245,17 +264,42 @@ public class LockActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-        if (client != null) {
-            client.unregisterResources();
-            client.close();
-        }
-
         super.onDestroy();
+
+        if (mBroadcastReceiver != null)
+            unregisterReceiver(mBroadcastReceiver);
     }
 
     //region Declare Methods
-    private void getAccessableBleDevices(){
+    private void getAccessibleBleDevices() {
+        mBleDeviceAdapter = new BleDeviceAdapter(this);
+        rcvBleDevices.setAdapter(mBleDeviceAdapter);
+        rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
 
+        mDeviceViewModel.getAllAccessibleBLEDevices(this, this);
+    }
+
+    @Override
+    public void onFindBleCompleted(List response) {
+        mBleDeviceAdapter.setBleDevices(response);
+    }
+
+    @Override
+    public void onFindBleFault(Object response) {
+        switch (((FailureModel) response).getFailureCode()) {
+            case ERROR_CODE_BLE_NOT_ENABLED: {
+                Intent mEnableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(mEnableBluetoothIntent, REQUEST_CODE_ENABLE_BLUETOOTH);
+                break;
+            }
+            default:
+                Snackbar.make(appBarLockToolbar, ((FailureModel) response).getFailureMessage(), Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
+        this.mBroadcastReceiver = mBroadcastReceiver;
     }
     //endregion Declare Methods
 }

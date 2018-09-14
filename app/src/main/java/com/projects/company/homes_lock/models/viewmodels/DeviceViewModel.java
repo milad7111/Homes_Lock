@@ -3,11 +3,8 @@ package com.projects.company.homes_lock.models.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.util.Log;
 
 import com.projects.company.homes_lock.database.tables.Device;
@@ -15,15 +12,17 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
+import com.projects.company.homes_lock.utils.ble.BleScanner;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
-import java.util.Observable;
 
 public class DeviceViewModel extends AndroidViewModel
         implements
         NetworkListener.SingleNetworkListener,
-        NetworkListener.ListNetworkListener {
+        NetworkListener.ListNetworkListener,
+        IBleScanListener {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -34,6 +33,7 @@ public class DeviceViewModel extends AndroidViewModel
     //region Declare Objects
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
+    private BleScanner mBleScanner;
     //endregion Declare Objects
 
     public DeviceViewModel(Application application) {
@@ -76,7 +76,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onResponse(Object response) {
-        if (DataHelper.isInstanceOf(response, Device.class.getName()))
+        if (DataHelper.isInstanceOfList(response, Device.class.getName()))
             insertLocalDevices((List<Device>) response);
     }
 
@@ -93,7 +93,22 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Device table
 
     //region BLE
-    public void getAllAccessableBLEDevices(){
+    public void getAllAccessibleBLEDevices(Context context, IBleScanListener mIBleScanListener){
+        mBleScanner = new BleScanner(context, mIBleScanListener);
+    }
+
+    @Override
+    public void onFindBleCompleted(List response) {
+        ((IBleScanListener) getApplication()).onFindBleCompleted(response);
+    }
+
+    @Override
+    public void onFindBleFault(Object response) {
+        ((IBleScanListener) getApplication()).onFindBleFault(response);
+    }
+
+    @Override
+    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
     }
     //endregion BLE
 }

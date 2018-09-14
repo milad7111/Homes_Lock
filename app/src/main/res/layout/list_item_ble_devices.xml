@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="BleDevice"
+            type="com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txv_ble_devices_name"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginBottom="4dp"
+            android:text="@{BleDevice.name}" />
+
+        <TextView
+            android:id="@+id/txv_ble_devices_mac_address"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="@{BleDevice.macAddress}" />
+
+    </LinearLayout>
+
+</layout>
