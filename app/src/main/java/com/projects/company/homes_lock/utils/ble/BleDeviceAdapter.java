@@ -18,10 +18,12 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     //region Declare Objects
     private LayoutInflater mInflater;
     private List<ScannedDeviceModel> mScannedDeviceModelList;
+    private IBleScanListener mBleScanListener;
     //endregion Declare Objects
 
-    public BleDeviceAdapter(Context context) {
+    public BleDeviceAdapter(Context context, IBleScanListener mBleScanListener) {
         this.mInflater = LayoutInflater.from(context);
+        this.mBleScanListener = mBleScanListener;
     }
 
     @NonNull
@@ -32,7 +34,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BleDeviceViewHolder bleDeviceViewHolder, int i) {
+    public void onBindViewHolder(@NonNull BleDeviceViewHolder bleDeviceViewHolder, final int i) {
         if (mScannedDeviceModelList != null) {
             ScannedDeviceModel current = mScannedDeviceModelList.get(i);
 
@@ -40,12 +42,13 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             bleDeviceViewHolder.txvBleDevicesMacAddress.setText(current.getMacAddress());
         } else {
             // Covers the case of data not being ready yet.
-            bleDeviceViewHolder.txvBleDevicesName.setText("No Word");
+            bleDeviceViewHolder.txvBleDevicesName.setText("No Device Found.");
         }
 
         bleDeviceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mBleScanListener.onClickBleDevice(mScannedDeviceModelList.get(i));
             }
         });
     }

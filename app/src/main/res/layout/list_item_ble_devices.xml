@@ -10,21 +10,23 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/txv_ble_devices_name"
+            style="@style/ble_device"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:text="@{BleDevice.name}" />
 
         <TextView
             android:id="@+id/txv_ble_devices_mac_address"
+            style="@style/ble_device"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:text="@{BleDevice.macAddress}" />
 
     </LinearLayout>

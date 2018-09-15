@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
@@ -272,7 +273,7 @@ public class LockActivity extends BaseActivity
 
     //region Declare Methods
     private void getAccessibleBleDevices() {
-        mBleDeviceAdapter = new BleDeviceAdapter(this);
+        mBleDeviceAdapter = new BleDeviceAdapter(this, this);
         rcvBleDevices.setAdapter(mBleDeviceAdapter);
         rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
 
@@ -300,6 +301,17 @@ public class LockActivity extends BaseActivity
     @Override
     public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
         this.mBroadcastReceiver = mBroadcastReceiver;
+    }
+
+    @Override
+    public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
+        mDeviceViewModel.connect(mScannedDeviceModel);
+        mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean isConnected) {
+                Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();
+            }
+        });
     }
     //endregion Declare Methods
 }

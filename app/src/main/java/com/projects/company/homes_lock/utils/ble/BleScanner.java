@@ -33,11 +33,11 @@ public class BleScanner {
     private Context context;
     private BluetoothAdapter mBluetoothAdapter;
     private BroadcastReceiver mBroadcastReceiver;
-    private IBleScanListener mBleManagerListener;
+    private IBleScanListener mBleScanListener;
     private List<ScannedDeviceModel> mScannedDeviceModelList;
     //endregion Declare Objects
 
-    public BleScanner(Context context, IBleScanListener mIBleScanListener) {
+    public BleScanner(Context context, final IBleScanListener mBleScanListener) {
 
         //region Initialize Variables
         //endregion Initialize Variables
@@ -45,7 +45,7 @@ public class BleScanner {
         //region Initialize Objects
         this.context = context.getApplicationContext();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBleManagerListener = mIBleScanListener;
+        this.mBleScanListener = mBleScanListener;
         mScannedDeviceModelList = new ArrayList<>();
 
         this.mBroadcastReceiver = new BroadcastReceiver() {
@@ -54,25 +54,28 @@ public class BleScanner {
                 if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                    if (!containsValueInListOfObjects(mScannedDeviceModelList, device.getAddress()))
-                        mScannedDeviceModelList.add(new ScannedDeviceModel(device.getName(), device.getAddress()));
+//                    final int rssiPercent = (int) (100.0f * (127.0f + device.get()) / (127.0f + 20.0f));
+//                    holder.rssi.setImageLevel(rssiPercent);
 
-                    mBleManagerListener.onFindBleCompleted(mScannedDeviceModelList);
+//                    if (!containsValueInListOfObjects(mScannedDeviceModelList, device.getAddress()))
+//                        mScannedDeviceModelList.add(new ScannedDeviceModel(device, device.getName(), device.getAddress()));
+
+                    mBleScanListener.onFindBleCompleted(mScannedDeviceModelList);
                 }
             }
         };
         //endregion Initialize Objects
 
-        mIBleScanListener.setReceiver(mBroadcastReceiver);
+        this.mBleScanListener.setReceiver(mBroadcastReceiver);
         findBleNetworks();
     }
 
     //region Declare Methods
     private void findBleNetworks() {
         if (mBluetoothAdapter == null)
-            mBleManagerListener.onFindBleFault(new FailureModel("Device does not support BLE", ERROR_CODE_BLE_DEVICE_NOT_SUPPORT_BLE));
+            mBleScanListener.onFindBleFault(new FailureModel("Device does not support BLE", ERROR_CODE_BLE_DEVICE_NOT_SUPPORT_BLE));
         else if (!mBluetoothAdapter.isEnabled())
-            mBleManagerListener.onFindBleFault(new FailureModel("BLE is not enable", ERROR_CODE_BLE_NOT_ENABLED));
+            mBleScanListener.onFindBleFault(new FailureModel("BLE is not enable", ERROR_CODE_BLE_NOT_ENABLED));
         else
             scanBleNetworks();
     }
