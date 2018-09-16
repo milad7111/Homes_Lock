@@ -16,27 +16,16 @@ import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.utils.ble.BleScanner;
 import com.projects.company.homes_lock.utils.ble.BlinkyManager;
 import com.projects.company.homes_lock.utils.ble.BlinkyManagerCallbacks;
-import com.projects.company.homes_lock.utils.ble.ExtendedBluetoothDevice;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 import android.bluetooth.BluetoothDevice;
-import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-//import no.nordicsemi.android.blinky.adapter.ExtendedBluetoothDevice;
-//import no.nordicsemi.android.blinky.profile.BlinkyManager;
-//import no.nordicsemi.android.blinky.profile.BlinkyManagerCallbacks;
-import no.nordicsemi.android.log.ILogSession;
 import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
 

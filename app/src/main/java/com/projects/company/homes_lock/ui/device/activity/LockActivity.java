@@ -1,15 +1,20 @@
 package com.projects.company.homes_lock.ui.device.activity;
 
+import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,12 +35,16 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
+import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
+import com.projects.company.homes_lock.utils.ble.ScannerViewModel;
+import com.projects.company.homes_lock.utils.ble.Utils;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
 import java.util.List;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.ERROR_CODE_BLE_NOT_ENABLED;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ENABLE_BLUETOOTH;
 
 public class LockActivity extends BaseActivity
@@ -56,6 +65,7 @@ public class LockActivity extends BaseActivity
     private FloatingActionButton appBarLockFabAddLock;
     private RecyclerView rcvBleDevices;
     private BroadcastReceiver mBroadcastReceiver;
+    private ScannerViewModel mScannerViewModel;
     //endregion Declare Views
 
     //region Declare Variables
@@ -93,7 +103,7 @@ public class LockActivity extends BaseActivity
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
 
-        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+//        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
         //endregion Initialize Objects
 
         //region Setup Views
@@ -109,12 +119,100 @@ public class LockActivity extends BaseActivity
 //        _lsv.setAdapter(mAdapterOfAvailableBluetoothName);
         //endregion Setup Views
 
-        mDeviceViewModel.getAllDevicesCount().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(@Nullable final Integer count) {
-                Toast.makeText(LockActivity.this, String.valueOf(count), Toast.LENGTH_LONG).show();
+//        mDeviceViewModel.getAllDevicesCount().observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(@Nullable final Integer count) {
+//                Toast.makeText(LockActivity.this, String.valueOf(count), Toast.LENGTH_LONG).show();
+//            }
+//        });
+        this.mScannerViewModel = ViewModelProviders.of(this).get(ScannerViewModel.class);
+        this.mScannerViewModel.getScannerState().observe(this, this::startScan);
+    }
+
+    private void startScan(final ScannerLiveData state) {
+        // First, check the Location permission. This is required on Marshmallow onwards in order to scan for Bluetooth LE devices.
+        if (Utils.isLocationPermissionsGranted(this)) {
+
+//            mNoLocationPermissionView.setVisibility(View.GONE);
+
+            // Bluetooth must be enabled
+            if (state.isBluetoothEnabled()) {
+//                mNoBluetoothView.setVisibility(View.GONE);
+
+                // We are now OK to start scanning
+                mScannerViewModel.startScan();
+//                mScanningView.setVisibility(View.VISIBLE);
+
+                if (state.isEmpty()) {
+//                    mEmptyView.setVisibility(View.VISIBLE);
+
+                    if (!Utils.isLocationRequired(this) || Utils.isLocationEnabled(this)) {
+//                        mNoLocationView.setVisibility(View.INVISIBLE);
+                    } else {
+                        onEnableLocationClicked();
+//                        mNoLocationView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+//                    mEmptyView.setVisibility(View.GONE);
+                }
+            } else {
+                onEnableBluetoothClicked();
+//                mNoBluetoothView.setVisibility(View.VISIBLE);
+//                mScanningView.setVisibility(View.INVISIBLE);
+//                mEmptyView.setVisibility(View.GONE);
             }
-        });
+        } else {
+            onGrantLocationPermissionClicked();
+//            mNoLocationPermissionView.setVisibility(View.VISIBLE);
+//            mNoBluetoothView.setVisibility(View.GONE);
+//            mScanningView.setVisibility(View.INVISIBLE);
+//            mEmptyView.setVisibility(View.GONE);
+
+            final boolean deniedForever = Utils.isLocationPermissionDeniedForever(this);
+//            mGrantPermissionButton.setVisibility(deniedForever ? View.GONE : View.VISIBLE);
+            if (!deniedForever)
+                onGrantLocationPermissionClicked();
+
+            if (deniedForever)
+                onPermissionSettingsClicked();
+//            mPermissionSettingsButton.setVisibility(deniedForever ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_ACCESS_COARSE_LOCATION:
+                mScannerViewModel.refresh();
+                break;
+        }
+    }
+
+    public void onEnableLocationClicked() {
+        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
+    }
+
+    public void onEnableBluetoothClicked() {
+        final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivity(enableIntent);
+    }
+
+    public void onGrantLocationPermissionClicked() {
+        Utils.markLocationPermissionRequested(this);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ACCESS_COARSE_LOCATION);
+    }
+
+    public void onPermissionSettingsClicked() {
+        final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", getPackageName(), null));
+        startActivity(intent);
+    }
+
+
+    private void stopScan() {
+        this.mScannerViewModel.stopScan();
     }
 
     private void initMQTT() {
@@ -273,11 +371,11 @@ public class LockActivity extends BaseActivity
 
     //region Declare Methods
     private void getAccessibleBleDevices() {
-        mBleDeviceAdapter = new BleDeviceAdapter(this, this);
+        mBleDeviceAdapter = new BleDeviceAdapter(this, this, mScannerViewModel.getScannerState());
         rcvBleDevices.setAdapter(mBleDeviceAdapter);
         rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
 
-        mDeviceViewModel.getAllAccessibleBLEDevices(this, this);
+//        mDeviceViewModel.getAllAccessibleBLEDevices(this, this);
     }
 
     @Override
@@ -305,8 +403,8 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-        mDeviceViewModel.connect(mScannedDeviceModel);
-        mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
+        mScannerViewModel.connect(mScannedDeviceModel);
+        mScannerViewModel.isConnected().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable final Boolean isConnected) {
                 Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();

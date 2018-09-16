@@ -10,6 +10,8 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables { useSupportLibrary = true }
     }
 
     dexOptions {
@@ -28,8 +30,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    dataBinding{
-        enabled=true
+    dataBinding {
+        enabled = true
     }
 }
 

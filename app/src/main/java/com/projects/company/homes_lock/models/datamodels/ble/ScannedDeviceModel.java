@@ -11,19 +11,18 @@ public class ScannedDeviceModel extends BaseModel {
     private final BluetoothDevice mDevice;;
     private String mName;
     private String mMacAddress;
-//    private int mRSSI;
+    private int mRSSI;
 
     public ScannedDeviceModel(final ScanResult scanResult) {
         this.mDevice = scanResult.getDevice();
         this.mName = this.mDevice.getName();
         this.mMacAddress = this.mDevice.getAddress();
-//        this.mRSSI = scanResult.getRssi();
+        this.mRSSI = scanResult.getRssi();
     }
 
-//    public ScannedDeviceModel(String mName, String mMacAddress, int mRSSI) {
-//        this.mName = mName;
-//        this.mMacAddress = mMacAddress;
-//    }
+    public boolean matches(final ScanResult scanResult) {
+        return mDevice.getAddress().equals(scanResult.getDevice().getAddress());
+    }
 
     public String getSpecialValue() {
         return mMacAddress;
@@ -39,5 +38,17 @@ public class ScannedDeviceModel extends BaseModel {
 
     public BluetoothDevice getDevice() {
         return mDevice;
+    }
+
+    public void setRssi(int mRssi) {
+        this.mRSSI = mRssi;
+    }
+
+    public void setName(String mName) {
+        this.mName = mName;
+    }
+
+    public int getRSSI() {
+        return mRSSI;
     }
 }
