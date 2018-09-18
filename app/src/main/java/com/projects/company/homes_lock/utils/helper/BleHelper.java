@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.utils.ble;
+package com.projects.company.homes_lock.utils.helper;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,7 +12,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-public class Utils {
+public class BleHelper {
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
 

@@ -3,8 +3,16 @@ package com.projects.company.homes_lock.models.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -13,21 +21,21 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
-import com.projects.company.homes_lock.utils.ble.BleScanner;
 import com.projects.company.homes_lock.utils.ble.BlinkyManager;
 import com.projects.company.homes_lock.utils.ble.BlinkyManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
+import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
+import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.bluetooth.BluetoothDevice;
-import android.widget.Toast;
-
 import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
+import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
+import no.nordicsemi.android.support.v18.scanner.ScanCallback;
+import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 public class DeviceViewModel extends AndroidViewModel
         implements
@@ -44,23 +52,19 @@ public class DeviceViewModel extends AndroidViewModel
     //region Declare Objects
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
-    private BleScanner mBleScanner;
+//    private BleScanner mBleScanner;
 
     private final BlinkyManager mBlinkyManager;
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
     private final MutableLiveData<Void> mOnDeviceReady = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> mLEDState = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> mButtonState = new MutableLiveData<>();
+
+    private final ScannerLiveData mScannerLiveData;
     //endregion Declare Objects
 
     public DeviceViewModel(Application application) {
         super(application);
-
-        // Initialize the manager
-        mBlinkyManager = new BlinkyManager(getApplication());
-        mBlinkyManager.setGattCallbacks(this);
 
         //region Initialize Variables
         //endregion Initialize Variables
@@ -68,11 +72,17 @@ public class DeviceViewModel extends AndroidViewModel
         //region Initialize Objects
         mLocalRepository = new LocalRepository(application);
         mNetworkRepository = new NetworkRepository();
+
+        mBlinkyManager = new BlinkyManager(getApplication());
+        mBlinkyManager.setGattCallbacks(this);
+        mScannerLiveData = new ScannerLiveData(BleHelper.isBleEnabled(), BleHelper.isLocationEnabled(application));
         //endregion Initialize Objects
+
+        registerBroadcastReceivers(application);
     }
 
     //region Device table
-    public LiveData<Integer> getAllDevicesCount(){
+    public LiveData<Integer> getAllDevicesCount() {
         return mLocalRepository.getAllDevicesCount();
     }
 
@@ -116,35 +126,123 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Device table
 
     //region BLE
-    public void getAllAccessibleBLEDevices(Context context, IBleScanListener mIBleScanListener){
-        mBleScanner = new BleScanner(context, mIBleScanListener);
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        getApplication().unregisterReceiver(mBluetoothStateBroadcastReceiver);
+
+        if (BleHelper.isMarshmallowOrAbove())
+            getApplication().unregisterReceiver(mLocationProviderChangedReceiver);
+
+        if (mBlinkyManager.isConnected())
+            disconnect();
     }
 
-    public LiveData<Void> isDeviceReady() {
-        return mOnDeviceReady;
+    private void registerBroadcastReceivers(final Application application) {
+        application.registerReceiver(mBluetoothStateBroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        if (BleHelper.isMarshmallowOrAbove()) {
+            application.registerReceiver(mLocationProviderChangedReceiver, new IntentFilter(LocationManager.MODE_CHANGED_ACTION));
+        }
     }
 
-    public LiveData<String> getConnectionState() {
-        return mConnectionState;
+    //region Location Provider Changed Receiver
+    private final BroadcastReceiver mLocationProviderChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            final boolean enabled = BleHelper.isLocationEnabled(context);
+            mScannerLiveData.setLocationEnabled(enabled);
+        }
+    };
+    //endregion Location Provider Changed Receiver
+
+    public void refresh() {
+        mScannerLiveData.refresh();
+    }
+
+    public void startScan() {
+        if (mScannerLiveData.isScanning()) {
+            return;
+        }
+
+//        ScanSettings.Builder scanSettingsBuilder = new ScanSettings.Builder();
+//        scanSettingsBuilder.setScanMode(ScanSettings.SCAN_MODE_LOW_POWER);
+//        scanSettings = scanSettingsBuilder.build();
+
+//        ScanSettings mScanSettings = new ScanSettings.Builder()
+//                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+//                .setReportDelay(0)
+//                .setUseHardwareFilteringIfSupported(false)
+        // Samsung S6 and S6 Edge report equal value of RSSI for all devices. In this app we ignore the RSSI.
+        /*.setUseHardwareBatchingIfSupported(false)*/
+//                .build();
+
+//        final ParcelUuid uuid = new ParcelUuid(BlinkyManager.LBS_UUID_SERVICE);
+//        List<ScanFilter> filters = new ArrayList<>();
+//        filters.add(new ScanFilter.Builder().setServiceUuid(uuid).build());
+
+        BluetoothLeScannerCompat mBluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner();
+//        mBluetoothLeScannerCompat.startScan(filters, mScanSettings, scanCallback);
+        mBluetoothLeScannerCompat.startScan(scanCallback);
+        mScannerLiveData.scanningStarted();
+    }
+
+    //region Bluetooth State Broadcast Receiver
+    private final BroadcastReceiver mBluetoothStateBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF);
+            final int previousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, BluetoothAdapter.STATE_OFF);
+
+            switch (state) {
+                case BluetoothAdapter.STATE_ON:
+                    mScannerLiveData.bluetoothEnabled();
+                    break;
+                case BluetoothAdapter.STATE_TURNING_OFF:
+                case BluetoothAdapter.STATE_OFF:
+                    if (previousState != BluetoothAdapter.STATE_TURNING_OFF && previousState != BluetoothAdapter.STATE_OFF) {
+                        stopScan();
+                        mScannerLiveData.bluetoothDisabled();
+                    }
+                    break;
+            }
+        }
+    };
+    //endregion Bluetooth State Broadcast Receiver
+
+    private final ScanCallback scanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(final int callbackType, final ScanResult result) {
+            // If the packet has been obtained while Location was disabled, mark Location as not required
+            if (BleHelper.isLocationRequired(getApplication()) && !BleHelper.isLocationEnabled(getApplication()))
+                BleHelper.markLocationNotRequired(getApplication());
+
+            mScannerLiveData.deviceDiscovered(result);
+        }
+
+        @Override
+        public void onBatchScanResults(final List<ScanResult> results) {
+            // Batch scan is disabled (report delay = 0)
+        }
+
+        @Override
+        public void onScanFailed(final int errorCode) {
+            // TODO This should be handled
+            mScannerLiveData.scanningStopped();
+        }
+    };
+
+    public void stopScan() {
+        final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
+        scanner.stopScan(scanCallback);
+        mScannerLiveData.scanningStopped();
+    }
+
+    public ScannerLiveData getScannerState() {
+        return mScannerLiveData;
     }
 
     public LiveData<Boolean> isConnected() {
         return mIsConnected;
-    }
-
-    ////////////////////////////
-    public LiveData<Boolean> getButtonState() {
-        return mButtonState;
-    }
-
-    ////////////////////////////
-    public LiveData<Boolean> getLEDState() {
-        return mLEDState;
-    }
-
-    ////////////////////////////
-    public LiveData<Boolean> isSupported() {
-        return mIsSupported;
     }
 
     public void connect(final ScannedDeviceModel device) {
@@ -155,31 +253,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     private void disconnect() {
         mBlinkyManager.disconnect();
-    }
-
-    ////////////////////////////
-    public void toggleLED(final boolean onOff) {
-        mBlinkyManager.send(onOff);
-        mLEDState.setValue(onOff);
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        if (mBlinkyManager.isConnected())
-            disconnect();
-    }
-
-    ////////////////////////////
-    @Override
-    public void onDataReceived(final boolean state) {
-        mButtonState.postValue(state);
-    }
-
-    ////////////////////////////
-    @Override
-    public void onDataSent(final boolean state) {
-        mLEDState.postValue(state);
     }
 
     @Override
@@ -250,5 +323,31 @@ public class DeviceViewModel extends AndroidViewModel
     public void onDeviceNotSupported(final BluetoothDevice device) {
         mIsSupported.postValue(false);
     }
+
+    @Override
+    public void onDataReceived(boolean state) {
+
+    }
+
+    @Override
+    public void onDataSent(boolean state) {
+
+    }
     //endregion BLE
+
+    public void getAllAccessibleBLEDevices(Context context, IBleScanListener mIBleScanListener) {
+//        mBleScanner = new BleScanner(context, mIBleScanListener);
+    }
+
+    public LiveData<Void> isDeviceReady() {
+        return mOnDeviceReady;
+    }
+
+    public LiveData<String> getConnectionState() {
+        return mConnectionState;
+    }
+
+    public LiveData<Boolean> isSupported() {
+        return mIsSupported;
+    }
 }

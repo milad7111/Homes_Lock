@@ -26,45 +26,45 @@ public class ScannerLiveData extends LiveData<ScannerLiveData> {
     private boolean mBluetoothEnabled;
     private boolean mLocationEnabled;
 
-    ScannerLiveData(final boolean bluetoothEnabled, final boolean locationEnabled) {
+    public ScannerLiveData(final boolean bluetoothEnabled, final boolean locationEnabled) {
         mScanningStarted = false;
         mBluetoothEnabled = bluetoothEnabled;
         mLocationEnabled = locationEnabled;
         postValue(this);
     }
 
-    void refresh() {
+    public void refresh() {
         postValue(this);
     }
 
-    void scanningStarted() {
+    public void scanningStarted() {
         mScanningStarted = true;
         postValue(this);
     }
 
-    void scanningStopped() {
+    public void scanningStopped() {
         mScanningStarted = false;
         postValue(this);
     }
 
-    void bluetoothEnabled() {
+    public void bluetoothEnabled() {
         mBluetoothEnabled = true;
         postValue(this);
     }
 
-    void bluetoothDisabled() {
+    public void bluetoothDisabled() {
         mBluetoothEnabled = false;
         mUpdatedDeviceIndex = null;
         mScannedDeviceModelList.clear();
         postValue(this);
     }
 
-    void setLocationEnabled(final boolean enabled) {
+    public void setLocationEnabled(final boolean enabled) {
         mLocationEnabled = enabled;
         postValue(this);
     }
 
-    void deviceDiscovered(final ScanResult result) {
+    public void deviceDiscovered(final ScanResult result) {
         ScannedDeviceModel device;
 
         final int index = indexOf(result);

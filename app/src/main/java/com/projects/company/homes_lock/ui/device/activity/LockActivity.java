@@ -36,8 +36,7 @@ import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
-import com.projects.company.homes_lock.utils.ble.ScannerViewModel;
-import com.projects.company.homes_lock.utils.ble.Utils;
+import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
@@ -65,7 +64,6 @@ public class LockActivity extends BaseActivity
     private FloatingActionButton appBarLockFabAddLock;
     private RecyclerView rcvBleDevices;
     private BroadcastReceiver mBroadcastReceiver;
-    private ScannerViewModel mScannerViewModel;
     //endregion Declare Views
 
     //region Declare Variables
@@ -103,7 +101,8 @@ public class LockActivity extends BaseActivity
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
 
-//        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+        this.mDeviceViewModel.getScannerState().observe(this, this::startScan);
         //endregion Initialize Objects
 
         //region Setup Views
@@ -125,13 +124,11 @@ public class LockActivity extends BaseActivity
 //                Toast.makeText(LockActivity.this, String.valueOf(count), Toast.LENGTH_LONG).show();
 //            }
 //        });
-        this.mScannerViewModel = ViewModelProviders.of(this).get(ScannerViewModel.class);
-        this.mScannerViewModel.getScannerState().observe(this, this::startScan);
     }
 
     private void startScan(final ScannerLiveData state) {
         // First, check the Location permission. This is required on Marshmallow onwards in order to scan for Bluetooth LE devices.
-        if (Utils.isLocationPermissionsGranted(this)) {
+        if (BleHelper.isLocationPermissionsGranted(this)) {
 
 //            mNoLocationPermissionView.setVisibility(View.GONE);
 
@@ -140,13 +137,13 @@ public class LockActivity extends BaseActivity
 //                mNoBluetoothView.setVisibility(View.GONE);
 
                 // We are now OK to start scanning
-                mScannerViewModel.startScan();
+                mDeviceViewModel.startScan();
 //                mScanningView.setVisibility(View.VISIBLE);
 
                 if (state.isEmpty()) {
 //                    mEmptyView.setVisibility(View.VISIBLE);
 
-                    if (!Utils.isLocationRequired(this) || Utils.isLocationEnabled(this)) {
+                    if (!BleHelper.isLocationRequired(this) || BleHelper.isLocationEnabled(this)) {
 //                        mNoLocationView.setVisibility(View.INVISIBLE);
                     } else {
                         onEnableLocationClicked();
@@ -168,7 +165,7 @@ public class LockActivity extends BaseActivity
 //            mScanningView.setVisibility(View.INVISIBLE);
 //            mEmptyView.setVisibility(View.GONE);
 
-            final boolean deniedForever = Utils.isLocationPermissionDeniedForever(this);
+            final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(this);
 //            mGrantPermissionButton.setVisibility(deniedForever ? View.GONE : View.VISIBLE);
             if (!deniedForever)
                 onGrantLocationPermissionClicked();
@@ -184,7 +181,7 @@ public class LockActivity extends BaseActivity
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_ACCESS_COARSE_LOCATION:
-                mScannerViewModel.refresh();
+                mDeviceViewModel.refresh();
                 break;
         }
     }
@@ -200,7 +197,7 @@ public class LockActivity extends BaseActivity
     }
 
     public void onGrantLocationPermissionClicked() {
-        Utils.markLocationPermissionRequested(this);
+        BleHelper.markLocationPermissionRequested(this);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ACCESS_COARSE_LOCATION);
     }
 
@@ -212,7 +209,7 @@ public class LockActivity extends BaseActivity
 
 
     private void stopScan() {
-        this.mScannerViewModel.stopScan();
+        this.mDeviceViewModel.stopScan();
     }
 
     private void initMQTT() {
@@ -371,7 +368,7 @@ public class LockActivity extends BaseActivity
 
     //region Declare Methods
     private void getAccessibleBleDevices() {
-        mBleDeviceAdapter = new BleDeviceAdapter(this, this, mScannerViewModel.getScannerState());
+        mBleDeviceAdapter = new BleDeviceAdapter(this, this, mDeviceViewModel.getScannerState());
         rcvBleDevices.setAdapter(mBleDeviceAdapter);
         rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
 
@@ -403,8 +400,8 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-        mScannerViewModel.connect(mScannedDeviceModel);
-        mScannerViewModel.isConnected().observe(this, new Observer<Boolean>() {
+        mDeviceViewModel.connect(mScannedDeviceModel);
+        mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable final Boolean isConnected) {
                 Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();
