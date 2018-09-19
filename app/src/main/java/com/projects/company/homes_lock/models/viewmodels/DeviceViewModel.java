@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
+import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.utils.ble.BlinkyManager;
 import com.projects.company.homes_lock.utils.ble.BlinkyManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
@@ -61,9 +63,10 @@ public class DeviceViewModel extends AndroidViewModel
     private final MutableLiveData<Void> mOnDeviceReady = new MutableLiveData<>();
 
     private final ScannerLiveData mScannerLiveData;
+    IBleScanListener mIBleScanListener;
     //endregion Declare Objects
 
-    public DeviceViewModel(Application application) {
+    public DeviceViewModel(Application application, IBleScanListener mIBleScanListener) {
         super(application);
 
         //region Initialize Variables
@@ -76,6 +79,7 @@ public class DeviceViewModel extends AndroidViewModel
         mBlinkyManager = new BlinkyManager(getApplication());
         mBlinkyManager.setGattCallbacks(this);
         mScannerLiveData = new ScannerLiveData(BleHelper.isBleEnabled(), BleHelper.isLocationEnabled(application));
+        this.mIBleScanListener = mIBleScanListener;
         //endregion Initialize Objects
 
         registerBroadcastReceivers(application);
@@ -251,6 +255,10 @@ public class DeviceViewModel extends AndroidViewModel
         mBlinkyManager.connect(device.getDevice());
     }
 
+    public void getAllServices(){
+//        mBlinkyManager.
+    }
+
     private void disconnect() {
         mBlinkyManager.disconnect();
     }
@@ -325,13 +333,22 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     @Override
-    public void onDataReceived(boolean state) {
-
+    public void onDataReceived(Object response) {
+        if (mIBleScanListener != null)
+            mIBleScanListener.onDataReceived(response);
     }
 
     @Override
-    public void onDataSent(boolean state) {
+    public void onDataSent() {
 
+    }
+
+    public void readCharacteristic(){
+        mBlinkyManager.readCharacteristic();
+    }
+
+    public void writeCharacteristic() {
+        mBlinkyManager.writeCharacteristic();
     }
     //endregion BLE
 

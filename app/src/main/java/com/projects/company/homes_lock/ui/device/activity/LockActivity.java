@@ -4,6 +4,7 @@ import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,6 +25,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
@@ -64,6 +68,12 @@ public class LockActivity extends BaseActivity
     private FloatingActionButton appBarLockFabAddLock;
     private RecyclerView rcvBleDevices;
     private BroadcastReceiver mBroadcastReceiver;
+
+    private TextView txv1;
+    private TextView txv2;
+    private EditText edt1;
+    private EditText edt2;
+    private Button btn1;
     //endregion Declare Views
 
     //region Declare Variables
@@ -88,6 +98,13 @@ public class LockActivity extends BaseActivity
         activityLockDrawerLayout = findViewById(R.id.activityLock_drawer_layout);
         activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
         rcvBleDevices = findViewById(R.id.rcv_ble_devices);
+
+        txv1 = findViewById(R.id.txv1);
+        txv2 = findViewById(R.id.txv2);
+        edt1 = findViewById(R.id.edt1);
+        edt2 = findViewById(R.id.edt2);
+        btn1 = findViewById(R.id.btn1);
+        btn1.setOnClickListener(this);
         //endregion Initialize Views
 
         //region Initialize Variables
@@ -102,7 +119,6 @@ public class LockActivity extends BaseActivity
                 R.string.content_description_navigation_drawer_close);
 
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
-        this.mDeviceViewModel.getScannerState().observe(this, this::startScan);
         //endregion Initialize Objects
 
         //region Setup Views
@@ -286,6 +302,11 @@ public class LockActivity extends BaseActivity
                 //mDeviceViewModel.getAllServerDevices();
                 getAccessibleBleDevices();
                 break;
+            case R.id.btn1: {
+                mDeviceViewModel.readCharacteristic();
+                mDeviceViewModel.writeCharacteristic();
+
+            }
         }
     }
 
@@ -368,6 +389,7 @@ public class LockActivity extends BaseActivity
 
     //region Declare Methods
     private void getAccessibleBleDevices() {
+        this.mDeviceViewModel.getScannerState().observe(this, this::startScan);
         mBleDeviceAdapter = new BleDeviceAdapter(this, this, mDeviceViewModel.getScannerState());
         rcvBleDevices.setAdapter(mBleDeviceAdapter);
         rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
@@ -407,6 +429,17 @@ public class LockActivity extends BaseActivity
                 Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void onDataReceived(Object response) {
+        if (response instanceof BluetoothGattCharacteristic)
+            txv1.setText(new String(((BluetoothGattCharacteristic) response).getValue()));
+    }
+
+    @Override
+    public void onDataSent() {
+
     }
     //endregion Declare Methods
 }

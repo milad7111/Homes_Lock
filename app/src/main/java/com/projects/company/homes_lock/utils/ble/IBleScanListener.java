@@ -14,4 +14,8 @@ public interface IBleScanListener<T> {
     void setReceiver(BroadcastReceiver mBroadcastReceiver);
 
     void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel);
+
+    void onDataReceived(T response);
+
+    void onDataSent();
 }
