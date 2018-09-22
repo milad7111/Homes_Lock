@@ -2,50 +2,25 @@ package com.projects.company.homes_lock.utils.ble;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.projects.company.homes_lock.R;
-
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.Request;
-import no.nordicsemi.android.log.LogContract;
 
-public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
+public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
+    //region Declare Constants
     private final UUID ACCL_UUID_SERVICE = UUID.fromString("02366e80-cf3a-11e1-9ab4-0002a5d5c51b");
     private final UUID ACCL_UUID_SERVICE_CHARACTERISTIC_NAME = UUID.fromString("03366e80-cf3a-11e1-9ab4-0002a5d5c51b");
+    //endregion Declare Constants
 
+    //region Declare Objects
     private BluetoothGatt mBluetoothGatt;
-
-    public BlinkyManager(final Context context) {
-        super(context);
-    }
-
-    @NonNull
-    @Override
-    protected BleManagerGattCallback getGattCallback() {
-        return mGattCallback;
-    }
-
-    @Override
-    protected boolean shouldAutoConnect() {
-        // If you want to connect to the device using autoConnect flag = true, return true here.
-        // Read the documentation of this method.
-        return super.shouldAutoConnect();
-    }
-
-    /**
-     * BluetoothGatt callbacks for connection/disconnection, service discovery, receiving indication, etc
-     */
     private final BleManagerGattCallback mGattCallback = new BleManagerGattCallback() {
 
         @Override
@@ -116,17 +91,28 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
 //            mCallbacks.onDataReceived();
         }
     };
+    //endregion Declare Objects
 
-    public void send(final boolean onOff) {
-        // Are we connected?
-//        if (mLedCharacteristic == null)
-//            return;
-//
-//        final byte[] command = new byte[]{(byte) (onOff ? 1 : 0)};
-//        log(LogContract.Log.Level.VERBOSE, "Turning LED " + (onOff ? "ON" : "OFF") + "...");
-//        writeCharacteristic(mLedCharacteristic, command);
+    public BleDeviceManager(final Context context) {
+        super(context);
     }
 
+    //region BleManager CallBacks
+    @NonNull
+    @Override
+    protected BleManagerGattCallback getGattCallback() {
+        return mGattCallback;
+    }
+
+    @Override
+    protected boolean shouldAutoConnect() {
+        // If you want to connect to the device using autoConnect flag = true, return true here.
+        // Read the documentation of this method.
+        return super.shouldAutoConnect();
+    }
+    //endregion BleManager CallBacks
+
+    //region Declare Methods
     public void readCharacteristic() {
         while (mBluetoothGatt == null) ;
         readCharacteristic(mBluetoothGatt.getService(ACCL_UUID_SERVICE).getCharacteristic(ACCL_UUID_SERVICE_CHARACTERISTIC_NAME));
@@ -137,4 +123,5 @@ public class BlinkyManager extends BleManager<BlinkyManagerCallbacks> {
         writeCharacteristic(mBluetoothGatt.getService(ACCL_UUID_SERVICE).getCharacteristic(ACCL_UUID_SERVICE_CHARACTERISTIC_NAME),
                 "hi7111".getBytes());
     }
+    //endregion Declare Methods
 }

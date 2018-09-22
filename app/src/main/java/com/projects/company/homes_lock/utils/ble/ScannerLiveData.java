@@ -20,16 +20,26 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
  */
 @SuppressWarnings("unused")
 public class ScannerLiveData extends LiveData<ScannerLiveData> {
+
+    //region Declare Objects
     private final List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
     private Integer mUpdatedDeviceIndex;
+    //endregion Declare Objects
+
+    //region Declare Variables
     private boolean mScanningStarted;
     private boolean mBluetoothEnabled;
     private boolean mLocationEnabled;
+    //endregion Declare Variables
 
     public ScannerLiveData(final boolean bluetoothEnabled, final boolean locationEnabled) {
+
+        //region Initialize Variables
         mScanningStarted = false;
         mBluetoothEnabled = bluetoothEnabled;
         mLocationEnabled = locationEnabled;
+        //endregion Initialize Variables
+
         postValue(this);
     }
 
@@ -71,11 +81,8 @@ public class ScannerLiveData extends LiveData<ScannerLiveData> {
         if (index == -1) {
             device = new ScannedDeviceModel(result);
             mScannedDeviceModelList.add(device);
-//            mUpdatedDeviceIndex = null;
-        } else {
+        } else
             device = mScannedDeviceModelList.get(index);
-//            mUpdatedDeviceIndex = index;
-        }
 
         device.setRssi(result.getRssi());
         if (result.getScanRecord() != null)

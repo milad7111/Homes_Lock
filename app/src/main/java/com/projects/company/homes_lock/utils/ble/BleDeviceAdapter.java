@@ -22,20 +22,32 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     //endregion Declare Objects
 
     public BleDeviceAdapter(AppCompatActivity activity, IBleScanListener mBleScanListener, final ScannerLiveData scannerLiveData) {
+
+        //region Initialize Objects
         this.mInflater = LayoutInflater.from(activity);
         this.mBleScanListener = mBleScanListener;
+        this.mScannedDeviceModelList = scannerLiveData.getDevices();
+        //endregion Initialize Objects
 
-        mScannedDeviceModelList = scannerLiveData.getDevices();
         scannerLiveData.observe(activity, devices -> {
             notifyDataSetChanged();
-//            final Integer i = devices.getUpdatedDeviceIndex();
-//            if (i != null)
-//                notifyItemChanged(i);
-//            else
-//                notifyDataSetChanged();
         });
     }
 
+    class BleDeviceViewHolder extends RecyclerView.ViewHolder {
+        TextView txvBleDevicesName;
+        TextView txvBleDevicesMacAddress;
+//        AppCompatImageView imgBleDevicesRSSI;
+
+        private BleDeviceViewHolder(View itemView) {
+            super(itemView);
+            txvBleDevicesName = itemView.findViewById(R.id.txv_ble_devices_name);
+            txvBleDevicesMacAddress = itemView.findViewById(R.id.txv_ble_devices_mac_address);
+//            imgBleDevicesRSSI = itemView.findViewById(R.id.img_ble_devices_rssi);
+        }
+    }
+
+    //region Adapter CallBacks
     @NonNull
     @Override
     public BleDeviceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -64,28 +76,18 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
         });
     }
 
-    public void setBleDevices(List<ScannedDeviceModel> mScannedDeviceModelList) {
-        this.mScannedDeviceModelList = mScannedDeviceModelList;
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
         if (mScannedDeviceModelList != null)
             return mScannedDeviceModelList.size();
         else return 0;
     }
+    //endregion Adapter CallBacks
 
-    class BleDeviceViewHolder extends RecyclerView.ViewHolder {
-        TextView txvBleDevicesName;
-        TextView txvBleDevicesMacAddress;
-//        AppCompatImageView imgBleDevicesRSSI;
-
-        private BleDeviceViewHolder(View itemView) {
-            super(itemView);
-            txvBleDevicesName = itemView.findViewById(R.id.txv_ble_devices_name);
-            txvBleDevicesMacAddress = itemView.findViewById(R.id.txv_ble_devices_mac_address);
-//            imgBleDevicesRSSI = itemView.findViewById(R.id.img_ble_devices_rssi);
-        }
+    //region Declare Methods
+    public void setBleDevices(List<ScannedDeviceModel> mScannedDeviceModelList) {
+        this.mScannedDeviceModelList = mScannedDeviceModelList;
+        notifyDataSetChanged();
     }
+    //endregion Declare Methods
 }

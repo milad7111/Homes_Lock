@@ -36,7 +36,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
-import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.models.viewmodels.IBleDeviceViewModel;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
@@ -81,10 +81,11 @@ public class LockActivity extends BaseActivity
 
     //region Declare Objects
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-    private DeviceViewModel mDeviceViewModel;
+    private IBleDeviceViewModel mDeviceViewModel;
     private BleDeviceAdapter mBleDeviceAdapter;
     //endregion Declare Objects
 
+    //region Main CallBacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +119,7 @@ public class LockActivity extends BaseActivity
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
 
-        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(IBleDeviceViewModel.class);
         //endregion Initialize Objects
 
         //region Setup Views
@@ -142,56 +143,6 @@ public class LockActivity extends BaseActivity
 //        });
     }
 
-    private void startScan(final ScannerLiveData state) {
-        // First, check the Location permission. This is required on Marshmallow onwards in order to scan for Bluetooth LE devices.
-        if (BleHelper.isLocationPermissionsGranted(this)) {
-
-//            mNoLocationPermissionView.setVisibility(View.GONE);
-
-            // Bluetooth must be enabled
-            if (state.isBluetoothEnabled()) {
-//                mNoBluetoothView.setVisibility(View.GONE);
-
-                // We are now OK to start scanning
-                mDeviceViewModel.startScan();
-//                mScanningView.setVisibility(View.VISIBLE);
-
-                if (state.isEmpty()) {
-//                    mEmptyView.setVisibility(View.VISIBLE);
-
-                    if (!BleHelper.isLocationRequired(this) || BleHelper.isLocationEnabled(this)) {
-//                        mNoLocationView.setVisibility(View.INVISIBLE);
-                    } else {
-                        onEnableLocationClicked();
-//                        mNoLocationView.setVisibility(View.VISIBLE);
-                    }
-                } else {
-//                    mEmptyView.setVisibility(View.GONE);
-                }
-            } else {
-                onEnableBluetoothClicked();
-//                mNoBluetoothView.setVisibility(View.VISIBLE);
-//                mScanningView.setVisibility(View.INVISIBLE);
-//                mEmptyView.setVisibility(View.GONE);
-            }
-        } else {
-            onGrantLocationPermissionClicked();
-//            mNoLocationPermissionView.setVisibility(View.VISIBLE);
-//            mNoBluetoothView.setVisibility(View.GONE);
-//            mScanningView.setVisibility(View.INVISIBLE);
-//            mEmptyView.setVisibility(View.GONE);
-
-            final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(this);
-//            mGrantPermissionButton.setVisibility(deniedForever ? View.GONE : View.VISIBLE);
-            if (!deniedForever)
-                onGrantLocationPermissionClicked();
-
-            if (deniedForever)
-                onPermissionSettingsClicked();
-//            mPermissionSettingsButton.setVisibility(deniedForever ? View.VISIBLE : View.GONE);
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -200,36 +151,6 @@ public class LockActivity extends BaseActivity
                 mDeviceViewModel.refresh();
                 break;
         }
-    }
-
-    public void onEnableLocationClicked() {
-        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(intent);
-    }
-
-    public void onEnableBluetoothClicked() {
-        final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivity(enableIntent);
-    }
-
-    public void onGrantLocationPermissionClicked() {
-        BleHelper.markLocationPermissionRequested(this);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ACCESS_COARSE_LOCATION);
-    }
-
-    public void onPermissionSettingsClicked() {
-        final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.fromParts("package", getPackageName(), null));
-        startActivity(intent);
-    }
-
-
-    private void stopScan() {
-        this.mDeviceViewModel.stopScan();
-    }
-
-    private void initMQTT() {
-        MQTTHandler.setup(this, this);
     }
 
     @Override
@@ -311,6 +232,16 @@ public class LockActivity extends BaseActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mBroadcastReceiver != null)
+            unregisterReceiver(mBroadcastReceiver);
+    }
+    //endregion Main CallBacks
+
+    //region ViewModel CallBacks
+    @Override
     public void getAllDevices() {
 //        this.mDeviceViewModel.getAllDevices().observe(this, new Observer<List<Device>>() {
 //            @Override
@@ -329,7 +260,56 @@ public class LockActivity extends BaseActivity
     public void deleteDevice(Device device) {
 
     }
+    //endregion ViewModel CallBacks
 
+    //region BLE CallBacks
+    @Override
+    public void onFindBleCompleted(List response) {
+        mBleDeviceAdapter.setBleDevices(response);
+    }
+
+    @Override
+    public void onFindBleFault(Object response) {
+        switch (((FailureModel) response).getFailureCode()) {
+            case ERROR_CODE_BLE_NOT_ENABLED: {
+                Intent mEnableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(mEnableBluetoothIntent, REQUEST_CODE_ENABLE_BLUETOOTH);
+                break;
+            }
+            default:
+                Snackbar.make(appBarLockToolbar, ((FailureModel) response).getFailureMessage(), Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
+        this.mBroadcastReceiver = mBroadcastReceiver;
+    }
+
+    @Override
+    public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
+        mDeviceViewModel.connect(mScannedDeviceModel);
+        mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean isConnected) {
+                Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onDataReceived(Object response) {
+        if (response instanceof BluetoothGattCharacteristic)
+            txv1.setText(new String(((BluetoothGattCharacteristic) response).getValue()));
+    }
+
+    @Override
+    public void onDataSent() {
+
+    }
+    //endregion BLE CallBacks
+
+    //region MQTT CallBacks
     @Override
     public void onConnectionToBrokerLost(Object response) {
 
@@ -378,14 +358,7 @@ public class LockActivity extends BaseActivity
     public void onPublishFailure(Object response) {
 
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (mBroadcastReceiver != null)
-            unregisterReceiver(mBroadcastReceiver);
-    }
+    //endregion MQTT CallBacks
 
     //region Declare Methods
     private void getAccessibleBleDevices() {
@@ -393,53 +366,85 @@ public class LockActivity extends BaseActivity
         mBleDeviceAdapter = new BleDeviceAdapter(this, this, mDeviceViewModel.getScannerState());
         rcvBleDevices.setAdapter(mBleDeviceAdapter);
         rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
-
-//        mDeviceViewModel.getAllAccessibleBLEDevices(this, this);
     }
 
-    @Override
-    public void onFindBleCompleted(List response) {
-        mBleDeviceAdapter.setBleDevices(response);
-    }
+    private void startScan(final ScannerLiveData state) {
+        // First, check the Location permission. This is required on Marshmallow onwards in order to scan for Bluetooth LE devices.
+        if (BleHelper.isLocationPermissionsGranted(this)) {
 
-    @Override
-    public void onFindBleFault(Object response) {
-        switch (((FailureModel) response).getFailureCode()) {
-            case ERROR_CODE_BLE_NOT_ENABLED: {
-                Intent mEnableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(mEnableBluetoothIntent, REQUEST_CODE_ENABLE_BLUETOOTH);
-                break;
+//            mNoLocationPermissionView.setVisibility(View.GONE);
+
+            // Bluetooth must be enabled
+            if (state.isBluetoothEnabled()) {
+//                mNoBluetoothView.setVisibility(View.GONE);
+
+                // We are now OK to start scanning
+                mDeviceViewModel.startScan();
+//                mScanningView.setVisibility(View.VISIBLE);
+
+                if (state.isEmpty()) {
+//                    mEmptyView.setVisibility(View.VISIBLE);
+
+                    if (!BleHelper.isLocationRequired(this) || BleHelper.isLocationEnabled(this)) {
+//                        mNoLocationView.setVisibility(View.INVISIBLE);
+                    } else {
+                        onEnableLocationClicked();
+//                        mNoLocationView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+//                    mEmptyView.setVisibility(View.GONE);
+                }
+            } else {
+                onEnableBluetoothClicked();
+//                mNoBluetoothView.setVisibility(View.VISIBLE);
+//                mScanningView.setVisibility(View.INVISIBLE);
+//                mEmptyView.setVisibility(View.GONE);
             }
-            default:
-                Snackbar.make(appBarLockToolbar, ((FailureModel) response).getFailureMessage(), Snackbar.LENGTH_LONG).show();
+        } else {
+            onGrantLocationPermissionClicked();
+//            mNoLocationPermissionView.setVisibility(View.VISIBLE);
+//            mNoBluetoothView.setVisibility(View.GONE);
+//            mScanningView.setVisibility(View.INVISIBLE);
+//            mEmptyView.setVisibility(View.GONE);
+
+            final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(this);
+//            mGrantPermissionButton.setVisibility(deniedForever ? View.GONE : View.VISIBLE);
+            if (!deniedForever)
+                onGrantLocationPermissionClicked();
+
+            if (deniedForever)
+                onPermissionSettingsClicked();
+//            mPermissionSettingsButton.setVisibility(deniedForever ? View.VISIBLE : View.GONE);
         }
     }
 
-    @Override
-    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
-        this.mBroadcastReceiver = mBroadcastReceiver;
+    public void onEnableLocationClicked() {
+        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
     }
 
-    @Override
-    public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-        mDeviceViewModel.connect(mScannedDeviceModel);
-        mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable final Boolean isConnected) {
-                Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();
-            }
-        });
+    public void onEnableBluetoothClicked() {
+        final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivity(enableIntent);
     }
 
-    @Override
-    public void onDataReceived(Object response) {
-        if (response instanceof BluetoothGattCharacteristic)
-            txv1.setText(new String(((BluetoothGattCharacteristic) response).getValue()));
+    public void onGrantLocationPermissionClicked() {
+        BleHelper.markLocationPermissionRequested(this);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ACCESS_COARSE_LOCATION);
     }
 
-    @Override
-    public void onDataSent() {
+    public void onPermissionSettingsClicked() {
+        final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", getPackageName(), null));
+        startActivity(intent);
+    }
 
+    private void stopScan() {
+        this.mDeviceViewModel.stopScan();
+    }
+
+    private void initMQTT() {
+        MQTTHandler.setup(this, this);
     }
     //endregion Declare Methods
 }

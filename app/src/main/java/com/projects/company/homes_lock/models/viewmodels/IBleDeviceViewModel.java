@@ -6,7 +6,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,9 +21,8 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
-import com.projects.company.homes_lock.ui.device.activity.LockActivity;
-import com.projects.company.homes_lock.utils.ble.BlinkyManager;
-import com.projects.company.homes_lock.utils.ble.BlinkyManagerCallbacks;
+import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
+import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
@@ -39,11 +37,11 @@ import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
-public class DeviceViewModel extends AndroidViewModel
+public class IBleDeviceViewModel extends AndroidViewModel
         implements
         NetworkListener.SingleNetworkListener,
         NetworkListener.ListNetworkListener,
-        BlinkyManagerCallbacks {
+        IBleDeviceManagerCallbacks {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -56,7 +54,7 @@ public class DeviceViewModel extends AndroidViewModel
     private NetworkRepository mNetworkRepository;
 //    private BleScanner mBleScanner;
 
-    private final BlinkyManager mBlinkyManager;
+    private final BleDeviceManager mBleDeviceManager;
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
@@ -66,7 +64,7 @@ public class DeviceViewModel extends AndroidViewModel
     IBleScanListener mIBleScanListener;
     //endregion Declare Objects
 
-    public DeviceViewModel(Application application, IBleScanListener mIBleScanListener) {
+    public IBleDeviceViewModel(Application application, IBleScanListener mIBleScanListener) {
         super(application);
 
         //region Initialize Variables
@@ -76,8 +74,8 @@ public class DeviceViewModel extends AndroidViewModel
         mLocalRepository = new LocalRepository(application);
         mNetworkRepository = new NetworkRepository();
 
-        mBlinkyManager = new BlinkyManager(getApplication());
-        mBlinkyManager.setGattCallbacks(this);
+        mBleDeviceManager = new BleDeviceManager(getApplication());
+        mBleDeviceManager.setGattCallbacks(this);
         mScannerLiveData = new ScannerLiveData(BleHelper.isBleEnabled(), BleHelper.isLocationEnabled(application));
         this.mIBleScanListener = mIBleScanListener;
         //endregion Initialize Objects
@@ -138,7 +136,7 @@ public class DeviceViewModel extends AndroidViewModel
         if (BleHelper.isMarshmallowOrAbove())
             getApplication().unregisterReceiver(mLocationProviderChangedReceiver);
 
-        if (mBlinkyManager.isConnected())
+        if (mBleDeviceManager.isConnected())
             disconnect();
     }
 
@@ -180,7 +178,7 @@ public class DeviceViewModel extends AndroidViewModel
         /*.setUseHardwareBatchingIfSupported(false)*/
 //                .build();
 
-//        final ParcelUuid uuid = new ParcelUuid(BlinkyManager.LBS_UUID_SERVICE);
+//        final ParcelUuid uuid = new ParcelUuid(BleDeviceManager.LBS_UUID_SERVICE);
 //        List<ScanFilter> filters = new ArrayList<>();
 //        filters.add(new ScanFilter.Builder().setServiceUuid(uuid).build());
 
@@ -251,16 +249,16 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void connect(final ScannedDeviceModel device) {
         final LogSession logSession = Logger.newSession(getApplication(), null, device.getMacAddress(), device.getName());
-        mBlinkyManager.setLogger(logSession);
-        mBlinkyManager.connect(device.getDevice());
+        mBleDeviceManager.setLogger(logSession);
+        mBleDeviceManager.connect(device.getDevice());
     }
 
     public void getAllServices(){
-//        mBlinkyManager.
+//        mBleDeviceManager.
     }
 
     private void disconnect() {
-        mBlinkyManager.disconnect();
+        mBleDeviceManager.disconnect();
     }
 
     @Override
@@ -344,11 +342,11 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void readCharacteristic(){
-        mBlinkyManager.readCharacteristic();
+        mBleDeviceManager.readCharacteristic();
     }
 
     public void writeCharacteristic() {
-        mBlinkyManager.writeCharacteristic();
+        mBleDeviceManager.writeCharacteristic();
     }
     //endregion BLE
 

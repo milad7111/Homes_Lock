@@ -29,9 +29,9 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment {
     //endregion Declare Objects
 
     public AddLockFragment() {
-        // Required empty public constructor
     }
 
+    //region Main CallBacks
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +45,6 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_lock, container, false);
     }
 
@@ -59,6 +58,7 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment {
         //region Setup Views
         //endregion Setup Views
     }
+    //endregion Main CallBacks
 
     //region Declare Methods
     //endregion Declare Methods

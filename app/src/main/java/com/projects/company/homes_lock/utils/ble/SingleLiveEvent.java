@@ -13,21 +13,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @SuppressWarnings("unused")
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
-    private static final String TAG = "SingleLiveEvent";
-
+    //region Declare Objects
     private final AtomicBoolean mPending = new AtomicBoolean(false);
+    //endregion Declare Objects
 
+    //region Declare Variables
+    private static final String TAG = "SingleLiveEvent";
+    //endregion Declare Variables
+
+    //region Declare Methods
     @MainThread
     public void observe(@NonNull final LifecycleOwner owner, @NonNull final Observer<T> observer) {
-        if (hasActiveObservers()) {
+        if (hasActiveObservers())
             Log.w(TAG, "Multiple observers registered but only one will be notified of changes.");
-        }
 
-        // Observe the internal MutableLiveData
         super.observe(owner, t -> {
-            if (mPending.compareAndSet(true, false)) {
+            if (mPending.compareAndSet(true, false))
                 observer.onChanged(t);
-            }
         });
     }
 
@@ -44,4 +46,5 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     public void call() {
         setValue(null);
     }
+    //endregion Declare Methods
 }
