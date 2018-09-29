@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+
     defaultConfig {
         applicationId "com.projects.company.homes_lock"
         minSdkVersion 19
@@ -11,7 +12,7 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        vectorDrawables { useSupportLibrary = true }
+        vectorDrawables.useSupportLibrary = true
     }
 
     dexOptions {
@@ -74,10 +75,11 @@ dependencies {
 
     //handle BLE
     implementation 'no.nordicsemi.android:ble:1.2.0'
-//    implementation "com.beepiz.blegattcoroutines:blegattcoroutines-core:$blegattcoroutines_version"
-//    implementation "com.beepiz.blegattcoroutines:blegattcoroutines-genericaccess:$blegattcoroutines_version"
-    // Brings the new BluetoothLeScanner API to older platforms
     implementation 'no.nordicsemi.android.support.v18:scanner:1.1.0'
+
     // Log Bluetooth LE events in nRF Logger
     implementation 'no.nordicsemi.android:log:2.1.1'
+
+    //handle multidex enable in lower api than 21
+    implementation 'com.android.support:multidex:1.0.3'
 }

@@ -2,8 +2,10 @@ package com.projects.company.homes_lock.utils.ble;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -12,11 +14,11 @@ import java.util.UUID;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.Request;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON;
+
 public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
     //region Declare Constants
-    private final UUID ACCL_UUID_SERVICE = UUID.fromString("02366e80-cf3a-11e1-9ab4-0002a5d5c51b");
-    private final UUID ACCL_UUID_SERVICE_CHARACTERISTIC_NAME = UUID.fromString("03366e80-cf3a-11e1-9ab4-0002a5d5c51b");
     //endregion Declare Constants
 
     //region Declare Objects
@@ -57,7 +59,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            if (characteristic.getUuid().equals(ACCL_UUID_SERVICE_CHARACTERISTIC_NAME)) {
+            if (characteristic.getUuid().equals(LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON)) {
                 mCallbacks.onDataReceived(characteristic);
             }
 //            final int data = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
@@ -79,7 +81,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 //            final int data = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
 //            final boolean ledOn = data == 0x01;
 //            log(LogContract.Log.Level.APPLICATION, "LED " + (ledOn ? "ON" : "OFF"));
-//            mCallbacks.onDataSent();
+            mCallbacks.onDataSent();
         }
 
         @Override
@@ -113,15 +115,21 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     //endregion BleManager CallBacks
 
     //region Declare Methods
-    public void readCharacteristic() {
-        while (mBluetoothGatt == null) ;
-        readCharacteristic(mBluetoothGatt.getService(ACCL_UUID_SERVICE).getCharacteristic(ACCL_UUID_SERVICE_CHARACTERISTIC_NAME));
+    public void readCharacteristic(UUID serviceUUID, UUID characteristicUUID) {
+        if (mBluetoothGatt != null) {
+            BluetoothGattCharacteristic mBluetoothGattCharacteristic =
+                    mBluetoothGatt.getService(serviceUUID).getCharacteristic(characteristicUUID);
+            mBluetoothGatt.readCharacteristic(mBluetoothGattCharacteristic);
+        }
     }
 
-    public void writeCharacteristic() {
-        while (mBluetoothGatt == null) ;
-        writeCharacteristic(mBluetoothGatt.getService(ACCL_UUID_SERVICE).getCharacteristic(ACCL_UUID_SERVICE_CHARACTERISTIC_NAME),
-                "hi7111".getBytes());
+    public void writeCharacteristic(UUID serviceUUID, UUID characteristicUUID, String s) {
+        if (mBluetoothGatt != null) {
+            BluetoothGattCharacteristic mBluetoothGattCharacteristic =
+                    mBluetoothGatt.getService(serviceUUID).getCharacteristic(characteristicUUID);
+            mBluetoothGattCharacteristic.setValue(s.getBytes());
+            mBluetoothGatt.writeCharacteristic(mBluetoothGattCharacteristic);
+        }
     }
     //endregion Declare Methods
 }

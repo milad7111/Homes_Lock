@@ -36,7 +36,8 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
-import com.projects.company.homes_lock.models.viewmodels.IBleDeviceViewModel;
+import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
@@ -70,10 +71,9 @@ public class LockActivity extends BaseActivity
     private BroadcastReceiver mBroadcastReceiver;
 
     private TextView txv1;
-    private TextView txv2;
     private EditText edt1;
-    private EditText edt2;
     private Button btn1;
+    private Button btn2;
     //endregion Declare Views
 
     //region Declare Variables
@@ -81,7 +81,7 @@ public class LockActivity extends BaseActivity
 
     //region Declare Objects
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-    private IBleDeviceViewModel mDeviceViewModel;
+    private DeviceViewModel mDeviceViewModel;
     private BleDeviceAdapter mBleDeviceAdapter;
     //endregion Declare Objects
 
@@ -101,11 +101,12 @@ public class LockActivity extends BaseActivity
         rcvBleDevices = findViewById(R.id.rcv_ble_devices);
 
         txv1 = findViewById(R.id.txv1);
-        txv2 = findViewById(R.id.txv2);
         edt1 = findViewById(R.id.edt1);
-        edt2 = findViewById(R.id.edt2);
         btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+
         btn1.setOnClickListener(this);
+        btn2.setOnClickListener(this);
         //endregion Initialize Views
 
         //region Initialize Variables
@@ -119,7 +120,10 @@ public class LockActivity extends BaseActivity
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
 
-        this.mDeviceViewModel = ViewModelProviders.of(this).get(IBleDeviceViewModel.class);
+        this.mDeviceViewModel = ViewModelProviders.of(
+                this,
+                new DeviceViewModelFactory(this.getApplication(), this))
+                .get(DeviceViewModel.class);
         //endregion Initialize Objects
 
         //region Setup Views
@@ -223,11 +227,12 @@ public class LockActivity extends BaseActivity
                 //mDeviceViewModel.getAllServerDevices();
                 getAccessibleBleDevices();
                 break;
-            case R.id.btn1: {
+            case R.id.btn1:
                 mDeviceViewModel.readCharacteristic();
-                mDeviceViewModel.writeCharacteristic();
-
-            }
+                break;
+            case R.id.btn2:
+                mDeviceViewModel.writeCharacteristic(edt1.getText().toString());
+                break;
         }
     }
 
@@ -305,7 +310,7 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onDataSent() {
-
+        Toast.makeText(LockActivity.this, "Data sent!", Toast.LENGTH_SHORT).show();
     }
     //endregion BLE CallBacks
 

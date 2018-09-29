@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#000000" />
+            <size
+                android:width="360dp"
+                android:height="360dp" />
+            <gradient
+                android:type="radial"
+                android:endColor="@color/md_blue_grey_500"
+                android:startColor="#41d08e"/>
+        </shape>
+    </item>
+
+    <!--<item>-->
+    <!--<shape android:shape="oval">-->
+    <!--&lt;!&ndash; transparent stroke = larger_circle_size - smaller_circle_size &ndash;&gt;-->
+    <!--<stroke-->
+    <!--android:width="110dp"-->
+    <!--android:color="@android:color/transparent" />-->
+    <!--<solid android:color="#f00" />-->
+
+    <!--</shape>-->
+    <!--</item>-->
+
+    <!--<item>-->
+    <!--<shape android:shape="oval">-->
+    <!--&lt;!&ndash; transparent stroke = larger_circle_size - smaller_circle_size &ndash;&gt;-->
+    <!--<stroke-->
+    <!--android:width="220dp"-->
+    <!--android:color="@android:color/transparent" />-->
+    <!--&lt;!&ndash;<solid android:color="#41d08e" />&ndash;&gt;-->
+    <!--<gradient-->
+    <!--android:endColor="@color/md_blue_grey_500"-->
+    <!--android:startColor="#41d08e"></gradient>-->
+    <!--</shape>-->
+    <!--</item>-->
+
+</layer-list>
+
+
+

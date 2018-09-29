@@ -12,9 +12,20 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import java.util.UUID;
+
 public class BleHelper {
+
+    //region Declare Constants
+    public static final UUID ACCL_UUID_SERVICE = UUID.fromString("02366e80-cf3a-11e1-9ab4-0002a5d5c51b");
+    public static final UUID ACCL_UUID_SERVICE_CHARACTERISTIC_NAME = UUID.fromString("03366e80-cf3a-11e1-9ab4-0002a5d5c51b");
+
+    public static final UUID LED_UUID_SERVICE = UUID.fromString("0a366e80-cf3a-11e1-9ab4-0002a1d5c51b");
+    public static final UUID LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON = UUID.fromString("0c366e80-cf3a-22e1-9ab4-0002a2d5c51b");
+
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
+    //endregion Declare Constants
 
     /**
      * Checks whether Bluetooth is enabled.

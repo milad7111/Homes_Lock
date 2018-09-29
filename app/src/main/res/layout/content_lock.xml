@@ -11,9 +11,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn1"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:text="read" />
 
         <TextView
             android:id="@+id/txv1"
@@ -33,27 +39,11 @@
             android:textColor="@android:color/black"
             android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/txv2"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@android:color/white"
-            android:textColor="@android:color/black"
-            android:textSize="24sp" />
-
-        <EditText
-            android:id="@+id/edt2"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@android:color/white"
-            android:hint="type value for descriptor"
-            android:textColor="@android:color/black"
-            android:textSize="24sp" />
-
         <Button
-            android:id="@+id/btn1"
+            android:id="@+id/btn2"
             android:layout_width="match_parent"
-            android:layout_height="45dp" />
+            android:layout_height="45dp"
+            android:text="write" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcv_ble_devices"
@@ -63,7 +53,6 @@
             tools:listitem="@layout/list_item_ble_devices" />
 
     </LinearLayout>
-
 
 
 </android.support.constraint.ConstraintLayout>
