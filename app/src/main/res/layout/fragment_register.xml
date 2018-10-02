@@ -1,7 +1,48 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment">
+    android:background="@color/md_black_1000"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:weightSum="10">
 
-</FrameLayout>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:hint="Email"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:hint="Password"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:hint="Confirm Password"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000" />
+
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/md_blue_800"
+        android:text="SignUp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Login"
+        android:textColor="@color/md_white_1000" />
+
+</LinearLayout>
