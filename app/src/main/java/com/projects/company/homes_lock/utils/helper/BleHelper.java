@@ -29,6 +29,7 @@ public class BleHelper {
 
     /**
      * Checks whether Bluetooth is enabled.
+     *
      * @return true if Bluetooth is enabled, false otherwise.
      */
     public static boolean isBleEnabled() {
@@ -48,6 +49,7 @@ public class BleHelper {
     /**
      * Returns true if location permission has been requested at least twice and
      * user denied it, and checked 'Don't ask again'.
+     *
      * @param activity the activity
      * @return true if permission has been denied and the popup will not come up any more, false otherwise
      */
@@ -93,6 +95,7 @@ public class BleHelper {
      * When a Bluetooth LE packet is received while Location is disabled it means that Location
      * is not required on this device in order to scan for LE devices. This is a case of Samsung phones, for example.
      * Save this information for the future to keep the Location info hidden.
+     *
      * @param context the context
      */
     public static void markLocationNotRequired(final Context context) {
@@ -105,6 +108,7 @@ public class BleHelper {
      * {@link ActivityCompat#shouldShowRequestPermissionRationale(Activity, String)} returns false.
      * This situation is similar to a permission being denied forever, so to distinguish both cases
      * a flag needs to be saved.
+     *
      * @param context the context
      */
     public static void markLocationPermissionRequested(final Context context) {

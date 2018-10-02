@@ -8,7 +8,8 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 public class ScannedDeviceModel extends BaseModel {
 
-    private final BluetoothDevice mDevice;;
+    private final BluetoothDevice mDevice;
+    ;
     private String mName;
     private String mMacAddress;
     private int mRSSI;
@@ -32,6 +33,10 @@ public class ScannedDeviceModel extends BaseModel {
         return mName != null ? mName : "Unknown Device";
     }
 
+    public void setName(String mName) {
+        this.mName = mName;
+    }
+
     public String getMacAddress() {
         return mMacAddress;
     }
@@ -42,10 +47,6 @@ public class ScannedDeviceModel extends BaseModel {
 
     public void setRssi(int mRssi) {
         this.mRSSI = mRssi;
-    }
-
-    public void setName(String mName) {
-        this.mName = mName;
     }
 
     public int getRSSI() {

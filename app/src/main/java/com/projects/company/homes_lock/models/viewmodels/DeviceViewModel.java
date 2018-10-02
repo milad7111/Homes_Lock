@@ -52,20 +52,13 @@ public class DeviceViewModel extends AndroidViewModel
     //region Declare Variables
     //endregion Declare Variables
 
-    //region Declare Objects
-    private LocalRepository mLocalRepository;
-    private NetworkRepository mNetworkRepository;
-//    private BleScanner mBleScanner;
-
     private final BleDeviceManager mBleDeviceManager;
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
+//    private BleScanner mBleScanner;
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
     private final MutableLiveData<Void> mOnDeviceReady = new MutableLiveData<>();
-
     private final ScannerLiveData mScannerLiveData;
-    private IBleScanListener mIBleScanListener;
-
     //region Location Provider Changed Receiver
     private final BroadcastReceiver mLocationProviderChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -74,31 +67,6 @@ public class DeviceViewModel extends AndroidViewModel
             mScannerLiveData.setLocationEnabled(enabled);
         }
     };
-    //endregion Location Provider Changed Receiver
-
-    //region Bluetooth State Broadcast Receiver
-    private final BroadcastReceiver mBluetoothStateBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF);
-            final int previousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, BluetoothAdapter.STATE_OFF);
-
-            switch (state) {
-                case BluetoothAdapter.STATE_ON:
-                    mScannerLiveData.bluetoothEnabled();
-                    break;
-                case BluetoothAdapter.STATE_TURNING_OFF:
-                case BluetoothAdapter.STATE_OFF:
-                    if (previousState != BluetoothAdapter.STATE_TURNING_OFF && previousState != BluetoothAdapter.STATE_OFF) {
-                        stopScan();
-                        mScannerLiveData.bluetoothDisabled();
-                    }
-                    break;
-            }
-        }
-    };
-    //endregion Bluetooth State Broadcast Receiver
-
     private final ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(final int callbackType, final ScanResult result) {
@@ -120,6 +88,33 @@ public class DeviceViewModel extends AndroidViewModel
             mScannerLiveData.scanningStopped();
         }
     };
+    //region Bluetooth State Broadcast Receiver
+    private final BroadcastReceiver mBluetoothStateBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF);
+            final int previousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, BluetoothAdapter.STATE_OFF);
+
+            switch (state) {
+                case BluetoothAdapter.STATE_ON:
+                    mScannerLiveData.bluetoothEnabled();
+                    break;
+                case BluetoothAdapter.STATE_TURNING_OFF:
+                case BluetoothAdapter.STATE_OFF:
+                    if (previousState != BluetoothAdapter.STATE_TURNING_OFF && previousState != BluetoothAdapter.STATE_OFF) {
+                        stopScan();
+                        mScannerLiveData.bluetoothDisabled();
+                    }
+                    break;
+            }
+        }
+    };
+    //region Declare Objects
+    private LocalRepository mLocalRepository;
+    //endregion Location Provider Changed Receiver
+    private NetworkRepository mNetworkRepository;
+    //endregion Bluetooth State Broadcast Receiver
+    private IBleScanListener mIBleScanListener;
     //endregion Declare Objects
 
     public DeviceViewModel(Application application, IBleScanListener mIBleScanListener) {
@@ -343,7 +338,7 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.disconnect();
     }
 
-    public void readCharacteristic(){
+    public void readCharacteristic() {
         mBleDeviceManager.readCharacteristic(LED_UUID_SERVICE, LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON);
     }
 

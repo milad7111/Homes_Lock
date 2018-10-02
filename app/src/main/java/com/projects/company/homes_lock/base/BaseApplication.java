@@ -22,11 +22,6 @@ public class BaseApplication extends Application {
 
     private static volatile IRetrofit IRETROFIT = null;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
     public static synchronized IRetrofit getRetrofitAPI() {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -47,5 +42,10 @@ public class BaseApplication extends Application {
                 .create(IRetrofit.class);
 
         return IRETROFIT;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 }

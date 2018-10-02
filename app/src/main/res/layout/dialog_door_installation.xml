@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/md_black_1000"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/rdb_right_handed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/md_white_1000"
+        android:text="Right Handed"
+        android:textColor="@color/md_white_1000" />
+
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/rdb_left_handed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/md_white_1000"
+        android:text="Left Handed"
+        android:textColor="@color/md_white_1000" />
+
+</LinearLayout>

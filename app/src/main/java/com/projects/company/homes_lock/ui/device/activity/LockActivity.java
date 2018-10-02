@@ -169,7 +169,7 @@ public class LockActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.lock, menu);
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
     }
 
@@ -196,22 +196,22 @@ public class LockActivity extends BaseActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_camera:
+            case R.id.nav_locks:
                 // Handle the nav_camera action
                 break;
-            case R.id.nav_gallery:
+            case R.id.nav_notifications:
                 // Handle the nav_gallery action
                 break;
-            case R.id.nav_slideshow:
+            case R.id.nav_store:
                 // Handle the nav_slideshow action
                 break;
-            case R.id.nav_manage:
+            case R.id.nav_support:
                 // Handle the nav_manage action
                 break;
-            case R.id.nav_share:
+            case R.id.nav_settings:
                 // Handle the nav_share action
                 break;
-            case R.id.nav_send:
+            case R.id.nav_about_us:
                 // Handle the nav_send action
                 break;
         }

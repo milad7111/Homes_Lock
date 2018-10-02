@@ -34,24 +34,11 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
         });
     }
 
-    class BleDeviceViewHolder extends RecyclerView.ViewHolder {
-        TextView txvBleDevicesName;
-        TextView txvBleDevicesMacAddress;
-//        AppCompatImageView imgBleDevicesRSSI;
-
-        private BleDeviceViewHolder(View itemView) {
-            super(itemView);
-            txvBleDevicesName = itemView.findViewById(R.id.txv_ble_devices_name);
-            txvBleDevicesMacAddress = itemView.findViewById(R.id.txv_ble_devices_mac_address);
-//            imgBleDevicesRSSI = itemView.findViewById(R.id.img_ble_devices_rssi);
-        }
-    }
-
     //region Adapter CallBacks
     @NonNull
     @Override
     public BleDeviceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = mInflater.inflate(R.layout.list_item_ble_devices, viewGroup, false);
+        View itemView = mInflater.inflate(R.layout.item_ble_devices, viewGroup, false);
         return new BleDeviceViewHolder(itemView);
     }
 
@@ -63,8 +50,6 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             final int mRSSIPercent = (int) (100.0f * (127.0f + mScannedDeviceModel.getRSSI()) / (127.0f + 20.0f));
 
             bleDeviceViewHolder.txvBleDevicesName.setText(mScannedDeviceModel.getName());
-            bleDeviceViewHolder.txvBleDevicesMacAddress.setText(mScannedDeviceModel.getMacAddress());
-//            bleDeviceViewHolder.imgBleDevicesRSSI.setImageLevel(mRSSIPercent);
         } else
             bleDeviceViewHolder.txvBleDevicesName.setText("No Device Found.");
 
@@ -82,12 +67,21 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             return mScannedDeviceModelList.size();
         else return 0;
     }
-    //endregion Adapter CallBacks
 
     //region Declare Methods
     public void setBleDevices(List<ScannedDeviceModel> mScannedDeviceModelList) {
         this.mScannedDeviceModelList = mScannedDeviceModelList;
         notifyDataSetChanged();
+    }
+    //endregion Adapter CallBacks
+
+    class BleDeviceViewHolder extends RecyclerView.ViewHolder {
+        TextView txvBleDevicesName;
+
+        private BleDeviceViewHolder(View itemView) {
+            super(itemView);
+            txvBleDevicesName = itemView.findViewById(R.id.txv_ble_devices_name);
+        }
     }
     //endregion Declare Methods
 }

@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.dialog;
+package com.projects.company.homes_lock.ui.device.fragment.managemembers;
 
 
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class IdentifyWifiDialog extends Fragment {
+public class ManageMembersFragment extends Fragment implements IManageMembersFragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -27,7 +27,7 @@ public class IdentifyWifiDialog extends Fragment {
     //region Declare Objects
     //endregion Declare Objects
 
-    public IdentifyWifiDialog() {
+    public ManageMembersFragment() {
         // Required empty public constructor
     }
 
@@ -45,7 +45,7 @@ public class IdentifyWifiDialog extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.dialog_identify_wifi, container, false);
+        return inflater.inflate(R.layout.fragment_manage_members, container, false);
     }
 
     @Override

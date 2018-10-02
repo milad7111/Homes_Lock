@@ -8,9 +8,9 @@
                 android:width="360dp"
                 android:height="360dp" />
             <gradient
-                android:type="radial"
                 android:endColor="@color/md_blue_grey_500"
-                android:startColor="#41d08e"/>
+                android:startColor="#41d08e"
+                android:type="radial" />
         </shape>
     </item>
 

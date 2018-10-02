@@ -69,11 +69,6 @@ public class ScannerLiveData extends LiveData<ScannerLiveData> {
         postValue(this);
     }
 
-    public void setLocationEnabled(final boolean enabled) {
-        mLocationEnabled = enabled;
-        postValue(this);
-    }
-
     public void deviceDiscovered(final ScanResult result) {
         ScannedDeviceModel device;
 
@@ -117,6 +112,11 @@ public class ScannerLiveData extends LiveData<ScannerLiveData> {
 
     public boolean isLocationEnabled() {
         return mLocationEnabled;
+    }
+
+    public void setLocationEnabled(final boolean enabled) {
+        mLocationEnabled = enabled;
+        postValue(this);
     }
 
     private int indexOf(final ScanResult result) {

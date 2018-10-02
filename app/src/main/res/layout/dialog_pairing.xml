@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_black_1000"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txv_lock_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lock Name"
+        android:textColor="@color/md_white_1000" />
+
+    <EditText
+        android:id="@+id/edt_lock_security_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Security Code"
+        android:inputType="textPassword"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000" />
+
+</LinearLayout>

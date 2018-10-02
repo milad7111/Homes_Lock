@@ -2,10 +2,8 @@ package com.projects.company.homes_lock.utils.ble;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.Deque;
 import java.util.LinkedList;

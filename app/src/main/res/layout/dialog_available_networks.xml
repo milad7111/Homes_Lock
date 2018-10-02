@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_black_1000">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rsc_available_networks"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
+</RelativeLayout>

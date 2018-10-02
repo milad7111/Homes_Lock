@@ -13,12 +13,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @SuppressWarnings("unused")
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
-    //region Declare Objects
-    private final AtomicBoolean mPending = new AtomicBoolean(false);
-    //endregion Declare Objects
-
     //region Declare Variables
     private static final String TAG = "SingleLiveEvent";
+    //endregion Declare Objects
+    //region Declare Objects
+    private final AtomicBoolean mPending = new AtomicBoolean(false);
     //endregion Declare Variables
 
     //region Declare Methods

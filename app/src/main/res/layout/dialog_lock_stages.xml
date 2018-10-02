@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/md_black_1000"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/rdb_90_degree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/md_white_1000"
+        android:text="90 degrees"
+        android:textColor="@color/md_white_1000" />
+
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/rdb_one_stage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/md_white_1000"
+        android:text="One Stage"
+        android:textColor="@color/md_white_1000" />
+
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/rdb_two_stage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/md_white_1000"
+        android:text="Two Stage"
+        android:textColor="@color/md_white_1000" />
+
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/rdb_three_stage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/md_white_1000"
+        android:text="Three Stage"
+        android:textColor="@color/md_white_1000" />
+
+</LinearLayout>

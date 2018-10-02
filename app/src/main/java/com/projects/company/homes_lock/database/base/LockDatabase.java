@@ -18,22 +18,23 @@ import com.projects.company.homes_lock.database.tables.Error;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 
-@Database(entities = {Device.class, DeviceError.class, Error.class, User.class, UserLock.class, }, version = 1, exportSchema = false)
+@Database(entities = {Device.class, DeviceError.class, Error.class, User.class, UserLock.class,}, version = 1, exportSchema = false)
 public abstract class LockDatabase extends RoomDatabase {
 
     //region declare Objects
     private static LockDatabase INSTANCE;
+    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
 
-    public abstract DeviceDao deviceDao();
+        @Override
+        public void onOpen(@NonNull SupportSQLiteDatabase db) {
+            super.onOpen(db);
+        }
 
-    public abstract UserDao userDao();
-
-    public abstract DeviceErrorDao deviceErrorDao();
-
-    public abstract ErrorDao errorDao();
-
-    public abstract UserLockDao userLockDao();
-    //endregion declare Objects
+        @Override
+        public void onCreate(@NonNull SupportSQLiteDatabase db) {
+            super.onCreate(db);
+        }
+    };
 
     public static LockDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -49,16 +50,14 @@ public abstract class LockDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
+    public abstract DeviceDao deviceDao();
 
-        @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db) {
-            super.onOpen(db);
-        }
+    public abstract UserDao userDao();
 
-        @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-        }
-    };
+    public abstract DeviceErrorDao deviceErrorDao();
+    //endregion declare Objects
+
+    public abstract ErrorDao errorDao();
+
+    public abstract UserLockDao userLockDao();
 }
