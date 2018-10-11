@@ -1,14 +1,17 @@
 package com.projects.company.homes_lock.ui.login.fragment.login;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +23,7 @@ public class LoginFragment extends Fragment implements ILoginFragment, View.OnCl
     //endregion Declare Constants
 
     //region Declare Views
+    private Button btnLogin;
     //endregion Declare Views
 
     //region Declare Variables
@@ -54,9 +58,11 @@ public class LoginFragment extends Fragment implements ILoginFragment, View.OnCl
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
+        btnLogin = view.findViewById(R.id.btn_login);
         //endregion Initialize Views
 
         //region Setup Views
+        btnLogin.setOnClickListener(this);
         //endregion Setup Views
     }
 
@@ -64,6 +70,7 @@ public class LoginFragment extends Fragment implements ILoginFragment, View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
+                startActivity(new Intent(getActivity(), LockActivity.class));
                 break;
         }
     }

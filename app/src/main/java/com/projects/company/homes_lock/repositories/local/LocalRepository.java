@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.repositories.local;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.projects.company.homes_lock.database.base.LockDatabase;
@@ -9,6 +10,8 @@ import com.projects.company.homes_lock.database.daos.DeviceDao;
 import com.projects.company.homes_lock.database.tables.Device;
 
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class LocalRepository {
 
@@ -20,16 +23,17 @@ public class LocalRepository {
 
     //region Declare Objects
     private DeviceDao mDeviceDao;
+    private SharedPreferences mSharedPreferences = null;
     //endregion Declare Objects
 
     public LocalRepository(Application application) {
-        LockDatabase db = LockDatabase.getDatabase(application);
 
         //region Initialize Variables
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mDeviceDao = db.deviceDao();
+        mDeviceDao = LockDatabase.getDatabase(application).deviceDao();
+        mSharedPreferences = application.getSharedPreferences(application.getPackageName(), MODE_PRIVATE);
         //endregion Initialize Objects
     }
 
@@ -81,4 +85,15 @@ public class LocalRepository {
         }
     }
     //endregion Device table
+
+    //region SharePreferences
+    public boolean isFirstTimeLaunchApp(){
+        if (mSharedPreferences.getBoolean("firstRun", true)) {
+            mSharedPreferences.edit().putBoolean("firstRun", false).commit();
+            return true;
+        }
+
+        return false;
+    }
+    //endregion SharePreferences
 }

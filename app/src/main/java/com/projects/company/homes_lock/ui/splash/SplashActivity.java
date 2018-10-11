@@ -6,14 +6,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.models.viewmodels.SplashViewModel;
 import com.projects.company.homes_lock.ui.login.activity.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
+
+    //region Declare Constants
+    //endregion Declare Constants
+
+    //region Declare Variables
+    //endregion Declare Variables
+
+    //region Declare Objects
+    private SplashViewModel mSplashViewModel;
+    //endregion Declare Objects
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        //region Initialize Variables
+        //endregion Initialize Variables
+
+        //region Initialize Objects
+        mSplashViewModel = new SplashViewModel(this.getApplication());
+        //endregion Initialize Objects
     }
 
     @Override
@@ -23,6 +41,9 @@ public class SplashActivity extends AppCompatActivity {
             case MotionEvent.ACTION_DOWN:
                 startActivity(new Intent(this, LoginActivity.class));
         }
+
+        finish();
+
         return true;
     }
 }

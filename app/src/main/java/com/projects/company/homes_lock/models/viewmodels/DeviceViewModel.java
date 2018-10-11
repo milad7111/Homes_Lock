@@ -52,9 +52,12 @@ public class DeviceViewModel extends AndroidViewModel
     //region Declare Variables
     //endregion Declare Variables
 
+    //region Declare Objects
+    private LocalRepository mLocalRepository;
+    private NetworkRepository mNetworkRepository;
+    private IBleScanListener mIBleScanListener;
     private final BleDeviceManager mBleDeviceManager;
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
-//    private BleScanner mBleScanner;
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
     private final MutableLiveData<Void> mOnDeviceReady = new MutableLiveData<>();
@@ -67,6 +70,7 @@ public class DeviceViewModel extends AndroidViewModel
             mScannerLiveData.setLocationEnabled(enabled);
         }
     };
+    //endregion Location Provider Changed Receiver
     private final ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(final int callbackType, final ScanResult result) {
@@ -109,12 +113,7 @@ public class DeviceViewModel extends AndroidViewModel
             }
         }
     };
-    //region Declare Objects
-    private LocalRepository mLocalRepository;
-    //endregion Location Provider Changed Receiver
-    private NetworkRepository mNetworkRepository;
     //endregion Bluetooth State Broadcast Receiver
-    private IBleScanListener mIBleScanListener;
     //endregion Declare Objects
 
     public DeviceViewModel(Application application, IBleScanListener mIBleScanListener) {
@@ -362,4 +361,7 @@ public class DeviceViewModel extends AndroidViewModel
         return mIsSupported;
     }
     //endregion BLE Methods
+
+    //region SharePreferences
+    //endregion SharePreferences
 }

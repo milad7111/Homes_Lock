@@ -41,6 +41,12 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
         ViewHelper.setFragment(this, R.id.frg_login_activity, new LoginFragment());
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
     //region Declare Methods
     //endregion Declare Methods
 }
