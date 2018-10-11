@@ -1,9 +1,13 @@
 package com.projects.company.homes_lock.utils.helper;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+
+import com.projects.company.homes_lock.R;
 
 /**
  * This is Helper Class helps Views
@@ -18,6 +22,7 @@ public class ViewHelper {
     //endregion Declare Variables
 
     //region Declare Objects
+    private static Context mContext;
     //endregion Declare Objects
 
     //region Declare Views
@@ -35,6 +40,18 @@ public class ViewHelper {
         mTransaction.add(containerId, fragment, fragment.getTag());
         mTransaction.addToBackStack(null);
         mTransaction.commit();
+    }
+
+    public static void setLockStatusImage(ImageView imageViewLock, byte[] value) {
+        if (Boolean.parseBoolean(new String(value)))
+            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_close));
+        else
+            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_open));
+
+    }
+
+    public static void setContext(Context mContext) {
+        ViewHelper.mContext = mContext;
     }
     //endregion Declare Methods
 }

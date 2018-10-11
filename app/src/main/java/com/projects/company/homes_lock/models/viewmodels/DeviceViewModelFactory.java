@@ -10,7 +10,6 @@ public class DeviceViewModelFactory extends ViewModelProvider.NewInstanceFactory
     private Application mApplication;
     private IBleScanListener mIBleScanListener;
 
-
     public DeviceViewModelFactory(Application mApplication, IBleScanListener mIBleScanListener) {
         this.mApplication = mApplication;
         this.mIBleScanListener = mIBleScanListener;

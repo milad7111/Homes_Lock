@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
+import java.util.UUID;
 
 import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
@@ -39,12 +41,14 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LED_UUID_SERVICE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE;
 
 public class DeviceViewModel extends AndroidViewModel
         implements
         NetworkListener.SingleNetworkListener,
         NetworkListener.ListNetworkListener,
-        IBleDeviceManagerCallbacks {
+        IBleDeviceManagerCallbacks,
+        IBleScanListener{
 
     //region Declare Constants
     //endregion Declare Constants
@@ -243,7 +247,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onBondingRequired(final BluetoothDevice device) {
-        // Blinky does not require bonding
     }
 
     @Override
@@ -271,6 +274,28 @@ public class DeviceViewModel extends AndroidViewModel
     public void onDataSent() {
         if (mIBleScanListener != null)
             mIBleScanListener.onDataSent();
+    }
+
+    @Override
+    public void onFindBleCompleted(List response) {
+    }
+
+    @Override
+    public void onFindBleFault(Object response) {
+    }
+
+    @Override
+    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
+    }
+
+    @Override
+    public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
+    }
+
+    @Override
+    public void setBluetoothGatt(BluetoothGatt mBluetoothGatt) {
+        if (mIBleScanListener != null)
+            mIBleScanListener.setBluetoothGatt(mBluetoothGatt);
     }
     //endregion BLE CallBacks
 
@@ -337,12 +362,16 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.disconnect();
     }
 
-    public void readCharacteristic() {
-        mBleDeviceManager.readCharacteristic(LED_UUID_SERVICE, LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON);
+    public void readCharacteristic(BluetoothGatt bluetoothGatt, UUID characteristicUUID) {
+        mBleDeviceManager.readCharacteristic(bluetoothGatt, LOCK_UUID_SERVICE, characteristicUUID);
+    }
+
+    public void setNotifyForCharacteristic(BluetoothGatt bluetoothGatt, UUID serviceUUID, UUID characteristicUUID, boolean notifyStatus){
+        mBleDeviceManager.setNotifyForCharacteristic(bluetoothGatt, serviceUUID, characteristicUUID, notifyStatus);
     }
 
     public void writeCharacteristic(String s) {
-        mBleDeviceManager.writeCharacteristic(LED_UUID_SERVICE, LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON, s);
+        mBleDeviceManager.writeCharacteristic(null, LED_UUID_SERVICE, LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON, s);
     }
 
     public void getAllAccessibleBLEDevices(Context context, IBleScanListener mIBleScanListener) {

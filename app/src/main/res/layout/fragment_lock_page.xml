@@ -7,6 +7,7 @@
     android:weightSum="8">
 
     <ImageView
+        android:id="@+id/img_main_lock_page"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
@@ -35,6 +36,7 @@
                 android:weightSum="3">
 
                 <TextView
+                    android:id="@+id/txv_lock_name_lock_page"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -43,6 +45,7 @@
                     android:textColor="@color/md_grey_500" />
 
                 <TextView
+                    android:id="@+id/txv_new_update_lock_page"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -53,16 +56,18 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/txv_security_alarm_lock_page"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Door clesed but not locked"
+                android:text="Door closed but not locked"
                 android:textColor="@color/md_green_700" />
 
         </LinearLayout>
 
         <TextView
+            android:id="@+id/txv_temperature_lock_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -71,6 +76,7 @@
             android:textColor="@color/md_grey_500" />
 
         <TextView
+            android:id="@+id/txv_humidity_lock_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -89,30 +95,35 @@
         android:weightSum="5">
 
         <ImageView
+            android:id="@+id/img_battery_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_battery" />
 
         <ImageView
+            android:id="@+id/img_wifi_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_wifi" />
 
         <ImageView
+            android:id="@+id/img_ble_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_ble" />
 
         <ImageView
+            android:id="@+id/img_members_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_members" />
 
         <ImageView
+            android:id="@+id/img_more_info_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

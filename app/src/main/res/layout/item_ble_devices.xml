@@ -10,6 +10,7 @@
         android:id="@+id/txv_ble_devices_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:text="item 1"
         android:textColor="@color/md_white_1000" />
 

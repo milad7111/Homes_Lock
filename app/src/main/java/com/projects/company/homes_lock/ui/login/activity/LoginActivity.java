@@ -42,6 +42,12 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        ViewHelper.setContext(LoginActivity.this);
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();

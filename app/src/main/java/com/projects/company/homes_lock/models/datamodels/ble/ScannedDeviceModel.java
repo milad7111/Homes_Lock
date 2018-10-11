@@ -9,7 +9,6 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 public class ScannedDeviceModel extends BaseModel {
 
     private final BluetoothDevice mDevice;
-    ;
     private String mName;
     private String mMacAddress;
     private int mRSSI;
