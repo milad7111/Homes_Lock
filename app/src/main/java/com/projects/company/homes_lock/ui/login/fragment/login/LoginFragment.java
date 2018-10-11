@@ -13,9 +13,10 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements ILoginFragment {
+public class LoginFragment extends Fragment implements ILoginFragment, View.OnClickListener {
 
     //region Declare Constants
+    public static String TAG = LoginFragment.class.getName();
     //endregion Declare Constants
 
     //region Declare Views
@@ -57,6 +58,14 @@ public class LoginFragment extends Fragment implements ILoginFragment {
 
         //region Setup Views
         //endregion Setup Views
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_login:
+                break;
+        }
     }
 
     //region Declare Methods

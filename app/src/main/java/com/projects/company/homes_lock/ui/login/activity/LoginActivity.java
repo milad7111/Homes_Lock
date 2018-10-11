@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
+import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
+import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 public class LoginActivity extends BaseActivity implements ILoginActivity {
 
@@ -35,6 +37,8 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
 
         //region Setup Views
         //endregion Setup Views
+
+        ViewHelper.setFragment(this, R.id.frg_login_activity, new LoginFragment());
     }
 
     //region Declare Methods
