@@ -47,6 +47,8 @@ public class ViewHelper {
             imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_open));
         else if (lockStatus == 1)
             imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_close));
+        else if (lockStatus == 2)
+            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_idle));
     }
 
     public static void setContext(Context mContext) {

@@ -17,7 +17,7 @@
         </shape>
     </item>
 
-    <item android:drawable="@drawable/ic_main_lock" />
+    <item android:drawable="@drawable/ic_lock_idle" />
 
 </layer-list>
 <!--<?xml version="1.0" encoding="utf-8"?>-->

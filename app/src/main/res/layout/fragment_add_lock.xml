@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="7.5"
-        android:src="@drawable/ic_main_lock" />
+        android:src="@drawable/ic_lock_idle" />
 
     <Button
         android:layout_width="250dp"

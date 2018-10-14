@@ -25,8 +25,9 @@ public class BleHelper {
     public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_ERRORS = UUID.fromString("927c9cb6-cd09-11e8-b568-0800200c9a66");
     public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_PAIR_PASSWORD = UUID.fromString("927c9cb7-cd09-11e8-b568-0800200c9a66");
 
-    public static final UUID LED_UUID_SERVICE = UUID.fromString("0a366e80-cf3a-11e1-9ab4-0002a1d5c51b");
-    public static final UUID LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON = UUID.fromString("0c366e80-cf3a-22e1-9ab4-0002a2d5c51b");
+    public static final String LOCK_STATUS_LOCK = "lock";
+    public static final String LOCK_STATUS_UNLOCK = "unlock";
+    public static final String LOCK_STATUS_IDLE = "idle";
 
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";

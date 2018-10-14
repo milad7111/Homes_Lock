@@ -4,7 +4,6 @@ package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,9 +23,7 @@ import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.List;
-import java.util.UUID;
 
-import static com.google.gson.reflect.TypeToken.get;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS;
 
@@ -91,7 +88,8 @@ public class LockPageFragment extends Fragment
         this.mDeviceViewModel.getADevice("fsafasfasfasf").observe(this, new Observer<Device>() {
             @Override
             public void onChanged(@Nullable final Device device) {
-                ViewHelper.setLockStatusImage(imgMainLockPage, device.getLockStatus());
+                if (imgMainLockPage != null)
+                    ViewHelper.setLockStatusImage(imgMainLockPage, device.getLockStatus());
             }
         });
 

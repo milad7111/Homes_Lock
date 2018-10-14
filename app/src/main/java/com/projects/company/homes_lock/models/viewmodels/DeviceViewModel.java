@@ -16,8 +16,10 @@ import android.location.LocationManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.ble.LockStatusModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
@@ -40,8 +42,7 @@ import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LED_UUID_SERVICE;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS;
 
 public class DeviceViewModel extends AndroidViewModel
@@ -85,6 +86,10 @@ public class DeviceViewModel extends AndroidViewModel
                 BleHelper.markLocationNotRequired(getApplication());
 
             mScannerLiveData.deviceDiscovered(result);
+
+            if (result.getDevice().getName().equals("BlueNRG"))
+                stopScan();
+
         }
 
         @Override
@@ -279,9 +284,12 @@ public class DeviceViewModel extends AndroidViewModel
         UUID responseUUID;
         if (response instanceof BluetoothGattCharacteristic) {
             responseUUID = ((BluetoothGattCharacteristic) response).getUuid();
-            if (responseUUID.equals(LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS))
-                mLocalRepository.updateDeviceLockStatus(mActiveDeviceObjectId,
-                        Integer.valueOf(((BluetoothGattCharacteristic) response).getValue()[0]));
+            if (responseUUID.equals(LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS)) {
+                LockStatusModel mLockStatusModel =
+                        new Gson().fromJson(new String(((BluetoothGattCharacteristic) response).getValue()), LockStatusModel.class);
+                mLocalRepository.updateDeviceLockStatus(mActiveDeviceObjectId, mLockStatusModel.getLockStatus());
+            }
+
 //                ViewHelper.setLockStatusImage(imgMainLockPage, ((BluetoothGattCharacteristic) response).getValue());
         }
 //        if (mIBleScanListener != null)
@@ -320,9 +328,8 @@ public class DeviceViewModel extends AndroidViewModel
     //region BLE Methods
     private void registerBroadcastReceivers(final Application application) {
         application.registerReceiver(mBluetoothStateBroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-        if (BleHelper.isMarshmallowOrAbove()) {
+        if (BleHelper.isMarshmallowOrAbove())
             application.registerReceiver(mLocationProviderChangedReceiver, new IntentFilter(LocationManager.MODE_CHANGED_ACTION));
-        }
     }
 
     public void refresh() {
@@ -391,7 +398,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void writeCharacteristic(String s) {
-        mBleDeviceManager.writeCharacteristic(null, LED_UUID_SERVICE, LED_UUID_SERVICE_CHARACTERISTIC_LED_BUTTON, s);
+        mBleDeviceManager.writeCharacteristic(null, LOCK_UUID_SERVICE, LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS, s);
     }
 
     public void getAllAccessibleBLEDevices(Context context, IBleScanListener mIBleScanListener) {
