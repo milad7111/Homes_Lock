@@ -54,6 +54,10 @@ public class LocalRepository {
         new deleteDeviceAsyncTask(mDeviceDao).execute(device);
     }
 
+    public LiveData<Device> getADevice(String mDeviceObjectId) {
+        return mDeviceDao.getADevice(mDeviceObjectId);
+    }
+
     private static class insertDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
 
         private DeviceDao mDeviceDao;
@@ -83,6 +87,10 @@ public class LocalRepository {
             this.mDeviceDao.delete(params[0]);
             return null;
         }
+    }
+
+    public void updateDeviceLockStatus(String mDeviceObjectId, int mLockStatus){
+        mDeviceDao.setLockStatus("fsafasfasfasf", mLockStatus);
     }
     //endregion Device table
 

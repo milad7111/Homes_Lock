@@ -39,7 +39,7 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "lockStatus")
     @SerializedName("lockStatus")
-    private Boolean mLockStatus;
+    private int mLockStatus;
 
     @ColumnInfo(name = "doorStatus")
     @SerializedName("doorStatus")
@@ -115,11 +115,30 @@ public class Device extends BaseModel {
     private UserModel mUser;
     //endregion other attributes
 
+    public Device(@NonNull String mObjectId) {
+        this.mObjectId = mObjectId;
+        this.mLockSSID = "711AmirAli";
+        this.mSerialNumber = mObjectId;
+        this.mLockStatus = 0;
+        this.mDoorStatus = false;
+        this.mConnectionStatus = false;
+        this.mBatteryStatus = 0;
+        this.mWifiStatus = 0;
+        this.mMeanPowerCons = 0;
+        this.mTemperature = 0;
+        this.mHumidity = 0;
+        this.mCOLevel = 0;
+        this.mDeviceHealth = true;
+        this.mFWVersion = 1;
+        this.mLockPosition = 1;
+    }
+
+    @Ignore
     public Device(
             @NonNull String mObjectId,
             String mLockSSID,
             String mSerialNumber,
-            Boolean mLockStatus,
+            int mLockStatus,
             Boolean mDoorStatus,
             Boolean mConnectionStatus,
             Integer mBatteryStatus,
@@ -173,11 +192,11 @@ public class Device extends BaseModel {
         this.mSerialNumber = mSerialNumber;
     }
 
-    public Boolean getLockStatus() {
+    public int getLockStatus() {
         return mLockStatus;
     }
 
-    public void setLockStatus(Boolean mLockStatus) {
+    public void setLockStatus(int mLockStatus) {
         this.mLockStatus = mLockStatus;
     }
 

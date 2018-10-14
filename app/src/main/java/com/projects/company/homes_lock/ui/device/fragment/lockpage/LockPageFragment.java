@@ -1,6 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
@@ -84,8 +86,26 @@ public class LockPageFragment extends Fragment
 
         //region Setup Views
         imgMainLockPage.setOnClickListener(this);
-        mDeviceViewModel.setNotifyForCharacteristic(((LockActivity) getActivity()).getBluetoothGatt(), LOCK_UUID_SERVICE, LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS, true);
-        mDeviceViewModel.readCharacteristic(((LockActivity) getActivity()).getBluetoothGatt(), LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS);
+
+//        mDeviceViewModel.getADevice("fsafasfasfasf");
+        this.mDeviceViewModel.getADevice("fsafasfasfasf").observe(this, new Observer<Device>() {
+            @Override
+            public void onChanged(@Nullable final Device device) {
+                ViewHelper.setLockStatusImage(imgMainLockPage, device.getLockStatus());
+            }
+        });
+
+        mDeviceViewModel.setNotifyForCharacteristic(
+                ((LockActivity) getActivity()).getBluetoothGatt(),
+                LOCK_UUID_SERVICE,
+                LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS,
+                true,
+                "fsafasfasfasf");
+
+        mDeviceViewModel.readCharacteristic(
+                ((LockActivity) getActivity()).getBluetoothGatt(),
+                LOCK_UUID_SERVICE,
+                LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS);
         //endregion Setup Views
     }
 
@@ -107,12 +127,6 @@ public class LockPageFragment extends Fragment
     //region BLE CallBacks
     @Override
     public void onDataReceived(Object response) {
-        UUID responseUUID;
-        if (response instanceof BluetoothGattCharacteristic) {
-            responseUUID = ((BluetoothGattCharacteristic) response).getUuid();
-            if (responseUUID.equals(LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS))
-                ViewHelper.setLockStatusImage(imgMainLockPage, ((BluetoothGattCharacteristic) response).getValue());
-        }
     }
 
     @Override

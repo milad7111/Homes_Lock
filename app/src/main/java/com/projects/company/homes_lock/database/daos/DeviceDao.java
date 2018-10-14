@@ -31,4 +31,10 @@ public interface DeviceDao extends BaseDao<Device> {
 
     @Query("SELECT COUNT(*) FROM device")
     LiveData<Integer> getAllDevicesCount();
+
+    @Query("UPDATE device SET lockStatus = :mLockStatus WHERE objectId = :mDeviceObjectId")
+    void setLockStatus(final String mDeviceObjectId, int mLockStatus);
+
+    @Query("SELECT * FROM device WHERE objectId = :mDeviceObjectId")
+    LiveData<Device> getADevice(final String mDeviceObjectId);
 }

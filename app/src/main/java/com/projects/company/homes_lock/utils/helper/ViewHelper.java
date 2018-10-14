@@ -42,12 +42,11 @@ public class ViewHelper {
         mTransaction.commit();
     }
 
-    public static void setLockStatusImage(ImageView imageViewLock, byte[] value) {
-        if (Boolean.parseBoolean(new String(value)))
-            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_close));
-        else
+    public static void setLockStatusImage(ImageView imageViewLock, int lockStatus) {
+        if (lockStatus == 0)
             imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_open));
-
+        else if (lockStatus == 1)
+            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_close));
     }
 
     public static void setContext(Context mContext) {
