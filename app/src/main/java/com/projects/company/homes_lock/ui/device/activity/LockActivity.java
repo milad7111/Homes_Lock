@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,8 +26,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
+import com.ederdoski.simpleble.models.BluetoothLE;
+import com.ederdoski.simpleble.utils.BluetoothLEHelper;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -44,6 +46,7 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.ERROR_CODE_BLE_NOT_ENABLED;
@@ -67,12 +70,6 @@ public class LockActivity extends BaseActivity
     private NavigationView activityLockNavigationView;
     private FloatingActionButton appBarLockFabAddLock;
     private RecyclerView rcvBleDevices;
-//    private BroadcastReceiver mBroadcastReceiver;
-
-//    private TextView txv1;
-//    private EditText edt1;
-//    private Button btn1;
-//    private Button btn2;
     //endregion Declare Views
 
     //region Declare Variables
@@ -83,6 +80,7 @@ public class LockActivity extends BaseActivity
     private DeviceViewModel mDeviceViewModel;
     private BleDeviceAdapter mBleDeviceAdapter;
     private static BluetoothGatt mBluetoothGatt;
+    private BluetoothLEHelper mBluetoothLEHelper;
     //endregion Declare Objects
 
     //region Main CallBacks
@@ -99,20 +97,15 @@ public class LockActivity extends BaseActivity
         activityLockDrawerLayout = findViewById(R.id.activityLock_drawer_layout);
         activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
         rcvBleDevices = findViewById(R.id.rcv_ble_devices);
-
-//        txv1 = findViewById(R.id.txv1);
-//        edt1 = findViewById(R.id.edt1);
-//        btn1 = findViewById(R.id.btn1);
-//        btn2 = findViewById(R.id.btn2);
-
-//        btn1.setOnClickListener(this);
-//        btn2.setOnClickListener(this);
         //endregion Initialize Views
 
         //region Initialize Variables
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mBleDeviceAdapter = new BleDeviceAdapter(this, this, new ArrayList<>());
+        mBluetoothLEHelper = new BluetoothLEHelper(this);
+
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 activityLockDrawerLayout,
@@ -135,6 +128,9 @@ public class LockActivity extends BaseActivity
         mActionBarDrawerToggle.syncState();
 
         activityLockNavigationView.setNavigationItemSelectedListener(this);
+
+        rcvBleDevices.setAdapter(mBleDeviceAdapter);
+        rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
         //endregion Setup Views
     }
 
@@ -370,10 +366,10 @@ public class LockActivity extends BaseActivity
 
     //region Declare Methods
     private void getAccessibleBleDevices() {
-        this.mDeviceViewModel.getScannerState().observe(this, this::startScan);
-        mBleDeviceAdapter = new BleDeviceAdapter(this, this, mDeviceViewModel.getScannerState());
-        rcvBleDevices.setAdapter(mBleDeviceAdapter);
-        rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
+//        if (mBluetoothLEHelper.isReadyForScan())
+        scanDevices();
+//        this.mDeviceViewModel.getScannerState().observe(this, this::startScan);
+//        mBleDeviceAdapter = new BleDeviceAdapter(this, this, null);
     }
 
     private void startScan(final ScannerLiveData state) {
@@ -455,8 +451,31 @@ public class LockActivity extends BaseActivity
         MQTTHandler.setup(this, this);
     }
 
-    public BluetoothGatt getBluetoothGatt(){
+    public BluetoothGatt getBluetoothGatt() {
         return mBluetoothGatt;
+    }
+
+    public void scanDevices() {
+        if (!mBluetoothLEHelper.isScanning()) {
+            mBluetoothLEHelper.setScanPeriod(1000);
+            Handler mHandler = new Handler();
+            mBluetoothLEHelper.scanLeDevice(true);
+
+            mHandler.postDelayed(() -> {
+                mBleDeviceAdapter.setBleDevices(getListOfScannedDevices());
+            }, mBluetoothLEHelper.getScanPeriod());
+        }
+    }
+
+    public List<ScannedDeviceModel> getListOfScannedDevices() {
+
+        List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
+
+        if (mBluetoothLEHelper.getListDevices().size() > 0)
+            for (BluetoothLE device : mBluetoothLEHelper.getListDevices())
+                mScannedDeviceModelList.add(new ScannedDeviceModel(device));
+
+        return mScannedDeviceModelList;
     }
     //endregion Declare Methods
 }

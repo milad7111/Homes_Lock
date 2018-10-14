@@ -1,5 +1,6 @@
 package com.projects.company.homes_lock.models.viewmodels;
 
+import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
@@ -8,14 +9,19 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.ederdoski.simpleble.interfaces.BleCallback;
+import com.ederdoski.simpleble.models.BluetoothLE;
+import com.ederdoski.simpleble.utils.BluetoothLEHelper;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -33,6 +39,8 @@ import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +68,7 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Declare Variables
 
     //region Declare Objects
+    private BluetoothLEHelper mBluetoothLEHelper;
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
     private IBleScanListener mIBleScanListener;
@@ -134,6 +143,8 @@ public class DeviceViewModel extends AndroidViewModel
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mBluetoothLEHelper = new BluetoothLEHelper((Activity) mIBleScanListener);
+
         mLocalRepository = new LocalRepository(application);
         mNetworkRepository = new NetworkRepository();
 
@@ -415,6 +426,52 @@ public class DeviceViewModel extends AndroidViewModel
 
     public LiveData<Boolean> isSupported() {
         return mIsSupported;
+    }
+
+    private BleCallback customBleCallbacks() {
+        return new BleCallback() {
+
+            @Override
+            public void onBleConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                super.onBleConnectionStateChange(gatt, status, newState);
+
+                if (newState == BluetoothProfile.STATE_CONNECTED)
+                    Log.i("BleCallback", "Connected to GATT server.");
+
+                if (newState == BluetoothProfile.STATE_DISCONNECTED)
+                    Log.i("BleCallback", "Disconnected from GATT server.");
+            }
+
+            @Override
+            public void onBleServiceDiscovered(BluetoothGatt gatt, int status) {
+                super.onBleServiceDiscovered(gatt, status);
+                if (status != BluetoothGatt.GATT_SUCCESS)
+                    Log.e("Ble ServiceDiscovered", "onServicesDiscovered received: " + status);
+            }
+
+            @Override
+            public void onBleCharacteristicChange(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                super.onBleCharacteristicChange(gatt, characteristic);
+                Log.i("BluetoothLEHelper", "onCharacteristicChanged Value: " + Arrays.toString(characteristic.getValue()));
+            }
+
+            @Override
+            public void onBleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                super.onBleRead(gatt, characteristic, status);
+
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.i("TAG", Arrays.toString(characteristic.getValue()));
+                    Log.i("BleCallback", "onCharacteristicRead : " + Arrays.toString(characteristic.getValue()))
+                    ;
+                }
+            }
+
+            @Override
+            public void onBleWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                super.onBleWrite(gatt, characteristic, status);
+                Log.i("BleCallback", "onCharacteristicWrite Status : " + status);
+            }
+        };
     }
     //endregion BLE Methods
 

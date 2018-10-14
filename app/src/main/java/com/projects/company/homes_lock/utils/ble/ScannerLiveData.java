@@ -74,14 +74,14 @@ public class ScannerLiveData extends LiveData<ScannerLiveData> {
 
         final int index = indexOf(result);
         if (index == -1) {
-            device = new ScannedDeviceModel(result);
-            mScannedDeviceModelList.add(device);
+//            device = new ScannedDeviceModel(result);
+//            mScannedDeviceModelList.add(device);
         } else
             device = mScannedDeviceModelList.get(index);
 
-        device.setRssi(result.getRssi());
+//        device.setRssi(result.getRssi());
         if (result.getScanRecord() != null)
-            device.setName(result.getScanRecord().getDeviceName());
+//            device.setName(result.getScanRecord().getDeviceName());
 
         postValue(this);
     }

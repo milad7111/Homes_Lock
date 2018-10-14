@@ -21,17 +21,13 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     private IBleScanListener mBleScanListener;
     //endregion Declare Objects
 
-    public BleDeviceAdapter(AppCompatActivity activity, IBleScanListener mBleScanListener, final ScannerLiveData scannerLiveData) {
+    public BleDeviceAdapter(AppCompatActivity activity, IBleScanListener mBleScanListener, List<ScannedDeviceModel> mScannedDeviceModelList) {
 
         //region Initialize Objects
         this.mInflater = LayoutInflater.from(activity);
         this.mBleScanListener = mBleScanListener;
-        this.mScannedDeviceModelList = scannerLiveData.getDevices();
+        this.mScannedDeviceModelList = mScannedDeviceModelList;
         //endregion Initialize Objects
-
-        scannerLiveData.observe(activity, devices -> {
-            notifyDataSetChanged();
-        });
     }
 
     //region Adapter CallBacks
