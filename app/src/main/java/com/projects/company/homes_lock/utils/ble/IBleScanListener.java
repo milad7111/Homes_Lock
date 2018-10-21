@@ -18,7 +18,7 @@ public interface IBleScanListener<T> {
 
     void setBluetoothGatt(BluetoothGatt mBluetoothGatt);
 
-    void onDataReceived(T response);
+    void onDataReceived(T value);
 
-    void onDataSent();
+    void onDataSent(T value);
 }

@@ -6,9 +6,9 @@ import no.nordicsemi.android.ble.BleManagerCallbacks;
 
 public interface IBleDeviceManagerCallbacks<T> extends BleManagerCallbacks {
 
-    void onDataReceived(T response);
+    void onDataReceived(T value);
 
-    void onDataSent();
+    void onDataSent(T value);
 
     void setBluetoothGatt(BluetoothGatt bluetoothGatt);
 }

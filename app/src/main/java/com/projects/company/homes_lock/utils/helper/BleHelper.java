@@ -17,13 +17,18 @@ import java.util.UUID;
 public class BleHelper {
 
     //region Declare Constants
-    public static final UUID LOCK_UUID_SERVICE = UUID.fromString("927c9cb0-cd09-11e8-b568-0800200c9a66");
-    public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_COMMAND = UUID.fromString("927c9cb2-cd09-11e8-b568-0800200c9a66");
-    public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS = UUID.fromString("927c9cb3-cd09-11e8-b568-0800200c9a66");
-    public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_DOOR_STATUS = UUID.fromString("927c9cb4-cd09-11e8-b568-0800200c9a66");
-    public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_SERIAL_NUMBER = UUID.fromString("927c9cb5-cd09-11e8-b568-0800200c9a66");
-    public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_ERRORS = UUID.fromString("927c9cb6-cd09-11e8-b568-0800200c9a66");
-    public static final UUID LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_PAIR_PASSWORD = UUID.fromString("927c9cb7-cd09-11e8-b568-0800200c9a66");
+    public static final UUID SERVICE_UUID_LOCK = UUID.fromString("927c9cb0-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_LOCK_COMMAND = UUID.fromString("927c9cb2-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_LOCK_STATUS = UUID.fromString("927c9cb3-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_DOOR_STATUS = UUID.fromString("927c9cb4-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_LOCK_SERIAL_NUMBER = UUID.fromString("927c9cb5-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_LOCK_ERRORS = UUID.fromString("927c9cb6-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_LOCK_PAIR_PASSWORD = UUID.fromString("927c9cb7-cd09-11e8-b568-0800200c9a66");
+
+    public static final UUID SERVICE_UUID_WIFI = UUID.fromString("927c9cd0-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_WIFI_LIST = UUID.fromString("927c9cd2-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD = UUID.fromString("927c9cd3-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_CONNECTION_STATUS = UUID.fromString("927c9cd4-cd09-11e8-b568-0800200c9a66");
 
     public static final String LOCK_STATUS_LOCK = "lock";
     public static final String LOCK_STATUS_UNLOCK = "unlock";

@@ -18,14 +18,10 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
-import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.List;
-
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,17 +89,17 @@ public class LockPageFragment extends Fragment
             }
         });
 
-        mDeviceViewModel.setNotifyForCharacteristic(
-                ((LockActivity) getActivity()).getBluetoothGatt(),
-                LOCK_UUID_SERVICE,
-                LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS,
-                true,
-                "fsafasfasfasf");
-
-        mDeviceViewModel.readCharacteristic(
-                ((LockActivity) getActivity()).getBluetoothGatt(),
-                LOCK_UUID_SERVICE,
-                LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS);
+//        mDeviceViewModel.setNotifyForCharacteristic(
+//                ((LockActivity) getActivity()).getBluetoothGatt(),
+//                SERVICE_UUID_LOCK,
+//                CHARACTERISTIC_UUID_LOCK_STATUS,
+//                true,
+//                "fsafasfasfasf");
+//
+//        mDeviceViewModel.readCharacteristic(
+//                ((LockActivity) getActivity()).getBluetoothGatt(),
+//                SERVICE_UUID_LOCK,
+//                CHARACTERISTIC_UUID_LOCK_STATUS);
         //endregion Setup Views
     }
 
@@ -128,7 +124,7 @@ public class LockPageFragment extends Fragment
     }
 
     @Override
-    public void onDataSent() {
+    public void onDataSent(Object value) {
     }
 
     @Override

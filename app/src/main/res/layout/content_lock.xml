@@ -39,11 +39,23 @@
         <!--android:textColor="@android:color/black"-->
         <!--android:textSize="24sp" />-->
 
-        <!--<Button-->
-        <!--android:id="@+id/btn2"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:text="write" />-->
+        <Button
+            android:id="@+id/btn1"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:text="write" />
+
+        <Button
+            android:id="@+id/btn2"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:text="read wifi list" />
+
+        <Button
+            android:id="@+id/btn3"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:text="notify" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcv_ble_devices"

@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.utils.ble;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -12,7 +13,13 @@ import java.util.UUID;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.Request;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_CONNECTION_STATUS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_COMMAND;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_STATUS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_WIFI_LIST;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_LOCK;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_WIFI;
 
 public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
@@ -20,19 +27,42 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     //endregion Declare Constants
 
     //region Declare Objects
+    private BluetoothGattCharacteristic mLockStatusCharacteristic;
+    private BluetoothGattCharacteristic mLockCommandCharacteristic;
+    private BluetoothGattCharacteristic mWifiListCharacteristic;
+    private BluetoothGattCharacteristic mWifiNameSecurityPasswordCharacteristic;
+    private BluetoothGattCharacteristic mConnectionStatusCharacteristic;
+
     private final BleManagerGattCallback mGattCallback = new BleManagerGattCallback() {
 
         @Override
         protected Deque<Request> initGatt(final BluetoothGatt gatt) {
             final LinkedList<Request> requests = new LinkedList<>();
-//            requests.push(Request.newEnableNotificationsRequest(mButtonCharacteristic));
+//            requests.push(Request.newEnableNotificationsRequest(mLockStatusCharacteristic));
+//            requests.push(Request.newReadRequest(mLockStatusCharacteristic));
             return requests;
         }
 
         @Override
         public boolean isRequiredServiceSupported(final BluetoothGatt gatt) {
-            mCallbacks.setBluetoothGatt(gatt);
-            return true;
+            BluetoothGattService mBluetoothGattService = gatt.getService(SERVICE_UUID_LOCK);
+            if (mBluetoothGattService != null) {
+                mLockStatusCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS);
+                mLockCommandCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_LOCK_COMMAND);
+            }
+
+            mBluetoothGattService = gatt.getService(SERVICE_UUID_WIFI);
+            if (mBluetoothGattService != null) {
+                mWifiListCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_WIFI_LIST);
+                mWifiNameSecurityPasswordCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD);
+                mConnectionStatusCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_CONNECTION_STATUS);
+            }
+
+//            return mLockStatusCharacteristic != null &&
+//                    mLockCommandCharacteristic != null;
+            return mWifiListCharacteristic != null
+                    && mWifiNameSecurityPasswordCharacteristic != null
+                    && mConnectionStatusCharacteristic != null;
         }
 
         @Override
@@ -41,20 +71,17 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            if (characteristic.getUuid().equals(LOCK_UUID_SERVICE_CHARACTERISTIC_LOCK_STATUS)) {
+//            if (characteristic.getUuid().equals(CHARACTERISTIC_UUID_LOCK_STATUS))
                 mCallbacks.onDataReceived(characteristic);
-            }
         }
 
         @Override
         public void onCharacteristicWrite(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            // This method is only called for LED characteristic
-            mCallbacks.onDataSent();
+            mCallbacks.onDataSent(characteristic);
         }
 
         @Override
         public void onCharacteristicNotified(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            // This method is only called for Button characteristic
             mCallbacks.onDataReceived(characteristic);
         }
     };
@@ -80,29 +107,34 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     //endregion BleManager CallBacks
 
     //region Declare Methods
-    public void readCharacteristic(BluetoothGatt bluetoothGatt, UUID serviceUUID, UUID characteristicUUID) {
-        if (bluetoothGatt != null) {
-            BluetoothGattCharacteristic mBluetoothGattCharacteristic =
-                    bluetoothGatt.getService(serviceUUID).getCharacteristic(characteristicUUID);
-            bluetoothGatt.readCharacteristic(mBluetoothGattCharacteristic);
-        }
+    public void readCharacteristic(UUID characteristicUUID) {
+        readCharacteristic(getBluetoothGattCharacteristic(characteristicUUID));
     }
 
-    public void writeCharacteristic(BluetoothGatt bluetoothGatt, UUID serviceUUID, UUID characteristicUUID, String s) {
-        if (bluetoothGatt != null) {
-            BluetoothGattCharacteristic mBluetoothGattCharacteristic =
-                    bluetoothGatt.getService(serviceUUID).getCharacteristic(characteristicUUID);
-            mBluetoothGattCharacteristic.setValue(s.getBytes());
-            bluetoothGatt.writeCharacteristic(mBluetoothGattCharacteristic);
-        }
+    public void writeCharacteristic(UUID characteristicUUID, String s) {
+        writeCharacteristic(getBluetoothGattCharacteristic(characteristicUUID), s.getBytes());
     }
 
-    public void setNotifyForCharacteristic(BluetoothGatt bluetoothGatt, UUID serviceUUID, UUID characteristicUUID, boolean notifyStatus) {
-        if (bluetoothGatt != null) {
-            BluetoothGattCharacteristic mBluetoothGattCharacteristic =
-                    bluetoothGatt.getService(serviceUUID).getCharacteristic(characteristicUUID);
-            bluetoothGatt.setCharacteristicNotification(mBluetoothGattCharacteristic, notifyStatus);
-        }
+    public void changeNotifyForCharacteristic(UUID characteristicUUID, boolean notifyStatus) {
+        if (notifyStatus)
+            enableNotifications(getBluetoothGattCharacteristic(characteristicUUID));
+        else
+            disableNotifications(getBluetoothGattCharacteristic(characteristicUUID));
+    }
+
+    private BluetoothGattCharacteristic getBluetoothGattCharacteristic(UUID characteristicUUID) {
+        if (characteristicUUID.equals(CHARACTERISTIC_UUID_LOCK_COMMAND))
+            return mLockCommandCharacteristic;
+        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_LOCK_STATUS))
+            return mLockStatusCharacteristic;
+        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_WIFI_LIST))
+            return mWifiListCharacteristic;
+        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD))
+            return mWifiNameSecurityPasswordCharacteristic;
+        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_CONNECTION_STATUS))
+            return mConnectionStatusCharacteristic;
+
+        return null;
     }
     //endregion Declare Methods
 }

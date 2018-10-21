@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,9 +24,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.ederdoski.simpleble.utils.BluetoothLEHelper;
@@ -37,7 +41,6 @@ import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
-import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
@@ -49,6 +52,9 @@ import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_COMMAND;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_STATUS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_WIFI_LIST;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.ERROR_CODE_BLE_NOT_ENABLED;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ENABLE_BLUETOOTH;
@@ -70,6 +76,9 @@ public class LockActivity extends BaseActivity
     private NavigationView activityLockNavigationView;
     private FloatingActionButton appBarLockFabAddLock;
     private RecyclerView rcvBleDevices;
+    private Button btn1;
+    private Button btn2;
+    private Button btn3;
     //endregion Declare Views
 
     //region Declare Variables
@@ -97,6 +106,9 @@ public class LockActivity extends BaseActivity
         activityLockDrawerLayout = findViewById(R.id.activityLock_drawer_layout);
         activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
         rcvBleDevices = findViewById(R.id.rcv_ble_devices);
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
         //endregion Initialize Views
 
         //region Initialize Variables
@@ -131,6 +143,10 @@ public class LockActivity extends BaseActivity
 
         rcvBleDevices.setAdapter(mBleDeviceAdapter);
         rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
+
+        btn1.setOnClickListener(this);
+        btn2.setOnClickListener(this);
+        btn3.setOnClickListener(this);
         //endregion Setup Views
     }
 
@@ -220,12 +236,17 @@ public class LockActivity extends BaseActivity
                 //mDeviceViewModel.getAllServerDevices();
                 getAccessibleBleDevices();
                 break;
-//            case R.id.btn1:
-//                mDeviceViewModel.readCharacteristic();
-//                break;
-//            case R.id.btn2:
-//                mDeviceViewModel.writeCharacteristic(edt1.getText().toString());
-//                break;
+            case R.id.btn1:
+                mDeviceViewModel.writeCharacteristic(
+                        CHARACTERISTIC_UUID_LOCK_COMMAND,
+                        "{\"command\":\"unlock\"}");
+                break;
+            case R.id.btn2:
+                mDeviceViewModel.readCharacteristic(CHARACTERISTIC_UUID_WIFI_LIST);
+                break;
+            case R.id.btn3:
+                mDeviceViewModel.changeNotifyForCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS, true);
+                break;
         }
     }
 
@@ -292,8 +313,10 @@ public class LockActivity extends BaseActivity
             public void onChanged(@Nullable final Boolean isConnected) {
 //                Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();
                 if (isConnected) {
-//                    unregisterReceiver(mBroadcastReceiver);
-                    ViewHelper.setFragment(LockActivity.this, R.id.frg_lock_activity, new LockPageFragment());
+                    Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_SHORT).show();
+//                    mDeviceViewModel.readCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS);
+//                    mDeviceViewModel.changeNotifyForCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS, true);
+//                    ViewHelper.setFragment(LockActivity.this, R.id.frg_lock_activity, new LockPageFragment());
                 }
             }
         });
@@ -305,11 +328,13 @@ public class LockActivity extends BaseActivity
     }
 
     @Override
-    public void onDataReceived(Object response) {
+    public void onDataReceived(Object value) {
+        Log.e("Read done : ", new String(((BluetoothGattCharacteristic) value).getValue()));
     }
 
     @Override
-    public void onDataSent() {
+    public void onDataSent(Object value) {
+        Log.e("Write done : ", new String(((BluetoothGattCharacteristic) value).getValue()));
     }
     //endregion BLE CallBacks
 
@@ -376,7 +401,6 @@ public class LockActivity extends BaseActivity
         // First, check the Location permission. This is required on Marshmallow onwards in order to scan for Bluetooth LE devices.
         if (BleHelper.isLocationPermissionsGranted(this)) {
 
-//            mNoLocationPermissionView.setVisibility(View.GONE);
 
             // Bluetooth must be enabled
             if (state.isBluetoothEnabled()) {
