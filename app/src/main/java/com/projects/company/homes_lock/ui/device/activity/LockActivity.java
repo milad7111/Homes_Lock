@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,21 +13,20 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
@@ -41,6 +39,7 @@ import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.ScannerLiveData;
@@ -48,13 +47,11 @@ import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_COMMAND;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_STATUS;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_WIFI_LIST;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.ERROR_CODE_BLE_NOT_ENABLED;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ENABLE_BLUETOOTH;
@@ -65,7 +62,8 @@ public class LockActivity extends BaseActivity
         NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener,
         IMQTTListener,
-        IBleScanListener {
+        IBleScanListener,
+        LockPageFragment.OnFragmentInteractionListener{
 
     //region Declare Constants
     //endregion Declare Constants
@@ -74,11 +72,6 @@ public class LockActivity extends BaseActivity
     private Toolbar appBarLockToolbar;
     private DrawerLayout activityLockDrawerLayout;
     private NavigationView activityLockNavigationView;
-    private FloatingActionButton appBarLockFabAddLock;
-    private RecyclerView rcvBleDevices;
-    private Button btn1;
-    private Button btn2;
-    private Button btn3;
     //endregion Declare Views
 
     //region Declare Variables
@@ -96,19 +89,28 @@ public class LockActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_lock);
+
+        WormDotsIndicator wormDotsIndicator = findViewById(R.id.worm_dots_indicator);
+
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        CustomDeviceAdapter mAdapter = new CustomDeviceAdapter(getSupportFragmentManager());
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setAdapter(mAdapter);
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+
+        wormDotsIndicator.setViewPager(viewPager);
 
 //        initMQTT();
 
         //region Initialize Views
         appBarLockToolbar = findViewById(R.id.appBarLock_toolbar);
-        appBarLockFabAddLock = findViewById(R.id.appBarLock_fab_addLock);
         activityLockDrawerLayout = findViewById(R.id.activityLock_drawer_layout);
         activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
-        rcvBleDevices = findViewById(R.id.rcv_ble_devices);
-        btn1 = findViewById(R.id.btn1);
-        btn2 = findViewById(R.id.btn2);
-        btn3 = findViewById(R.id.btn3);
+//        rcvBleDevices = findViewById(R.id.rcv_ble_devices);
         //endregion Initialize Views
 
         //region Initialize Variables
@@ -134,19 +136,13 @@ public class LockActivity extends BaseActivity
         //region Setup Views
         setSupportActionBar(appBarLockToolbar);
 
-        appBarLockFabAddLock.setOnClickListener(this);
-
         activityLockDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
 
         activityLockNavigationView.setNavigationItemSelectedListener(this);
 
-        rcvBleDevices.setAdapter(mBleDeviceAdapter);
-        rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
-
-        btn1.setOnClickListener(this);
-        btn2.setOnClickListener(this);
-        btn3.setOnClickListener(this);
+//        rcvBleDevices.setAdapter(mBleDeviceAdapter);
+//        rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
         //endregion Setup Views
     }
 
@@ -231,23 +227,23 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.appBarLock_fab_addLock:
-                //mDeviceViewModel.getAllServerDevices();
-                getAccessibleBleDevices();
-                break;
-            case R.id.btn1:
-                mDeviceViewModel.writeCharacteristic(
-                        CHARACTERISTIC_UUID_LOCK_COMMAND,
-                        "{\"command\":\"unlock\"}");
-                break;
-            case R.id.btn2:
-                mDeviceViewModel.readCharacteristic(CHARACTERISTIC_UUID_WIFI_LIST);
-                break;
-            case R.id.btn3:
-                mDeviceViewModel.changeNotifyForCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS, true);
-                break;
-        }
+//        switch (view.getId()) {
+//            case R.id.appBarLock_fab_addLock:
+//                //mDeviceViewModel.getAllServerDevices();
+//                getAccessibleBleDevices();
+//                break;
+//            case R.id.btn1:
+//                mDeviceViewModel.writeCharacteristic(
+//                        CHARACTERISTIC_UUID_LOCK_COMMAND,
+//                        "{\"command\":\"unlock\"}");
+//                break;
+//            case R.id.btn2:
+//                mDeviceViewModel.readCharacteristic(CHARACTERISTIC_UUID_WIFI_LIST);
+//                break;
+//            case R.id.btn3:
+//                mDeviceViewModel.changeNotifyForCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS, true);
+//                break;
+//        }
     }
 
     @Override
@@ -256,6 +252,10 @@ public class LockActivity extends BaseActivity
 
 //        if (mBroadcastReceiver != null)
 //            unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
     }
     //endregion Main CallBacks
 
@@ -300,11 +300,6 @@ public class LockActivity extends BaseActivity
         }
     }
 
-    @Override
-    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
-//        this.mBroadcastReceiver = mBroadcastReceiver;
-    }
-
     @Override//02:80:E1:00:34:12
     public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
         mDeviceViewModel.connect(mScannedDeviceModel);
@@ -320,11 +315,6 @@ public class LockActivity extends BaseActivity
                 }
             }
         });
-    }
-
-    @Override
-    public void setBluetoothGatt(BluetoothGatt mBluetoothGatt) {
-        this.mBluetoothGatt = mBluetoothGatt;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.projects.company.homes_lock.ui.device.fragment.addlock;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseFragment;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link android.support.v4.app.Fragment} subclass.
  */
 public class AddLockFragment extends BaseFragment implements IAddLockFragment {
 
@@ -29,6 +28,10 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment {
     //endregion Declare Objects
 
     public AddLockFragment() {
+    }
+
+    public static AddLockFragment newInstance() {
+        return new AddLockFragment();
     }
 
     //region Main CallBacks

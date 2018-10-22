@@ -4,66 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="16dp"
     android:background="@color/md_black_1000"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.projects.company.homes_lock.ui.device.activity.LockActivity"
     tools:showIn="@layout/app_bar_lock">
 
-    <LinearLayout
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/md_black_1000"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!--<Button-->
-        <!--android:id="@+id/btn1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:text="read" />-->
+    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+        android:id="@+id/worm_dots_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        app:dotsColor="@color/md_blue_800"
+        app:dotsSize="16dp"
+        app:dotsSpacing="4dp"
+        app:dotsWidthFactor="2.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-        <!--<TextView-->
-        <!--android:id="@+id/txv1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:background="@android:color/white"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--android:textSize="24sp"-->
-        <!--tools:layout_editor_absoluteY="5dp" />-->
-
-        <!--<EditText-->
-        <!--android:id="@+id/edt1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:background="@android:color/white"-->
-        <!--android:hint="type value for characteristic"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--android:textSize="24sp" />-->
-
-        <Button
-            android:id="@+id/btn1"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:text="write" />
-
-        <Button
-            android:id="@+id/btn2"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:text="read wifi list" />
-
-        <Button
-            android:id="@+id/btn3"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:text="notify" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcv_ble_devices"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/darker_gray"
-            tools:listitem="@layout/item_ble_devices" />
-
-    </LinearLayout>
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/rcv_ble_devices"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@android:color/darker_gray"-->
+    <!--tools:listitem="@layout/item_ble_devices" />-->
 
 </android.support.constraint.ConstraintLayout>

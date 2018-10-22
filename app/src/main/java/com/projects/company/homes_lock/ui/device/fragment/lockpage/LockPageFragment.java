@@ -1,10 +1,6 @@
 package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
-
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.bluetooth.BluetoothGatt;
-import android.content.BroadcastReceiver;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,12 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
-import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.List;
 
@@ -30,6 +23,7 @@ public class LockPageFragment extends Fragment
         implements ILockPageFragment, IBleScanListener, View.OnClickListener {
 
     //region Declare Constants
+    private static final String ARG_PARAM = "param";
     //endregion Declare Constants
 
     //region Declare Views
@@ -37,6 +31,7 @@ public class LockPageFragment extends Fragment
     //endregion Declare Views
 
     //region Declare Variables
+    private String mParam;
     //endregion Declare Variables
 
     //region Declare Objects
@@ -47,19 +42,28 @@ public class LockPageFragment extends Fragment
         // Required empty public constructor
     }
 
+    public static LockPageFragment newInstance(String param) {
+        LockPageFragment fragment = new LockPageFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM, param);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     //region Main CallBacks
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //region Initialize Variables
+        mParam = getArguments() != null ? getArguments().getString(ARG_PARAM) : null;
         //endregion Initialize Variables
 
         //region Initialize Objects
-        this.mDeviceViewModel = ViewModelProviders.of(
-                LockPageFragment.this,
-                new DeviceViewModelFactory(getActivity().getApplication(), LockPageFragment.this))
-                .get(DeviceViewModel.class);
+//        this.mDeviceViewModel = ViewModelProviders.of(
+//                LockPageFragment.this,
+//                new DeviceViewModelFactory(getActivity().getApplication(), LockPageFragment.this))
+//                .get(DeviceViewModel.class);
         //endregion Initialize Objects
     }
 
@@ -81,25 +85,13 @@ public class LockPageFragment extends Fragment
         imgMainLockPage.setOnClickListener(this);
 
 //        mDeviceViewModel.getADevice("fsafasfasfasf");
-        this.mDeviceViewModel.getADevice("fsafasfasfasf").observe(this, new Observer<Device>() {
-            @Override
-            public void onChanged(@Nullable final Device device) {
-                if (imgMainLockPage != null)
-                    ViewHelper.setLockStatusImage(imgMainLockPage, device.getLockStatus());
-            }
-        });
-
-//        mDeviceViewModel.setNotifyForCharacteristic(
-//                ((LockActivity) getActivity()).getBluetoothGatt(),
-//                SERVICE_UUID_LOCK,
-//                CHARACTERISTIC_UUID_LOCK_STATUS,
-//                true,
-//                "fsafasfasfasf");
-//
-//        mDeviceViewModel.readCharacteristic(
-//                ((LockActivity) getActivity()).getBluetoothGatt(),
-//                SERVICE_UUID_LOCK,
-//                CHARACTERISTIC_UUID_LOCK_STATUS);
+//        this.mDeviceViewModel.getADevice("fsafasfasfasf").observe(this, new Observer<Device>() {
+//            @Override
+//            public void onChanged(@Nullable final Device device) {
+//                if (imgMainLockPage != null)
+//                    ViewHelper.setLockStatusImage(imgMainLockPage, device.getLockStatus());
+//            }
+//        });
         //endregion Setup Views
     }
 
@@ -116,6 +108,9 @@ public class LockPageFragment extends Fragment
         super.onResume();
     }
 
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
     //endregion Main CallBacks
 
     //region BLE CallBacks
@@ -136,15 +131,7 @@ public class LockPageFragment extends Fragment
     }
 
     @Override
-    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
-    }
-
-    @Override
     public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-    }
-
-    @Override
-    public void setBluetoothGatt(BluetoothGatt mBluetoothGatt) {
     }
     //endregion BLE CallBacks
 

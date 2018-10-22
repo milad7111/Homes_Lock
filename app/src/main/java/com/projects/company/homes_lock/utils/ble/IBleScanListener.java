@@ -12,11 +12,7 @@ public interface IBleScanListener<T> {
 
     void onFindBleFault(T response);
 
-    void setReceiver(BroadcastReceiver mBroadcastReceiver);
-
     void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel);
-
-    void setBluetoothGatt(BluetoothGatt mBluetoothGatt);
 
     void onDataReceived(T value);
 

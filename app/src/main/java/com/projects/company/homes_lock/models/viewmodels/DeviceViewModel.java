@@ -324,17 +324,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     @Override
-    public void setReceiver(BroadcastReceiver mBroadcastReceiver) {
-    }
-
-    @Override
     public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-    }
-
-    @Override
-    public void setBluetoothGatt(BluetoothGatt mBluetoothGatt) {
-        if (mIBleScanListener != null)
-            mIBleScanListener.setBluetoothGatt(mBluetoothGatt);
     }
     //endregion BLE CallBacks
 
