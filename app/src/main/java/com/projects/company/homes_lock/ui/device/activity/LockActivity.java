@@ -110,7 +110,6 @@ public class LockActivity extends BaseActivity
         appBarLockToolbar = findViewById(R.id.appBarLock_toolbar);
         activityLockDrawerLayout = findViewById(R.id.activityLock_drawer_layout);
         activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
-//        rcvBleDevices = findViewById(R.id.rcv_ble_devices);
         //endregion Initialize Views
 
         //region Initialize Variables
@@ -140,9 +139,6 @@ public class LockActivity extends BaseActivity
         mActionBarDrawerToggle.syncState();
 
         activityLockNavigationView.setNavigationItemSelectedListener(this);
-
-//        rcvBleDevices.setAdapter(mBleDeviceAdapter);
-//        rcvBleDevices.setLayoutManager(new LinearLayoutManager(this));
         //endregion Setup Views
     }
 
@@ -249,9 +245,6 @@ public class LockActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-//        if (mBroadcastReceiver != null)
-//            unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
@@ -272,7 +265,6 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void insertDevice(Device device) {
-
     }
 
     @Override

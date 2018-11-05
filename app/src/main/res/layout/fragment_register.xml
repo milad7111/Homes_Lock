@@ -4,31 +4,67 @@
     android:background="@color/md_black_1000"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:weightSum="10">
+    android:weightSum="13">
 
-    <EditText
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txil_register_email"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:hint="Email"
-        android:textColor="@color/md_white_1000"
-        android:textColorHint="@color/md_white_1000" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="2"
+        android:textColorHint="@color/hintColor">
 
-    <EditText
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tiet_register_email"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Email : example@mail.com"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/hintColor"
+            android:textColorHint="@color/hintColor" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txil_register_password"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:hint="Password"
-        android:textColor="@color/md_white_1000"
-        android:textColorHint="@color/md_white_1000" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="2"
+        android:textColorHint="@color/hintColor">
 
-    <EditText
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tiet_register_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:textColor="@color/hintColor"
+            android:textColorHint="@color/hintColor" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txil_register_confirm_password"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:hint="Confirm Password"
-        android:textColor="@color/md_white_1000"
-        android:textColorHint="@color/md_white_1000" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="2"
+        android:textColorHint="@color/hintColor">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tiet_register_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:textColor="@color/hintColor"
+            android:textColorHint="@color/hintColor" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:layout_width="250dp"

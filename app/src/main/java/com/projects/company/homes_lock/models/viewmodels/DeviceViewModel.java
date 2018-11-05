@@ -141,14 +141,14 @@ public class DeviceViewModel extends AndroidViewModel
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mBluetoothLEHelper = new BluetoothLEHelper((Activity) mIBleScanListener);
+        this.mBluetoothLEHelper = new BluetoothLEHelper((Activity) mIBleScanListener);
 
-        mLocalRepository = new LocalRepository(application);
-        mNetworkRepository = new NetworkRepository();
+        this.mLocalRepository = new LocalRepository(application);
+        this.mNetworkRepository = new NetworkRepository();
 
-        mBleDeviceManager = new BleDeviceManager(getApplication());
-        mBleDeviceManager.setGattCallbacks(this);
-        mScannerLiveData = new ScannerLiveData(BleHelper.isBleEnabled(), BleHelper.isLocationEnabled(application));
+        this.mBleDeviceManager = new BleDeviceManager(getApplication());
+        this.mBleDeviceManager.setGattCallbacks(this);
+        this.mScannerLiveData = new ScannerLiveData(BleHelper.isBleEnabled(), BleHelper.isLocationEnabled(application));
         this.mIBleScanListener = mIBleScanListener;
         //endregion Initialize Objects
 

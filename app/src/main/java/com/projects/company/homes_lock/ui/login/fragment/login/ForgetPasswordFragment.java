@@ -1,6 +1,5 @@
 package com.projects.company.homes_lock.ui.login.fragment.login;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -57,6 +56,14 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
 
         //region Setup Views
         //endregion Setup Views
+    }
+
+    @Override
+    public void onLoginSuccessful(Object response) {
+    }
+
+    @Override
+    public void onLoginFailed(Object response) {
     }
 
     //region Declare Methods
