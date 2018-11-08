@@ -13,13 +13,9 @@ import java.util.UUID;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.Request;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_CONNECTION_STATUS;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_COMMAND;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_LOCK_STATUS;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_WIFI_LIST;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_LOCK;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_WIFI;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_SERIAL;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 
 public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
@@ -27,11 +23,8 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     //endregion Declare Constants
 
     //region Declare Objects
-    private BluetoothGattCharacteristic mLockStatusCharacteristic;
-    private BluetoothGattCharacteristic mLockCommandCharacteristic;
-    private BluetoothGattCharacteristic mWifiListCharacteristic;
-    private BluetoothGattCharacteristic mWifiNameSecurityPasswordCharacteristic;
-    private BluetoothGattCharacteristic mConnectionStatusCharacteristic;
+    private BluetoothGattCharacteristic mTXCharacteristic;
+    private BluetoothGattCharacteristic mRXCharacteristic;
 
     private final BleManagerGattCallback mGattCallback = new BleManagerGattCallback() {
 
@@ -45,24 +38,13 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         public boolean isRequiredServiceSupported(final BluetoothGatt gatt) {
-            BluetoothGattService mBluetoothGattService = gatt.getService(SERVICE_UUID_LOCK);
+            BluetoothGattService mBluetoothGattService = gatt.getService(SERVICE_UUID_SERIAL);
             if (mBluetoothGattService != null) {
-                mLockStatusCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS);
-                mLockCommandCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_LOCK_COMMAND);
+                mTXCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_TX);
+                mRXCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_RX);
             }
 
-            mBluetoothGattService = gatt.getService(SERVICE_UUID_WIFI);
-            if (mBluetoothGattService != null) {
-                mWifiListCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_WIFI_LIST);
-                mWifiNameSecurityPasswordCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD);
-                mConnectionStatusCharacteristic = mBluetoothGattService.getCharacteristic(CHARACTERISTIC_UUID_CONNECTION_STATUS);
-            }
-
-//            return mLockStatusCharacteristic != null &&
-//                    mLockCommandCharacteristic != null;
-            return mWifiListCharacteristic != null
-                    && mWifiNameSecurityPasswordCharacteristic != null
-                    && mConnectionStatusCharacteristic != null;
+            return mTXCharacteristic != null && mRXCharacteristic != null;
         }
 
         @Override
@@ -123,16 +105,10 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     }
 
     private BluetoothGattCharacteristic getBluetoothGattCharacteristic(UUID characteristicUUID) {
-        if (characteristicUUID.equals(CHARACTERISTIC_UUID_LOCK_COMMAND))
-            return mLockCommandCharacteristic;
-        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_LOCK_STATUS))
-            return mLockStatusCharacteristic;
-        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_WIFI_LIST))
-            return mWifiListCharacteristic;
-        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD))
-            return mWifiNameSecurityPasswordCharacteristic;
-        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_CONNECTION_STATUS))
-            return mConnectionStatusCharacteristic;
+        if (characteristicUUID.equals(CHARACTERISTIC_UUID_TX))
+            return mTXCharacteristic;
+        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_RX))
+            return mRXCharacteristic;
 
         return null;
     }

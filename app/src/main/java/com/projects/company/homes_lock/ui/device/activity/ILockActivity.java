@@ -7,9 +7,4 @@ import com.projects.company.homes_lock.database.tables.Device;
  */
 
 public interface ILockActivity {
-    void getAllDevices();
-
-    void insertDevice(Device device);
-
-    void deleteDevice(Device device);
 }

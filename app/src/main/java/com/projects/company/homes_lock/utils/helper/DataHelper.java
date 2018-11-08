@@ -1,7 +1,10 @@
 package com.projects.company.homes_lock.utils.helper;
 
+import com.google.gson.Gson;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.response.DeviceModel;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,5 +55,14 @@ public class DataHelper {
                 mArray.add(((ScannedDeviceModel) listOfObjects.get(i)).getName());
 
         return mArray;
+    }
+
+    public static Object convertJsonToObject(String data, String className){
+        try {
+            return new Gson().fromJson(data, (Type) Class.forName(className));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new DeviceModel();
+        }
     }
 }

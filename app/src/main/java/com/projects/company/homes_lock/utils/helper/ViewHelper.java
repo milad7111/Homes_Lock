@@ -1,6 +1,8 @@
 package com.projects.company.homes_lock.utils.helper;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -49,6 +51,13 @@ public class ViewHelper {
             imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_close));
         else if (lockStatus == 2)
             imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_idle));
+    }
+
+    public static void setBleConnectionStatusImage(ImageView imageViewBle, boolean bleConnectionStatus) {
+        if (bleConnectionStatus)
+            imageViewBle.setImageResource(R.mipmap.ic_ble_connect);
+        else
+            imageViewBle.setImageResource(R.drawable.ic_ble);
     }
 
     public static void setContext(Context mContext) {

@@ -29,9 +29,13 @@ public class Device extends BaseModel {
     @SerializedName("objectId")
     private String mObjectId;
 
-    @ColumnInfo(name = "lockSSID")
-    @SerializedName("lockSSID")
-    private String mLockSSID;
+    @ColumnInfo(name = "bleDeviceName")
+    @SerializedName("bleDeviceName")
+    private String mBleDeviceName;
+
+    @ColumnInfo(name = "bleDeviceMacAddress")
+    @SerializedName("bleDeviceMacAddress")
+    private String mBleDeviceMacAddress;
 
     @ColumnInfo(name = "serialNumber")
     @SerializedName("serialNumber")
@@ -85,7 +89,7 @@ public class Device extends BaseModel {
     @SerializedName("lockPosition")
     private Integer mLockPosition;
 
-    //region other attributes
+    //region other server attributes
     @Ignore
     @SerializedName("created")
     private Long mCreatedAt;
@@ -113,11 +117,12 @@ public class Device extends BaseModel {
     @Ignore
     @SerializedName("user")
     private UserModel mUser;
-    //endregion other attributes
+    //endregion other server attributes
 
     public Device(@NonNull String mObjectId) {
         this.mObjectId = mObjectId;
-        this.mLockSSID = "711AmirAli";
+        this.mBleDeviceName = "711AmirAli";
+        this.mBleDeviceMacAddress = "02:80:E1:00:34:12";
         this.mSerialNumber = mObjectId;
         this.mLockStatus = 0;
         this.mDoorStatus = false;
@@ -136,7 +141,8 @@ public class Device extends BaseModel {
     @Ignore
     public Device(
             @NonNull String mObjectId,
-            String mLockSSID,
+            String mBleDeviceName,
+            String mBleDeviceMacAddress,
             String mSerialNumber,
             int mLockStatus,
             Boolean mDoorStatus,
@@ -151,7 +157,8 @@ public class Device extends BaseModel {
             Integer mFWVersion,
             Integer mLockPosition) {
         this.mObjectId = mObjectId;
-        this.mLockSSID = mLockSSID;
+        this.mBleDeviceName = mBleDeviceName;
+        this.mBleDeviceMacAddress = mBleDeviceMacAddress;
         this.mSerialNumber = mSerialNumber;
         this.mLockStatus = mLockStatus;
         this.mDoorStatus = mDoorStatus;
@@ -176,12 +183,20 @@ public class Device extends BaseModel {
         this.mObjectId = mObjectId;
     }
 
-    public String getLockSSID() {
-        return mLockSSID;
+    public String getBleDeviceName() {
+        return mBleDeviceName;
     }
 
-    public void setLockSSID(String mLockSSID) {
-        this.mLockSSID = mLockSSID;
+    public void setBleDeviceName(String mBleDeviceName) {
+        this.mBleDeviceName = mBleDeviceName;
+    }
+
+    public String getBleDeviceMacAddress() {
+        return mBleDeviceMacAddress;
+    }
+
+    public void setBleDeviceMacAddress(String mBleDeviceMacAddress) {
+        this.mBleDeviceMacAddress = mBleDeviceMacAddress;
     }
 
     public String getSerialNumber() {

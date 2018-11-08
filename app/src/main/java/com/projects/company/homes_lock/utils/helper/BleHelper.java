@@ -4,31 +4,29 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Stream;
+
+import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 
 public class BleHelper {
 
     //region Declare Constants
-    public static final UUID SERVICE_UUID_LOCK = UUID.fromString("927c9cb0-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_LOCK_COMMAND = UUID.fromString("927c9cb2-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_LOCK_STATUS = UUID.fromString("927c9cb3-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_DOOR_STATUS = UUID.fromString("927c9cb4-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_LOCK_SERIAL_NUMBER = UUID.fromString("927c9cb5-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_LOCK_ERRORS = UUID.fromString("927c9cb6-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_LOCK_PAIR_PASSWORD = UUID.fromString("927c9cb7-cd09-11e8-b568-0800200c9a66");
-
-    public static final UUID SERVICE_UUID_WIFI = UUID.fromString("927c9cd0-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_WIFI_LIST = UUID.fromString("927c9cd2-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_CHOSEN_WIFI_NAME_SECURITY_PASSWORD = UUID.fromString("927c9cd3-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_CONNECTION_STATUS = UUID.fromString("927c9cd4-cd09-11e8-b568-0800200c9a66");
+    public static final UUID SERVICE_UUID_SERIAL = UUID.fromString("927c9cb0-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_TX = UUID.fromString("927c9cb2-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_RX = UUID.fromString("927c9cb3-cd09-11e8-b568-0800200c9a66");
 
     public static final String LOCK_STATUS_LOCK = "lock";
     public static final String LOCK_STATUS_UNLOCK = "unlock";
@@ -129,5 +127,59 @@ public class BleHelper {
 
     public static boolean isMarshmallowOrAbove() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    }
+
+    public static void enableLocation(Activity context) {
+        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        context.startActivity(intent);
+    }
+
+    public static void enableBluetooth(Activity context) {
+        final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        context.startActivity(enableIntent);
+    }
+
+    public static void grantLocationPermission(Activity context) {
+        BleHelper.markLocationPermissionRequested(context);
+        ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ACCESS_COARSE_LOCATION);
+    }
+
+    public static void handlePermissionSettings(Activity context) {
+        final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", context.getPackageName(), null));
+        context.startActivity(intent);
+    }
+
+    public static byte[] createCommand(byte[] functionId, byte[] data) {
+        byte[] fullCommand = new byte[data.length + 2];
+
+        fullCommand = mergeArrays(functionId, data);
+        fullCommand = mergeArrays(fullCommand, new byte[]{0x00});
+
+        return fullCommand;
+    }
+
+    private static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
+        byte[] finalArray = new byte[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, finalArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, finalArray, firstArray.length, secondArray.length);
+
+        return finalArray;
+    }
+
+    private byte createChecksum(byte[] commandArray){
+//            byte checksum = 0x00;
+//
+//            if(commandArray.length == 0)
+//                return 0x00;
+//
+//            for(byte i=0; i<commandArray.length; i++) {
+//                checksum = checksum + (commandArray[i] );
+//            }
+//
+//            return(0xff - checksum);
+//        }
+
+        return 0x00;
     }
 }
