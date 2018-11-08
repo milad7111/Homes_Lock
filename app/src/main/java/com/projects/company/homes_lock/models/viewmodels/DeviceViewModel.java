@@ -1,6 +1,5 @@
 package com.projects.company.homes_lock.models.viewmodels;
 
-import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
@@ -19,12 +18,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ederdoski.simpleble.interfaces.BleCallback;
-import com.ederdoski.simpleble.utils.BluetoothLEHelper;
-import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.ble.LockCommandModel;
-import com.projects.company.homes_lock.models.datamodels.ble.LockStatusModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
@@ -48,7 +43,6 @@ import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 
 public class DeviceViewModel extends AndroidViewModel
@@ -156,15 +150,15 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     //region Device table
-    public LiveData<Integer> getAllDevicesCount() {
-        return mLocalRepository.getAllDevicesCount();
-    }
+//    public LiveData<Integer> getAllDevicesCount() {
+//        return mLocalRepository.getAllDevicesCount();
+//    }
 
     public LiveData<List<Device>> getAllLocalDevices() {
         return mLocalRepository.getAllDevices();
     }
 
-    public LiveData<Device> getADevice(String mActiveDeviceObjectId) {
+    public LiveData<Device> getDeviceInfo(String mActiveDeviceObjectId) {
         return mLocalRepository.getADevice(mActiveDeviceObjectId);
     }
 
@@ -289,30 +283,32 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     @Override
-    public void onDataReceived(Object value) {
+    public void onDataReceived(Object response) {
         UUID responseUUID;
-        if (value instanceof BluetoothGattCharacteristic) {
-            responseUUID = ((BluetoothGattCharacteristic) value).getUuid();
+        if (response instanceof BluetoothGattCharacteristic) {
+            responseUUID = ((BluetoothGattCharacteristic) response).getUuid();
             if (responseUUID.equals(CHARACTERISTIC_UUID_TX)) {
-                LockStatusModel mLockStatusModel =
-                        new Gson().fromJson(new String(((BluetoothGattCharacteristic) value).getValue()), LockStatusModel.class);
-                mLocalRepository.updateDeviceLockStatus(mActiveDeviceObjectId, mLockStatusModel.getLockStatus());
-            } else if (responseUUID.equals(CHARACTERISTIC_UUID_RX)) {
-                LockCommandModel mLockCommandModel =
-                        new Gson().fromJson(new String(((BluetoothGattCharacteristic) value).getValue()), LockCommandModel.class);
+                byte[] responseValue = ((BluetoothGattCharacteristic) response).getValue();
+
+                switch (responseValue[0]) {
+                    case 0x01:
+                        mLocalRepository.updateDeviceLockStatus("fsafasfasfasf", responseValue[1] >> 4 == 1);
+                        mLocalRepository.updateDeviceDoorStatus("fsafasfasfasf", responseValue[1] << 4);
+                        mLocalRepository.updateDeviceBatteryStatus("fsafasfasfasf", responseValue[2]);
+                        mLocalRepository.updateDeviceConnectionStatus("fsafasfasfasf",responseValue);
+                        break;
+                    case 0x05:
+                        mLocalRepository.updateDeviceTemperature("fsafasfasfasf", responseValue[1]);
+                        mLocalRepository.updateDeviceHumidity("fsafasfasfasf", responseValue[2]);
+                        mLocalRepository.updateDeviceCoLevel("fsafasfasfasf", responseValue[3]);
+                        break;
+                }
             }
-
-//                ViewHelper.setLockStatusImage(imgMainLockPage, ((BluetoothGattCharacteristic) response).getValue());
         }
-
-        if (mIBleScanListener != null)
-            mIBleScanListener.onDataReceived(value);
     }
 
     @Override
-    public void onDataSent(Object value) {
-        if (mIBleScanListener != null)
-            mIBleScanListener.onDataSent(value);
+    public void onDataSent(Object response) {
     }
 
     @Override
@@ -398,13 +394,13 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.changeNotifyForCharacteristic(characteristicUUID, notifyStatus);
     }
 
-    public void writeCharacteristic(UUID characteristicUUID, String s) {
-        mBleDeviceManager.writeCharacteristic(characteristicUUID, s);
+    public void writeCharacteristic(UUID characteristicUUID, byte[] value) {
+        mBleDeviceManager.writeCharacteristic(characteristicUUID, value);
     }
 
-    public void getAllAccessibleBLEDevices(Context context, IBleScanListener mIBleScanListener) {
-//        mBleScanner = new BleScanner(context, mIBleScanListener);
-    }
+//    public void getAllAccessibleBLEDevices(Context context, IBleScanListener mIBleScanListener) {
+////        mBleScanner = new BleScanner(context, mIBleScanListener);
+//    }
 
     public LiveData<Void> isDeviceReady() {
         return mOnDeviceReady;
@@ -418,51 +414,51 @@ public class DeviceViewModel extends AndroidViewModel
         return mIsSupported;
     }
 
-    private BleCallback customBleCallbacks() {
-        return new BleCallback() {
-
-            @Override
-            public void onBleConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                super.onBleConnectionStateChange(gatt, status, newState);
-
-                if (newState == BluetoothProfile.STATE_CONNECTED)
-                    Log.i("BleCallback", "Connected to GATT server.");
-
-                if (newState == BluetoothProfile.STATE_DISCONNECTED)
-                    Log.i("BleCallback", "Disconnected from GATT server.");
-            }
-
-            @Override
-            public void onBleServiceDiscovered(BluetoothGatt gatt, int status) {
-                super.onBleServiceDiscovered(gatt, status);
-                if (status != BluetoothGatt.GATT_SUCCESS)
-                    Log.e("Ble ServiceDiscovered", "onServicesDiscovered received: " + status);
-            }
-
-            @Override
-            public void onBleCharacteristicChange(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-                super.onBleCharacteristicChange(gatt, characteristic);
-                Log.i("BluetoothLEHelper", "onCharacteristicChanged Value: " + Arrays.toString(characteristic.getValue()));
-            }
-
-            @Override
-            public void onBleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                super.onBleRead(gatt, characteristic, status);
-
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    Log.i("TAG", Arrays.toString(characteristic.getValue()));
-                    Log.i("BleCallback", "onCharacteristicRead : " + Arrays.toString(characteristic.getValue()))
-                    ;
-                }
-            }
-
-            @Override
-            public void onBleWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                super.onBleWrite(gatt, characteristic, status);
-                Log.i("BleCallback", "onCharacteristicWrite Status : " + status);
-            }
-        };
-    }
+//    private BleCallback customBleCallbacks() {
+//        return new BleCallback() {
+//
+//            @Override
+//            public void onBleConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+//                super.onBleConnectionStateChange(gatt, status, newState);
+//
+//                if (newState == BluetoothProfile.STATE_CONNECTED)
+//                    Log.i("BleCallback", "Connected to GATT server.");
+//
+//                if (newState == BluetoothProfile.STATE_DISCONNECTED)
+//                    Log.i("BleCallback", "Disconnected from GATT server.");
+//            }
+//
+//            @Override
+//            public void onBleServiceDiscovered(BluetoothGatt gatt, int status) {
+//                super.onBleServiceDiscovered(gatt, status);
+//                if (status != BluetoothGatt.GATT_SUCCESS)
+//                    Log.e("Ble ServiceDiscovered", "onServicesDiscovered received: " + status);
+//            }
+//
+//            @Override
+//            public void onBleCharacteristicChange(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+//                super.onBleCharacteristicChange(gatt, characteristic);
+//                Log.i("BluetoothLEHelper", "onCharacteristicChanged Value: " + Arrays.toString(characteristic.getValue()));
+//            }
+//
+//            @Override
+//            public void onBleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+//                super.onBleRead(gatt, characteristic, status);
+//
+//                if (status == BluetoothGatt.GATT_SUCCESS) {
+//                    Log.i("TAG", Arrays.toString(characteristic.getValue()));
+//                    Log.i("BleCallback", "onCharacteristicRead : " + Arrays.toString(characteristic.getValue()))
+//                    ;
+//                }
+//            }
+//
+//            @Override
+//            public void onBleWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+//                super.onBleWrite(gatt, characteristic, status);
+//                Log.i("BleCallback", "onCharacteristicWrite Status : " + status);
+//            }
+//        };
+//    }
     //endregion BLE Methods
 
     //region SharePreferences

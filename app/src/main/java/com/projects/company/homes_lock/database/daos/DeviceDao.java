@@ -33,8 +33,26 @@ public interface DeviceDao extends BaseDao<Device> {
     LiveData<Integer> getAllDevicesCount();
 
     @Query("UPDATE device SET lockStatus = :mLockStatus WHERE objectId = :mDeviceObjectId")
-    void setLockStatus(final String mDeviceObjectId, int mLockStatus);
+    void setLockStatus(final String mDeviceObjectId, boolean mLockStatus);
 
     @Query("SELECT * FROM device WHERE objectId = :mDeviceObjectId")
     LiveData<Device> getADevice(final String mDeviceObjectId);
+
+    @Query("UPDATE device SET doorStatus = :mDoorStatus WHERE objectId = :mDeviceObjectId")
+    void setDoorStatus(final String mDeviceObjectId, int mDoorStatus);
+
+    @Query("UPDATE device SET batteryStatus = :mBatteryStatus WHERE objectId = :mDeviceObjectId")
+    void setBatteryStatus(String mDeviceObjectId, int mBatteryStatus);
+
+    @Query("UPDATE device SET wifiStatus = :mWifiStatus & internetStatus = :mInternetStatus & wifiStrength = :mWifiStrength  WHERE objectId = :mDeviceObjectId")
+    void setConnectionStatus(String mDeviceObjectId, boolean mWifiStatus, boolean mInternetStatus, int mWifiStrength);
+
+    @Query("UPDATE device SET temperature = :mTemperature  WHERE objectId = :mDeviceObjectId")
+    void setTemperature(String mDeviceObjectId, byte mTemperature);
+
+    @Query("UPDATE device SET humidity = :mHumidity  WHERE objectId = :mDeviceObjectId")
+    void setHumidity(String mDeviceObjectId, byte mHumidity);
+
+    @Query("UPDATE device SET coLevel = :mCoLevel  WHERE objectId = :mDeviceObjectId")
+    void setCoLevel(String mDeviceObjectId, byte mCoLevel);
 }

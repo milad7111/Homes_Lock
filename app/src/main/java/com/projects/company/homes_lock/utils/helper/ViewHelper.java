@@ -1,8 +1,6 @@
 package com.projects.company.homes_lock.utils.helper;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,8 +29,8 @@ public class ViewHelper {
     //endregion Declare Views
 
     //region Declare Methods
-    public static boolean isValidDevice() {
-        return true;
+    public static void setContext(Context mContext) {
+        ViewHelper.mContext = mContext;
     }
 
     public static void setFragment(AppCompatActivity parent, int containerId, Fragment fragment) {
@@ -44,24 +42,49 @@ public class ViewHelper {
         mTransaction.commit();
     }
 
-    public static void setLockStatusImage(ImageView imageViewLock, int lockStatus) {
-        if (lockStatus == 0)
-            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_open));
-        else if (lockStatus == 1)
-            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_close));
-        else if (lockStatus == 2)
-            imageViewLock.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_lock_idle));
+    public static void setLockStatusImage(ImageView imageViewLock, boolean lockStatus) {
+        imageViewLock.setImageResource(lockStatus ? R.drawable.ic_lock_close : R.drawable.ic_lock_open);
     }
 
     public static void setBleConnectionStatusImage(ImageView imageViewBle, boolean bleConnectionStatus) {
-        if (bleConnectionStatus)
-            imageViewBle.setImageResource(R.mipmap.ic_ble_connect);
-        else
-            imageViewBle.setImageResource(R.drawable.ic_ble);
+        imageViewBle.setImageResource(bleConnectionStatus ? R.drawable.ic_ble_connect : R.drawable.ic_ble_disconnect);
     }
 
-    public static void setContext(Context mContext) {
-        ViewHelper.mContext = mContext;
+    public static void setBatteryStatusImage(ImageView imgBatteryStatusLockPage, Integer batteryStatus) {
+        if (batteryStatus < 25)
+            imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_zero);
+        else if (batteryStatus >= 30 && batteryStatus < 60)
+            imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_low);
+        else if (batteryStatus >= 60 && batteryStatus < 90)
+            imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_middle);
+        else if (batteryStatus >= 90)
+            imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
+    }
+
+    public static void setConnectionStatusImage(ImageView imgConnectionStatusLockPage, Boolean wifiStatus, Boolean internetStatus, Integer wifiStrength) {
+        if (!wifiStatus)
+            imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_off);
+        else {
+            if (!internetStatus) {
+                if (wifiStrength > -60)
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_no_internet_full);
+                else if (wifiStrength <= -60 && wifiStrength > -71)
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_no_internet_middle);
+                else if (wifiStrength <= -71 && wifiStrength > -85)
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_no_internet_low);
+                else // wifiStrength <= -85
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_no_internet_zero);
+            } else {
+                if (wifiStrength > -60)
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_internet_full);
+                else if (wifiStrength <= -60 && wifiStrength > -71)
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_internet_middle);
+                else if (wifiStrength <= -71 && wifiStrength > -85)
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_internet_low);
+                else // wifiStrength <= -85
+                    imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_internet_zero);
+            }
+        }
     }
     //endregion Declare Methods
 }

@@ -1,6 +1,8 @@
 package com.projects.company.homes_lock.utils.helper;
 
 import com.google.gson.Gson;
+import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.models.datamodels.SecurityAlarm;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.DeviceModel;
 
@@ -57,12 +59,56 @@ public class DataHelper {
         return mArray;
     }
 
-    public static Object convertJsonToObject(String data, String className){
+    public static Object convertJsonToObject(String data, String className) {
         try {
             return new Gson().fromJson(data, (Type) Class.forName(className));
         } catch (Exception e) {
             e.printStackTrace();
             return new DeviceModel();
+        }
+    }
+
+    public static String getSecurityAlarmText(boolean lockStatus, boolean doorStatus) {
+        switch (getSecurityAlarmMode(lockStatus, doorStatus)) {
+            case SECURE:
+                return "Door is Secure";
+            case UNSECURE:
+                return "Door is UnSecure";
+            case OPEN:
+                return "Door is Open";
+            case ATTENTION:
+                return "Attention Required";
+            default:
+                return null;
+        }
+    }
+
+    public static int getSecurityAlarmColor(boolean lockStatus, boolean doorStatus) {
+        switch (getSecurityAlarmMode(lockStatus, doorStatus)) {
+            case SECURE:
+                return R.color.md_green_700;
+            case UNSECURE:
+                return R.color.md_yellow_400;
+            case OPEN:
+                return R.color.md_white_1000;
+            case ATTENTION:
+                return R.color.md_red_500;
+            default:
+                return R.color.md_black_1000;
+        }
+    }
+
+    private static SecurityAlarm getSecurityAlarmMode(boolean lockStatus, Boolean doorStatus) {
+        if (lockStatus)
+            if (doorStatus)
+                return SecurityAlarm.SECURE;
+            else
+                return SecurityAlarm.ATTENTION;
+        else {
+            if (doorStatus)
+                return SecurityAlarm.UNSECURE;
+            else
+                return SecurityAlarm.OPEN;
         }
     }
 }

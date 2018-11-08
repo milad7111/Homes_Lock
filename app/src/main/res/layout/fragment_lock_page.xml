@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_black_1000"
@@ -7,7 +8,7 @@
     android:weightSum="8">
 
     <ImageView
-        android:id="@+id/img_main_lock_page"
+        android:id="@+id/img_lock_status_lock_page"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
@@ -95,39 +96,39 @@
         android:weightSum="5">
 
         <ImageView
-            android:id="@+id/img_battery_lock_page"
+            android:id="@+id/img_battery_status_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_battery" />
+            app:srcCompat="@drawable/ic_battery_zero" />
 
         <ImageView
-            android:id="@+id/img_wifi_lock_page"
+            android:id="@+id/img_connection_status_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_wifi" />
+            app:srcCompat="@drawable/ic_wifi_off" />
 
         <ImageView
             android:id="@+id/img_ble_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_ble" />
+            app:srcCompat="@drawable/ic_ble_disconnect" />
 
         <ImageView
             android:id="@+id/img_members_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_members" />
+            app:srcCompat="@drawable/ic_manage_members" />
 
         <ImageView
             android:id="@+id/img_more_info_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_more_info" />
+            app:srcCompat="@drawable/ic_more_info" />
 
     </LinearLayout>
 

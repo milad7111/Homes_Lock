@@ -5,6 +5,9 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.projects.company.homes_lock.utils.helper.BleHelper;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -13,9 +16,9 @@ import java.util.UUID;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.Request;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_SERIAL;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_SERIAL;
 
 public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
@@ -31,8 +34,15 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         @Override
         protected Deque<Request> initGatt(final BluetoothGatt gatt) {
             final LinkedList<Request> requests = new LinkedList<>();
-//            requests.push(Request.newEnableNotificationsRequest(mLockStatusCharacteristic));
-//            requests.push(Request.newReadRequest(mLockStatusCharacteristic));
+
+            requests.push(Request.newEnableNotificationsRequest(mTXCharacteristic));
+
+            requests.push(Request.newWriteRequest(mRXCharacteristic, BleHelper.createCommand(new byte[]{0x01}, new byte[]{})));
+            requests.push(Request.newReadRequest(mTXCharacteristic));
+
+            requests.push(Request.newWriteRequest(mRXCharacteristic, BleHelper.createCommand(new byte[]{0x05}, new byte[]{})));
+            requests.push(Request.newReadRequest(mTXCharacteristic));
+
             return requests;
         }
 
@@ -54,7 +64,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         @Override
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
 //            if (characteristic.getUuid().equals(CHARACTERISTIC_UUID_LOCK_STATUS))
-                mCallbacks.onDataReceived(characteristic);
+            mCallbacks.onDataReceived(characteristic);
         }
 
         @Override
@@ -90,25 +100,37 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
     //region Declare Methods
     public void readCharacteristic(UUID characteristicUUID) {
-        readCharacteristic(getBluetoothGattCharacteristic(characteristicUUID));
+        BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
+
+        if (mBluetoothGattCharacteristic != null)
+            readCharacteristic(mBluetoothGattCharacteristic);
     }
 
-    public void writeCharacteristic(UUID characteristicUUID, String s) {
-        writeCharacteristic(getBluetoothGattCharacteristic(characteristicUUID), s.getBytes());
+    public void writeCharacteristic(UUID characteristicUUID, byte[] value) {
+        BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
+
+        if (mBluetoothGattCharacteristic != null)
+            writeCharacteristic(mBluetoothGattCharacteristic, value);
     }
 
     public void changeNotifyForCharacteristic(UUID characteristicUUID, boolean notifyStatus) {
-        if (notifyStatus)
-            enableNotifications(getBluetoothGattCharacteristic(characteristicUUID));
-        else
-            disableNotifications(getBluetoothGattCharacteristic(characteristicUUID));
+        BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
+
+        if (mBluetoothGattCharacteristic != null)
+            if (notifyStatus)
+                enableNotifications(mBluetoothGattCharacteristic);
+            else
+                disableNotifications(mBluetoothGattCharacteristic);
     }
 
     private BluetoothGattCharacteristic getBluetoothGattCharacteristic(UUID characteristicUUID) {
-        if (characteristicUUID.equals(CHARACTERISTIC_UUID_TX))
+        if (characteristicUUID.equals(CHARACTERISTIC_UUID_TX) && mTXCharacteristic != null)
             return mTXCharacteristic;
-        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_RX))
+        else if (characteristicUUID.equals(CHARACTERISTIC_UUID_RX) && mRXCharacteristic != null)
             return mRXCharacteristic;
+
+        Log.e(this.getClass().getName(),
+                "BluetoothGattCharacteristic " + characteristicUUID + " Not Ready Yet.");
 
         return null;
     }

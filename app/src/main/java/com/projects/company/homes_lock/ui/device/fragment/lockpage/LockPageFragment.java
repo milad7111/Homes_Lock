@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.ederdoski.simpleble.utils.BluetoothLEHelper;
@@ -39,8 +42,16 @@ public class LockPageFragment extends Fragment
     //endregion Declare Constants
 
     //region Declare Views
-    ImageView imgMainLockPage;
+    ImageView imgLockStatusLockPage;
+    ImageView imgBatteryStatusLockPage;
+    ImageView imgConnectionStatusLockPage;
     ImageView imgBleLockPage;
+
+    TextView txvLockNameLockPage;
+    TextView txvNewUpdateLockPage;
+    TextView txvSecurityAlarmLockPage;
+    TextView txvTemperatureLockPage;
+    TextView txvHumidityLockPage;
     //endregion Declare Views
 
     //region Declare Variables
@@ -96,24 +107,38 @@ public class LockPageFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
-        imgMainLockPage = view.findViewById(R.id.img_main_lock_page);
+        imgLockStatusLockPage = view.findViewById(R.id.img_lock_status_lock_page);
+        imgBatteryStatusLockPage = view.findViewById(R.id.img_battery_status_lock_page);
+        imgConnectionStatusLockPage = view.findViewById(R.id.img_connection_status_lock_page);
         imgBleLockPage = view.findViewById(R.id.img_ble_lock_page);
+
+        txvLockNameLockPage = view.findViewById(R.id.txv_lock_name_lock_page);
+        txvNewUpdateLockPage = view.findViewById(R.id.txv_new_update_lock_page);
+        txvSecurityAlarmLockPage = view.findViewById(R.id.txv_security_alarm_lock_page);
+        txvTemperatureLockPage = view.findViewById(R.id.txv_temperature_lock_page);
+        txvHumidityLockPage = view.findViewById(R.id.txv_humidity_lock_page);
         //endregion Initialize Views
 
         //region Setup Views
-        imgMainLockPage.setOnClickListener(this);
+        imgLockStatusLockPage.setOnClickListener(this);
+        imgConnectionStatusLockPage.setOnClickListener(this);
         imgBleLockPage.setOnClickListener(this);
         //endregion Setup Views
 
         //region init
-        setDataInView();
+        updateDataInView();
+        getDeviceInfo();
         //endregion init
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.img_main_lock_page:
+            case R.id.img_lock_status_lock_page:
+                break;
+            case R.id.img_connection_status_lock_page:
+                Log.e("------>  ", mDeviceViewModel.isConnected().getValue() + "");
+                mDeviceViewModel.readCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX);
                 break;
             case R.id.img_ble_lock_page:
                 connectToDevice();
@@ -154,9 +179,29 @@ public class LockPageFragment extends Fragment
     //endregion BLE CallBacks
 
     //region Declare Methods
-    private void setDataInView() {
-        if (imgMainLockPage != null)
-            ViewHelper.setLockStatusImage(imgMainLockPage, mDevice.getLockStatus());
+    private void updateDataInView() {
+        ViewHelper.setLockStatusImage(imgLockStatusLockPage, mDevice.getLockStatus());
+        ViewHelper.setBatteryStatusImage(imgBatteryStatusLockPage, mDevice.getBatteryStatus());
+        ViewHelper.setConnectionStatusImage(imgConnectionStatusLockPage, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+
+        txvLockNameLockPage.setText(mDevice.getBleDeviceName());
+        txvSecurityAlarmLockPage.setText(DataHelper.getSecurityAlarmText(mDevice.getLockStatus(), mDevice.getDoorStatus()));
+        txvSecurityAlarmLockPage.setTextColor(ContextCompat.getColor(getActivity(), DataHelper.getSecurityAlarmColor(mDevice.getLockStatus(), mDevice.getDoorStatus())));
+
+        txvTemperatureLockPage.setText(mDevice.getTemperature().toString());
+        txvHumidityLockPage.setText(mDevice.getHumidity().toString());
+
+        txvNewUpdateLockPage.setText(null);
+    }
+
+    public void getDeviceInfo() {
+        this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, new Observer<Device>() {
+            @Override
+            public void onChanged(@Nullable Device device) {
+                mDevice = device;
+                updateDataInView();
+            }
+        });
     }
     //endregion Declare Methods
 
@@ -209,15 +254,25 @@ public class LockPageFragment extends Fragment
                     @Override
                     public void onChanged(@Nullable Boolean isConnected) {
                         ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
-
-                        mDeviceViewModel.changeNotifyForCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX, true);
-                        mDeviceViewModel.readCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX);
+                        initBleInfo();
                     }
                 });
                 return true;
             }
 
         return false;
+    }
+
+    private void initBleInfo() {
+        this.mDeviceViewModel.isSupported().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+//                mDeviceViewModel.changeNotifyForCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX, true);
+//                mDeviceViewModel.writeCharacteristic(BleHelper.CHARACTERISTIC_UUID_RX,
+//                        BleHelper.createCommand(new byte[]{0x01}, new byte[]{}));
+//                mDeviceViewModel.readCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX);
+            }
+        });
     }
 
     public List<ScannedDeviceModel> getListOfScannedDevices() {

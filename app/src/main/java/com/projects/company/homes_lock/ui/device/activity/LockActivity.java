@@ -242,19 +242,6 @@ public class LockActivity extends BaseActivity
     }
     //endregion Main CallBacks
 
-    //region ViewModel CallBacks
-    public void getAllDevices() {
-        this.mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
-            @Override
-            public void onChanged(@Nullable final List<Device> devices) {
-                mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
-                mAdapter.notifyDataSetChanged();
-                mViewPager.setAdapter(mAdapter);
-            }
-        });
-    }
-    //endregion ViewModel CallBacks
-
     //region BLE CallBacks
     @Override
     public void onFindBleCompleted(List response) {
@@ -354,6 +341,15 @@ public class LockActivity extends BaseActivity
     //endregion MQTT CallBacks
 
     //region Declare Methods
+    public void getAllDevices() {
+        this.mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
+            @Override
+            public void onChanged(@Nullable final List<Device> devices) {
+                mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
+                mViewPager.setAdapter(mAdapter);
+            }
+        });
+    }
 //    private void getAccessibleBleDevices() {
 //        if (mBluetoothLEHelper.isReadyForScan())
 //        scanDevices();

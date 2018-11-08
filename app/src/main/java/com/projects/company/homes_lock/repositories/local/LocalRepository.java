@@ -89,13 +89,38 @@ public class LocalRepository {
         }
     }
 
-    public void updateDeviceLockStatus(String mDeviceObjectId, int mLockStatus){
-        mDeviceDao.setLockStatus("fsafasfasfasf", mLockStatus);
+    public void updateDeviceLockStatus(String mDeviceObjectId, boolean mLockStatus) {
+        mDeviceDao.setLockStatus(mDeviceObjectId, mLockStatus);
+    }
+
+    public void updateDeviceDoorStatus(String mDeviceObjectId, int mDoorStatus) {
+        mDeviceDao.setDoorStatus(mDeviceObjectId, mDoorStatus);
+    }
+
+    public void updateDeviceBatteryStatus(String mDeviceObjectId, int mBatteryStatus) {
+        mDeviceDao.setBatteryStatus(mDeviceObjectId, mBatteryStatus);
+    }
+
+    public void updateDeviceConnectionStatus(String mDeviceObjectId, byte[] connectionSetting) {
+        mDeviceDao.setConnectionStatus(mDeviceObjectId,
+                connectionSetting[3] >> 4 == 1, connectionSetting[3] << 4 == 1, connectionSetting[4]);
+    }
+
+    public void updateDeviceTemperature(String mDeviceObjectId, byte temperature) {
+        mDeviceDao.setTemperature(mDeviceObjectId, temperature);
+    }
+
+    public void updateDeviceHumidity(String mDeviceObjectId, byte humidity) {
+        mDeviceDao.setHumidity(mDeviceObjectId, humidity);
+    }
+
+    public void updateDeviceCoLevel(String mDeviceObjectId, byte coLevel) {
+        mDeviceDao.setCoLevel(mDeviceObjectId, coLevel);
     }
     //endregion Device table
 
     //region SharePreferences
-    public boolean isFirstTimeLaunchApp(){
+    public boolean isFirstTimeLaunchApp() {
         if (mSharedPreferences.getBoolean("firstRun", true)) {
             mSharedPreferences.edit().putBoolean("firstRun", false).commit();
             return true;

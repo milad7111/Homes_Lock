@@ -13,11 +13,8 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 
-import java.util.Arrays;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 
@@ -167,7 +164,7 @@ public class BleHelper {
         return finalArray;
     }
 
-    private byte createChecksum(byte[] commandArray){
+    private byte createChecksum(byte[] commandArray) {
 //            byte checksum = 0x00;
 //
 //            if(commandArray.length == 0)

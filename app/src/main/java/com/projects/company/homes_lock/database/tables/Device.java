@@ -43,15 +43,15 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "lockStatus")
     @SerializedName("lockStatus")
-    private int mLockStatus;
+    private Boolean mLockStatus;
 
     @ColumnInfo(name = "doorStatus")
     @SerializedName("doorStatus")
     private Boolean mDoorStatus;
 
-    @ColumnInfo(name = "connectionStatus")
-    @SerializedName("connectionStatus")
-    private Boolean mConnectionStatus;
+    @ColumnInfo(name = "internetStatus")
+    @SerializedName("internetStatus")
+    private Boolean mInternetStatus;
 
     @ColumnInfo(name = "batteryStatus")
     @SerializedName("batteryStatus")
@@ -59,7 +59,11 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "wifiStatus")
     @SerializedName("wifiStatus")
-    private Integer mWifiStatus;
+    private Boolean mWifiStatus;
+
+    @ColumnInfo(name = "wifiStrength")
+    @SerializedName("wifiStrength")
+    private Integer mWifiStrength;
 
     @ColumnInfo(name = "meanPowerCons")
     @SerializedName("meanPowerCons")
@@ -121,17 +125,18 @@ public class Device extends BaseModel {
 
     public Device(@NonNull String mObjectId) {
         this.mObjectId = mObjectId;
-        this.mBleDeviceName = "711AmirAli";
+        this.mBleDeviceName = "BlueNRG";
         this.mBleDeviceMacAddress = "02:80:E1:00:34:12";
         this.mSerialNumber = mObjectId;
-        this.mLockStatus = 0;
-        this.mDoorStatus = false;
-        this.mConnectionStatus = false;
-        this.mBatteryStatus = 0;
-        this.mWifiStatus = 0;
+        this.mLockStatus = false;
+        this.mDoorStatus = true;
+        this.mInternetStatus = true;
+        this.mBatteryStatus = 50;
+        this.mWifiStatus = true;
+        this.mWifiStrength = -20;
         this.mMeanPowerCons = 0;
-        this.mTemperature = 0;
-        this.mHumidity = 0;
+        this.mTemperature = 10;
+        this.mHumidity = 5;
         this.mCOLevel = 0;
         this.mDeviceHealth = true;
         this.mFWVersion = 1;
@@ -144,11 +149,12 @@ public class Device extends BaseModel {
             String mBleDeviceName,
             String mBleDeviceMacAddress,
             String mSerialNumber,
-            int mLockStatus,
+            Boolean mLockStatus,
             Boolean mDoorStatus,
-            Boolean mConnectionStatus,
+            Boolean mInternetStatus,
             Integer mBatteryStatus,
-            Integer mWifiStatus,
+            Boolean mWifiStatus,
+            Integer mWifiStrength,
             Integer mMeanPowerCons,
             Integer mTemperature,
             Integer mHumidity,
@@ -162,9 +168,10 @@ public class Device extends BaseModel {
         this.mSerialNumber = mSerialNumber;
         this.mLockStatus = mLockStatus;
         this.mDoorStatus = mDoorStatus;
-        this.mConnectionStatus = mConnectionStatus;
+        this.mInternetStatus = mInternetStatus;
         this.mBatteryStatus = mBatteryStatus;
         this.mWifiStatus = mWifiStatus;
+        this.mWifiStrength = mWifiStrength;
         this.mMeanPowerCons = mMeanPowerCons;
         this.mTemperature = mTemperature;
         this.mHumidity = mHumidity;
@@ -207,11 +214,11 @@ public class Device extends BaseModel {
         this.mSerialNumber = mSerialNumber;
     }
 
-    public int getLockStatus() {
+    public Boolean getLockStatus() {
         return mLockStatus;
     }
 
-    public void setLockStatus(int mLockStatus) {
+    public void setLockStatus(Boolean mLockStatus) {
         this.mLockStatus = mLockStatus;
     }
 
@@ -223,12 +230,12 @@ public class Device extends BaseModel {
         this.mDoorStatus = mDoorStatus;
     }
 
-    public Boolean getConnectionStatus() {
-        return mConnectionStatus;
+    public Boolean getInternetStatus() {
+        return mInternetStatus;
     }
 
-    public void setConnectionStatus(Boolean mConnectionStatus) {
-        this.mConnectionStatus = mConnectionStatus;
+    public void setInternetStatus(Boolean mInternetStatus) {
+        this.mInternetStatus = mInternetStatus;
     }
 
     public Integer getBatteryStatus() {
@@ -239,12 +246,20 @@ public class Device extends BaseModel {
         this.mBatteryStatus = mBatteryStatus;
     }
 
-    public Integer getWifiStatus() {
+    public Boolean getWifiStatus() {
         return mWifiStatus;
     }
 
-    public void setWifiStatus(Integer mWifiStatus) {
+    public void setWifiStatus(Boolean mWifiStatus) {
         this.mWifiStatus = mWifiStatus;
+    }
+
+    public Integer getWifiStrength() {
+        return mWifiStrength;
+    }
+
+    public void setWifiStrength(Integer mWifiStrength) {
+        this.mWifiStrength = mWifiStrength;
     }
 
     public Integer getMeanPowerCons() {
