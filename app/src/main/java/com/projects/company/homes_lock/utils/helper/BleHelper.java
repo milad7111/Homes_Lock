@@ -23,7 +23,7 @@ public class BleHelper {
     //region Declare Constants
     public static final UUID SERVICE_UUID_SERIAL = UUID.fromString("927c9cb0-cd09-11e8-b568-0800200c9a66");
     public static final UUID CHARACTERISTIC_UUID_TX = UUID.fromString("927c9cb2-cd09-11e8-b568-0800200c9a66");
-    public static final UUID CHARACTERISTIC_UUID_RX = UUID.fromString("927c9cb3-cd09-11e8-b568-0800200c9a66");
+    public static final UUID CHARACTERISTIC_UUID_RX = UUID.fromString("9273-cd09-11e8-b568-0800200c9a66");
 
     public static final String LOCK_STATUS_LOCK = "lock";
     public static final String LOCK_STATUS_UNLOCK = "unlock";
