@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,6 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
-import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
@@ -35,7 +32,9 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class LockPageFragment extends Fragment
-        implements ILockPageFragment, IBleScanListener, View.OnClickListener {
+        implements
+        ILockPageFragment,
+        View.OnClickListener {
 
     //region Declare Constants
     private static final String ARG_PARAM = "param";
@@ -55,23 +54,25 @@ public class LockPageFragment extends Fragment
     //endregion Declare Views
 
     //region Declare Variables
+    boolean isConnectedToBleDevice = false;
     //endregion Declare Variables
 
     //region Declare Objects
+    private BluetoothLEHelper mBluetoothLEHelper;
     private DeviceViewModel mDeviceViewModel;
     private Device mDevice;
-    private BluetoothLEHelper mBluetoothLEHelper;
     //endregion Declare Objects
 
     public LockPageFragment() {
-        // Required empty public constructor
     }
 
     public static LockPageFragment newInstance(Device device) {
         LockPageFragment fragment = new LockPageFragment();
         Bundle args = new Bundle();
+
         args.putString(ARG_PARAM, new Gson().toJson(device));
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -84,15 +85,10 @@ public class LockPageFragment extends Fragment
         //endregion Initialize Variables
 
         //region Initialize Objects
-        this.mDeviceViewModel = ViewModelProviders.of(
-                this,
-                new DeviceViewModelFactory(getActivity().getApplication(), this))
-                .get(DeviceViewModel.class);
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
 
         mDevice = getArguments() != null ?
                 (Device) DataHelper.convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName()) : null;
-
-        mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
         //endregion Initialize Objects
     }
 
@@ -128,6 +124,9 @@ public class LockPageFragment extends Fragment
         //region init
         updateDataInView();
         getDeviceInfo();
+
+        if (!isConnectedToBleDevice)
+            connectToDevice();
         //endregion init
     }
 
@@ -137,18 +136,14 @@ public class LockPageFragment extends Fragment
             case R.id.img_lock_status_lock_page:
                 break;
             case R.id.img_connection_status_lock_page:
-                Log.e("------>  ", mDeviceViewModel.isConnected().getValue() + "");
-                mDeviceViewModel.readCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX);
                 break;
             case R.id.img_ble_lock_page:
-                connectToDevice();
+                if (isConnectedToBleDevice)
+                    this.mDeviceViewModel.disconnect();
+                else
+                    connectToDevice();
                 break;
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     public interface OnFragmentInteractionListener {
@@ -157,25 +152,6 @@ public class LockPageFragment extends Fragment
     //endregion Main CallBacks
 
     //region BLE CallBacks
-    @Override
-    public void onDataReceived(Object response) {
-    }
-
-    @Override
-    public void onDataSent(Object value) {
-    }
-
-    @Override
-    public void onFindBleCompleted(List response) {
-    }
-
-    @Override
-    public void onFindBleFault(Object response) {
-    }
-
-    @Override
-    public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-    }
     //endregion BLE CallBacks
 
     //region Declare Methods
@@ -235,6 +211,8 @@ public class LockPageFragment extends Fragment
     }
 
     public void scanDevices() {
+        mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
+
         if (!mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
             Handler mHandler = new Handler();
@@ -253,6 +231,7 @@ public class LockPageFragment extends Fragment
                 this.mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
                     @Override
                     public void onChanged(@Nullable Boolean isConnected) {
+                        isConnectedToBleDevice = isConnected;
                         ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
                         initBleInfo();
                     }
@@ -267,10 +246,7 @@ public class LockPageFragment extends Fragment
         this.mDeviceViewModel.isSupported().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
-//                mDeviceViewModel.changeNotifyForCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX, true);
-//                mDeviceViewModel.writeCharacteristic(BleHelper.CHARACTERISTIC_UUID_RX,
-//                        BleHelper.createCommand(new byte[]{0x01}, new byte[]{}));
-//                mDeviceViewModel.readCharacteristic(BleHelper.CHARACTERISTIC_UUID_TX);
+                //TODO every request to ble device must sit down here
             }
         });
     }

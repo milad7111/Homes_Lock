@@ -2,39 +2,27 @@ package com.projects.company.homes_lock.ui.device.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
-import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.models.viewmodels.DeviceViewModelFactory;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
-import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
-import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
@@ -43,17 +31,13 @@ import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.projects.company.homes_lock.utils.helper.DataHelper.ERROR_CODE_BLE_NOT_ENABLED;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
-import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ENABLE_BLUETOOTH;
 
 public class LockActivity extends BaseActivity
         implements
         ILockActivity,
         NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener,
         IMQTTListener,
-        IBleScanListener,
         LockPageFragment.OnFragmentInteractionListener {
 
     //region Declare Constants
@@ -73,7 +57,6 @@ public class LockActivity extends BaseActivity
     //region Declare Objects
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DeviceViewModel mDeviceViewModel;
-    private BleDeviceAdapter mBleDeviceAdapter;
     private CustomDeviceAdapter mAdapter;
     //endregion Declare Objects
 
@@ -98,8 +81,6 @@ public class LockActivity extends BaseActivity
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mBleDeviceAdapter = new BleDeviceAdapter(this, this, new ArrayList<>());
-
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 activityLockDrawerLayout,
@@ -107,10 +88,7 @@ public class LockActivity extends BaseActivity
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
 
-        this.mDeviceViewModel = ViewModelProviders.of(
-                this,
-                new DeviceViewModelFactory(this.getApplication(), this))
-                .get(DeviceViewModel.class);
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
         //endregion Initialize Objects
 
         //region Setup Views
@@ -124,6 +102,7 @@ public class LockActivity extends BaseActivity
 
         //region init
         mViewPager.setOffscreenPageLimit(2);
+        mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), new ArrayList<>());
         mViewPager.setAdapter(mAdapter);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mWormDotsIndicator.setViewPager(mViewPager);
@@ -143,7 +122,6 @@ public class LockActivity extends BaseActivity
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_ACCESS_COARSE_LOCATION:
-//                mDeviceViewModel.refresh();
                 break;
         }
     }
@@ -158,23 +136,8 @@ public class LockActivity extends BaseActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                // Handle the action_settings
-                break;
             case android.R.id.home:
                 activityLockDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
@@ -212,87 +175,13 @@ public class LockActivity extends BaseActivity
     }
 
     @Override
-    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.appBarLock_fab_addLock:
-//                //mDeviceViewModel.getAllServerDevices();
-//                getAccessibleBleDevices();
-//                break;
-//            case R.id.btn1:
-//                mDeviceViewModel.writeCharacteristic(
-//                        CHARACTERISTIC_UUID_LOCK_COMMAND,
-//                        "{\"command\":\"unlock\"}");
-//                break;
-//            case R.id.btn2:
-//                mDeviceViewModel.readCharacteristic(CHARACTERISTIC_UUID_WIFI_LIST);
-//                break;
-//            case R.id.btn3:
-//                mDeviceViewModel.changeNotifyForCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS, true);
-//                break;
-//        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onFragmentInteraction(Uri uri) {
     }
     //endregion Main CallBacks
 
-    //region BLE CallBacks
-    @Override
-    public void onFindBleCompleted(List response) {
-//        mBleDeviceAdapter.setBleDevices(response);
-    }
-
-    @Override
-    public void onFindBleFault(Object response) {
-//        switch (((FailureModel) response).getFailureCode()) {
-//            case ERROR_CODE_BLE_NOT_ENABLED: {
-//                Intent mEnableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                startActivityForResult(mEnableBluetoothIntent, REQUEST_CODE_ENABLE_BLUETOOTH);
-//                break;
-//            }
-//            default:
-//                Snackbar.make(appBarLockToolbar, ((FailureModel) response).getFailureMessage(), Snackbar.LENGTH_LONG).show();
-//        }
-    }
-
-    @Override//02:80:E1:00:34:12
-    public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-//        mDeviceViewModel.connect(mScannedDeviceModel);
-//        mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
-//            @Override
-//            public void onChanged(@Nullable final Boolean isConnected) {
-////                Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_LONG).show();
-//                if (isConnected) {
-//                    Toast.makeText(LockActivity.this, String.valueOf(isConnected), Toast.LENGTH_SHORT).show();
-////                    mDeviceViewModel.readCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS);
-////                    mDeviceViewModel.changeNotifyForCharacteristic(CHARACTERISTIC_UUID_LOCK_STATUS, true);
-////                    ViewHelper.setFragment(LockActivity.this, R.id.frg_lock_activity, new LockPageFragment());
-//                }
-//            }
-//        });
-    }
-
-    @Override
-    public void onDataReceived(Object value) {
-        Log.e("Read done : ", new String(((BluetoothGattCharacteristic) value).getValue()));
-    }
-
-    @Override
-    public void onDataSent(Object value) {
-        Log.e("Write done : ", new String(((BluetoothGattCharacteristic) value).getValue()));
-    }
-    //endregion BLE CallBacks
-
     //region MQTT CallBacks
     @Override
     public void onConnectionToBrokerLost(Object response) {
-
     }
 
     @Override
@@ -316,27 +205,22 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onConnectionFailure(Object response) {
-
     }
 
     @Override
     public void onSubscribeSuccessful(Object response) {
-
     }
 
     @Override
     public void onSubscribeFailure(Object response) {
-
     }
 
     @Override
     public void onPublishSuccessful(Object response) {
-
     }
 
     @Override
     public void onPublishFailure(Object response) {
-
     }
     //endregion MQTT CallBacks
 
@@ -345,91 +229,13 @@ public class LockActivity extends BaseActivity
         this.mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
             @Override
             public void onChanged(@Nullable final List<Device> devices) {
-                mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
-                mViewPager.setAdapter(mAdapter);
+                if (mAdapter.getCount() == 1) { //just when initialize lockpage we need set adapter
+                    mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
+                    mViewPager.setAdapter(mAdapter);
+                }
             }
         });
     }
-//    private void getAccessibleBleDevices() {
-//        if (mBluetoothLEHelper.isReadyForScan())
-//        scanDevices();
-//        this.mDeviceViewModel.getScannerState().observe(this, this::startScan);
-//        mBleDeviceAdapter = new BleDeviceAdapter(this, this, null);
-//    }
-
-//    private void startScan(final ScannerLiveData state) {
-//        // First, check the Location permission. This is required on Marshmallow onwards in order to scan for Bluetooth LE devices.
-//        if (BleHelper.isLocationPermissionsGranted(this)) {
-//
-//
-//            // Bluetooth must be enabled
-//            if (state.isBluetoothEnabled()) {
-////                mNoBluetoothView.setVisibility(View.GONE);
-//
-//                // We are now OK to start scanning
-//                mDeviceViewModel.startScan();
-////                mScanningView.setVisibility(View.VISIBLE);
-//
-//                if (state.isEmpty()) {
-////                    mEmptyView.setVisibility(View.VISIBLE);
-//
-//                    if (!BleHelper.isLocationRequired(this) || BleHelper.isLocationEnabled(this)) {
-////                        mNoLocationView.setVisibility(View.INVISIBLE);
-//                    } else {
-//                        onEnableLocationClicked();
-////                        mNoLocationView.setVisibility(View.VISIBLE);
-//                    }
-//                } else {
-////                    mEmptyView.setVisibility(View.GONE);
-//                }
-//            } else {
-//                onEnableBluetoothClicked();
-////                mNoBluetoothView.setVisibility(View.VISIBLE);
-////                mScanningView.setVisibility(View.INVISIBLE);
-////                mEmptyView.setVisibility(View.GONE);
-//            }
-//        } else {
-//            onGrantLocationPermissionClicked();
-////            mNoLocationPermissionView.setVisibility(View.VISIBLE);
-////            mNoBluetoothView.setVisibility(View.GONE);
-////            mScanningView.setVisibility(View.INVISIBLE);
-////            mEmptyView.setVisibility(View.GONE);
-//
-//            final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(this);
-////            mGrantPermissionButton.setVisibility(deniedForever ? View.GONE : View.VISIBLE);
-//            if (!deniedForever)
-//                onGrantLocationPermissionClicked();
-//
-//            if (deniedForever)
-//                onPermissionSettingsClicked();
-////            mPermissionSettingsButton.setVisibility(deniedForever ? View.VISIBLE : View.GONE);
-//        }
-//    }
-
-//    public void onEnableLocationClicked() {
-//        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//        startActivity(intent);
-//    }
-
-//    public void onEnableBluetoothClicked() {
-//        final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//        startActivity(enableIntent);
-//    }
-
-//    public void onGrantLocationPermissionClicked() {
-//        BleHelper.markLocationPermissionRequested(this);
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ACCESS_COARSE_LOCATION);
-//    }
-
-//    public void onPermissionSettingsClicked() {
-//        final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//        intent.setData(Uri.fromParts("package", getPackageName(), null));
-//        startActivity(intent);
-//    }
-
-//    private void stopScan() {
-//        this.mDeviceViewModel.stopScan();
-//    }
 
     private void initMQTT() {
         MQTTHandler.setup(this, this);

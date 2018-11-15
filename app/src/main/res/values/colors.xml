@@ -5,6 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="hintColor">#fff</color>
 
+    <color name="ic_launcher_background">#26A69A</color>
+
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>
     <color name="md_red_100">#FFCDD2</color>

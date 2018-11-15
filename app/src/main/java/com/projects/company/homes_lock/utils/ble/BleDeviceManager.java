@@ -63,7 +63,6 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-//            if (characteristic.getUuid().equals(CHARACTERISTIC_UUID_LOCK_STATUS))
             mCallbacks.onDataReceived(characteristic);
         }
 
