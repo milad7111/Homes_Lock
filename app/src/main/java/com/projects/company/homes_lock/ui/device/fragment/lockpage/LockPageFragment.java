@@ -134,6 +134,7 @@ public class LockPageFragment extends Fragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_lock_status_lock_page:
+                sendLockCommand(!mDevice.getLockStatus());
                 break;
             case R.id.img_connection_status_lock_page:
                 break;
@@ -240,6 +241,10 @@ public class LockPageFragment extends Fragment
             }
 
         return false;
+    }
+
+    private void sendLockCommand(boolean lockCommand) {
+        mDeviceViewModel.sendLockCommand(lockCommand);
     }
 
     private void initBleInfo() {

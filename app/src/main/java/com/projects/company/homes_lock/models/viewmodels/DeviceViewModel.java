@@ -7,7 +7,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -20,6 +19,7 @@ import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
+import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.UUID;
 import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 
 public class DeviceViewModel extends AndroidViewModel
@@ -198,6 +199,18 @@ public class DeviceViewModel extends AndroidViewModel
                         mLocalRepository.updateDeviceBatteryStatus("fsafasfasfasf", responseValue[2]);
                         mLocalRepository.updateDeviceConnectionStatus("fsafasfasfasf", responseValue);
                         break;
+                    case 0x02:
+                        if (responseValue[1] == 0)
+                            getDeviceInfoFromBleDevice();
+                        else
+                            getDeviceErrorFromBleDevice();
+                        break;
+                    case 0x03:
+                        Log.d("Read deviceSerialNumber", responseValue[1] + "");
+                        break;
+                    case 0x04:
+                        Log.d("Read deviceErrorData", DataHelper.subArrayByte(responseValue, 1, responseValue.length) + "");
+                        break;
                     case 0x05:
                         mLocalRepository.updateDeviceTemperature("fsafasfasfasf", responseValue[1]);
                         mLocalRepository.updateDeviceHumidity("fsafasfasfasf", responseValue[2]);
@@ -226,10 +239,6 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion BLE CallBacks
 
     //region BLE Methods
-    public LiveData<Boolean> isConnected() {
-        return mIsConnected;
-    }
-
     public void connect(final ScannedDeviceModel device) {
         final LogSession logSession = Logger.newSession(getApplication(), null, device.getMacAddress(), device.getName());
         mBleDeviceManager.setLogger(logSession);
@@ -240,16 +249,20 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.disconnect();
     }
 
-    public void readCharacteristic(UUID characteristicUUID) {
-        mBleDeviceManager.readCharacteristic(characteristicUUID);
-    }
-
-    public void writeCharacteristic(UUID characteristicUUID, byte[] value) {
-        mBleDeviceManager.writeCharacteristic(characteristicUUID, value);
-    }
-
     public void changeNotifyForCharacteristic(UUID characteristicUUID, boolean notifyStatus) {
         mBleDeviceManager.changeNotifyForCharacteristic(characteristicUUID, notifyStatus);
+    }
+    //endregion BLE Methods
+
+    //region Declare Methods
+    public LiveData<Boolean> isConnected() {
+        return mIsConnected;
+    }
+
+    public void sendLockCommand(boolean lockCommand) {
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x02},
+                new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
+//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
     }
 
     public LiveData<String> getConnectionState() {
@@ -259,7 +272,20 @@ public class DeviceViewModel extends AndroidViewModel
     public LiveData<Boolean> isSupported() {
         return mIsSupported;
     }
-    //endregion BLE Methods
+
+    private void getDeviceInfoFromBleDevice() {
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x01}, new byte[]{}));
+//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
+
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x05}, new byte[]{}));
+//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
+    }
+
+    private void getDeviceErrorFromBleDevice() {
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x04}, new byte[]{}));
+//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
+    }
+    //endregion Declare Methods
 
     //region SharePreferences
     //endregion SharePreferences

@@ -2,6 +2,8 @@ package com.projects.company.homes_lock.models.datamodels.response;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class UserModel extends BaseModel {
 
     @SerializedName("objectId")
@@ -31,4 +33,6 @@ public class UserModel extends BaseModel {
     private String mEmail;
     @SerializedName("user-token")
     private String mUserToken;
+    @SerializedName("relatedDevices")
+    private List<UserLockModel> mRelatedDevices;
 }

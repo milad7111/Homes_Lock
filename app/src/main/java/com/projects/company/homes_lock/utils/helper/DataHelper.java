@@ -111,4 +111,14 @@ public class DataHelper {
                 return SecurityAlarm.OPEN;
         }
     }
+
+    public static byte[] subArrayByte(byte[] data, int start, int end) {
+        byte[] temp = new byte[end - start + 1]; //contains data[start] and data[end]
+
+        int i = 0;
+        for (int j = start; j < end; i++, j++)
+            temp[i] = data[j];
+
+        return temp;
+    }
 }

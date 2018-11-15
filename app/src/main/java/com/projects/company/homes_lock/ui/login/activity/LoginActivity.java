@@ -38,13 +38,8 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
         //region Setup Views
         //endregion Setup Views
 
-        ViewHelper.setFragment(this, R.id.frg_login_activity, new LoginFragment());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         ViewHelper.setContext(LoginActivity.this);
+        ViewHelper.setFragment(this, R.id.frg_login_activity, new LoginFragment());
     }
 
     @Override
