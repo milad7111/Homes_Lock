@@ -176,7 +176,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onError(final BluetoothDevice device, final String message, final int errorCode) {
-        Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
