@@ -2,6 +2,8 @@ package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,11 +140,11 @@ public class LockPageFragment extends Fragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-        if (!isConnectedToBleDevice)
-            connectToDevice();
+//        if (!isConnectedToBleDevice)
+//            connectToDevice();
     }
 
     @Override
@@ -156,7 +159,7 @@ public class LockPageFragment extends Fragment
                 if (isConnectedToBleDevice)
                     this.mDeviceViewModel.disconnect();
                 else
-                    connectToDevice();
+                    connectToDevice(null, null);
                 break;
             case R.id.img_manage_members_lock_page:
                 ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_lock_activity, new ManageMembersFragment());
@@ -203,7 +206,7 @@ public class LockPageFragment extends Fragment
     //endregion Declare Methods
 
     //region Declare BLE Methods
-    private void connectToDevice() {
+    public void connectToDevice(String lockName, String securityCode) {
         mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
 
         if (BleHelper.isLocationRequired(getContext())) {
@@ -213,7 +216,7 @@ public class LockPageFragment extends Fragment
                 else {
                     if (BleHelper.isBleEnabled()) {
                         if (mBluetoothLEHelper.isReadyForScan())
-                            scanDevices();
+                            scanDevices(lockName, securityCode);
                     } else BleHelper.enableBluetooth(getActivity());
                 }
             } else {
@@ -226,26 +229,27 @@ public class LockPageFragment extends Fragment
             }
         } else {
             if (BleHelper.isBleEnabled()) {
-                scanDevices();
+                scanDevices(lockName, securityCode);
             } else BleHelper.enableBluetooth(getActivity());
         }
     }
 
-    public void scanDevices() {
+    private void scanDevices(String lockName, String securityCode) {
         if (!mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
             Handler mHandler = new Handler();
             mBluetoothLEHelper.scanLeDevice(true);
 
             mHandler.postDelayed(() -> {
-                connectToSpecificBleDevice(getListOfScannedDevices());
+                connectToSpecificBleDevice(getListOfScannedDevices(), lockName, securityCode);
             }, mBluetoothLEHelper.getScanPeriod());
         }
     }
 
-    private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices) {
+    private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices, String lockName, String securityCode) {
         for (ScannedDeviceModel device : listOfScannedDevices)
             if (device.getMacAddress().equals(mDevice.getBleDeviceMacAddress())) {
+                device.setPin(securityCode);
                 this.mDeviceViewModel.connect(device);
                 this.mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
                     @Override
@@ -275,7 +279,7 @@ public class LockPageFragment extends Fragment
         });
     }
 
-    public List<ScannedDeviceModel> getListOfScannedDevices() {
+    private List<ScannedDeviceModel> getListOfScannedDevices() {
         List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
 
         if (mBluetoothLEHelper.getListDevices().size() > 0)

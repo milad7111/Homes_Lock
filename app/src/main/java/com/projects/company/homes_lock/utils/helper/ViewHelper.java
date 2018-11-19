@@ -36,8 +36,9 @@ public class ViewHelper {
     public static void setFragment(AppCompatActivity parent, int containerId, Fragment fragment) {
         FragmentManager mFragmentManager = parent.getSupportFragmentManager();
         FragmentTransaction mTransaction = mFragmentManager.beginTransaction();
+
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        mTransaction.add(containerId, fragment, fragment.getTag());
+        mTransaction.add(containerId, fragment, fragment.getClass().getName());
         mTransaction.addToBackStack(null);
         mTransaction.commit();
     }

@@ -52,4 +52,8 @@ public class ScannedDeviceModel extends BaseModel {
     public int getRSSI() {
         return mRSSI;
     }
+
+    public void setPin(String bondPin){
+        mDevice.setPin(bondPin.getBytes());
+    };
 }

@@ -15,12 +15,14 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,12 +50,15 @@ public class DeviceViewModel extends AndroidViewModel
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
     private final BleDeviceManager mBleDeviceManager;
+
+    ILockPageFragment listener;
+
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
     //endregion Declare Objects
 
-    public DeviceViewModel(Application application) {
+    public DeviceViewModel(Application application, ILockPageFragment listener) {
         super(application);
 
         //region Initialize Variables
@@ -157,22 +162,22 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public boolean shouldEnableBatteryLevelNotifications(final BluetoothDevice device) {
-        // Blinky doesn't have Battery Service
         return false;
     }
 
     @Override
     public void onBatteryValueReceived(final BluetoothDevice device, final int value) {
-        // Blinky doesn't have Battery Service
     }
 
     @Override
     public void onBondingRequired(final BluetoothDevice device) {
+        DialogHelper.showPairWithBleDevice(this);
+//        device.setPin("123456".getBytes());
+        device.createBond();
     }
 
     @Override
     public void onBonded(final BluetoothDevice device) {
-        // Blinky does not require bonding
     }
 
     @Override

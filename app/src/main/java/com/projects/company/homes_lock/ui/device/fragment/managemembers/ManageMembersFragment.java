@@ -28,9 +28,9 @@ public class ManageMembersFragment extends Fragment implements IManageMembersFra
     //endregion Declare Objects
 
     public ManageMembersFragment() {
-        // Required empty public constructor
     }
 
+    //region Main Callbacks
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +58,7 @@ public class ManageMembersFragment extends Fragment implements IManageMembersFra
         //region Setup Views
         //endregion Setup Views
     }
+    //endregion Main Callbacks
 
     //region Declare Methods
     //endregion Declare Methods

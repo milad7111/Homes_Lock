@@ -2,12 +2,14 @@ package com.projects.company.homes_lock.utils.helper;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 
 public class DialogHelper {
 
@@ -62,6 +64,47 @@ public class DialogHelper {
             @Override
             public void onClick(View v) {
                 //TODO add online lock
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        dialog.show();
+        dialog.getWindow().setAttributes(layoutParams);
+    }
+
+    public static void showPairWithBleDevice(LockPageFragment fragment) {
+        Dialog dialog = new Dialog(fragment.getActivity());
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_pair_with_ble_device);
+
+        Button btnCancelDialogPairWithBleDevice = dialog.findViewById(R.id.btn_cancel_dialog_pair_with_ble_device);
+        Button btnPairDialogPairWithBleDevice = dialog.findViewById(R.id.btn_pair_dialog_pair_with_ble_device);
+
+        TextInputEditText txieLockNameDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_lock_name_dialog_pair_with_ble_device);
+        TextInputEditText txieSecurityCodeDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_security_code_dialog_pair_with_ble_device);
+
+        btnCancelDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragment.connectToDevice(
+                        txieLockNameDialogPairWithBleDevice.getText().toString(),
+                        txieSecurityCodeDialogPairWithBleDevice.getText().toString());
                 dialog.dismiss();
             }
         });
