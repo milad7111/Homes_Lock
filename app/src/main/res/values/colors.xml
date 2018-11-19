@@ -6,6 +6,7 @@
     <color name="hintColor">#fff</color>
 
     <color name="ic_launcher_background">#26A69A</color>
+    <color name="transparent">#00000000</color>
 
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>

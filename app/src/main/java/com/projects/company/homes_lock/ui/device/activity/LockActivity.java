@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.ui.device.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +23,8 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
+import com.projects.company.homes_lock.utils.helper.BleHelper;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
@@ -120,9 +122,14 @@ public class LockActivity extends BaseActivity
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_CODE_ACCESS_COARSE_LOCATION:
-                break;
+
+        if (grantResults.length > 0) {
+            switch (requestCode) {
+                case REQUEST_CODE_ACCESS_COARSE_LOCATION:
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                        DialogHelper.showEnableLocationDialog(this);
+                    break;
+            }
         }
     }
 

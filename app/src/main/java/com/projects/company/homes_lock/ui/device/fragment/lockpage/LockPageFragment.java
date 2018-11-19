@@ -26,6 +26,7 @@ import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMe
 import com.projects.company.homes_lock.ui.device.fragment.upgrade.MoreInfoFragment;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
@@ -132,10 +133,15 @@ public class LockPageFragment extends Fragment
 
         //region init
         ViewHelper.setContext(getContext());
+        //endregion init
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         if (!isConnectedToBleDevice)
             connectToDevice();
-        //endregion init
     }
 
     @Override
@@ -203,7 +209,7 @@ public class LockPageFragment extends Fragment
         if (BleHelper.isLocationRequired(getContext())) {
             if (BleHelper.isLocationPermissionsGranted(getContext())) {
                 if (!BleHelper.isLocationEnabled(getContext()))
-                    BleHelper.enableLocation(getActivity());
+                    DialogHelper.showEnableLocationDialog(getActivity());
                 else {
                     if (BleHelper.isBleEnabled()) {
                         if (mBluetoothLEHelper.isReadyForScan())
@@ -211,8 +217,6 @@ public class LockPageFragment extends Fragment
                     } else BleHelper.enableBluetooth(getActivity());
                 }
             } else {
-                BleHelper.grantLocationPermission(getActivity());
-
                 final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(getActivity());
                 if (!deniedForever)
                     BleHelper.grantLocationPermission(getActivity());

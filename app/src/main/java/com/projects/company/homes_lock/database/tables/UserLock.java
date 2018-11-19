@@ -64,14 +64,6 @@ public class UserLock {
     @Ignore
     @SerializedName("___class")
     private String mServerTableName;
-
-    @Ignore
-    @SerializedName("relatedDevices")
-    private List<UserLock> mRelatedDevices;
-
-    @Ignore
-    @SerializedName("socialAccount")
-    private String mSocialAccount;
     //endregion Ignore server attributes
 
     public UserLock() {

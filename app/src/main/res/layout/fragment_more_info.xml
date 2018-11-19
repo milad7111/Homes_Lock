@@ -5,7 +5,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:gravity="center_horizontal"
@@ -128,7 +127,7 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Change password online"
+            android:text="Change online password"
             android:textColor="@color/md_grey_500"
             android:textSize="14sp" />
 

@@ -81,8 +81,10 @@ public class BleHelper {
             } catch (final Settings.SettingNotFoundException e) {
                 // do nothing
             }
+
             return locationMode != Settings.Secure.LOCATION_MODE_OFF;
         }
+
         return true;
     }
 
@@ -115,7 +117,7 @@ public class BleHelper {
     }
 
     public static void enableLocation(Activity context) {
-        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        final Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         context.startActivity(intent);
     }
 
