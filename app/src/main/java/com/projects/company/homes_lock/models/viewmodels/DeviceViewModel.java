@@ -171,7 +171,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onBondingRequired(final BluetoothDevice device) {
-        DialogHelper.showPairWithBleDevice(this);
+        DialogHelper.showPairWithBleDevice(null);
 //        device.setPin("123456".getBytes());
         device.createBond();
     }
