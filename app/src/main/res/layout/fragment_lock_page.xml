@@ -42,7 +42,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center_vertical"
-                    android:text="Lock Name"
                     android:textColor="@color/md_grey_500" />
 
                 <TextView
@@ -51,8 +50,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="New Update"
-                    android:textColor="@color/md_yellow_500" />
+                    android:textColor="@color/md_yellow_500"
+                    android:textSize="8sp" />
 
             </LinearLayout>
 
@@ -62,8 +61,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Door closed but not locked"
-                android:textColor="@color/md_green_700" />
+                android:text="Data Not Synced"
+                android:textColor="@color/md_grey_500" />
 
         </LinearLayout>
 
@@ -117,7 +116,7 @@
             app:srcCompat="@drawable/ic_ble_disconnect" />
 
         <ImageView
-            android:id="@+id/img_members_lock_page"
+            android:id="@+id/img_manage_members_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

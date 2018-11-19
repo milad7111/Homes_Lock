@@ -2,9 +2,9 @@ package com.projects.company.homes_lock.utils.helper;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.SecurityAlarm;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.response.DeviceModel;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class DataHelper {
             return new Gson().fromJson(data, (Type) Class.forName(className));
         } catch (Exception e) {
             e.printStackTrace();
-            return new DeviceModel();
+            return new Device();
         }
     }
 

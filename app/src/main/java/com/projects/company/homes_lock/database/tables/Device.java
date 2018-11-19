@@ -8,9 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
-import com.projects.company.homes_lock.models.datamodels.response.DeviceErrorModel;
-import com.projects.company.homes_lock.models.datamodels.response.UserLockModel;
-import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 
 import java.util.List;
 
@@ -93,7 +90,7 @@ public class Device extends BaseModel {
     @SerializedName("lockPosition")
     private Integer mLockPosition;
 
-    //region other server attributes
+    //region Ignore server attributes
     @Ignore
     @SerializedName("created")
     private Long mCreatedAt;
@@ -112,16 +109,19 @@ public class Device extends BaseModel {
 
     @Ignore
     @SerializedName("relatedUsers")
-    private List<UserLockModel> mRelatedUsers;
+    private List<UserLock> mRelatedUsers;
 
     @Ignore
     @SerializedName("relatedErrors")
-    private List<DeviceErrorModel> mRelatedErrors;
+    private List<DeviceError> mRelatedErrors;
 
     @Ignore
     @SerializedName("user")
-    private UserModel mUser;
-    //endregion other server attributes
+    private User mUser;
+    //endregion Ignore server attributes
+
+    @Ignore
+    public Device(){}
 
     public Device(@NonNull String mObjectId) {
         this.mObjectId = mObjectId;

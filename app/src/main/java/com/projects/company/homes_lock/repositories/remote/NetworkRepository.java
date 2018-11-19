@@ -2,11 +2,11 @@ package com.projects.company.homes_lock.repositories.remote;
 
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
-import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 
 import java.util.List;
 
@@ -26,30 +26,30 @@ public class NetworkRepository {
     //endregion Declare Objects
 
     public void login(final NetworkListener.SingleNetworkListener<BaseModel> listener, LoginModel parameter) {
-        BaseApplication.getRetrofitAPI().login(parameter).enqueue(new Callback<UserModel>() {
+        BaseApplication.getRetrofitAPI().login(parameter).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response != null && response.body() != null)
                     listener.onResponse(response.body());
             }
 
             @Override
-            public void onFailure(Call<UserModel> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 listener.onFailure(new FailureModel(t.getMessage()));
             }
         });
     }
 
     public void register(final NetworkListener.SingleNetworkListener<BaseModel> listener, RegisterModel parameter) {
-        BaseApplication.getRetrofitAPI().register(parameter).enqueue(new Callback<UserModel>() {
+        BaseApplication.getRetrofitAPI().register(parameter).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response != null && response.body() != null)
                     listener.onResponse(response.body());
             }
 
             @Override
-            public void onFailure(Call<UserModel> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 listener.onFailure(new FailureModel(t.getMessage()));
             }
         });

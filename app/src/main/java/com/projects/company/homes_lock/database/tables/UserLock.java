@@ -3,8 +3,13 @@ package com.projects.company.homes_lock.database.tables;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -23,25 +28,53 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         })
 public class UserLock {
 
+    //region Database attributes
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "objectId")
+    @SerializedName("objectId")
     private String mObjectId;
 
-    @ColumnInfo(name = "lockName")
-    private String mLockName;
-
     @ColumnInfo(name = "adminStatus")
+    @SerializedName("adminStatus")
     private boolean mAdminStatus;
 
-    @ColumnInfo(name = "favorite")
-    private boolean mFavorite;
+    @ColumnInfo(name = "lockName")
+    @SerializedName("lockName")
+    private String mLockName;
 
-    public UserLock(@NonNull String mObjectId, String mLockName, boolean mAdminStatus, boolean mFavorite) {
-        this.mObjectId = mObjectId;
-        this.mLockName = mLockName;
-        this.mAdminStatus = mAdminStatus;
-        this.mFavorite = mFavorite;
+    @ColumnInfo(name = "favorite")
+    @SerializedName("favorite")
+    private boolean mFavorite;
+    //endregion Database attributes
+
+    //region Ignore server attributes
+    @Ignore
+    @SerializedName("created")
+    private Long mCreatedAt;
+
+    @Ignore
+    @SerializedName("ownerId")
+    private String mOwnerId;
+
+    @Ignore
+    @SerializedName("updated")
+    private Long mUpdated;
+
+    @Ignore
+    @SerializedName("___class")
+    private String mServerTableName;
+
+    @Ignore
+    @SerializedName("relatedDevices")
+    private List<UserLock> mRelatedDevices;
+
+    @Ignore
+    @SerializedName("socialAccount")
+    private String mSocialAccount;
+    //endregion Ignore server attributes
+
+    public UserLock() {
     }
 
     @NonNull

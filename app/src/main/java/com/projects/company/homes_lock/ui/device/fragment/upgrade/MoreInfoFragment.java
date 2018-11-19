@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UpgradeFragment extends Fragment {
+public class MoreInfoFragment extends Fragment {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -27,7 +27,7 @@ public class UpgradeFragment extends Fragment {
     //region Declare Objects
     //endregion Declare Objects
 
-    public UpgradeFragment() {
+    public MoreInfoFragment() {
         // Required empty public constructor
     }
 
@@ -45,7 +45,7 @@ public class UpgradeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upgrade, container, false);
+        return inflater.inflate(R.layout.fragment_more_info, container, false);
     }
 
     @Override

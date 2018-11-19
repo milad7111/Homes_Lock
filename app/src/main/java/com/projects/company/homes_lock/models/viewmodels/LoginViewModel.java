@@ -3,8 +3,8 @@ package com.projects.company.homes_lock.models.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 
+import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
-import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
@@ -52,8 +52,8 @@ public class LoginViewModel extends AndroidViewModel
     //region Login Callbacks
     @Override
     public void onResponse(Object response) {
-        if (DataHelper.isInstanceOfList(response, UserModel.class.getName())) {
-            UserModel tempUser = (UserModel) response;
+        if (DataHelper.isInstanceOfList(response, User.class.getName())) {
+            User tempUser = (User) response;
 //            mLocalRepository.insertUser(tempUser.);
             mILoginFragment.onLoginSuccessful(response);
         }

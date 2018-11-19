@@ -4,7 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.response.DeviceModel;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 
@@ -40,9 +39,4 @@ public class CustomDeviceAdapter extends SmartFragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         return "Page " + position;
     }
-
-//    public void setDeviceList(List<Device> mDeviceList){
-//        this.mDeviceList = mDeviceList;
-//        this.notifyDataSetChanged();
-//    }
 }

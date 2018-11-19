@@ -31,7 +31,4 @@ public interface DeviceErrorDao {
 
     @Query("SELECT * FROM deviceError WHERE objectId=:deviceObjectId")
     List<DeviceError> getDeviceErrorsByDevice(final int deviceObjectId);
-
-    @Query("SELECT * FROM deviceError WHERE objectId=:deviceObjectId and createdAt>=:startDate")
-    List<DeviceError> getDeviceErrorsByDeviceAndDate(int deviceObjectId, String startDate);
 }

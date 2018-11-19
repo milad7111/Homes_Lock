@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
+import com.projects.company.homes_lock.ui.device.fragment.upgrade.MoreInfoFragment;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
@@ -45,6 +48,8 @@ public class LockPageFragment extends Fragment
     ImageView imgBatteryStatusLockPage;
     ImageView imgConnectionStatusLockPage;
     ImageView imgBleLockPage;
+    ImageView imgManageMembersLockPage;
+    ImageView imgMoreInfoLockPage;
 
     TextView txvLockNameLockPage;
     TextView txvNewUpdateLockPage;
@@ -58,8 +63,8 @@ public class LockPageFragment extends Fragment
     //endregion Declare Variables
 
     //region Declare Objects
-    private BluetoothLEHelper mBluetoothLEHelper;
     private DeviceViewModel mDeviceViewModel;
+    private BluetoothLEHelper mBluetoothLEHelper;
     private Device mDevice;
     //endregion Declare Objects
 
@@ -107,6 +112,8 @@ public class LockPageFragment extends Fragment
         imgBatteryStatusLockPage = view.findViewById(R.id.img_battery_status_lock_page);
         imgConnectionStatusLockPage = view.findViewById(R.id.img_connection_status_lock_page);
         imgBleLockPage = view.findViewById(R.id.img_ble_lock_page);
+        imgManageMembersLockPage = view.findViewById(R.id.img_manage_members_lock_page);
+        imgMoreInfoLockPage = view.findViewById(R.id.img_more_info_lock_page);
 
         txvLockNameLockPage = view.findViewById(R.id.txv_lock_name_lock_page);
         txvNewUpdateLockPage = view.findViewById(R.id.txv_new_update_lock_page);
@@ -119,11 +126,12 @@ public class LockPageFragment extends Fragment
         imgLockStatusLockPage.setOnClickListener(this);
         imgConnectionStatusLockPage.setOnClickListener(this);
         imgBleLockPage.setOnClickListener(this);
+        imgManageMembersLockPage.setOnClickListener(this);
+        imgMoreInfoLockPage.setOnClickListener(this);
         //endregion Setup Views
 
         //region init
-        updateDataInView();
-        getDeviceInfo();
+        ViewHelper.setContext(getContext());
 
         if (!isConnectedToBleDevice)
             connectToDevice();
@@ -143,6 +151,12 @@ public class LockPageFragment extends Fragment
                     this.mDeviceViewModel.disconnect();
                 else
                     connectToDevice();
+                break;
+            case R.id.img_manage_members_lock_page:
+                ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_lock_activity, new ManageMembersFragment());
+                break;
+            case R.id.img_more_info_lock_page:
+                ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_lock_activity, new MoreInfoFragment());
                 break;
         }
     }
@@ -185,7 +199,7 @@ public class LockPageFragment extends Fragment
     //region Declare BLE Methods
     private void connectToDevice() {
         mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
-        
+
         if (BleHelper.isLocationRequired(getContext())) {
             if (BleHelper.isLocationPermissionsGranted(getContext())) {
                 if (!BleHelper.isLocationEnabled(getContext()))
@@ -234,6 +248,7 @@ public class LockPageFragment extends Fragment
                     public void onChanged(@Nullable Boolean isConnected) {
                         isConnectedToBleDevice = isConnected;
                         ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
+                        getDeviceInfo();
                         initBleInfo();
                     }
                 });

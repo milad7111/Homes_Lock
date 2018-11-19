@@ -10,7 +10,6 @@ import com.projects.company.homes_lock.database.daos.DeviceDao;
 import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
-import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 
 import java.util.List;
 
