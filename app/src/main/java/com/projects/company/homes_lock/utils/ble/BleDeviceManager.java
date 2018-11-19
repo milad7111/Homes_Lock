@@ -37,6 +37,12 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
             requests.push(Request.newEnableNotificationsRequest(mTXCharacteristic));
 
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             requests.push(Request.newWriteRequest(mRXCharacteristic, BleHelper.createCommand(new byte[]{0x01}, new byte[]{})));
             requests.push(Request.newReadRequest(mTXCharacteristic));
 

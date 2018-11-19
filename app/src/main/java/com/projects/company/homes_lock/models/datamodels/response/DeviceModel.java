@@ -15,7 +15,7 @@ public class DeviceModel extends BaseModel {
     @SerializedName("updated")
     private long mUpdated;
     @SerializedName("___class")
-    private int mServerTableName;
+    private String mServerTableName;
 
     @SerializedName("serialNumber")
     private String mSerialNumber;

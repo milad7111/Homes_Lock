@@ -2,20 +2,14 @@ package com.projects.company.homes_lock.models.viewmodels;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.util.Log;
 
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
-import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
-
-import java.util.List;
 
 public class LoginViewModel extends AndroidViewModel
         implements
@@ -51,17 +45,25 @@ public class LoginViewModel extends AndroidViewModel
         mNetworkRepository.login(this, new LoginModel(email, password));
     }
 
+    private static void saveLoginDataLocal() {
+    }
+    //endregion Declare Methods
+
+    //region Login Callbacks
     @Override
     public void onResponse(Object response) {
-        if (DataHelper.isInstanceOfList(response, UserModel.class.getName()))
-            mILoginFragment.onLoginSuccessful((UserModel) response);
+        if (DataHelper.isInstanceOfList(response, UserModel.class.getName())) {
+            UserModel tempUser = (UserModel) response;
+//            mLocalRepository.insertUser(tempUser.);
+            mILoginFragment.onLoginSuccessful(response);
+        }
     }
 
     @Override
     public void onFailure(Object response) {
-        mILoginFragment.onLoginFailed((FailureModel) response);
+        mILoginFragment.onLoginFailed(response);
     }
-    //endregion Declare Methods
+    //endregion Login Callbacks
 
     //region SharePreferences
     //endregion SharePreferences

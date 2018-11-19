@@ -184,6 +184,8 @@ public class LockPageFragment extends Fragment
 
     //region Declare BLE Methods
     private void connectToDevice() {
+        mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
+        
         if (BleHelper.isLocationRequired(getContext())) {
             if (BleHelper.isLocationPermissionsGranted(getContext())) {
                 if (!BleHelper.isLocationEnabled(getContext()))
@@ -212,8 +214,6 @@ public class LockPageFragment extends Fragment
     }
 
     public void scanDevices() {
-        mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
-
         if (!mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
             Handler mHandler = new Handler();

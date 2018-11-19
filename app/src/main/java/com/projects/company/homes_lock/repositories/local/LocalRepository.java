@@ -7,7 +7,10 @@ import android.os.AsyncTask;
 
 import com.projects.company.homes_lock.database.base.LockDatabase;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
+import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.models.datamodels.response.UserModel;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class LocalRepository {
 
     //region Declare Objects
     private DeviceDao mDeviceDao;
+    private UserDao mUserDao;
     private SharedPreferences mSharedPreferences = null;
     //endregion Declare Objects
 
@@ -58,6 +62,47 @@ public class LocalRepository {
         return mDeviceDao.getADevice(mDeviceObjectId);
     }
 
+    public void updateDeviceLockStatus(String mDeviceObjectId, boolean mLockStatus) {
+        mDeviceDao.setLockStatus(mDeviceObjectId, mLockStatus);
+    }
+
+    public void updateDeviceDoorStatus(String mDeviceObjectId, int mDoorStatus) {
+        mDeviceDao.setDoorStatus(mDeviceObjectId, mDoorStatus);
+    }
+
+    public void updateDeviceBatteryStatus(String mDeviceObjectId, int mBatteryStatus) {
+        mDeviceDao.setBatteryStatus(mDeviceObjectId, mBatteryStatus);
+    }
+
+    public void updateDeviceConnectionStatus(String mDeviceObjectId, byte[] connectionSetting) {
+        mDeviceDao.setConnectionStatus(mDeviceObjectId,
+                connectionSetting[3] >> 4 == 1, connectionSetting[3] << 4 == 1, connectionSetting[4]);
+    }
+
+    public void updateDeviceTemperature(String mDeviceObjectId, byte temperature) {
+        mDeviceDao.setTemperature(mDeviceObjectId, temperature);
+    }
+
+    public void updateDeviceHumidity(String mDeviceObjectId, byte humidity) {
+        mDeviceDao.setHumidity(mDeviceObjectId, humidity);
+    }
+
+    public void updateDeviceCoLevel(String mDeviceObjectId, byte coLevel) {
+        mDeviceDao.setCoLevel(mDeviceObjectId, coLevel);
+    }
+    //endregion Device table
+
+    //region User and UserLock table
+    public void insertUser(User user) {
+        new insertUserAsyncTask(mUserDao).execute(user);
+    }
+
+    public void deleteUser(User user) {
+        new deleteUserAsyncTask(mUserDao).execute(user);
+    }
+    //endregion User and UserLock table
+
+    //region Declare classes
     private static class insertDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
 
         private DeviceDao mDeviceDao;
@@ -89,35 +134,37 @@ public class LocalRepository {
         }
     }
 
-    public void updateDeviceLockStatus(String mDeviceObjectId, boolean mLockStatus) {
-        mDeviceDao.setLockStatus(mDeviceObjectId, mLockStatus);
+    private static class insertUserAsyncTask extends AsyncTask<User, Void, Void> {
+
+        private UserDao mUserDao;
+
+        insertUserAsyncTask(UserDao mUserDao) {
+            this.mUserDao = mUserDao;
+        }
+
+        @SafeVarargs
+        @Override
+        protected final Void doInBackground(User... user) {
+            this.mUserDao.insert(user[0]);
+            return null;
+        }
     }
 
-    public void updateDeviceDoorStatus(String mDeviceObjectId, int mDoorStatus) {
-        mDeviceDao.setDoorStatus(mDeviceObjectId, mDoorStatus);
-    }
+    private static class deleteUserAsyncTask extends AsyncTask<User, Void, Void> {
 
-    public void updateDeviceBatteryStatus(String mDeviceObjectId, int mBatteryStatus) {
-        mDeviceDao.setBatteryStatus(mDeviceObjectId, mBatteryStatus);
-    }
+        private UserDao mUserDao;
 
-    public void updateDeviceConnectionStatus(String mDeviceObjectId, byte[] connectionSetting) {
-        mDeviceDao.setConnectionStatus(mDeviceObjectId,
-                connectionSetting[3] >> 4 == 1, connectionSetting[3] << 4 == 1, connectionSetting[4]);
-    }
+        deleteUserAsyncTask(UserDao mUserDao) {
+            this.mUserDao = mUserDao;
+        }
 
-    public void updateDeviceTemperature(String mDeviceObjectId, byte temperature) {
-        mDeviceDao.setTemperature(mDeviceObjectId, temperature);
+        @Override
+        protected Void doInBackground(final User... users) {
+            this.mUserDao.delete(users[0]);
+            return null;
+        }
     }
-
-    public void updateDeviceHumidity(String mDeviceObjectId, byte humidity) {
-        mDeviceDao.setHumidity(mDeviceObjectId, humidity);
-    }
-
-    public void updateDeviceCoLevel(String mDeviceObjectId, byte coLevel) {
-        mDeviceDao.setCoLevel(mDeviceObjectId, coLevel);
-    }
-    //endregion Device table
+    //endregion Declare classes
 
     //region SharePreferences
     public boolean isFirstTimeLaunchApp() {

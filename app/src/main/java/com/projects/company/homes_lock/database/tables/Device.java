@@ -129,10 +129,10 @@ public class Device extends BaseModel {
         this.mBleDeviceMacAddress = "02:80:E1:00:34:12";
         this.mSerialNumber = mObjectId;
         this.mLockStatus = false;
-        this.mDoorStatus = true;
-        this.mInternetStatus = true;
+        this.mDoorStatus = false;
+        this.mInternetStatus = false;
         this.mBatteryStatus = 50;
-        this.mWifiStatus = true;
+        this.mWifiStatus = false;
         this.mWifiStrength = -20;
         this.mMeanPowerCons = 0;
         this.mTemperature = 10;

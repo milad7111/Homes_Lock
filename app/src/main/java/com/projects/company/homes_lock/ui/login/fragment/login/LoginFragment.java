@@ -121,6 +121,7 @@ public class LoginFragment extends Fragment implements ILoginFragment, View.OnCl
     //region Login CallBacks
     @Override
     public void onLoginSuccessful(Object response) {
+//        LoginViewModel.insert();
         startActivity(new Intent(getActivity(), LockActivity.class));
     }
 
