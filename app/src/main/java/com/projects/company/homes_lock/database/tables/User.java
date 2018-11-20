@@ -151,4 +151,8 @@ public class User extends BaseModel {
     public List<UserLock> getRelatedUserLocks() {
         return mRelatedUserLocks;
     }
+
+    public void setRelatedUserLocks(List<UserLock> mRelatedUserLocks) {
+        this.mRelatedUserLocks = mRelatedUserLocks;
+    }
 }

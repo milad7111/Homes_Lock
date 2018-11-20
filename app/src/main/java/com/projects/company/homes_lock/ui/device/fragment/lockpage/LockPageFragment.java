@@ -135,6 +135,7 @@ public class LockPageFragment extends Fragment
 
         //region init
         ViewHelper.setContext(getContext());
+        DialogHelper.handleProgressDialog(false);
         //endregion init
     }
 

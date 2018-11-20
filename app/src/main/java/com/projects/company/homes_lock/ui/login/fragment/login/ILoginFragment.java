@@ -8,4 +8,6 @@ public interface ILoginFragment<T> {
     void onLoginSuccessful(T response);
 
     void onLoginFailed(T response);
+
+    void onDataInsert(Long id);
 }

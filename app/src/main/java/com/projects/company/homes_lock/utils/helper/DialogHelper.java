@@ -127,7 +127,10 @@ public class DialogHelper {
     public static void handleProgressDialog(Context context, String title, String message, boolean show) {
         if (show)
             ProgressDialogHelper.show(context, title, message);
-        else
+    }
+
+    public static void handleProgressDialog(boolean show) {
+        if (!show)
             ProgressDialogHelper.hide();
     }
     //endregion Declare Methods

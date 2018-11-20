@@ -27,6 +27,7 @@ public class LocalRepository {
     private DeviceDao mDeviceDao;
     private UserDao mUserDao;
     private SharedPreferences mSharedPreferences = null;
+    private static ILocalRepository mILocalRepository = null;
     //endregion Declare Objects
 
     public LocalRepository(Application application) {
@@ -36,6 +37,7 @@ public class LocalRepository {
 
         //region Initialize Objects
         mDeviceDao = LockDatabase.getDatabase(application).deviceDao();
+        mUserDao = LockDatabase.getDatabase(application).userDao();
         mSharedPreferences = application.getSharedPreferences(application.getPackageName(), MODE_PRIVATE);
         //endregion Initialize Objects
     }
@@ -92,12 +94,9 @@ public class LocalRepository {
     //endregion Device table
 
     //region User and UserLock table
-    public void insertUser(User user) {
+    public void insertUser(User user, ILocalRepository mILocalRepository) {
+        this.mILocalRepository = mILocalRepository;
         new insertUserAsyncTask(mUserDao).execute(user);
-    }
-
-    public void deleteUser(User user) {
-        new deleteUserAsyncTask(mUserDao).execute(user);
     }
     //endregion User and UserLock table
 
@@ -110,7 +109,6 @@ public class LocalRepository {
             this.mDeviceDao = mDeviceDao;
         }
 
-        @SafeVarargs
         @Override
         protected final Void doInBackground(Device... device) {
             this.mDeviceDao.insert(device);
@@ -133,7 +131,7 @@ public class LocalRepository {
         }
     }
 
-    private static class insertUserAsyncTask extends AsyncTask<User, Void, Void> {
+    private static class insertUserAsyncTask extends AsyncTask<User, Void, Long> {
 
         private UserDao mUserDao;
 
@@ -141,26 +139,16 @@ public class LocalRepository {
             this.mUserDao = mUserDao;
         }
 
-        @SafeVarargs
         @Override
-        protected final Void doInBackground(User... user) {
-            this.mUserDao.insert(user[0]);
-            return null;
-        }
-    }
-
-    private static class deleteUserAsyncTask extends AsyncTask<User, Void, Void> {
-
-        private UserDao mUserDao;
-
-        deleteUserAsyncTask(UserDao mUserDao) {
-            this.mUserDao = mUserDao;
+        protected Long doInBackground(User... users) {
+            return this.mUserDao.insert(users[0]);
         }
 
         @Override
-        protected Void doInBackground(final User... users) {
-            this.mUserDao.delete(users[0]);
-            return null;
+        protected void onPostExecute(Long id) {
+            super.onPostExecute(id);
+            if (mILocalRepository != null)
+                mILocalRepository.onDataInsert(id);
         }
     }
     //endregion Declare classes

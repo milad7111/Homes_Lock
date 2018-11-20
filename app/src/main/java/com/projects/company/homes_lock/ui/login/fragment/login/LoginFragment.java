@@ -17,17 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.LoginViewModel;
 import com.projects.company.homes_lock.models.viewmodels.LoginViewModelFactory;
 import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements ILoginFragment, View.OnClickListener {
+public class LoginFragment extends Fragment
+        implements
+        ILoginFragment,
+        View.OnClickListener {
 
     //region Declare Constants
     public static String TAG = LoginFragment.class.getName();
@@ -103,6 +108,7 @@ public class LoginFragment extends Fragment implements ILoginFragment, View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
+                DialogHelper.handleProgressDialog(getContext(), "Login", "Login process and read data ...", true);
                 mLoginViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
                 break;
             case R.id.txv_direct_connect:
@@ -121,14 +127,19 @@ public class LoginFragment extends Fragment implements ILoginFragment, View.OnCl
     //region Login CallBacks
     @Override
     public void onLoginSuccessful(Object response) {
-//        LoginViewModel.insert();
-        startActivity(new Intent(getActivity(), LockActivity.class));
+        mLoginViewModel.insertUser((User) response);
     }
 
     @Override
     public void onLoginFailed(Object response) {
         Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
         Toast.makeText(getContext(), ((FailureModel) response).getFailureMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDataInsert(Long id) {
+        if (id != -1)
+            startActivity(new Intent(getActivity(), LockActivity.class));
     }
     //endregion Login CallBacks
 

@@ -2,18 +2,20 @@ package com.projects.company.homes_lock.models.viewmodels;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.util.Log;
 
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
+import com.projects.company.homes_lock.repositories.local.ILocalRepository;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 public class LoginViewModel extends AndroidViewModel
         implements
-        NetworkListener.SingleNetworkListener {
+        NetworkListener.SingleNetworkListener,
+        ILocalRepository {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -45,8 +47,8 @@ public class LoginViewModel extends AndroidViewModel
         mNetworkRepository.login(this, new LoginModel(email, password));
     }
 
-    public void getDevicesByUser(User user) {
-//        mNetworkRepository.login(this, new LoginModel(email, password));
+    public void insertUser(User user) {
+        mLocalRepository.insertUser(user, this);
     }
     //endregion Declare Methods
 
@@ -62,4 +64,12 @@ public class LoginViewModel extends AndroidViewModel
         mILoginFragment.onLoginFailed(response);
     }
     //endregion Login Callbacks
+
+    //region LocalRepository Callbacks
+    @Override
+    public void onDataInsert(Long id) {
+        Log.d(getClass().getName(), "Data inserted with objectId : " + id);
+        mILoginFragment.onDataInsert(id);
+    }
+    //endregion LocalRepository Callbacks
 }

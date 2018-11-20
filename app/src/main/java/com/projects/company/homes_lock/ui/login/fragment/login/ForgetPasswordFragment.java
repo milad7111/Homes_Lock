@@ -66,6 +66,11 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
     public void onLoginFailed(Object response) {
     }
 
+    @Override
+    public void onDataInsert(Long id) {
+
+    }
+
     //region Declare Methods
     //endregion Declare Methods
 }

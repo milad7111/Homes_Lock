@@ -120,4 +120,8 @@ public class UserLock {
     public String getDeviceId() {
         return mDeviceId;
     }
+
+    public void setRelatedDevice(Device mRelatedDevice) {
+        this.mRelatedDevice = mRelatedDevice;
+    }
 }

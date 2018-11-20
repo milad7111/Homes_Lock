@@ -9,8 +9,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "deviceError",
