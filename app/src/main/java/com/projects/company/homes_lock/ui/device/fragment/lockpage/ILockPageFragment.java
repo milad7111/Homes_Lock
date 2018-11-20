@@ -8,4 +8,6 @@ import android.bluetooth.BluetoothDevice;
 
 public interface ILockPageFragment {
     void onBondingRequired(BluetoothDevice device);
+
+    void onBonded(BluetoothDevice device);
 }

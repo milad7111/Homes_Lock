@@ -51,14 +51,14 @@ public class DeviceViewModel extends AndroidViewModel
     private NetworkRepository mNetworkRepository;
     private final BleDeviceManager mBleDeviceManager;
 
-    ILockPageFragment listener;
+    ILockPageFragment mILockPageFragment;
 
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
     //endregion Declare Objects
 
-    public DeviceViewModel(Application application, ILockPageFragment listener) {
+    public DeviceViewModel(Application application) {
         super(application);
 
         //region Initialize Variables
@@ -171,9 +171,8 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onBondingRequired(final BluetoothDevice device) {
-        DialogHelper.showPairWithBleDevice(null);
-//        device.setPin("123456".getBytes());
-        device.createBond();
+        if (mILockPageFragment != null)
+            mILockPageFragment.onBondingRequired(device);
     }
 
     @Override
@@ -244,7 +243,8 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion BLE CallBacks
 
     //region BLE Methods
-    public void connect(final ScannedDeviceModel device) {
+    public void connect(ILockPageFragment mILockPageFragment, final ScannedDeviceModel device) {
+        this.mILockPageFragment = mILockPageFragment;
         final LogSession logSession = Logger.newSession(getApplication(), null, device.getMacAddress(), device.getName());
         mBleDeviceManager.setLogger(logSession);
         mBleDeviceManager.connect(device.getDevice());
@@ -265,9 +265,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void sendLockCommand(boolean lockCommand) {
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x02},
-                new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
-//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
     }
 
     public LiveData<String> getConnectionState() {
@@ -280,15 +278,11 @@ public class DeviceViewModel extends AndroidViewModel
 
     private void getDeviceInfoFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x01}, new byte[]{}));
-//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
-
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x05}, new byte[]{}));
-//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
     }
 
     private void getDeviceErrorFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x04}, new byte[]{}));
-//        mBleDeviceManager.readCharacteristic(CHARACTERISTIC_UUID_TX);
     }
     //endregion Declare Methods
 

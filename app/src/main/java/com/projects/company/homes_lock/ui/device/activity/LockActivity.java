@@ -23,7 +23,6 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
-import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
@@ -127,7 +126,7 @@ public class LockActivity extends BaseActivity
             switch (requestCode) {
                 case REQUEST_CODE_ACCESS_COARSE_LOCATION:
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                        DialogHelper.showEnableLocationDialog(this);
+                        DialogHelper.handleEnableLocationDialog(this);
                     break;
             }
         }

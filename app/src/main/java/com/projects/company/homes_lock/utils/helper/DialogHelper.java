@@ -2,6 +2,9 @@ package com.projects.company.homes_lock.utils.helper;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.view.Window;
@@ -9,15 +12,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 
 public class DialogHelper {
 
     //region Declare Objects
+    private static ProgressDialog mProgressDialog;
     //endregion Declare Objects
 
     //region Declare Methods
-    public static void showEnableLocationDialog(Activity activity) {
+    public static void handleEnableLocationDialog(Activity activity) {
         Dialog dialog = new Dialog(activity);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -44,7 +47,7 @@ public class DialogHelper {
         dialog.show();
     }
 
-    public static void showAddNewLockDialog(Activity activity) {
+    public static void handleAddNewLockDialog(Activity activity) {
         Dialog dialog = new Dialog(activity);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -80,8 +83,8 @@ public class DialogHelper {
         dialog.getWindow().setAttributes(layoutParams);
     }
 
-    public static void showPairWithBleDevice(LockPageFragment fragment) {
-        Dialog dialog = new Dialog(fragment.getActivity());
+    public static void handlePairWithBleDeviceDialog(Activity activity, BluetoothDevice device) {
+        Dialog dialog = new Dialog(activity);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_pair_with_ble_device);
@@ -102,9 +105,9 @@ public class DialogHelper {
         btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragment.connectToDevice(
-                        txieLockNameDialogPairWithBleDevice.getText().toString(),
-                        txieSecurityCodeDialogPairWithBleDevice.getText().toString());
+                DialogHelper.handleProgressDialog(activity, null, null, true);
+                device.setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
+                device.createBond();
                 dialog.dismiss();
             }
         });
@@ -120,5 +123,38 @@ public class DialogHelper {
         dialog.show();
         dialog.getWindow().setAttributes(layoutParams);
     }
+
+    public static void handleProgressDialog(Context context, String title, String message, boolean show) {
+        if (show)
+            ProgressDialogHelper.show(context, title, message);
+        else
+            ProgressDialogHelper.hide();
+    }
     //endregion Declare Methods
+
+    //region Declare Classes
+    private static class ProgressDialogHelper {
+        private ProgressDialogHelper() {
+        }
+
+        private static void show(Context context, String title, String message) {
+            if (mProgressDialog != null) {
+                if (!mProgressDialog.isShowing())
+                    mProgressDialog.show();
+            } else {
+                mProgressDialog = new ProgressDialog(context);
+                mProgressDialog.setTitle(title);
+                mProgressDialog.setMessage(message);
+                mProgressDialog.show();
+            }
+        }
+
+        private static void hide() {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
+            }
+        }
+    }
+    //endregion Declare Classes
 }

@@ -45,15 +45,7 @@ public class ScannedDeviceModel extends BaseModel {
         return mDevice;
     }
 
-    public void setRssi(int mRssi) {
-        this.mRSSI = mRssi;
-    }
-
     public int getRSSI() {
         return mRSSI;
     }
-
-    public void setPin(String bondPin){
-        mDevice.setPin(bondPin.getBytes());
-    };
 }

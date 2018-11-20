@@ -71,7 +71,7 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_new_lock:
-                DialogHelper.showAddNewLockDialog(getActivity());
+                DialogHelper.handleAddNewLockDialog(getActivity());
                 break;
         }
     }
