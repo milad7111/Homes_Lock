@@ -128,6 +128,7 @@ public class LoginFragment extends Fragment implements ILoginFragment, View.OnCl
     @Override
     public void onLoginFailed(Object response) {
         Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
+        Toast.makeText(getContext(), ((FailureModel) response).getFailureMessage(), Toast.LENGTH_LONG).show();
     }
     //endregion Login CallBacks
 

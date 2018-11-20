@@ -45,18 +45,16 @@ public class LoginViewModel extends AndroidViewModel
         mNetworkRepository.login(this, new LoginModel(email, password));
     }
 
-    private static void saveLoginDataLocal() {
+    public void getDevicesByUser(User user) {
+//        mNetworkRepository.login(this, new LoginModel(email, password));
     }
     //endregion Declare Methods
 
     //region Login Callbacks
     @Override
     public void onResponse(Object response) {
-        if (DataHelper.isInstanceOfList(response, User.class.getName())) {
-            User tempUser = (User) response;
-//            mLocalRepository.insertUser(tempUser.);
+        if (response instanceof User)
             mILoginFragment.onLoginSuccessful(response);
-        }
     }
 
     @Override
@@ -64,7 +62,4 @@ public class LoginViewModel extends AndroidViewModel
         mILoginFragment.onLoginFailed(response);
     }
     //endregion Login Callbacks
-
-    //region SharePreferences
-    //endregion SharePreferences
 }

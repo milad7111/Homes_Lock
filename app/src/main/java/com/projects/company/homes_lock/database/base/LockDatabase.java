@@ -57,11 +57,11 @@ public abstract class LockDatabase extends RoomDatabase {
     public abstract UserDao userDao();
 
     public abstract DeviceErrorDao deviceErrorDao();
-    //endregion declare Objects
 
     public abstract ErrorDao errorDao();
 
     public abstract UserLockDao userLockDao();
+    //endregion declare Objects
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 

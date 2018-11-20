@@ -22,7 +22,6 @@ import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
 import java.util.List;
 import java.util.UUID;

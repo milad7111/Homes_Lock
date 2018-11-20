@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
-import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 public class LoginViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private Application mApplication;
