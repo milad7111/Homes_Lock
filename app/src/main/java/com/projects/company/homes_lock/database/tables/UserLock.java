@@ -4,28 +4,17 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-import static android.arch.persistence.room.ForeignKey.CASCADE;
-
 @Entity(tableName = "userLock",
         foreignKeys = {
-                @ForeignKey(
-                        entity = Device.class,
-                        parentColumns = "objectId",
-                        childColumns = "objectId",
-                        onDelete = CASCADE),
-                @ForeignKey(
-                        entity = User.class,
-                        parentColumns = "objectId",
-                        childColumns = "objectId",
-                        onDelete = CASCADE)
-        })
+                @ForeignKey(entity = User.class, parentColumns = "objectId", childColumns = "userId"),
+                @ForeignKey(entity = Device.class, parentColumns = "objectId", childColumns = "deviceId")},
+        indices = {@Index(value = {"userId"}), @Index(value = {"deviceId"})})
 public class UserLock {
 
     //region Database attributes
@@ -34,6 +23,12 @@ public class UserLock {
     @ColumnInfo(name = "objectId")
     @SerializedName("objectId")
     private String mObjectId;
+
+    @ColumnInfo(name = "userId")
+    private String mUserId;
+
+    @ColumnInfo(name = "deviceId")
+    private String mDeviceId;
 
     @ColumnInfo(name = "adminStatus")
     @SerializedName("adminStatus")
@@ -64,6 +59,10 @@ public class UserLock {
     @Ignore
     @SerializedName("___class")
     private String mServerTableName;
+
+    @Ignore
+    @SerializedName("relatedDevice")
+    private Device mRelatedDevice;
     //endregion Ignore server attributes
 
     public UserLock() {
@@ -100,5 +99,25 @@ public class UserLock {
 
     public void setFavorite(boolean mFavorite) {
         this.mFavorite = mFavorite;
+    }
+
+    public Device getRelatedDevice() {
+        return mRelatedDevice;
+    }
+
+    public void setUserId(String mUserId) {
+        this.mUserId = mUserId;
+    }
+
+    public String getUserId() {
+        return mUserId;
+    }
+
+    public void setDeviceId(String mDeviceId) {
+        this.mDeviceId = mDeviceId;
+    }
+
+    public String getDeviceId() {
+        return mDeviceId;
     }
 }

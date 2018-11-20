@@ -11,12 +11,6 @@ import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
 
 import java.util.List;
 
-//,
-//        foreignKeys = @ForeignKey(
-//        entity = User.class,
-//        parentColumns = "objectId",
-//        childColumns = "objectId",
-//        onDelete = CASCADE)
 @Entity(tableName = "device")
 public class Device extends BaseModel {
 

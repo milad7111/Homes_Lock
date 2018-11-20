@@ -68,8 +68,8 @@ public class User extends BaseModel {
     private String mServerTableName;
 
     @Ignore
-    @SerializedName("relatedDevices")
-    private List<UserLock> mRelatedDevices;
+    @SerializedName("relatedUserLocks")
+    private List<UserLock> mRelatedUserLocks;
 
     @Ignore
     @SerializedName("socialAccount")
@@ -146,5 +146,9 @@ public class User extends BaseModel {
 
     public boolean isActiveUser() {
         return mUserToken.equals(null);
+    }
+
+    public List<UserLock> getRelatedUserLocks() {
+        return mRelatedUserLocks;
     }
 }
