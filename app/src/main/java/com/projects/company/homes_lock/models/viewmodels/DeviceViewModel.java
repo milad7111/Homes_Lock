@@ -22,6 +22,7 @@ import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
 import java.util.List;
 import java.util.UUID;
@@ -116,14 +117,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     //region BLE CallBacks
     @Override
-    protected void onCleared() {
-        super.onCleared();
-
-        if (mBleDeviceManager.isConnected())
-            disconnect();
-    }
-
-    @Override
     public void onDeviceConnecting(final BluetoothDevice device) {
         mConnectionState.postValue(getApplication().getString(R.string.state_connecting));
     }
@@ -137,16 +130,21 @@ public class DeviceViewModel extends AndroidViewModel
     @Override
     public void onDeviceDisconnecting(final BluetoothDevice device) {
         mIsConnected.postValue(false);
+        mIsSupported.postValue(false);
     }
 
     @Override
     public void onDeviceDisconnected(final BluetoothDevice device) {
         mIsConnected.postValue(false);
+        mIsSupported.postValue(false);
+        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
     public void onLinklossOccur(final BluetoothDevice device) {
         mIsConnected.postValue(false);
+        mIsSupported.postValue(false);
+        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
@@ -170,16 +168,21 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onBondingRequired(final BluetoothDevice device) {
+        mIsSupported.postValue(false);
+
         if (mILockPageFragment != null)
             mILockPageFragment.onBondingRequired(device);
     }
 
     @Override
     public void onBonded(final BluetoothDevice device) {
+        if (mILockPageFragment != null)
+            mILockPageFragment.onBonded(device);
     }
 
     @Override
     public void onError(final BluetoothDevice device, final String message, final int errorCode) {
+        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
@@ -189,6 +192,8 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onDataReceived(Object response) {
+        DialogHelper.handleProgressDialog(false);
+
         UUID responseUUID;
         if (response instanceof BluetoothGattCharacteristic) {
             responseUUID = ((BluetoothGattCharacteristic) response).getUuid();
@@ -246,6 +251,7 @@ public class DeviceViewModel extends AndroidViewModel
         this.mILockPageFragment = mILockPageFragment;
         final LogSession logSession = Logger.newSession(getApplication(), null, device.getMacAddress(), device.getName());
         mBleDeviceManager.setLogger(logSession);
+
         mBleDeviceManager.connect(device.getDevice());
     }
 

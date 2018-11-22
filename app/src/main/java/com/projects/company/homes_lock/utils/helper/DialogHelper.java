@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.view.Window;
@@ -44,7 +45,14 @@ public class DialogHelper {
             }
         });
 
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
         dialog.show();
+        dialog.getWindow().setAttributes(layoutParams);
     }
 
     public static void handleAddNewLockDialog(Activity activity) {
@@ -71,7 +79,43 @@ public class DialogHelper {
             }
         });
 
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
         dialog.show();
+        dialog.getWindow().setAttributes(layoutParams);
+    }
+
+    public static void handleAddNewLockDialog(Activity activity, BluetoothDevice device) {
+        Dialog dialog = new Dialog(activity);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_pair_with_ble_device);
+
+        Button btnCancelDialogPairWithBleDevice = dialog.findViewById(R.id.btn_cancel_dialog_pair_with_ble_device);
+        Button btnPairDialogPairWithBleDevice = dialog.findViewById(R.id.btn_pair_dialog_pair_with_ble_device);
+
+        TextInputEditText txieSecurityCodeDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_security_code_dialog_pair_with_ble_device);
+
+        btnCancelDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogHelper.handleProgressDialog(activity, null, "Pairing ...", true);
+                device.setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
+                device.createBond();
+                dialog.dismiss();
+            }
+        });
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
 
@@ -83,7 +127,7 @@ public class DialogHelper {
         dialog.getWindow().setAttributes(layoutParams);
     }
 
-    public static void handlePairWithBleDeviceDialog(Activity activity, BluetoothDevice device) {
+    public static Dialog handlePairWithBleDeviceDialog(Activity activity, BluetoothDevice device) {
         Dialog dialog = new Dialog(activity);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -105,14 +149,12 @@ public class DialogHelper {
         btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.handleProgressDialog(activity, null, null, true);
+                DialogHelper.handleProgressDialog(activity, null, "Pairing ...", true);
                 device.setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
                 device.createBond();
                 dialog.dismiss();
             }
         });
-
-        dialog.show();
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
 
@@ -122,11 +164,19 @@ public class DialogHelper {
 
         dialog.show();
         dialog.getWindow().setAttributes(layoutParams);
+
+        return dialog;
     }
 
     public static void handleProgressDialog(Context context, String title, String message, boolean show) {
+        Handler mHandler = new Handler();
         if (show)
             ProgressDialogHelper.show(context, title, message);
+
+        mHandler.postDelayed(() -> {
+            DialogHelper.handleProgressDialog(false);
+        }, 10000);
+
     }
 
     public static void handleProgressDialog(boolean show) {
@@ -137,9 +187,6 @@ public class DialogHelper {
 
     //region Declare Classes
     private static class ProgressDialogHelper {
-        private ProgressDialogHelper() {
-        }
-
         private static void show(Context context, String title, String message) {
             if (mProgressDialog != null) {
                 if (!mProgressDialog.isShowing())

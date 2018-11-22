@@ -1,6 +1,8 @@
 package com.projects.company.homes_lock.utils.helper;
 
 import android.content.Context;
+import android.content.Intent;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -43,8 +45,18 @@ public class ViewHelper {
         mTransaction.commit();
     }
 
-    public static void setLockStatusImage(ImageView imageViewLock, boolean lockStatus) {
-        imageViewLock.setImageResource(lockStatus ? R.drawable.ic_lock_close : R.drawable.ic_lock_open);
+    public static void setLockStatusImage(ImageView imageViewLock, int lockStatus) {
+        switch (lockStatus) {
+            case 0:
+                imageViewLock.setImageResource(R.drawable.ic_lock_close);
+                break;
+            case 1:
+                imageViewLock.setImageResource(R.drawable.ic_lock_open);
+                break;
+            case 2:
+                imageViewLock.setImageResource(R.drawable.ic_lock_idle);
+                break;
+        }
     }
 
     public static void setBleConnectionStatusImage(ImageView imageViewBle, boolean bleConnectionStatus) {
@@ -59,6 +71,8 @@ public class ViewHelper {
         else if (batteryStatus >= 60 && batteryStatus < 90)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_middle);
         else if (batteryStatus >= 90)
+            imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
+        else
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
     }
 

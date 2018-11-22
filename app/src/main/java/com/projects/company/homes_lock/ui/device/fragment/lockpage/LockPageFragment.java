@@ -1,9 +1,9 @@
 package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
+import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -69,6 +69,7 @@ public class LockPageFragment extends Fragment
     private DeviceViewModel mDeviceViewModel;
     private BluetoothLEHelper mBluetoothLEHelper;
     private Device mDevice;
+    private Dialog activeDialog;
     //endregion Declare Objects
 
     public LockPageFragment() {
@@ -140,14 +141,6 @@ public class LockPageFragment extends Fragment
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-//        if (!isConnectedToBleDevice)
-//            connectToDevice();
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_lock_status_lock_page:
@@ -178,27 +171,41 @@ public class LockPageFragment extends Fragment
     //region BLE CallBacks
     @Override
     public void onBondingRequired(BluetoothDevice device) {
-        DialogHelper.handlePairWithBleDeviceDialog(getActivity(), device);
+        this.mBluetoothLEHelper.scanLeDevice(false);
+        activeDialog = DialogHelper.handlePairWithBleDeviceDialog(getActivity(), device);
     }
 
     @Override
     public void onBonded(BluetoothDevice device) {
-        DialogHelper.handleProgressDialog(getActivity(), null, null, false);
+        if (activeDialog != null)
+            activeDialog.dismiss();
     }
     //endregion BLE CallBacks
 
     //region Declare Methods
-    private void updateDataInView() {
-        ViewHelper.setLockStatusImage(imgLockStatusLockPage, mDevice.getLockStatus());
-        ViewHelper.setBatteryStatusImage(imgBatteryStatusLockPage, mDevice.getBatteryStatus());
-        ViewHelper.setConnectionStatusImage(imgConnectionStatusLockPage, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+    private void updateDataInView(boolean setDefault) {
+        ViewHelper.setLockStatusImage(imgLockStatusLockPage,
+                setDefault ? 2 : (mDevice.getLockStatus() ? 1 : 0));
+        ViewHelper.setBatteryStatusImage(imgBatteryStatusLockPage,
+                setDefault ? 0 : mDevice.getBatteryStatus());
+        ViewHelper.setConnectionStatusImage(imgConnectionStatusLockPage,
+                setDefault ? false : mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
 
-        txvLockNameLockPage.setText(mDevice.getBleDeviceName());
-        txvSecurityAlarmLockPage.setText(DataHelper.getSecurityAlarmText(mDevice.getLockStatus(), mDevice.getDoorStatus()));
-        txvSecurityAlarmLockPage.setTextColor(ContextCompat.getColor(getActivity(), DataHelper.getSecurityAlarmColor(mDevice.getLockStatus(), mDevice.getDoorStatus())));
+        txvLockNameLockPage.setText(
+                setDefault ? "" : mDevice.getBleDeviceName());
+        txvSecurityAlarmLockPage.setText(
+                setDefault ?
+                        "Data Not Synced" :
+                        DataHelper.getSecurityAlarmText(mDevice.getLockStatus(), mDevice.getDoorStatus()));
+        txvSecurityAlarmLockPage.setTextColor(
+                setDefault ?
+                        ContextCompat.getColor(getActivity(), R.color.md_grey_500) :
+                        ContextCompat.getColor(getActivity(), DataHelper.getSecurityAlarmColor(mDevice.getLockStatus(), mDevice.getDoorStatus())));
 
-        txvTemperatureLockPage.setText(mDevice.getTemperature().toString());
-        txvHumidityLockPage.setText(mDevice.getHumidity().toString());
+        txvTemperatureLockPage.setText(
+                setDefault ? "" : mDevice.getTemperature().toString());
+        txvHumidityLockPage.setText(
+                setDefault ? "" : mDevice.getHumidity().toString());
 
         txvNewUpdateLockPage.setText(null);
     }
@@ -208,7 +215,7 @@ public class LockPageFragment extends Fragment
             @Override
             public void onChanged(@Nullable Device device) {
                 mDevice = device;
-                updateDataInView();
+                updateDataInView(false);
             }
         });
     }
@@ -244,6 +251,8 @@ public class LockPageFragment extends Fragment
     }
 
     private void scanDevices() {
+        DialogHelper.handleProgressDialog(getActivity(), null, "Pairing ...", true);
+
         if (!mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
             Handler mHandler = new Handler();
@@ -258,13 +267,13 @@ public class LockPageFragment extends Fragment
     private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices) {
         for (ScannedDeviceModel device : listOfScannedDevices) {
             if (device.getMacAddress().equals(mDevice.getBleDeviceMacAddress())) {
+                this.mBluetoothLEHelper.scanLeDevice(false);
                 this.mDeviceViewModel.connect(this, device);
                 this.mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
                     @Override
                     public void onChanged(@Nullable Boolean isConnected) {
                         isConnectedToBleDevice = isConnected;
                         ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
-                        getDeviceInfo();
                         initBleInfo();
                     }
                 });
@@ -282,8 +291,12 @@ public class LockPageFragment extends Fragment
     private void initBleInfo() {
         this.mDeviceViewModel.isSupported().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
+            public void onChanged(@Nullable Boolean isSupported) {
                 //TODO every request to ble device must sit down here
+                if (isSupported)
+                    getDeviceInfo();
+                else
+                    updateDataInView(true);
             }
         });
     }
@@ -296,9 +309,6 @@ public class LockPageFragment extends Fragment
                 mScannedDeviceModelList.add(new ScannedDeviceModel(device));
 
         return mScannedDeviceModelList;
-    }
-
-    public void bondToDevice(String toString, String toString1) {
     }
     //endregion Declare BLE Methods
 }

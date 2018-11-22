@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="left|center_vertical"
-        android:text="Pairing"
+        android:text="Pair with Ble Device"
         android:textColor="@color/md_white_1000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,18 @@
         android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location"/>
+        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tiet_lock_name_dialog_pair_with_ble_device"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Lock name"
+            android:inputType="text"
+            android:textColor="@color/hintColor"
+            android:textColorHint="@color/hintColor" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_security_code_dialog_pair_with_ble_device"
