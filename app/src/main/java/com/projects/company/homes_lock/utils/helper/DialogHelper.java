@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,10 +18,13 @@ import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
 
@@ -69,55 +71,7 @@ public class DialogHelper {
         dialog.getWindow().setAttributes(layoutParams);
     }
 
-//    public void handleAddNewLockDialogOffline(Fragment fragment) {
-//        Dialog dialog = new Dialog(fragment.getContext());
-//
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(R.layout.dialog_available_devices);
-//
-//        mBleDeviceAdapter =
-//                new BleDeviceAdapter((AppCompatActivity) fragment.getActivity(), Collections.singletonList(new ScannedDeviceModel()));
-//
-//        selfObject = this;
-//        BleHelper.findDevices(this, fragment);
-//
-//        RecyclerView rcvDialogAvailableDevices = dialog.findViewById(R.id.rcv_dialog_available_devices);
-//        Button btnCancelDialogAvailableDevices = dialog.findViewById(R.id.btn_cancel_dialog_available_devices);
-//        Button btnScanDialogAvailableDevices = dialog.findViewById(R.id.btn_scan_dialog_available_devices);
-//
-//        rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
-//        rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
-//        rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
-//
-//        btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//        btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (selfObject != null) {
-//                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel()));
-//                    BleHelper.findDevices(selfObject, fragment);
-//                } else
-//                    dialog.dismiss();
-//            }
-//        });
-//
-//        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//
-//        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-//        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-//        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//
-//        dialog.show();
-//        dialog.getWindow().setAttributes(layoutParams);
-//    }
-
-    public static void handleAddNewLockDialogOffline(Fragment fragment, List<ScannedDeviceModel> devices) {
+    public static Dialog handleAddNewLockDialogOffline(Fragment fragment, List<ScannedDeviceModel> devices) {
         if (addNewLockDialogOffline == null) {
             addNewLockDialogOffline = new Dialog(fragment.getContext());
             addNewLockDialogOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -159,6 +113,8 @@ public class DialogHelper {
             addNewLockDialogOffline.show();
 
         addNewLockDialogOffline.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(addNewLockDialogOffline));
+
+        return addNewLockDialogOffline;
     }
 
     public static void handleAddNewLockDialogOnline(Activity activity) {
@@ -195,8 +151,8 @@ public class DialogHelper {
         dialog.getWindow().setAttributes(layoutParams);
     }
 
-    public static void handleAddNewLockDialog(Activity activity, BluetoothDevice device) {
-        Dialog dialog = new Dialog(activity);
+    public static Dialog handlePairWithBleDeviceDialog(Fragment fragment, ScannedDeviceModel mScannedDeviceModel) {
+        Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_pair_with_ble_device);
@@ -216,10 +172,9 @@ public class DialogHelper {
         btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.handleProgressDialog(activity, null, "Pairing ...", true);
-                device.setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
-                device.createBond();
-                dialog.dismiss();
+                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
+                mScannedDeviceModel.getDevice().setPin(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString().getBytes());
+                mScannedDeviceModel.getDevice().createBond();
             }
         });
 
@@ -231,13 +186,15 @@ public class DialogHelper {
 
         dialog.show();
         dialog.getWindow().setAttributes(layoutParams);
+
+        return dialog;
     }
 
-    public static Dialog handlePairWithBleDeviceDialog(Activity activity, BluetoothDevice device) {
-        Dialog dialog = new Dialog(activity);
+    public static Dialog handlePairWithNewBleDeviceDialog(Fragment fragment) {
+        Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_pair_with_ble_device);
+        dialog.setContentView(R.layout.dialog_pair_with_new_ble_device);
 
         Button btnCancelDialogPairWithBleDevice = dialog.findViewById(R.id.btn_cancel_dialog_pair_with_ble_device);
         Button btnPairDialogPairWithBleDevice = dialog.findViewById(R.id.btn_pair_dialog_pair_with_ble_device);
@@ -255,10 +212,18 @@ public class DialogHelper {
         btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.handleProgressDialog(activity, null, "Pairing ...", true);
-                device.setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
-                device.createBond();
-                dialog.dismiss();
+                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(txieLockNameDialogPairWithBleDevice.getText()).toString());
+                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString());
+
+                if (((AddLockFragment) fragment).mDevice.getDevice().getBondState() == BluetoothDevice.BOND_BONDED) {
+                    ((IBleScanListener) fragment).onBonded(((AddLockFragment) fragment).mDevice);
+                    dialog.dismiss();
+                } else {
+                    DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
+                    ((AddLockFragment) fragment).mDevice.getDevice().setPin(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString().getBytes());
+
+                    ((AddLockFragment) fragment).mDeviceViewModel.connect((IBleScanListener) fragment, ((AddLockFragment) fragment).mDevice);
+                }
             }
         });
 

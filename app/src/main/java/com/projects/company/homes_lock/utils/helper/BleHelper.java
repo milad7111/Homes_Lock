@@ -17,10 +17,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
-import com.ederdoski.simpleble.utils.BluetoothLEHelper;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
-import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
+import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,14 +197,14 @@ public class BleHelper {
             mHandler.postDelayed(() -> {
                 List<ScannedDeviceModel> tempList = getListOfScannedDevices(((AddLockFragment) fragment).mBluetoothLEHelper);
                 if (tempList.size() == 0)
-                    ((IAddLockFragment) fragment).onFindBleFault();
+                    ((IBleScanListener<Object>) fragment).onFindBleFault();
                 else
-                    ((IAddLockFragment) fragment).onFindBleSuccess(tempList);
+                    ((IBleScanListener<Object>) fragment).onFindBleSuccess(tempList);
             }, ((AddLockFragment) fragment).mBluetoothLEHelper.getScanPeriod());
         }
     }
 
-    private static List<ScannedDeviceModel> getListOfScannedDevices(BluetoothLEHelper mBluetoothLEHelper) {
+    private static List<ScannedDeviceModel> getListOfScannedDevices(CustomBluetoothLEHelper mBluetoothLEHelper) {
         List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
 
         for (BluetoothLE device : mBluetoothLEHelper.getListDevices())

@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "batteryStatus")
     @SerializedName("batteryStatus")
-    private Integer mBatteryStatus;
+    private Integer mBatteryPercentage;
 
     @ColumnInfo(name = "wifiStatus")
     @SerializedName("wifiStatus")
@@ -114,28 +115,28 @@ public class Device extends BaseModel {
     private User mUser;
     //endregion Ignore server attributes
 
-    @Ignore
-    public Device(){}
-
-    public Device(@NonNull String mObjectId) {
-        this.mObjectId = mObjectId;
-        this.mBleDeviceName = "BlueNRG";
-        this.mBleDeviceMacAddress = "02:80:E1:00:34:12";
-        this.mSerialNumber = mObjectId;
-        this.mLockStatus = false;
-        this.mDoorStatus = false;
-        this.mInternetStatus = false;
-        this.mBatteryStatus = 50;
-        this.mWifiStatus = false;
-        this.mWifiStrength = -20;
-        this.mMeanPowerCons = 0;
-        this.mTemperature = 10;
-        this.mHumidity = 5;
-        this.mCOLevel = 0;
-        this.mDeviceHealth = true;
-        this.mFWVersion = 1;
-        this.mLockPosition = 1;
+    public Device() {
     }
+
+//    public Device(@NonNull String mObjectId) {
+//        this.mObjectId = mObjectId;
+//        this.mBleDeviceName = "BlueNRG";
+//        this.mBleDeviceMacAddress = "02:80:E1:00:34:12";
+//        this.mSerialNumber = mObjectId;
+//        this.mLockStatus = false;
+//        this.mDoorStatus = false;
+//        this.mInternetStatus = false;
+//        this.mBatteryPercentage = 50;
+//        this.mWifiStatus = false;
+//        this.mWifiStrength = -20;
+//        this.mMeanPowerCons = 0;
+//        this.mTemperature = 10;
+//        this.mHumidity = 5;
+//        this.mCOLevel = 0;
+//        this.mDeviceHealth = true;
+//        this.mFWVersion = 1;
+//        this.mLockPosition = 1;
+//    }
 
     @Ignore
     public Device(
@@ -163,7 +164,7 @@ public class Device extends BaseModel {
         this.mLockStatus = mLockStatus;
         this.mDoorStatus = mDoorStatus;
         this.mInternetStatus = mInternetStatus;
-        this.mBatteryStatus = mBatteryStatus;
+        this.mBatteryPercentage = mBatteryStatus;
         this.mWifiStatus = mWifiStatus;
         this.mWifiStrength = mWifiStrength;
         this.mMeanPowerCons = mMeanPowerCons;
@@ -173,6 +174,26 @@ public class Device extends BaseModel {
         this.mDeviceHealth = mDeviceHealth;
         this.mFWVersion = mFWVersion;
         this.mLockPosition = mLockPosition;
+    }
+
+    public Device(ScannedDeviceModel device) {
+        this.mObjectId = device.getSerialNumber();
+        this.mBleDeviceName = device.getName();
+        this.mBleDeviceMacAddress = device.getMacAddress();
+        this.mSerialNumber = device.getSerialNumber();
+        this.mLockStatus = false;
+        this.mDoorStatus = false;
+        this.mInternetStatus = false;
+        this.mBatteryPercentage = 0;
+        this.mWifiStatus = false;
+        this.mWifiStrength = 0;
+        this.mMeanPowerCons = 0;
+        this.mTemperature = 0;
+        this.mHumidity = 0;
+        this.mCOLevel = 0;
+        this.mDeviceHealth = false;
+        this.mFWVersion = 0;
+        this.mLockPosition = 0;
     }
 
     @NonNull
@@ -232,12 +253,12 @@ public class Device extends BaseModel {
         this.mInternetStatus = mInternetStatus;
     }
 
-    public Integer getBatteryStatus() {
-        return mBatteryStatus;
+    public Integer getBatteryPercentage() {
+        return mBatteryPercentage;
     }
 
-    public void setBatteryStatus(Integer mBatteryStatus) {
-        this.mBatteryStatus = mBatteryStatus;
+    public void setBatteryPercentage(Integer mBatteryPercentage) {
+        this.mBatteryPercentage = mBatteryPercentage;
     }
 
     public Boolean getWifiStatus() {

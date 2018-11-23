@@ -3,7 +3,6 @@ package com.projects.company.homes_lock.utils.ble;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
@@ -27,16 +25,18 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     //region Declare Objects
     private LayoutInflater mInflater;
     private List<ScannedDeviceModel> mScannedDeviceModelList;
-    private IAddLockFragment mIAddLockFragment;
+    private IBleScanListener mIAddLockFragment;
     //endregion Declare Objects
 
+    //region Constructor
     public BleDeviceAdapter(Fragment fragment, List<ScannedDeviceModel> mScannedDeviceModelList) {
         //region Initialize Objects
         this.mInflater = LayoutInflater.from(fragment.getActivity());
         this.mScannedDeviceModelList = mScannedDeviceModelList;
-        this.mIAddLockFragment = (IAddLockFragment) fragment;
+        this.mIAddLockFragment = (IBleScanListener) fragment;
         //endregion Initialize Objects
     }
+    //endregion Constructor
 
     //region Adapter CallBacks
     @Override

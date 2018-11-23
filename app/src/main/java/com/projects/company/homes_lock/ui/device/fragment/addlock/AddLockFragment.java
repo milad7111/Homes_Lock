@@ -1,6 +1,8 @@
 package com.projects.company.homes_lock.ui.device.fragment.addlock;
 
 
+import android.app.Dialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -9,14 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.ederdoski.simpleble.utils.BluetoothLEHelper;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
+import com.projects.company.homes_lock.ui.device.activity.LockActivity;
+import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
@@ -29,7 +34,11 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public class AddLockFragment extends BaseFragment implements IAddLockFragment, View.OnClickListener {
+public class AddLockFragment extends BaseFragment
+        implements
+        IBleScanListener,
+        IAddLockFragment,
+        View.OnClickListener {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -42,8 +51,10 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
     //endregion Declare Variables
 
     //region Declare Objects
-    private DeviceViewModel mDeviceViewModel;
-    public static BluetoothLEHelper mBluetoothLEHelper;
+    public static DeviceViewModel mDeviceViewModel;
+    public static CustomBluetoothLEHelper mBluetoothLEHelper;
+    private Dialog activeDialog;
+    public static ScannedDeviceModel mDevice;
     //endregion Declare Objects
 
     //region Constructor
@@ -99,25 +110,54 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
     //region Ble Callbacks
     @Override
     public void onFindBleSuccess(List devices) {
-        DialogHelper.handleAddNewLockDialogOffline(this, devices);
+        activeDialog = DialogHelper.handleAddNewLockDialogOffline(this, devices);
     }
 
     @Override
     public void onFindBleFault() {
-        DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_TIMEOUT_MODE)));
+        activeDialog = DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_TIMEOUT_MODE)));
     }
 
     @Override
     public void onBleDeviceClick(ScannedDeviceModel device) {
-        Toast.makeText(getContext(), device.getName(), Toast.LENGTH_SHORT).show();
+        mDevice = device;
+
+        if (activeDialog != null)
+            activeDialog.dismiss();
+
+        activeDialog = DialogHelper.handlePairWithNewBleDeviceDialog(this);
+//        pairWithBleDevice();
+//        if (device.getDevice().getBondState() == BOND_BONDED)
+//            pairWithBleDevice();
+//        this.mDeviceViewModel.connect(this, device);
+//        this.mDeviceViewModel.isSupported().observe(this, new Observer<Boolean>() {
+//            @Override
+//            public void onChanged(@Nullable Boolean isSupported) {
+//                if (isSupported)
+//                    mDeviceViewModel.insertLocalDevice(new Device(device));
+//            }
+//        });
     }
 
     @Override
     public void onBondingRequired(BluetoothDevice device) {
+        device.createBond();
     }
 
     @Override
-    public void onBonded(BluetoothDevice device) {
+    public void onBonded(ScannedDeviceModel device) {
+        if (activeDialog != null)
+            activeDialog.dismiss();
+
+        this.mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
+            @Override
+            public void onChanged(@Nullable final List<Device> devices) {
+                ((LockActivity) getActivity()).setViewPagerAdapter(new CustomDeviceAdapter(getActivity().getSupportFragmentManager(), devices));
+            }
+        });
+
+        this.mDeviceViewModel.insertLocalDevice(new Device(mDevice));
+        DialogHelper.handleProgressDialog(false);
     }
     //endregion Ble Callbacks
 
@@ -130,10 +170,14 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
         if (getUserLoginMode())
             DialogHelper.handleAddNewLockDialogOnline(getActivity()); // Means user Wrote username and password then clicked Login
         else {
-            mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
+            mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
             if (BleHelper.getScanPermission(this))
-                DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
+                activeDialog = DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
         }
+    }
+
+    public void createBond(ScannedDeviceModel device) {
+        mDeviceViewModel.connect(this, device);
     }
     //endregion Declare Methods
 }

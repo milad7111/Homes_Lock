@@ -15,14 +15,16 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
-import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,13 +50,14 @@ public class DeviceViewModel extends AndroidViewModel
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
     private final BleDeviceManager mBleDeviceManager;
-    private ILockPageFragment mILockPageFragment;
+    private IBleScanListener mIBleScanListener;
 
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
     //endregion Declare Objects
 
+    //region Declare Constructor
     public DeviceViewModel(Application application) {
         super(application);
 
@@ -68,6 +71,7 @@ public class DeviceViewModel extends AndroidViewModel
         this.mBleDeviceManager.setGattCallbacks(this);
         //endregion Initialize Objects
     }
+    //endregion Declare Constructor
 
     //region Device table
     public LiveData<List<Device>> getAllLocalDevices() {
@@ -167,14 +171,14 @@ public class DeviceViewModel extends AndroidViewModel
     public void onBondingRequired(final BluetoothDevice device) {
         mIsSupported.postValue(false);
 
-        if (mILockPageFragment != null)
-            mILockPageFragment.onBondingRequired(device);
+        if (mIBleScanListener != null)
+            mIBleScanListener.onBondingRequired(device);
     }
 
     @Override
     public void onBonded(final BluetoothDevice device) {
-        if (mILockPageFragment != null)
-            mILockPageFragment.onBonded(device);
+        if (mIBleScanListener != null)
+            mIBleScanListener.onBonded(new ScannedDeviceModel(device));
     }
 
     @Override
@@ -189,8 +193,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onDataReceived(Object response) {
-        DialogHelper.handleProgressDialog(false);
-
         UUID responseUUID;
         if (response instanceof BluetoothGattCharacteristic) {
             responseUUID = ((BluetoothGattCharacteristic) response).getUuid();
@@ -199,10 +201,10 @@ public class DeviceViewModel extends AndroidViewModel
 
                 switch (responseValue[0]) {
                     case 0x01:
-                        mLocalRepository.updateDeviceLockStatus("fsafasfasfasf", responseValue[1] >> 4 == 1);
-                        mLocalRepository.updateDeviceDoorStatus("fsafasfasfasf", responseValue[1] << 4);
-                        mLocalRepository.updateDeviceBatteryStatus("fsafasfasfasf", responseValue[2]);
-                        mLocalRepository.updateDeviceConnectionStatus("fsafasfasfasf", responseValue);
+                        mLocalRepository.updateDeviceLockStatus(LockPageFragment.getDevice().getObjectId(), responseValue[1] >> 4 == 1);
+                        mLocalRepository.updateDeviceDoorStatus(LockPageFragment.getDevice().getObjectId(), responseValue[1] << 4);
+                        mLocalRepository.updateDeviceBatteryStatus(LockPageFragment.getDevice().getObjectId(), responseValue[2]);
+                        mLocalRepository.updateDeviceConnectionStatus(LockPageFragment.getDevice().getObjectId(), responseValue);
                         break;
                     case 0x02:
                         if (responseValue[1] == 0)
@@ -214,12 +216,12 @@ public class DeviceViewModel extends AndroidViewModel
                         Log.d("Read deviceSerialNumber", responseValue[1] + "");
                         break;
                     case 0x04:
-                        Log.d("Read deviceErrorData", DataHelper.subArrayByte(responseValue, 1, responseValue.length) + "");
+                        Log.d("Read deviceErrorData", Arrays.toString(DataHelper.subArrayByte(responseValue, 1, responseValue.length)));
                         break;
                     case 0x05:
-                        mLocalRepository.updateDeviceTemperature("fsafasfasfasf", responseValue[1]);
-                        mLocalRepository.updateDeviceHumidity("fsafasfasfasf", responseValue[2]);
-                        mLocalRepository.updateDeviceCoLevel("fsafasfasfasf", responseValue[3]);
+                        mLocalRepository.updateDeviceTemperature(LockPageFragment.getDevice().getObjectId(), responseValue[1]);
+                        mLocalRepository.updateDeviceHumidity(LockPageFragment.getDevice().getObjectId(), responseValue[2]);
+                        mLocalRepository.updateDeviceCoLevel(LockPageFragment.getDevice().getObjectId(), responseValue[3]);
                         break;
                 }
             }
@@ -232,8 +234,8 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion BLE CallBacks
 
     //region BLE Methods
-    public void connect(ILockPageFragment mILockPageFragment, final ScannedDeviceModel device) {
-        this.mILockPageFragment = mILockPageFragment;
+    public void connect(IBleScanListener mIBleScanListener, final ScannedDeviceModel device) {
+        this.mIBleScanListener = mIBleScanListener;
         final LogSession logSession = Logger.newSession(getApplication(), null, device.getMacAddress(), device.getName());
         mBleDeviceManager.setLogger(logSession);
 

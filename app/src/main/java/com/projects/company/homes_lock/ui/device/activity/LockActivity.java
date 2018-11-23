@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -48,7 +49,7 @@ public class LockActivity extends BaseActivity
     private Toolbar appBarLockToolbar;
     private DrawerLayout activityLockDrawerLayout;
     private NavigationView activityLockNavigationView;
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
     WormDotsIndicator mWormDotsIndicator;
     //endregion Declare Views
 
@@ -104,7 +105,7 @@ public class LockActivity extends BaseActivity
         //region init
         mViewPager.setOffscreenPageLimit(2);
         mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), new ArrayList<>());
-        mViewPager.setAdapter(mAdapter);
+        setViewPagerAdapter(mAdapter);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mWormDotsIndicator.setViewPager(mViewPager);
 
@@ -237,10 +238,14 @@ public class LockActivity extends BaseActivity
             public void onChanged(@Nullable final List<Device> devices) {
                 if (mAdapter.getCount() == 1) { //just when initialize lockpage we need set adapter
                     mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
-                    mViewPager.setAdapter(mAdapter);
+                    setViewPagerAdapter(mAdapter);
                 }
             }
         });
+    }
+
+    public static void setViewPagerAdapter(PagerAdapter adapter){
+        mViewPager.setAdapter(adapter);
     }
 
     private void initMQTT() {

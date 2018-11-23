@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
-import com.ederdoski.simpleble.utils.BluetoothLEHelper;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -27,6 +26,8 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.ui.device.fragment.upgrade.MoreInfoFragment;
+import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
@@ -41,6 +42,7 @@ import java.util.Objects;
  */
 public class LockPageFragment extends Fragment
         implements
+        IBleScanListener,
         ILockPageFragment,
         View.OnClickListener {
 
@@ -69,11 +71,12 @@ public class LockPageFragment extends Fragment
 
     //region Declare Objects
     private DeviceViewModel mDeviceViewModel;
-    private BluetoothLEHelper mBluetoothLEHelper;
-    private Device mDevice;
+    private CustomBluetoothLEHelper mBluetoothLEHelper;
+    private static Device mDevice;
     private Dialog activeDialog;
     //endregion Declare Objects
 
+    //region Constructor
     public LockPageFragment() {
     }
 
@@ -86,6 +89,7 @@ public class LockPageFragment extends Fragment
 
         return fragment;
     }
+    //endregion Constructor
 
     //region Main CallBacks
     @Override
@@ -172,13 +176,26 @@ public class LockPageFragment extends Fragment
 
     //region BLE CallBacks
     @Override
-    public void onBondingRequired(BluetoothDevice device) {
-        this.mBluetoothLEHelper.scanLeDevice(false);
-        activeDialog = DialogHelper.handlePairWithBleDeviceDialog(getActivity(), device);
+    public void onFindBleSuccess(List response) {
     }
 
     @Override
-    public void onBonded(BluetoothDevice device) {
+    public void onFindBleFault() {
+    }
+
+    @Override
+    public void onBleDeviceClick(ScannedDeviceModel device) {
+    }
+
+    @Override
+    public void onBondingRequired(BluetoothDevice device) {
+        this.mBluetoothLEHelper.scanLeDevice(false);
+        activeDialog = DialogHelper.handlePairWithBleDeviceDialog(this, new ScannedDeviceModel(device));
+    }
+
+    @Override
+    public void onBonded(ScannedDeviceModel device) {
+        DialogHelper.handleProgressDialog(false);
         if (activeDialog != null)
             activeDialog.dismiss();
     }
@@ -189,7 +206,7 @@ public class LockPageFragment extends Fragment
         ViewHelper.setLockStatusImage(imgLockStatusLockPage,
                 setDefault ? 2 : (mDevice.getLockStatus() ? 1 : 0));
         ViewHelper.setBatteryStatusImage(imgBatteryStatusLockPage,
-                setDefault ? 0 : mDevice.getBatteryStatus());
+                setDefault ? 0 : mDevice.getBatteryPercentage());
         ViewHelper.setConnectionStatusImage(imgConnectionStatusLockPage,
                 setDefault ? false : mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
 
@@ -210,6 +227,8 @@ public class LockPageFragment extends Fragment
                 setDefault ? "" : mDevice.getHumidity().toString());
 
         txvNewUpdateLockPage.setText(null);
+
+        DialogHelper.handleProgressDialog(false);
     }
 
     public void getDeviceInfo() {
@@ -225,30 +244,46 @@ public class LockPageFragment extends Fragment
 
     //region Declare BLE Methods
     public void connectToDevice() {
-        mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
+        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
 
-        if (BleHelper.isLocationRequired(getContext())) {
-            if (BleHelper.isLocationPermissionsGranted(getContext())) {
-                if (!BleHelper.isLocationEnabled(getContext()))
-                    DialogHelper.handleEnableLocationDialog(getActivity());
-                else {
-                    if (BleHelper.isBleEnabled()) {
-                        if (mBluetoothLEHelper.isReadyForScan())
-                            scanDevices();
-                    } else BleHelper.enableBluetooth(getActivity());
+        BluetoothDevice tempDevice = mBluetoothLEHelper.checkBondedDevices(mDevice.getBleDeviceMacAddress());
+
+        if (tempDevice != null) {
+            DialogHelper.handleProgressDialog(getActivity(), null, "Pairing ...", true);
+
+            this.mDeviceViewModel.connect(this, new ScannedDeviceModel(tempDevice));
+            this.mDeviceViewModel.isConnected().observe(this, new Observer<Boolean>() {
+                @Override
+                public void onChanged(@Nullable Boolean isConnected) {
+                    isConnectedToBleDevice = isConnected;
+                    ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
+                    initBleInfo();
+                }
+            });
+        } else {
+            if (BleHelper.isLocationRequired(getContext())) {
+                if (BleHelper.isLocationPermissionsGranted(getContext())) {
+                    if (!BleHelper.isLocationEnabled(getContext()))
+                        DialogHelper.handleEnableLocationDialog(getActivity());
+                    else {
+                        if (BleHelper.isBleEnabled()) {
+                            if (mBluetoothLEHelper.isReadyForScan())
+                                scanDevices();
+                        } else BleHelper.enableBluetooth(getActivity());
+                    }
+                } else {
+                    final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(getActivity());
+                    if (!deniedForever)
+                        BleHelper.grantLocationPermission(getActivity());
+
+                    if (deniedForever)
+                        BleHelper.handlePermissionSettings(getActivity());
                 }
             } else {
-                final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(getActivity());
-                if (!deniedForever)
-                    BleHelper.grantLocationPermission(getActivity());
-
-                if (deniedForever)
-                    BleHelper.handlePermissionSettings(getActivity());
+                if (BleHelper.isBleEnabled()) {
+                    scanDevices();
+                } else BleHelper.enableBluetooth(getActivity());
             }
-        } else {
-            if (BleHelper.isBleEnabled()) {
-                scanDevices();
-            } else BleHelper.enableBluetooth(getActivity());
         }
     }
 
@@ -310,6 +345,10 @@ public class LockPageFragment extends Fragment
             mScannedDeviceModelList.add(new ScannedDeviceModel(device));
 
         return mScannedDeviceModelList;
+    }
+
+    public static Device getDevice() {
+        return mDevice;
     }
     //endregion Declare BLE Methods
 }

@@ -5,7 +5,6 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.projects.company.homes_lock.database.daos.DeviceDao;
@@ -19,7 +18,12 @@ import com.projects.company.homes_lock.database.tables.Error;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 
-@Database(entities = {Device.class, DeviceError.class, Error.class, User.class, UserLock.class,}, version = 1, exportSchema = false)
+@Database(entities = {
+        Device.class,
+        DeviceError.class,
+        Error.class, User.class,
+        UserLock.class},
+        version = 1, exportSchema = false)
 public abstract class LockDatabase extends RoomDatabase {
 
     //region declare Objects
@@ -34,7 +38,6 @@ public abstract class LockDatabase extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
-            new PopulateDbAsync(INSTANCE).execute();
         }
     };
 
@@ -62,23 +65,4 @@ public abstract class LockDatabase extends RoomDatabase {
 
     public abstract UserLockDao userLockDao();
     //endregion declare Objects
-
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
-
-        private DeviceDao mWordDao;
-
-        PopulateDbAsync(LockDatabase db) {
-            mWordDao = db.deviceDao();
-        }
-
-        @Override
-        protected Void doInBackground(final Void... params) {
-            Device mDeviceObject;
-
-            mDeviceObject = new Device("fsafasfasfasf");
-            mWordDao.insert(mDeviceObject);
-
-            return null;
-        }
-    }
 }

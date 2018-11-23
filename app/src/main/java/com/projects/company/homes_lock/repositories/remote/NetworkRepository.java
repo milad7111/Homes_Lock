@@ -7,7 +7,6 @@ import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
 import java.util.List;
 

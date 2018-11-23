@@ -9,24 +9,36 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 public class ScannedDeviceModel extends BaseModel {
 
-    private BluetoothDevice mDevice = null;
+    //region Declare Objects
+    private BluetoothDevice bluetoothDevice = null;
     private String mName;
     private String mMacAddress;
+    private String mSerialNumber;
     private int mRSSI;
+    //endregion Declare Objects
 
-    public ScannedDeviceModel(final BluetoothLE bluetoothLE) {
-        this.mDevice = bluetoothLE.getDevice();
-        this.mName = this.mDevice.getName();
-        this.mMacAddress = this.mDevice.getAddress();
-        this.mRSSI = bluetoothLE.getRssi();
+    //region Constructor
+    public ScannedDeviceModel(final BluetoothLE bluetoothLEDevice) {
+        this.bluetoothDevice = bluetoothLEDevice.getDevice();
+        this.mName = this.bluetoothDevice.getName();
+        this.mMacAddress = this.bluetoothDevice.getAddress();
+        this.mRSSI = bluetoothLEDevice.getRssi();
+    }
+
+    public ScannedDeviceModel(final BluetoothDevice bluetoothDevice) {
+        this.bluetoothDevice = bluetoothDevice;
+        this.mName = bluetoothDevice.getName();
+        this.mMacAddress = bluetoothDevice.getAddress();
     }
 
     public ScannedDeviceModel(int mRSSI) {
         this.mRSSI = mRSSI;
     }
+    //endregion Constructor
 
+    //region Declare Methods
     public boolean matches(final ScanResult scanResult) {
-        return mDevice.getAddress().equals(scanResult.getDevice().getAddress());
+        return bluetoothDevice.getAddress().equals(scanResult.getDevice().getAddress());
     }
 
     public String getSpecialValue() {
@@ -46,10 +58,19 @@ public class ScannedDeviceModel extends BaseModel {
     }
 
     public BluetoothDevice getDevice() {
-        return mDevice;
+        return bluetoothDevice;
     }
 
     public int getRSSI() {
         return mRSSI;
     }
+
+    public String getSerialNumber() {
+        return mSerialNumber;
+    }
+
+    public void setSerialNumber(String mSerialNumber) {
+        this.mSerialNumber = mSerialNumber;
+    }
+    //endregion Declare Methods
 }
