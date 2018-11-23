@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.LoginViewModel;
@@ -112,6 +113,7 @@ public class LoginFragment extends Fragment
                 mLoginViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
                 break;
             case R.id.txv_direct_connect:
+                BaseApplication.userLoginMode = false;
                 startActivity(new Intent(getActivity(), LockActivity.class));
                 break;
             case R.id.txv_sign_up:
@@ -138,8 +140,10 @@ public class LoginFragment extends Fragment
 
     @Override
     public void onDataInsert(Long id) {
-        if (id != -1)
+        if (id != -1) {
             startActivity(new Intent(getActivity(), LockActivity.class));
+            BaseApplication.userLoginMode = true;
+        }
     }
     //endregion Login CallBacks
 

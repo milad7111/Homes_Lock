@@ -1,15 +1,19 @@
 package com.projects.company.homes_lock.utils.ble;
 
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.utils.helper.DataHelper;
+import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.List;
 
@@ -18,24 +22,19 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     //region Declare Objects
     private LayoutInflater mInflater;
     private List<ScannedDeviceModel> mScannedDeviceModelList;
-    private IBleScanListener mBleScanListener;
     //endregion Declare Objects
 
-    public BleDeviceAdapter(AppCompatActivity activity, IBleScanListener mBleScanListener, List<ScannedDeviceModel> mScannedDeviceModelList) {
-
+    public BleDeviceAdapter(AppCompatActivity activity, List<ScannedDeviceModel> mScannedDeviceModelList) {
         //region Initialize Objects
         this.mInflater = LayoutInflater.from(activity);
-        this.mBleScanListener = mBleScanListener;
         this.mScannedDeviceModelList = mScannedDeviceModelList;
         //endregion Initialize Objects
     }
 
     //region Adapter CallBacks
-    @NonNull
     @Override
-    public BleDeviceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = mInflater.inflate(R.layout.item_ble_devices, viewGroup, false);
-        return new BleDeviceViewHolder(itemView);
+    public BleDeviceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        return new BleDeviceViewHolder(mInflater.inflate(R.layout.item_ble_devices, viewGroup, false));
     }
 
     @Override
@@ -43,18 +42,24 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
         if (mScannedDeviceModelList != null) {
             ScannedDeviceModel mScannedDeviceModel = mScannedDeviceModelList.get(i);
 
-            final int mRSSIPercent = (int) (100.0f * (127.0f + mScannedDeviceModel.getRSSI()) / (127.0f + 20.0f));
+            String name;
+            int rssi;
 
-            bleDeviceViewHolder.txvBleDevicesName.setText(mScannedDeviceModel.getName());
-        } else
-            bleDeviceViewHolder.txvBleDevicesName.setText("No Device Found.");
+            if (mScannedDeviceModelList.get(i).getDevice() == null) {
+                name = "Scanning ...";
+                rssi = 1000;
 
-        bleDeviceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBleScanListener.onClickBleDevice(mScannedDeviceModelList.get(i));
+                bleDeviceViewHolder.txvBleDeviceName.setTypeface(null, Typeface.ITALIC);
+            } else {
+                name = mScannedDeviceModel.getName();
+                rssi = DataHelper.calculateRSSI(mScannedDeviceModel.getRSSI());
+
+                bleDeviceViewHolder.txvBleDeviceName.setTypeface(null, Typeface.NORMAL);
             }
-        });
+
+            bleDeviceViewHolder.txvBleDeviceName.setText(name);
+            ViewHelper.setRSSIImage(bleDeviceViewHolder.imgBleDeviceRSSI, rssi);
+        }
     }
 
     @Override
@@ -72,11 +77,19 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     //endregion Adapter CallBacks
 
     class BleDeviceViewHolder extends RecyclerView.ViewHolder {
-        TextView txvBleDevicesName;
+        TextView txvBleDeviceName;
+        ImageView imgBleDeviceRSSI;
 
         private BleDeviceViewHolder(View itemView) {
             super(itemView);
-            txvBleDevicesName = itemView.findViewById(R.id.txv_ble_devices_name);
+            txvBleDeviceName = itemView.findViewById(R.id.txv_item_ble_device_name);
+            imgBleDeviceRSSI = itemView.findViewById(R.id.img_item_ble_device_rssi);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
         }
     }
     //endregion Declare Methods

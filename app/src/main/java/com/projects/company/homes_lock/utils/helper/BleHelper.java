@@ -9,11 +9,20 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
+import com.ederdoski.simpleble.models.BluetoothLE;
+import com.ederdoski.simpleble.utils.BluetoothLEHelper;
+import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
@@ -32,6 +41,10 @@ public class BleHelper {
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
     //endregion Declare Constants
+
+    //region Declare Objects
+    private static BluetoothLEHelper mBluetoothLEHelper;
+    //endregion Declare Objects
 
     /**
      * Checks whether Bluetooth is enabled.
@@ -107,16 +120,16 @@ public class BleHelper {
      *
      * @param context the context
      */
-    public static void markLocationPermissionRequested(final Context context) {
+    private static void markLocationPermissionRequested(final Context context) {
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         preferences.edit().putBoolean(PREFS_PERMISSION_REQUESTED, true).apply();
     }
 
-    public static boolean isMarshmallowOrAbove() {
+    private static boolean isMarshmallowOrAbove() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
-    public static void enableLocation(Activity context) {
+    static void enableLocation(Activity context) {
         final Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         context.startActivity(intent);
     }
@@ -168,5 +181,58 @@ public class BleHelper {
 //        }
 
         return 0x00;
+    }
+
+    static void findDevices(IBleScanListener iBleScanListener, Fragment fragment) {
+        BleHelper.mBluetoothLEHelper = new BluetoothLEHelper(fragment.getActivity());
+
+        if (BleHelper.isLocationRequired(fragment.getContext())) {
+            if (BleHelper.isLocationPermissionsGranted(fragment.getContext())) {
+                if (!BleHelper.isLocationEnabled(fragment.getContext()))
+                    DialogHelper.handleEnableLocationDialog(fragment.getActivity());
+                else {
+                    if (BleHelper.isBleEnabled()) {
+                        if (BleHelper.mBluetoothLEHelper.isReadyForScan())
+                            scanDevices(fragment, iBleScanListener);
+                    } else BleHelper.enableBluetooth(fragment.getActivity());
+                }
+            } else {
+                final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(fragment.getActivity());
+                if (!deniedForever)
+                    BleHelper.grantLocationPermission(fragment.getActivity());
+
+                if (deniedForever)
+                    BleHelper.handlePermissionSettings(fragment.getActivity());
+            }
+        } else {
+            if (BleHelper.isBleEnabled()) {
+                scanDevices(fragment, iBleScanListener);
+            } else BleHelper.enableBluetooth(fragment.getActivity());
+        }
+    }
+
+    private static void scanDevices(Fragment fragment, IBleScanListener iBleScanListener) {
+        if (BleHelper.mBluetoothLEHelper != null && !BleHelper.mBluetoothLEHelper.isScanning()) {
+            BleHelper.mBluetoothLEHelper.setScanPeriod(1000);
+            Handler mHandler = new Handler();
+            BleHelper.mBluetoothLEHelper.scanLeDevice(true);
+
+            mHandler.postDelayed(() -> {
+                List<ScannedDeviceModel> tempList = getListOfScannedDevices();
+                if (tempList.size() == 0)
+                    iBleScanListener.onFindBleFault();
+                else
+                    iBleScanListener.onFindBleSuccess(tempList);
+            }, BleHelper.mBluetoothLEHelper.getScanPeriod());
+        }
+    }
+
+    private static List<ScannedDeviceModel> getListOfScannedDevices() {
+        List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
+
+        for (BluetoothLE device : BleHelper.mBluetoothLEHelper.getListDevices())
+            mScannedDeviceModelList.add(new ScannedDeviceModel(device));
+
+        return mScannedDeviceModelList;
     }
 }

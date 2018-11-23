@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_black_1000">
+    android:background="@drawable/background_layout_border">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rsc_available_networks"

@@ -7,17 +7,30 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
-public class DialogHelper {
+import java.util.Collections;
+import java.util.List;
+
+public class DialogHelper implements IBleScanListener {
 
     //region Declare Objects
     private static ProgressDialog mProgressDialog;
+    private BleDeviceAdapter mBleDeviceAdapter;
+    private DialogHelper selfObject;
     //endregion Declare Objects
 
     //region Declare Methods
@@ -55,7 +68,55 @@ public class DialogHelper {
         dialog.getWindow().setAttributes(layoutParams);
     }
 
-    public static void handleAddNewLockDialog(Activity activity) {
+    public void handleAddNewLockDialogOffline(Fragment fragment) {
+        Dialog dialog = new Dialog(fragment.getContext());
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_available_devices);
+
+        mBleDeviceAdapter =
+                new BleDeviceAdapter((AppCompatActivity) fragment.getActivity(), Collections.singletonList(new ScannedDeviceModel()));
+
+        selfObject = this;
+        BleHelper.findDevices(this, fragment);
+
+        RecyclerView rcvDialogAvailableDevices = dialog.findViewById(R.id.rcv_dialog_available_devices);
+        Button btnCancelDialogAvailableDevices = dialog.findViewById(R.id.btn_cancel_dialog_available_devices);
+        Button btnScanDialogAvailableDevices = dialog.findViewById(R.id.btn_scan_dialog_available_devices);
+
+        rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+        rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
+        rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
+
+        btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selfObject != null) {
+                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel()));
+                    BleHelper.findDevices(selfObject, fragment);
+                } else
+                    dialog.dismiss();
+            }
+        });
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        dialog.show();
+        dialog.getWindow().setAttributes(layoutParams);
+    }
+
+    public static void handleAddNewLockDialogOnline(Activity activity) {
         Dialog dialog = new Dialog(activity);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -207,4 +268,20 @@ public class DialogHelper {
         }
     }
     //endregion Declare Classes
+
+    //region Ble Scan Callbacks
+    @Override
+    public void onFindBleSuccess(List devices) {
+        if (mBleDeviceAdapter != null)
+            mBleDeviceAdapter.setBleDevices(
+                    devices.size() == 0 ?
+                            Collections.singletonList(new ScannedDeviceModel()) :
+                            (List<ScannedDeviceModel>) devices);
+    }
+
+    @Override
+    public void onFindBleFault() {
+        mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel()));
+    }
+    //endregion Ble Scan Callbacks
 }

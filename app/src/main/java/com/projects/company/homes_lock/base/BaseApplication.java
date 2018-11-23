@@ -20,7 +20,14 @@ import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS
 
 public class BaseApplication extends Application {
 
+    //region Declare Objects
+    /**
+     * true if user login with username & password in {@link com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment}
+     * false if user login with direct connect option in {@link com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment}
+     */
+    public static boolean userLoginMode = false;
     private static volatile IRetrofit IRETROFIT = null;
+    //endregion Declare Objects
 
     public static synchronized IRetrofit getRetrofitAPI() {
 
@@ -42,10 +49,5 @@ public class BaseApplication extends Application {
                 .create(IRetrofit.class);
 
         return IRETROFIT;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
     }
 }

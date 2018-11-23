@@ -1,6 +1,8 @@
 package com.projects.company.homes_lock.ui.device.fragment.addlock;
 
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
+import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
 /**
@@ -28,14 +32,17 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
     //endregion Declare Variables
 
     //region Declare Objects
+    private DeviceViewModel mDeviceViewModel;
     //endregion Declare Objects
 
+    //region Constructor
     public AddLockFragment() {
     }
 
     public static AddLockFragment newInstance() {
         return new AddLockFragment();
     }
+    //endregion Constructor
 
     //region Main CallBacks
     @Override
@@ -46,6 +53,7 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
         //endregion Initialize Variables
 
         //region Initialize Objects
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
         //endregion Initialize Objects
     }
 
@@ -71,12 +79,36 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_new_lock:
-                DialogHelper.handleAddNewLockDialog(getActivity());
+                addNewLock();
                 break;
         }
     }
     //endregion Main CallBacks
 
+    //region Ble Callbacks
+    @Override
+    public void onBleDeviceClick() {
+    }
+
+    @Override
+    public void onBondingRequired(BluetoothDevice device) {
+    }
+
+    @Override
+    public void onBonded(BluetoothDevice device) {
+    }
+    //endregion Ble Callbacks
+
     //region Declare Methods
+    private boolean getUserLoginMode() {
+        return BaseApplication.userLoginMode;
+    }
+
+    private void addNewLock() {
+        if (getUserLoginMode())
+            DialogHelper.handleAddNewLockDialogOnline(getActivity()); // Means user Wrote username and password then clicked Login
+        else
+            (new DialogHelper()).handleAddNewLockDialogOffline(this); // Means user clicked Direct Connect
+    }
     //endregion Declare Methods
 }

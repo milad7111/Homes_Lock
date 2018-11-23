@@ -18,7 +18,6 @@ import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
-import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
@@ -37,8 +36,7 @@ public class DeviceViewModel extends AndroidViewModel
         implements
         NetworkListener.SingleNetworkListener,
         NetworkListener.ListNetworkListener,
-        IBleDeviceManagerCallbacks,
-        IBleScanListener {
+        IBleDeviceManagerCallbacks {
 
     //region Declare Constants
     //endregion Declare Constants
@@ -50,8 +48,7 @@ public class DeviceViewModel extends AndroidViewModel
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
     private final BleDeviceManager mBleDeviceManager;
-
-    ILockPageFragment mILockPageFragment;
+    private ILockPageFragment mILockPageFragment;
 
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
@@ -118,13 +115,13 @@ public class DeviceViewModel extends AndroidViewModel
     //region BLE CallBacks
     @Override
     public void onDeviceConnecting(final BluetoothDevice device) {
-        mConnectionState.postValue(getApplication().getString(R.string.state_connecting));
+        mConnectionState.postValue(getApplication().getString(R.string.ble_state_connecting));
     }
 
     @Override
     public void onDeviceConnected(final BluetoothDevice device) {
         mIsConnected.postValue(true);
-        mConnectionState.postValue(getApplication().getString(R.string.state_discovering_services));
+        mConnectionState.postValue(getApplication().getString(R.string.ble_state_discovering_services));
     }
 
     @Override
@@ -149,7 +146,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onServicesDiscovered(final BluetoothDevice device, final boolean optionalServicesFound) {
-        mConnectionState.postValue(getApplication().getString(R.string.state_initializing));
+        mConnectionState.postValue(getApplication().getString(R.string.ble_state_initializing));
     }
 
     @Override
@@ -232,18 +229,6 @@ public class DeviceViewModel extends AndroidViewModel
     @Override
     public void onDataSent(Object response) {
     }
-
-    @Override
-    public void onFindBleCompleted(List response) {
-    }
-
-    @Override
-    public void onFindBleFault(Object response) {
-    }
-
-    @Override
-    public void onClickBleDevice(ScannedDeviceModel mScannedDeviceModel) {
-    }
     //endregion BLE CallBacks
 
     //region BLE Methods
@@ -262,23 +247,9 @@ public class DeviceViewModel extends AndroidViewModel
     public void changeNotifyForCharacteristic(UUID characteristicUUID, boolean notifyStatus) {
         mBleDeviceManager.changeNotifyForCharacteristic(characteristicUUID, notifyStatus);
     }
-    //endregion BLE Methods
-
-    //region Declare Methods
-    public LiveData<Boolean> isConnected() {
-        return mIsConnected;
-    }
 
     public void sendLockCommand(boolean lockCommand) {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
-    }
-
-    public LiveData<String> getConnectionState() {
-        return mConnectionState;
-    }
-
-    public LiveData<Boolean> isSupported() {
-        return mIsSupported;
     }
 
     private void getDeviceInfoFromBleDevice() {
@@ -288,6 +259,16 @@ public class DeviceViewModel extends AndroidViewModel
 
     private void getDeviceErrorFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x04}, new byte[]{}));
+    }
+    //endregion BLE Methods
+
+    //region Declare Methods
+    public LiveData<Boolean> isConnected() {
+        return mIsConnected;
+    }
+
+    public LiveData<Boolean> isSupported() {
+        return mIsSupported;
     }
     //endregion Declare Methods
 

@@ -9,7 +9,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 public class ScannedDeviceModel extends BaseModel {
 
-    private final BluetoothDevice mDevice;
+    private BluetoothDevice mDevice = null;
     private String mName;
     private String mMacAddress;
     private int mRSSI;
@@ -19,6 +19,9 @@ public class ScannedDeviceModel extends BaseModel {
         this.mName = this.mDevice.getName();
         this.mMacAddress = this.mDevice.getAddress();
         this.mRSSI = bluetoothLE.getRssi();
+    }
+
+    public ScannedDeviceModel() {
     }
 
     public boolean matches(final ScanResult scanResult) {

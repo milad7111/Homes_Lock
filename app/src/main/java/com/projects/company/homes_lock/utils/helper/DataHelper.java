@@ -121,4 +121,8 @@ public class DataHelper {
 
         return temp;
     }
+
+    public static int calculateRSSI(int rssi) {
+        return (int) (100.0f * (127.0f + rssi) / (127.0f + 20.0f));
+    }
 }

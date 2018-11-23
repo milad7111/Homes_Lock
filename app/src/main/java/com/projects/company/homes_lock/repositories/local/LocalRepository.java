@@ -60,7 +60,7 @@ public class LocalRepository {
     }
 
     public LiveData<Device> getADevice(String mDeviceObjectId) {
-        return mDeviceDao.getADevice(mDeviceObjectId);
+        return mDeviceDao.getDevice(mDeviceObjectId);
     }
 
     public void updateDeviceLockStatus(String mDeviceObjectId, boolean mLockStatus) {

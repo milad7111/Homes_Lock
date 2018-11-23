@@ -1,8 +1,6 @@
 package com.projects.company.homes_lock.utils.helper;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -63,14 +61,14 @@ public class ViewHelper {
         imageViewBle.setImageResource(bleConnectionStatus ? R.drawable.ic_ble_connect : R.drawable.ic_ble_disconnect);
     }
 
-    public static void setBatteryStatusImage(ImageView imgBatteryStatusLockPage, Integer batteryStatus) {
-        if (batteryStatus < 25)
+    public static void setBatteryStatusImage(ImageView imgBatteryStatusLockPage, Integer batteryPercentage) {
+        if (batteryPercentage < 25)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_zero);
-        else if (batteryStatus >= 30 && batteryStatus < 60)
+        else if (batteryPercentage >= 30 && batteryPercentage < 60)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_low);
-        else if (batteryStatus >= 60 && batteryStatus < 90)
+        else if (batteryPercentage >= 60 && batteryPercentage < 90)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_middle);
-        else if (batteryStatus >= 90)
+        else if (batteryPercentage >= 90)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
         else
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
@@ -100,6 +98,19 @@ public class ViewHelper {
                     imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_internet_zero);
             }
         }
+    }
+
+    public static void setRSSIImage(ImageView imgBleDeviceRSSI, Integer RSSIPercentage) {
+        if (RSSIPercentage < 25)
+            imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_zero);
+        else if (RSSIPercentage >= 30 && RSSIPercentage < 60)
+            imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_low);
+        else if (RSSIPercentage >= 60 && RSSIPercentage < 90)
+            imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_middle);
+        else if (RSSIPercentage >= 90 && RSSIPercentage <= 100)
+            imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_full);
+        else if (RSSIPercentage == 1000)
+            imgBleDeviceRSSI.setImageDrawable(null);
     }
     //endregion Declare Methods
 }

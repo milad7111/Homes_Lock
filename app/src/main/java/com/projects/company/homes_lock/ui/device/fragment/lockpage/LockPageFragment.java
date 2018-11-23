@@ -304,9 +304,8 @@ public class LockPageFragment extends Fragment
     private List<ScannedDeviceModel> getListOfScannedDevices() {
         List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
 
-        if (mBluetoothLEHelper.getListDevices().size() > 0)
-            for (BluetoothLE device : mBluetoothLEHelper.getListDevices())
-                mScannedDeviceModelList.add(new ScannedDeviceModel(device));
+        for (BluetoothLE device : mBluetoothLEHelper.getListDevices())
+            mScannedDeviceModelList.add(new ScannedDeviceModel(device));
 
         return mScannedDeviceModelList;
     }
