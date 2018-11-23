@@ -8,6 +8,7 @@
     <color name="ic_launcher_background">#26A69A</color>
     <color name="transparent">#00000000</color>
     <color name="background_dialog">#707070</color>
+    <color name="background_list_items">#A2A2A2</color>
 
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>

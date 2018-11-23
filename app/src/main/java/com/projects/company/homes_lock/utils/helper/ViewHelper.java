@@ -1,13 +1,18 @@
 package com.projects.company.homes_lock.utils.helper;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.projects.company.homes_lock.R;
+
+import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_TIMEOUT_MODE;
 
 /**
  * This is Helper Class helps Views
@@ -103,14 +108,25 @@ public class ViewHelper {
     public static void setRSSIImage(ImageView imgBleDeviceRSSI, Integer RSSIPercentage) {
         if (RSSIPercentage < 25)
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_zero);
-        else if (RSSIPercentage >= 30 && RSSIPercentage < 60)
+        else if (RSSIPercentage >= 25 && RSSIPercentage < 50)
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_low);
-        else if (RSSIPercentage >= 60 && RSSIPercentage < 90)
+        else if (RSSIPercentage >= 50 && RSSIPercentage < 75)
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_middle);
-        else if (RSSIPercentage >= 90 && RSSIPercentage <= 100)
+        else if (RSSIPercentage >= 75 && RSSIPercentage <= 100)
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_full);
-        else if (RSSIPercentage == 1000)
+        else if (RSSIPercentage == FINDING_BLE_DEVICES_SCAN_MODE || RSSIPercentage == FINDING_BLE_DEVICES_TIMEOUT_MODE)
             imgBleDeviceRSSI.setImageDrawable(null);
+    }
+
+    public static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog){
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        return layoutParams;
     }
     //endregion Declare Methods
 }

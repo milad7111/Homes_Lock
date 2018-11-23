@@ -21,7 +21,8 @@ public class ScannedDeviceModel extends BaseModel {
         this.mRSSI = bluetoothLE.getRssi();
     }
 
-    public ScannedDeviceModel() {
+    public ScannedDeviceModel(int mRSSI) {
+        this.mRSSI = mRSSI;
     }
 
     public boolean matches(final ScanResult scanResult) {

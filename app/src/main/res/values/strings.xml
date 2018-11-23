@@ -1,21 +1,30 @@
 <resources>
 
     <!--//region Main-->
-    <string name="app_name">Homes_Lock</string>
+    <string name="app_name" translatable="false">Homes_Lock</string>
     <!--//endregion Main-->
 
     <!--//region Content Description-->
-    <string name="content_description_navigation_drawer_open">Open navigation drawer</string>
-    <string name="content_description_navigation_drawer_close">Close navigation drawer</string>
-    <string name="content_description_nav_header_img_avatar">This is avatar</string>
-    <string name="content_description_show_rssi_of_ble_device">Show RSSI of Ble device</string>
+    <string name="content_description_navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="content_description_navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="content_description_nav_header_img_avatar" translatable="false">This is avatar</string>
+    <string name="content_description_show_rssi_of_ble_device" translatable="false">RSSI of Ble device</string>
+
+    <string name="content_description_members_list_item_img_avatar" translatable="false">avatar of lock members</string>
+    <string name="content_description_members_list_item_img_action" translatable="false">action of lock members</string>
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->
     <!--//endregion Activity and Fragment Titles-->
 
     <!--//region Dialog Buttons-->
+    <string name="dialog_button_cancel">CANCEL</string>
+    <string name="dialog_button_scan">SCAN</string>
     <!--//endregion Dialog Buttons-->
+
+    <!--//region Fragment Buttons-->
+    <string name="fragment_button_sync">SYNC</string>
+    <!--//endregion Fragment Buttons-->
 
     <!--//region EditText Hints-->
     <!--//endregion EditText Hints-->
@@ -24,8 +33,8 @@
     <!--//endregion Messages-->
 
     <!--//region Actions and Menu Items and Nav Header-->
-    <string name="nav_header_title">Homes Lock</string>
-    <string name="nav_header_subtitle">Homes.lock.org</string>
+    <string name="nav_header_title" translatable="false">Homes Lock</string>
+    <string name="nav_header_subtitle" translatable="false">Homes.lock.org</string>
     <!--//endregion Actions and Menu Items and Nav Header-->
 
     <!--//region Urls-->
@@ -35,9 +44,9 @@
     <!--//endregion DataBase-->
 
     <!--//endregion BLE-->
-    <string name="ble_state_connecting">Connecting…</string>
-    <string name="ble_state_discovering_services">Discovering services…</string>
-    <string name="ble_state_initializing">Initializing…</string>
+    <string name="ble_state_connecting" translatable="false">Connecting…</string>
+    <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
+    <string name="ble_state_initializing" translatable="false">Initializing…</string>
     <!--//region BLE-->
 
 </resources>

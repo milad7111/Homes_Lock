@@ -20,17 +20,18 @@ import android.widget.Button;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
-import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 import java.util.Collections;
 import java.util.List;
 
-public class DialogHelper implements IBleScanListener {
+import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
+
+public class DialogHelper {
 
     //region Declare Objects
     private static ProgressDialog mProgressDialog;
-    private BleDeviceAdapter mBleDeviceAdapter;
-    private DialogHelper selfObject;
+    private static BleDeviceAdapter mBleDeviceAdapter;
+    private static Dialog addNewLockDialogOffline;
     //endregion Declare Objects
 
     //region Declare Methods
@@ -68,52 +69,96 @@ public class DialogHelper implements IBleScanListener {
         dialog.getWindow().setAttributes(layoutParams);
     }
 
-    public void handleAddNewLockDialogOffline(Fragment fragment) {
-        Dialog dialog = new Dialog(fragment.getContext());
+//    public void handleAddNewLockDialogOffline(Fragment fragment) {
+//        Dialog dialog = new Dialog(fragment.getContext());
+//
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.setContentView(R.layout.dialog_available_devices);
+//
+//        mBleDeviceAdapter =
+//                new BleDeviceAdapter((AppCompatActivity) fragment.getActivity(), Collections.singletonList(new ScannedDeviceModel()));
+//
+//        selfObject = this;
+//        BleHelper.findDevices(this, fragment);
+//
+//        RecyclerView rcvDialogAvailableDevices = dialog.findViewById(R.id.rcv_dialog_available_devices);
+//        Button btnCancelDialogAvailableDevices = dialog.findViewById(R.id.btn_cancel_dialog_available_devices);
+//        Button btnScanDialogAvailableDevices = dialog.findViewById(R.id.btn_scan_dialog_available_devices);
+//
+//        rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+//        rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
+//        rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
+//
+//        btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (selfObject != null) {
+//                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel()));
+//                    BleHelper.findDevices(selfObject, fragment);
+//                } else
+//                    dialog.dismiss();
+//            }
+//        });
+//
+//        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//
+//        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+//        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+//        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//
+//        dialog.show();
+//        dialog.getWindow().setAttributes(layoutParams);
+//    }
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_available_devices);
+    public static void handleAddNewLockDialogOffline(Fragment fragment, List<ScannedDeviceModel> devices) {
+        if (addNewLockDialogOffline == null) {
+            addNewLockDialogOffline = new Dialog(fragment.getContext());
+            addNewLockDialogOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            addNewLockDialogOffline.setContentView(R.layout.dialog_available_devices);
 
-        mBleDeviceAdapter =
-                new BleDeviceAdapter((AppCompatActivity) fragment.getActivity(), Collections.singletonList(new ScannedDeviceModel()));
+            if (mBleDeviceAdapter == null)
+                mBleDeviceAdapter = new BleDeviceAdapter(fragment, devices);
 
-        selfObject = this;
-        BleHelper.findDevices(this, fragment);
+            RecyclerView rcvDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.rcv_dialog_available_devices);
+            Button btnCancelDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.btn_cancel_dialog_available_devices);
+            Button btnScanDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.btn_scan_dialog_available_devices);
 
-        RecyclerView rcvDialogAvailableDevices = dialog.findViewById(R.id.rcv_dialog_available_devices);
-        Button btnCancelDialogAvailableDevices = dialog.findViewById(R.id.btn_cancel_dialog_available_devices);
-        Button btnScanDialogAvailableDevices = dialog.findViewById(R.id.btn_scan_dialog_available_devices);
+            rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+            rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
+            rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
 
-        rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
-        rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
-        rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
+            btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
+                    addNewLockDialogOffline.dismiss();
+                    addNewLockDialogOffline = null;
+                }
+            });
 
-        btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
+                    BleHelper.findDevices(fragment);
+                }
+            });
 
-        btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selfObject != null) {
-                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel()));
-                    BleHelper.findDevices(selfObject, fragment);
-                } else
-                    dialog.dismiss();
-            }
-        });
+            BleHelper.findDevices(fragment);
+        } else
+            mBleDeviceAdapter.setBleDevices(devices);
 
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        if (!addNewLockDialogOffline.isShowing())
+            addNewLockDialogOffline.show();
 
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        dialog.show();
-        dialog.getWindow().setAttributes(layoutParams);
+        addNewLockDialogOffline.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(addNewLockDialogOffline));
     }
 
     public static void handleAddNewLockDialogOnline(Activity activity) {
@@ -268,20 +313,4 @@ public class DialogHelper implements IBleScanListener {
         }
     }
     //endregion Declare Classes
-
-    //region Ble Scan Callbacks
-    @Override
-    public void onFindBleSuccess(List devices) {
-        if (mBleDeviceAdapter != null)
-            mBleDeviceAdapter.setBleDevices(
-                    devices.size() == 0 ?
-                            Collections.singletonList(new ScannedDeviceModel()) :
-                            (List<ScannedDeviceModel>) devices);
-    }
-
-    @Override
-    public void onFindBleFault() {
-        mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel()));
-    }
-    //endregion Ble Scan Callbacks
 }

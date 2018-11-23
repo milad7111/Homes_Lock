@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +34,7 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,13 +104,13 @@ public class LockPageFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_lock_page, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
@@ -155,10 +157,10 @@ public class LockPageFragment extends Fragment
                     connectToDevice();
                 break;
             case R.id.img_manage_members_lock_page:
-                ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_lock_activity, new ManageMembersFragment());
+                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new ManageMembersFragment());
                 break;
             case R.id.img_more_info_lock_page:
-                ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_lock_activity, new MoreInfoFragment());
+                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new MoreInfoFragment());
                 break;
         }
     }

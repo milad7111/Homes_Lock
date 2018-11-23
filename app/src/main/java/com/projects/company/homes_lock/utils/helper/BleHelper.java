@@ -19,7 +19,8 @@ import android.support.v4.content.ContextCompat;
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.ederdoski.simpleble.utils.BluetoothLEHelper;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.utils.ble.IBleScanListener;
+import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
+import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +41,15 @@ public class BleHelper {
 
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
+
+    public static final int FINDING_BLE_DEVICES_SCAN_MODE = 1000;
+    public static final int FINDING_BLE_DEVICES_TIMEOUT_MODE = 2000;
     //endregion Declare Constants
 
     //region Declare Objects
-    private static BluetoothLEHelper mBluetoothLEHelper;
     //endregion Declare Objects
+
+    //region Declare Methods
 
     /**
      * Checks whether Bluetooth is enabled.
@@ -183,17 +188,39 @@ public class BleHelper {
         return 0x00;
     }
 
-    static void findDevices(IBleScanListener iBleScanListener, Fragment fragment) {
-        BleHelper.mBluetoothLEHelper = new BluetoothLEHelper(fragment.getActivity());
+    public static void findDevices(Fragment fragment) {
+        if (((AddLockFragment) fragment).mBluetoothLEHelper != null && !((AddLockFragment) fragment).mBluetoothLEHelper.isScanning()) {
+            ((AddLockFragment) fragment).mBluetoothLEHelper.setScanPeriod(1000);
+            ((AddLockFragment) fragment).mBluetoothLEHelper.scanLeDevice(true);
 
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(() -> {
+                List<ScannedDeviceModel> tempList = getListOfScannedDevices(((AddLockFragment) fragment).mBluetoothLEHelper);
+                if (tempList.size() == 0)
+                    ((IAddLockFragment) fragment).onFindBleFault();
+                else
+                    ((IAddLockFragment) fragment).onFindBleSuccess(tempList);
+            }, ((AddLockFragment) fragment).mBluetoothLEHelper.getScanPeriod());
+        }
+    }
+
+    private static List<ScannedDeviceModel> getListOfScannedDevices(BluetoothLEHelper mBluetoothLEHelper) {
+        List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
+
+        for (BluetoothLE device : mBluetoothLEHelper.getListDevices())
+            mScannedDeviceModelList.add(new ScannedDeviceModel(device));
+
+        return mScannedDeviceModelList;
+    }
+
+    public static boolean getScanPermission(Fragment fragment) {
         if (BleHelper.isLocationRequired(fragment.getContext())) {
             if (BleHelper.isLocationPermissionsGranted(fragment.getContext())) {
                 if (!BleHelper.isLocationEnabled(fragment.getContext()))
                     DialogHelper.handleEnableLocationDialog(fragment.getActivity());
                 else {
                     if (BleHelper.isBleEnabled()) {
-                        if (BleHelper.mBluetoothLEHelper.isReadyForScan())
-                            scanDevices(fragment, iBleScanListener);
+                        return true;
                     } else BleHelper.enableBluetooth(fragment.getActivity());
                 }
             } else {
@@ -205,34 +232,12 @@ public class BleHelper {
                     BleHelper.handlePermissionSettings(fragment.getActivity());
             }
         } else {
-            if (BleHelper.isBleEnabled()) {
-                scanDevices(fragment, iBleScanListener);
-            } else BleHelper.enableBluetooth(fragment.getActivity());
+            if (BleHelper.isBleEnabled())
+                return true;
+            else BleHelper.enableBluetooth(fragment.getActivity());
         }
+
+        return false;
     }
-
-    private static void scanDevices(Fragment fragment, IBleScanListener iBleScanListener) {
-        if (BleHelper.mBluetoothLEHelper != null && !BleHelper.mBluetoothLEHelper.isScanning()) {
-            BleHelper.mBluetoothLEHelper.setScanPeriod(1000);
-            Handler mHandler = new Handler();
-            BleHelper.mBluetoothLEHelper.scanLeDevice(true);
-
-            mHandler.postDelayed(() -> {
-                List<ScannedDeviceModel> tempList = getListOfScannedDevices();
-                if (tempList.size() == 0)
-                    iBleScanListener.onFindBleFault();
-                else
-                    iBleScanListener.onFindBleSuccess(tempList);
-            }, BleHelper.mBluetoothLEHelper.getScanPeriod());
-        }
-    }
-
-    private static List<ScannedDeviceModel> getListOfScannedDevices() {
-        List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
-
-        for (BluetoothLE device : BleHelper.mBluetoothLEHelper.getListDevices())
-            mScannedDeviceModelList.add(new ScannedDeviceModel(device));
-
-        return mScannedDeviceModelList;
-    }
+    //endregion Declare Methods
 }

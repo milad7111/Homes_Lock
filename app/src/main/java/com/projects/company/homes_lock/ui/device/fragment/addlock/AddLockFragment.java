@@ -9,12 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.ederdoski.simpleble.utils.BluetoothLEHelper;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
+import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_TIMEOUT_MODE;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -33,6 +43,7 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
 
     //region Declare Objects
     private DeviceViewModel mDeviceViewModel;
+    public static BluetoothLEHelper mBluetoothLEHelper;
     //endregion Declare Objects
 
     //region Constructor
@@ -87,7 +98,18 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
 
     //region Ble Callbacks
     @Override
-    public void onBleDeviceClick() {
+    public void onFindBleSuccess(List devices) {
+        DialogHelper.handleAddNewLockDialogOffline(this, devices);
+    }
+
+    @Override
+    public void onFindBleFault() {
+        DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_TIMEOUT_MODE)));
+    }
+
+    @Override
+    public void onBleDeviceClick(ScannedDeviceModel device) {
+        Toast.makeText(getContext(), device.getName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -107,8 +129,11 @@ public class AddLockFragment extends BaseFragment implements IAddLockFragment, V
     private void addNewLock() {
         if (getUserLoginMode())
             DialogHelper.handleAddNewLockDialogOnline(getActivity()); // Means user Wrote username and password then clicked Login
-        else
-            (new DialogHelper()).handleAddNewLockDialogOffline(this); // Means user clicked Direct Connect
+        else {
+            mBluetoothLEHelper = new BluetoothLEHelper(getActivity());
+            if (BleHelper.getScanPermission(this))
+                DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
+        }
     }
     //endregion Declare Methods
 }

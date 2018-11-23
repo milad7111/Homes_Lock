@@ -1,34 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@color/md_black_1000"
-    android:orientation="horizontal"
-    android:weightSum="5">
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/img_member_avatar"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:src="@drawable/ic_manage_members"
-        android:tint="@color/md_white_1000" />
+        android:contentDescription="@string/content_description_members_list_item_img_avatar"
+        android:tint="@color/md_white_1000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_manage_members" />
 
     <TextView
-        android:id="@+id/txv_ble_devices_name"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:id="@+id/txv_member_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="3"
         android:gravity="center_vertical"
-        android:text="item 1"
-        android:textColor="@color/md_white_1000" />
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_member_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="member 1" />
 
     <ImageView
         android:id="@+id/img_member_action"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:src="@drawable/ic_manage_members" />
+        android:contentDescription="@string/content_description_members_list_item_img_action"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_manage_members" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

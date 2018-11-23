@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.utils.ble;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,22 +13,28 @@ import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.List;
+
+import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_TIMEOUT_MODE;
 
 public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleDeviceViewHolder> {
 
     //region Declare Objects
     private LayoutInflater mInflater;
     private List<ScannedDeviceModel> mScannedDeviceModelList;
+    private IAddLockFragment mIAddLockFragment;
     //endregion Declare Objects
 
-    public BleDeviceAdapter(AppCompatActivity activity, List<ScannedDeviceModel> mScannedDeviceModelList) {
+    public BleDeviceAdapter(Fragment fragment, List<ScannedDeviceModel> mScannedDeviceModelList) {
         //region Initialize Objects
-        this.mInflater = LayoutInflater.from(activity);
+        this.mInflater = LayoutInflater.from(fragment.getActivity());
         this.mScannedDeviceModelList = mScannedDeviceModelList;
+        this.mIAddLockFragment = (IAddLockFragment) fragment;
         //endregion Initialize Objects
     }
 
@@ -45,9 +52,10 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             String name;
             int rssi;
 
-            if (mScannedDeviceModelList.get(i).getDevice() == null) {
-                name = "Scanning ...";
-                rssi = 1000;
+            if (mScannedDeviceModelList.get(i).getRSSI() == FINDING_BLE_DEVICES_SCAN_MODE ||
+                    mScannedDeviceModelList.get(i).getRSSI() == FINDING_BLE_DEVICES_TIMEOUT_MODE) {
+                name = mScannedDeviceModelList.get(i).getRSSI() == FINDING_BLE_DEVICES_SCAN_MODE ? "Scanning ..." : "Try again ...";
+                rssi = mScannedDeviceModelList.get(i).getRSSI();
 
                 bleDeviceViewHolder.txvBleDeviceName.setTypeface(null, Typeface.ITALIC);
             } else {
@@ -60,6 +68,13 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             bleDeviceViewHolder.txvBleDeviceName.setText(name);
             ViewHelper.setRSSIImage(bleDeviceViewHolder.imgBleDeviceRSSI, rssi);
         }
+
+        bleDeviceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIAddLockFragment.onBleDeviceClick(mScannedDeviceModelList.get(i));
+            }
+        });
     }
 
     @Override
