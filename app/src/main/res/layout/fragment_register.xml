@@ -1,26 +1,26 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_black_1000"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:weightSum="13">
+    android:background="@color/md_black_1000">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txil_register_email"
+        android:id="@+id/txil_email_register_fragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_weight="2"
-        android:textColorHint="@color/hintColor">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="@color/hintColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_register_email"
+            android:id="@+id/tiet_email_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Email : example@mail.com"
+            android:hint="@string/fragment_hint_email"
             android:inputType="textEmailAddress"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
@@ -28,21 +28,24 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txil_register_password"
+        android:id="@+id/txil_password_register_fragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:textColorHint="@color/hintColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txil_email_register_fragment"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="#fff">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_register_password"
+            android:id="@+id/tiet_password_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Password"
+            android:hint="@string/fragment_hint_password"
             android:inputType="textPassword"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
@@ -50,21 +53,24 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txil_register_confirm_password"
+        android:id="@+id/txil_confirm_password_register_fragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:textColorHint="@color/hintColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txil_password_register_fragment"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="#fff">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_register_confirm_password"
+            android:id="@+id/tiet_confirm_password_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Confirm Password"
+            android:hint="@string/fragment_hint_confirm_password"
             android:inputType="textPassword"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
@@ -72,18 +78,30 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
+        android:id="@+id/btn_sign_up_register_fragment"
         android:layout_width="250dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/md_blue_800"
-        android:text="SignUp" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/button_back_color"
+        android:text="@string/fragment_button_sign_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txil_confirm_password_register_fragment" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="Login"
-        android:textColor="@color/md_white_1000" />
+        android:id="@+id/btn_login_register_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/fragment_text_view_login"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_sign_up_register_fragment" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

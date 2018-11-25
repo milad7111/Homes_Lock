@@ -1,22 +1,48 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_layout_border"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/edt_device_wifi_network_password"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txil_wifi_password_dialog_device_wifi_network_connect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="fake password"
-        android:inputType="textPassword"
-        android:textColorHint="@color/md_white_1000" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="@color/hintColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="#fff">
 
-    <CheckBox
-        android:layout_width="wrap_content"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tiet_wifi_password_dialog_device_wifi_network_connect"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/dialog_hint_wifi_password"
+            android:inputType="textPassword"
+            android:textColor="@color/hintColor"
+            android:textColorHint="@color/hintColor" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/spn_wifi_type_dialog_device_wifi_network_connect"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/md_white_1000"
-        android:text="Show Password"
-        android:textColor="@color/md_white_1000" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:dropDownWidth="wrap_content"
+        android:entries="@array/dialog_spinner_list_wifi_type"
+        android:spinnerMode="dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txil_wifi_password_dialog_device_wifi_network_connect" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

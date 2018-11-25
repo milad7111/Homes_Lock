@@ -82,12 +82,12 @@ public class LoginFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
-        tietEmail = view.findViewById(R.id.tiet_email);
-        tietPassword = view.findViewById(R.id.tiet_password);
-        btnLogin = view.findViewById(R.id.btn_login);
-        txvDirectConnect = view.findViewById(R.id.txv_direct_connect);
-        txvSignUp = view.findViewById(R.id.txv_sign_up);
-        txvForgetPassword = view.findViewById(R.id.txv_forget_password);
+        tietEmail = view.findViewById(R.id.tiet_email_login_fragment);
+        tietPassword = view.findViewById(R.id.tiet_password_login_fragment);
+        btnLogin = view.findViewById(R.id.btn_login_login_fragment);
+        txvDirectConnect = view.findViewById(R.id.txv_direct_connect_login_fragment);
+        txvSignUp = view.findViewById(R.id.txv_sign_up_login_fragment);
+        txvForgetPassword = view.findViewById(R.id.txv_forget_password_login_fragment);
         //endregion Initialize Views
 
         //region Setup Views
@@ -108,18 +108,18 @@ public class LoginFragment extends Fragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_login:
+            case R.id.btn_login_login_fragment:
                 DialogHelper.handleProgressDialog(getContext(), "Login", "Login process and read data ...", true);
                 mLoginViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
                 break;
-            case R.id.txv_direct_connect:
+            case R.id.txv_direct_connect_login_fragment:
                 BaseApplication.userLoginMode = false;
                 startActivity(new Intent(getActivity(), LockActivity.class));
                 break;
-            case R.id.txv_sign_up:
+            case R.id.txv_sign_up_login_fragment:
                 ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_login_activity, new RegisterFragment());
                 break;
-            case R.id.txv_forget_password:
+            case R.id.txv_forget_password_login_fragment:
                 ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_login_activity, new ForgetPasswordFragment());
                 break;
         }

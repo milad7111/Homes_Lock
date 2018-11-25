@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -45,35 +46,7 @@ public class DialogHelper {
     //endregion Declare Objects
 
     //region Declare Methods
-    public static void handleEnableLocationDialog(Activity activity) {
-        Dialog dialog = new Dialog(activity);
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_enable_location);
-
-        Button btnNoDialogEnableLocation = dialog.findViewById(R.id.btn_no_dialog_enable_location);
-        Button btnYesDialogEnableLocation = dialog.findViewById(R.id.btn_yes_dialog_enable_location);
-
-        btnNoDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btnYesDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BleHelper.enableLocation(activity);
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
-    }
-
-    public static Dialog handleAddNewLockDialogOffline(Fragment fragment, List<ScannedDeviceModel> devices) {
+    public static Dialog handleListAvailableBleDevicesDialog(Fragment fragment, List<ScannedDeviceModel> devices) {
         if (addNewLockDialogOffline == null) {
             addNewLockDialogOffline = new Dialog(fragment.getContext());
             addNewLockDialogOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -119,74 +92,13 @@ public class DialogHelper {
         return addNewLockDialogOffline;
     }
 
-    public static void handleAddNewLockDialogOnline(Activity activity) {
-        Dialog dialog = new Dialog(activity);
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_add_new_lock);
-
-        Button btnCancelDialogEnableLocation = dialog.findViewById(R.id.btn_cancel_dialog_add_new_lock);
-        Button btnAddDialogEnableLocation = dialog.findViewById(R.id.btn_add_new_lock_dialog_add_new_lock);
-
-        btnCancelDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btnAddDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO add online lock
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
-    }
-
-    public static Dialog handlePairWithBleDeviceDialog(Fragment fragment, ScannedDeviceModel mScannedDeviceModel) {
-        Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_pair_with_ble_device);
-
-        Button btnCancelDialogPairWithBleDevice = dialog.findViewById(R.id.btn_cancel_dialog_pair_with_ble_device);
-        Button btnPairDialogPairWithBleDevice = dialog.findViewById(R.id.btn_pair_dialog_pair_with_ble_device);
-
-        TextInputEditText txieSecurityCodeDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_security_code_dialog_pair_with_ble_device);
-
-        btnCancelDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
-                mScannedDeviceModel.getDevice().setPin(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString().getBytes());
-                mScannedDeviceModel.getDevice().createBond();
-            }
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
-
-        return dialog;
-    }
-
-    public static Dialog handlePairWithNewBleDeviceDialog(Fragment fragment) {
+    public static Dialog handleAddOfflineNewLockDialog(Fragment fragment) {
         saveLockAfterPaired = false;
 
         Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_pair_with_new_ble_device);
+        dialog.setContentView(R.layout.dialog_add_new_lock);
 
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -196,26 +108,28 @@ public class DialogHelper {
             }
         });
 
-        Button btnCancelDialogPairWithBleDevice = dialog.findViewById(R.id.btn_cancel_dialog_pair_with_ble_device);
-        Button btnPairDialogPairWithBleDevice = dialog.findViewById(R.id.btn_pair_dialog_pair_with_ble_device);
+        Button btnCancelDialogAddNewLock = dialog.findViewById(R.id.btn_cancel_dialog_add_new_lock);
+        Button btnAddDialogAddNewLock = dialog.findViewById(R.id.btn_add_dialog_add_new_lock);
 
-        TextInputEditText txieLockNameDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_lock_name_dialog_pair_with_ble_device);
-        TextInputEditText txieSecurityCodeDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_security_code_dialog_pair_with_ble_device);
+        TextInputEditText tietLockNameDialogAddNewLock = dialog.findViewById(R.id.tiet_lock_name_dialog_add_new_lock);
+        TextInputEditText tietLockSerialNumberDialogAddNewLock = dialog.findViewById(R.id.tiet_lock_serial_number_dialog_add_new_lock);
 
-        btnCancelDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+        CheckBox chbLockFavoriteStatusDialogAddNewLock = dialog.findViewById(R.id.chb_lock_favorite_status_dialog_add_new_lock);
+
+        btnCancelDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
 
-        btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+        btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogHelper.handleProgressDialog(fragment.getContext(), null, "Saving ...", true);
 
-                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(txieLockNameDialogPairWithBleDevice.getText()).toString());
-                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString());
+                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString());
+                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
 
                 ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
                     @Override
@@ -236,6 +150,34 @@ public class DialogHelper {
         dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
 
         return dialog;
+    }
+
+    public static void handleAddOnlineNewLockDialog(Activity activity) {
+        Dialog dialog = new Dialog(activity);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_add_new_lock);
+
+        Button btnCancelDialogEnableLocation = dialog.findViewById(R.id.btn_cancel_dialog_add_new_lock);
+        Button btnAddDialogEnableLocation = dialog.findViewById(R.id.btn_add_dialog_add_new_lock);
+
+        btnCancelDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnAddDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO add online lock
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
     }
 
     public static void handleProgressDialog(Context context, String title, String message, boolean show) {
@@ -277,4 +219,67 @@ public class DialogHelper {
         }
     }
     //endregion Declare Classes
+
+    //region NotUsed
+    public static void handleEnableLocationDialog(Activity activity) {
+        Dialog dialog = new Dialog(activity);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_enable_location);
+
+        Button btnNoDialogEnableLocation = dialog.findViewById(R.id.btn_no_dialog_enable_location);
+        Button btnYesDialogEnableLocation = dialog.findViewById(R.id.btn_yes_dialog_enable_location);
+
+        btnNoDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnYesDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BleHelper.enableLocation(activity);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
+    }
+
+    public static Dialog handlePairWithBleDeviceDialog(Fragment fragment, ScannedDeviceModel mScannedDeviceModel) {
+        Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_pair_with_ble_device);
+
+        Button btnCancelDialogPairWithBleDevice = dialog.findViewById(R.id.btn_cancel_dialog_pair_with_ble_device);
+        Button btnPairDialogPairWithBleDevice = dialog.findViewById(R.id.btn_pair_dialog_pair_with_ble_device);
+
+        TextInputEditText txieSecurityCodeDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_security_code_dialog_pair_with_ble_device);
+
+        btnCancelDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
+                mScannedDeviceModel.getDevice().setPin(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString().getBytes());
+                mScannedDeviceModel.getDevice().createBond();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
+
+        return dialog;
+    }
+    //endregion NotUsed
 }

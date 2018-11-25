@@ -8,12 +8,12 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/txv_title_dialog_enable_location"
+        android:id="@+id/txv_title_dialog_add_new_lock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="left|center_vertical"
-        android:text="Add New Lock"
+        android:text="@string/dialog_title_add_new_lock"
         android:textColor="@color/md_white_1000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,20 +21,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txil_lock_name_dialog_add_new-lock"
+        android:id="@+id/txil_lock_name_dialog_add_new_lock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location">
+        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_add_new_lock">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_lock_name_dialog_add_new-lock"
+            android:id="@+id/tiet_lock_name_dialog_add_new_lock"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Lock name"
+            android:hint="@string/dialog_hint_lock_name"
             android:inputType="textEmailAddress"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
@@ -42,22 +42,22 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txil_lock_password_dialog_add_new-lock"
+        android:id="@+id/txil_lock_serial_number_dialog_add_new_lock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txil_lock_name_dialog_add_new-lock"
+        app:layout_constraintTop_toBottomOf="@+id/txil_lock_name_dialog_add_new_lock"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="#fff">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_lock_password_dialog_add_new-lock"
+            android:id="@+id/tiet_lock_serial_number_dialog_add_new_lock"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Online password"
+            android:hint="@string/dialog_hint_serial_number"
             android:inputType="textPassword"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
@@ -65,16 +65,16 @@
     </android.support.design.widget.TextInputLayout>
 
     <CheckBox
-        android:id="@+id/txil_lock_admin_status_dialog_add_new-lock"
+        android:id="@+id/chb_lock_favorite_status_dialog_add_new_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:buttonTint="@color/md_white_1000"
-        android:text="Admin"
+        android:text="@string/dialog_check_box_favorite"
         android:textColor="@color/md_white_1000"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txil_lock_password_dialog_add_new-lock" />
+        app:layout_constraintTop_toBottomOf="@+id/txil_lock_serial_number_dialog_add_new_lock" />
 
     <Button
         android:id="@+id/btn_cancel_dialog_add_new_lock"
@@ -84,23 +84,23 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/transparent"
-        android:text="CANCEL"
+        android:text="@string/dialog_button_cancel"
         android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txil_lock_admin_status_dialog_add_new-lock" />
+        app:layout_constraintTop_toBottomOf="@+id/chb_lock_favorite_status_dialog_add_new_lock" />
 
     <Button
-        android:id="@+id/btn_add_new_lock_dialog_add_new_lock"
+        android:id="@+id/btn_add_dialog_add_new_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@id/btn_no_dialog_enable_location"
         android:background="@color/transparent"
-        android:text="ADD"
+        android:text="@string/dialog_button_add"
         android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_add_new_lock"
-        app:layout_constraintTop_toBottomOf="@+id/txil_lock_admin_status_dialog_add_new-lock" />
+        app:layout_constraintTop_toBottomOf="@+id/chb_lock_favorite_status_dialog_add_new_lock" />
 
 </android.support.constraint.ConstraintLayout>
 

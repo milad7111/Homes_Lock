@@ -12,15 +12,76 @@
 
     <string name="content_description_members_list_item_img_avatar" translatable="false">avatar of lock members</string>
     <string name="content_description_members_list_item_img_action" translatable="false">action of lock members</string>
+
+    <string name="content_description_img_login_screen_login_fragment" translatable="false">static image in login fragment</string>
+
+    <string name="content_description_img_temperature_celsius_lock_page">centigrade symbol</string>
+    <string name="content_description_img_lock_status_symbol_lock_page">lock status</string>
+    <string name="content_description_img_water_percent_lock_page">water percent</string>
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->
     <!--//endregion Activity and Fragment Titles-->
 
+    <!--//region Dialog Titles-->
+    <string name="dialog_title_pair_with_ble_device">Pairing</string>
+    <string name="dialog_title_add_new_lock">Add new lock</string>
+    <string name="dialog_title_forget_password">Forget password</string>
+    <!--//endregion Dialog Titles-->
+
+    <!--//region Fragment Buttons-->
+    <string name="fragment_button_add_new_lock">Add new lock</string>
+    <string name="fragment_button_sign_up">SignUp</string>
+    <!--//endregion Fragment Buttons-->
+
+    <!--//region Fragment Hints-->
+    <string name="fragment_hint_email">Email : example@mail.com</string>
+    <string name="fragment_hint_password">Password</string>
+    <string name="fragment_hint_confirm_password">Confirm Password</string>
+    <!--//endregion Fragment Hints-->
+
+    <!--//region Fragment TextViews-->
+    <string name="fragment_text_view_login">Login</string>
+    <!--//endregion Fragment TextViews-->
+
     <!--//region Dialog Buttons-->
     <string name="dialog_button_cancel">CANCEL</string>
     <string name="dialog_button_scan">SCAN</string>
+    <string name="dialog_button_add">ADD</string>
+    <string name="dialog_button_send_reset_password_link">Send reset password link</string>
     <!--//endregion Dialog Buttons-->
+
+    <!--//region Dialog Checkboxes-->
+    <string name="dialog_check_box_favorite">Favorite</string>
+    <string name="dialog_check_box_admin">Admin</string>
+    <string name="dialog_check_box_remove_all_members">Remove all members</string>
+    <!--//endregion Dialog Checkboxes-->
+
+    <!--//region Dialog RadioButtons-->
+    <string name="dialog_radio_button_right_handed">Right Handed</string>
+    <string name="dialog_radio_button_left_handed">Left Handed</string>
+    <string name="dialog_radio_button_ninety_degrees">90 degrees</string>
+    <string name="dialog_radio_button_one_stage">One stage</string>
+    <string name="dialog_radio_button_two_stage">Two stage</string>
+    <string name="dialog_radio_button_three_stage">Three stage</string>
+    <!--//endregion Dialog RadioButtons-->
+
+    <!--//region Dialog Hints-->
+    <string name="dialog_hint_lock_name">Lock name</string>
+    <string name="dialog_hint_serial_number">Serial number</string>
+    <string name="dialog_hint_email">Email : example@mail.com</string>
+    <string name="dialog_hint_wifi_password">Wifi password</string>
+    <!--//endregion Dialog Hints-->
+
+    <!--//region Dialog Spinner-->
+    <string-array name="dialog_spinner_list_wifi_type">
+        <item>OPEN</item>
+        <item>WEP</item>
+        <item>WPA_PSK</item>
+        <item>WPA2_PSK</item>
+        <item>WPA_WPA2_PSK</item>
+    </string-array>
+    <!--//endregion Dialog Spinner-->
 
     <!--//region Fragment Buttons-->
     <string name="fragment_button_sync">SYNC</string>
@@ -43,10 +104,10 @@
     <!--//region DataBase-->
     <!--//endregion DataBase-->
 
-    <!--//endregion BLE-->
+    <!--//region BLE States-->
     <string name="ble_state_connecting" translatable="false">Connecting…</string>
     <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
     <string name="ble_state_initializing" translatable="false">Initializing…</string>
-    <!--//region BLE-->
+    <!--//endregion BLE States-->
 
 </resources>

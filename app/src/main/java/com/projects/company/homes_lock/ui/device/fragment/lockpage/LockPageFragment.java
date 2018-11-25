@@ -60,6 +60,9 @@ public class LockPageFragment extends Fragment
     ImageView imgManageMembersLockPage;
     ImageView imgMoreInfoLockPage;
 
+    ImageView imgTemperatureCelsiusLockPage;
+    ImageView imgWaterPercentLockPage;
+
     TextView txvLockNameLockPage;
     TextView txvNewUpdateLockPage;
     TextView txvSecurityAlarmLockPage;
@@ -125,6 +128,9 @@ public class LockPageFragment extends Fragment
         imgBleLockPage = view.findViewById(R.id.img_ble_lock_page);
         imgManageMembersLockPage = view.findViewById(R.id.img_manage_members_lock_page);
         imgMoreInfoLockPage = view.findViewById(R.id.img_more_info_lock_page);
+
+        imgTemperatureCelsiusLockPage = view.findViewById(R.id.img_temperature_celsius_lock_page);
+        imgWaterPercentLockPage = view.findViewById(R.id.img_water_percent_lock_page);
 
         txvLockNameLockPage = view.findViewById(R.id.txv_lock_name_lock_page);
         txvNewUpdateLockPage = view.findViewById(R.id.txv_new_update_lock_page);
@@ -202,6 +208,13 @@ public class LockPageFragment extends Fragment
                 setDefault ? 0 : mDevice.getBatteryPercentage());
         ViewHelper.setConnectionStatusImage(imgConnectionStatusLockPage,
                 setDefault ? false : mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+
+        if (setDefault)
+            imgTemperatureCelsiusLockPage.setImageDrawable(null);
+        else
+            imgTemperatureCelsiusLockPage.setImageResource(R.drawable.ic_temperature_celsius);
+
+        imgWaterPercentLockPage.setImageDrawable(setDefault ? null : getResources().getDrawable(R.drawable.water_percent));
 
         txvLockNameLockPage.setText(
                 setDefault ? "" : mDevice.getBleDeviceName());

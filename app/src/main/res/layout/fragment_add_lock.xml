@@ -1,25 +1,37 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_black_1000"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:weightSum="9">
+    android:background="@color/md_black_1000">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
 
     <ImageView
+        android:id="@+id/img_add_new_lock_screen"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="7.5"
-        android:src="@drawable/ic_lock_idle" />
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_lock_idle"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="TODO" />
 
     <Button
         android:id="@+id/btn_add_new_lock"
         android:layout_width="250dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="1"
-        android:background="@color/md_blue_800"
-        android:text="Add new lock" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/button_back_color"
+        android:text="@string/fragment_button_add_new_lock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

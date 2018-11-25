@@ -35,7 +35,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        app:dotsColor="@color/md_blue_800"
+        app:dotsColor="@color/button_back_color"
         app:dotsSize="16dp"
         app:dotsSpacing="4dp"
         app:dotsWidthFactor="2.5"

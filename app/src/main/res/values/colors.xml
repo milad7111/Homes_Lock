@@ -5,6 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="hintColor">#fff</color>
 
+    <color name="button_back_color">#0741AD</color>
+
     <color name="ic_launcher_background">#26A69A</color>
     <color name="transparent">#00000000</color>
     <color name="background_dialog">#707070</color>

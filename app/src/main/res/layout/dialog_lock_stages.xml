@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -6,35 +7,51 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatRadioButton
-        android:id="@+id/rdb_90_degree"
+        android:id="@+id/rdb_ninety_degrees_dialog_lock_stages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/md_white_1000"
-        android:text="90 degrees"
-        android:textColor="@color/md_white_1000" />
+        android:text="@string/dialog_radio_button_ninety_degrees"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.AppCompatRadioButton
-        android:id="@+id/rdb_one_stage"
+        android:id="@+id/rdb_one_stage_dialog_lock_stages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/md_white_1000"
-        android:text="One Stage"
-        android:textColor="@color/md_white_1000" />
+        android:text="@string/dialog_radio_button_one_stage"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rdb_ninety_degrees_dialog_lock_stages" />
 
     <android.support.v7.widget.AppCompatRadioButton
-        android:id="@+id/rdb_two_stage"
+        android:id="@+id/rdb_two_stage_dialog_lock_stages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/md_white_1000"
-        android:text="Two Stage"
-        android:textColor="@color/md_white_1000" />
+        android:text="@string/dialog_radio_button_two_stage"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rdb_one_stage_dialog_lock_stages" />
 
     <android.support.v7.widget.AppCompatRadioButton
-        android:id="@+id/rdb_three_stage"
+        android:id="@+id/rdb_three_stage_dialog_lock_stages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/md_white_1000"
-        android:text="Three Stage"
-        android:textColor="@color/md_white_1000" />
+        android:text="@string/dialog_radio_button_three_stage"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rdb_two_stage_dialog_lock_stages" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

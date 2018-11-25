@@ -106,12 +106,12 @@ public class AddLockFragment extends BaseFragment
     //region Ble Callbacks
     @Override
     public void onFindBleSuccess(List devices) {
-        activeDialog = DialogHelper.handleAddNewLockDialogOffline(this, devices);
+        activeDialog = DialogHelper.handleListAvailableBleDevicesDialog(this, devices);
     }
 
     @Override
     public void onFindBleFault() {
-        activeDialog = DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_TIMEOUT_MODE)));
+        activeDialog = DialogHelper.handleListAvailableBleDevicesDialog(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_TIMEOUT_MODE)));
     }
 
     @Override
@@ -130,7 +130,7 @@ public class AddLockFragment extends BaseFragment
 
     @Override
     public void onBonded(BluetoothDevice device) {
-        activeDialog = DialogHelper.handlePairWithNewBleDeviceDialog(this);
+        activeDialog = DialogHelper.handleAddOfflineNewLockDialog(this);
     }
     //endregion Ble Callbacks
 
@@ -141,11 +141,11 @@ public class AddLockFragment extends BaseFragment
 
     private void addNewLock() {
         if (getUserLoginMode())
-            DialogHelper.handleAddNewLockDialogOnline(getActivity()); // Means user Wrote username and password then clicked Login
+            DialogHelper.handleAddOnlineNewLockDialog(getActivity()); // Means user Wrote username and password then clicked Login
         else {
             mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
             if (BleHelper.getScanPermission(this))
-                activeDialog = DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
+                activeDialog = DialogHelper.handleListAvailableBleDevicesDialog(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
         }
     }
     //endregion Declare Methods

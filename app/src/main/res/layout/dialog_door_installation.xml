@@ -1,4 +1,6 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -6,19 +8,27 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatRadioButton
-        android:id="@+id/rdb_right_handed"
+        android:id="@+id/rdb_right_handed_dialog_door_installation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/md_white_1000"
-        android:text="Right Handed"
-        android:textColor="@color/md_white_1000" />
+        android:text="@string/dialog_radio_button_right_handed"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.AppCompatRadioButton
-        android:id="@+id/rdb_left_handed"
+        android:id="@+id/rdb_left_handed_dialog_door_installation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/md_white_1000"
-        android:text="Left Handed"
-        android:textColor="@color/md_white_1000" />
+        android:text="@string/dialog_radio_button_left_handed"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rdb_right_handed_dialog_door_installation" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
