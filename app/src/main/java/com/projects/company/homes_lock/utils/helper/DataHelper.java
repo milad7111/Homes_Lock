@@ -12,11 +12,7 @@ import java.util.List;
 
 public class DataHelper {
 
-    public static final int ERROR_CODE_BLE_DEVICE_NOT_SUPPORT_BLE = 1000000;
-    public static final int ERROR_CODE_BLE_NOT_ENABLED = 1000001;
-
-    public static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
-    public static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 2;
+    public static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 0;
 
     public static boolean isInstanceOfList(Object object, String className) {
         try {

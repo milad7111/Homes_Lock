@@ -22,7 +22,6 @@ import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,8 +48,9 @@ public class DeviceViewModel extends AndroidViewModel
     //region Declare Objects
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
-    private final BleDeviceManager mBleDeviceManager;
     private IBleScanListener mIBleScanListener;
+
+    private final BleDeviceManager mBleDeviceManager;
 
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
     private final MutableLiveData<Boolean> mIsConnected = new MutableLiveData<>();
@@ -138,14 +138,14 @@ public class DeviceViewModel extends AndroidViewModel
     public void onDeviceDisconnected(final BluetoothDevice device) {
         mIsConnected.postValue(false);
         mIsSupported.postValue(false);
-        DialogHelper.handleProgressDialog(false);
+//        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
     public void onLinklossOccur(final BluetoothDevice device) {
         mIsConnected.postValue(false);
         mIsSupported.postValue(false);
-        DialogHelper.handleProgressDialog(false);
+//        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
@@ -170,20 +170,16 @@ public class DeviceViewModel extends AndroidViewModel
     @Override
     public void onBondingRequired(final BluetoothDevice device) {
         mIsSupported.postValue(false);
-
-        if (mIBleScanListener != null)
-            mIBleScanListener.onBondingRequired(device);
     }
 
     @Override
     public void onBonded(final BluetoothDevice device) {
         if (mIBleScanListener != null)
-            mIBleScanListener.onBonded(new ScannedDeviceModel(device));
+            mIBleScanListener.onBonded(device);
     }
 
     @Override
     public void onError(final BluetoothDevice device, final String message, final int errorCode) {
-        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
@@ -244,10 +240,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void disconnect() {
         mBleDeviceManager.disconnect();
-    }
-
-    public void changeNotifyForCharacteristic(UUID characteristicUUID, boolean notifyStatus) {
-        mBleDeviceManager.changeNotifyForCharacteristic(characteristicUUID, notifyStatus);
     }
 
     public void sendLockCommand(boolean lockCommand) {

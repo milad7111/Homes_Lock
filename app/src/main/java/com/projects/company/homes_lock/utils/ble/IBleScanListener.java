@@ -15,5 +15,5 @@ public interface IBleScanListener<T> {
 
     void onBondingRequired(BluetoothDevice device);
 
-    void onBonded(ScannedDeviceModel device);
+    void onBonded(BluetoothDevice device);
 }

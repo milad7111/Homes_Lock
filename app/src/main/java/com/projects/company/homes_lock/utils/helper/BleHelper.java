@@ -18,14 +18,13 @@ import android.support.v4.content.ContextCompat;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
-import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 
 public class BleHelper {
@@ -44,6 +43,8 @@ public class BleHelper {
 
     public static final int FINDING_BLE_DEVICES_SCAN_MODE = 1000;
     public static final int FINDING_BLE_DEVICES_TIMEOUT_MODE = 2000;
+
+    public static final int TIMES_TO_SCAN_BLE_DEVICES = 3;
     //endregion Declare Constants
 
     //region Declare Objects
@@ -139,9 +140,9 @@ public class BleHelper {
         context.startActivity(intent);
     }
 
-    public static void enableBluetooth(Activity context) {
+    public static void enableBluetooth(Activity activity) {
         final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        context.startActivity(enableIntent);
+        activity.startActivity(enableIntent);
     }
 
     public static void grantLocationPermission(Activity context) {
@@ -189,22 +190,22 @@ public class BleHelper {
     }
 
     public static void findDevices(Fragment fragment) {
-        if (((AddLockFragment) fragment).mBluetoothLEHelper != null && !((AddLockFragment) fragment).mBluetoothLEHelper.isScanning()) {
-            ((AddLockFragment) fragment).mBluetoothLEHelper.setScanPeriod(1000);
-            ((AddLockFragment) fragment).mBluetoothLEHelper.scanLeDevice(true);
+        if (mBluetoothLEHelper != null && ! mBluetoothLEHelper.isScanning()) {
+            mBluetoothLEHelper.setScanPeriod(1000);
+            mBluetoothLEHelper.scanLeDevice(true);
 
             Handler mHandler = new Handler();
             mHandler.postDelayed(() -> {
-                List<ScannedDeviceModel> tempList = getListOfScannedDevices(((AddLockFragment) fragment).mBluetoothLEHelper);
+                List<ScannedDeviceModel> tempList = getListOfScannedDevices();
                 if (tempList.size() == 0)
                     ((IBleScanListener<Object>) fragment).onFindBleFault();
                 else
                     ((IBleScanListener<Object>) fragment).onFindBleSuccess(tempList);
-            }, ((AddLockFragment) fragment).mBluetoothLEHelper.getScanPeriod());
+            }, mBluetoothLEHelper.getScanPeriod());
         }
     }
 
-    private static List<ScannedDeviceModel> getListOfScannedDevices(CustomBluetoothLEHelper mBluetoothLEHelper) {
+    private static List<ScannedDeviceModel> getListOfScannedDevices() {
         List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
 
         for (BluetoothLE device : mBluetoothLEHelper.getListDevices())
@@ -216,13 +217,9 @@ public class BleHelper {
     public static boolean getScanPermission(Fragment fragment) {
         if (BleHelper.isLocationRequired(fragment.getContext())) {
             if (BleHelper.isLocationPermissionsGranted(fragment.getContext())) {
-                if (!BleHelper.isLocationEnabled(fragment.getContext()))
-                    DialogHelper.handleEnableLocationDialog(fragment.getActivity());
-                else {
-                    if (BleHelper.isBleEnabled()) {
-                        return true;
-                    } else BleHelper.enableBluetooth(fragment.getActivity());
-                }
+                if (BleHelper.isBleEnabled())
+                    return true;
+                else BleHelper.enableBluetooth(fragment.getActivity());
             } else {
                 final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(fragment.getActivity());
                 if (!deniedForever)

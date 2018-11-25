@@ -2,10 +2,8 @@ package com.projects.company.homes_lock.ui.device.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,7 +22,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
+import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
@@ -32,8 +30,6 @@ import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 
 public class LockActivity extends BaseActivity
         implements
@@ -60,6 +56,7 @@ public class LockActivity extends BaseActivity
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DeviceViewModel mDeviceViewModel;
     private CustomDeviceAdapter mAdapter;
+    public static CustomBluetoothLEHelper mBluetoothLEHelper;
     //endregion Declare Objects
 
     //region Main CallBacks
@@ -117,20 +114,6 @@ public class LockActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         ViewHelper.setContext(LockActivity.this);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (grantResults.length > 0) {
-            switch (requestCode) {
-                case REQUEST_CODE_ACCESS_COARSE_LOCATION:
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                        DialogHelper.handleEnableLocationDialog(this);
-                    break;
-            }
-        }
     }
 
     @Override
@@ -244,7 +227,7 @@ public class LockActivity extends BaseActivity
         });
     }
 
-    public static void setViewPagerAdapter(PagerAdapter adapter){
+    public static void setViewPagerAdapter(PagerAdapter adapter) {
         mViewPager.setAdapter(adapter);
     }
 

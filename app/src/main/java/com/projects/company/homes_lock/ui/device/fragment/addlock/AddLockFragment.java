@@ -2,7 +2,6 @@ package com.projects.company.homes_lock.ui.device.fragment.addlock;
 
 
 import android.app.Dialog;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -15,11 +14,8 @@ import android.widget.Button;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
-import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
@@ -28,6 +24,7 @@ import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import java.util.Collections;
 import java.util.List;
 
+import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_TIMEOUT_MODE;
 
@@ -52,7 +49,6 @@ public class AddLockFragment extends BaseFragment
 
     //region Declare Objects
     public static DeviceViewModel mDeviceViewModel;
-    public static CustomBluetoothLEHelper mBluetoothLEHelper;
     private Dialog activeDialog;
     public static ScannedDeviceModel mDevice;
     //endregion Declare Objects
@@ -125,39 +121,16 @@ public class AddLockFragment extends BaseFragment
         if (activeDialog != null)
             activeDialog.dismiss();
 
-        activeDialog = DialogHelper.handlePairWithNewBleDeviceDialog(this);
-//        pairWithBleDevice();
-//        if (device.getDevice().getBondState() == BOND_BONDED)
-//            pairWithBleDevice();
-//        this.mDeviceViewModel.connect(this, device);
-//        this.mDeviceViewModel.isSupported().observe(this, new Observer<Boolean>() {
-//            @Override
-//            public void onChanged(@Nullable Boolean isSupported) {
-//                if (isSupported)
-//                    mDeviceViewModel.insertLocalDevice(new Device(device));
-//            }
-//        });
+        this.mDeviceViewModel.connect(this, device);
     }
 
     @Override
     public void onBondingRequired(BluetoothDevice device) {
-        device.createBond();
     }
 
     @Override
-    public void onBonded(ScannedDeviceModel device) {
-        if (activeDialog != null)
-            activeDialog.dismiss();
-
-        this.mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
-            @Override
-            public void onChanged(@Nullable final List<Device> devices) {
-                ((LockActivity) getActivity()).setViewPagerAdapter(new CustomDeviceAdapter(getActivity().getSupportFragmentManager(), devices));
-            }
-        });
-
-        this.mDeviceViewModel.insertLocalDevice(new Device(mDevice));
-        DialogHelper.handleProgressDialog(false);
+    public void onBonded(BluetoothDevice device) {
+        activeDialog = DialogHelper.handlePairWithNewBleDeviceDialog(this);
     }
     //endregion Ble Callbacks
 
@@ -174,10 +147,6 @@ public class AddLockFragment extends BaseFragment
             if (BleHelper.getScanPermission(this))
                 activeDialog = DialogHelper.handleAddNewLockDialogOffline(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
         }
-    }
-
-    public void createBond(ScannedDeviceModel device) {
-        mDeviceViewModel.connect(this, device);
     }
     //endregion Declare Methods
 }

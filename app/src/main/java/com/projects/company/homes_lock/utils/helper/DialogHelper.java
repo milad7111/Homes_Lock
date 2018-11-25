@@ -3,9 +3,11 @@ package com.projects.company.homes_lock.utils.helper;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothDevice;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,22 +15,28 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
+import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
-import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
 
 public class DialogHelper {
+
+    //region Declare Variables
+    private static boolean saveLockAfterPaired;
+    //endregion Declare Variables
 
     //region Declare Objects
     private static ProgressDialog mProgressDialog;
@@ -61,14 +69,8 @@ public class DialogHelper {
             }
         });
 
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
         dialog.show();
-        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
     }
 
     public static Dialog handleAddNewLockDialogOffline(Fragment fragment, List<ScannedDeviceModel> devices) {
@@ -141,14 +143,8 @@ public class DialogHelper {
             }
         });
 
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
         dialog.show();
-        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
     }
 
     public static Dialog handlePairWithBleDeviceDialog(Fragment fragment, ScannedDeviceModel mScannedDeviceModel) {
@@ -178,23 +174,27 @@ public class DialogHelper {
             }
         });
 
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
         dialog.show();
-        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
 
         return dialog;
     }
 
     public static Dialog handlePairWithNewBleDeviceDialog(Fragment fragment) {
+        saveLockAfterPaired = false;
+
         Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_pair_with_new_ble_device);
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (!saveLockAfterPaired)
+                    mBluetoothLEHelper.unPairDevice(((AddLockFragment) fragment).mDevice.getDevice().getAddress());
+            }
+        });
 
         Button btnCancelDialogPairWithBleDevice = dialog.findViewById(R.id.btn_cancel_dialog_pair_with_ble_device);
         Button btnPairDialogPairWithBleDevice = dialog.findViewById(R.id.btn_pair_dialog_pair_with_ble_device);
@@ -212,29 +212,28 @@ public class DialogHelper {
         btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Saving ...", true);
+
                 ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(txieLockNameDialogPairWithBleDevice.getText()).toString());
                 ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString());
 
-                if (((AddLockFragment) fragment).mDevice.getDevice().getBondState() == BluetoothDevice.BOND_BONDED) {
-                    ((IBleScanListener) fragment).onBonded(((AddLockFragment) fragment).mDevice);
-                    dialog.dismiss();
-                } else {
-                    DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
-                    ((AddLockFragment) fragment).mDevice.getDevice().setPin(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString().getBytes());
+                ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<Device> devices) {
+                        ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
+                                new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices));
+                    }
+                });
+                ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mDevice));
 
-                    ((AddLockFragment) fragment).mDeviceViewModel.connect((IBleScanListener) fragment, ((AddLockFragment) fragment).mDevice);
-                }
+                saveLockAfterPaired = true;
+
+                dialog.dismiss();
             }
         });
 
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
         dialog.show();
-        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
 
         return dialog;
     }

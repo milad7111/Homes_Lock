@@ -18,6 +18,7 @@ import com.ederdoski.simpleble.models.BluetoothLE;
 import com.ederdoski.simpleble.utils.Functions;
 import com.ederdoski.simpleble.utils.Permissions;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -226,5 +227,17 @@ public class CustomBluetoothLEHelper {
                 return bondedDevice;
 
         return null;
+    }
+
+    public void unPairDevice(String macAddress) {
+        BluetoothDevice device = checkBondedDevices(macAddress);
+
+        if (device != null)
+            try {
+                Method m = device.getClass().getMethod("removeBond", (Class[]) null);
+                m.invoke(device, (Object[]) null);
+            } catch (Exception e) {
+                Log.e("----->   ", e.getMessage());
+            }
     }
 }
