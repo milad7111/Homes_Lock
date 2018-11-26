@@ -46,7 +46,7 @@ public class DialogHelper {
     //endregion Declare Objects
 
     //region Declare Methods
-    public static Dialog handleListAvailableBleDevicesDialog(Fragment fragment, List<ScannedDeviceModel> devices) {
+    public static Dialog handleShowListOfAvailableBleDevicesDialog(Fragment fragment, List<ScannedDeviceModel> devices) {
         if (addNewLockDialogOffline == null) {
             addNewLockDialogOffline = new Dialog(fragment.getContext());
             addNewLockDialogOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -92,7 +92,7 @@ public class DialogHelper {
         return addNewLockDialogOffline;
     }
 
-    public static Dialog handleAddOfflineNewLockDialog(Fragment fragment) {
+    public static Dialog handleAddLockOfflineDialog(Fragment fragment) {
         saveLockAfterPaired = false;
 
         Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
@@ -152,26 +152,54 @@ public class DialogHelper {
         return dialog;
     }
 
-    public static void handleAddOnlineNewLockDialog(Activity activity) {
-        Dialog dialog = new Dialog(activity);
+    public static void handleAddLockOnlineDialog(Fragment fragment) {
+        Dialog dialog = new Dialog(fragment.getContext());
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_add_new_lock);
 
-        Button btnCancelDialogEnableLocation = dialog.findViewById(R.id.btn_cancel_dialog_add_new_lock);
-        Button btnAddDialogEnableLocation = dialog.findViewById(R.id.btn_add_dialog_add_new_lock);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+            }
+        });
 
-        btnCancelDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
+        Button btnCancelDialogAddNewLock = dialog.findViewById(R.id.btn_cancel_dialog_add_new_lock);
+        Button btnAddDialogAddNewLock = dialog.findViewById(R.id.btn_add_dialog_add_new_lock);
+
+        TextInputEditText tietLockNameDialogAddNewLock = dialog.findViewById(R.id.tiet_lock_name_dialog_add_new_lock);
+        TextInputEditText tietLockSerialNumberDialogAddNewLock = dialog.findViewById(R.id.tiet_lock_serial_number_dialog_add_new_lock);
+
+        CheckBox chbLockFavoriteStatusDialogAddNewLock = dialog.findViewById(R.id.chb_lock_favorite_status_dialog_add_new_lock);
+
+        btnCancelDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
 
-        btnAddDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
+        btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO add online lock
+                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Evaluating ...", true);
+
+
+
+                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString());
+                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
+
+//                ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
+//                    @Override
+//                    public void onChanged(@Nullable final List<Device> devices) {
+//                        ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
+//                                new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices));
+//                    }
+//                });
+//                ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mDevice));
+
+                saveLockAfterPaired = true;
+
                 dialog.dismiss();
             }
         });

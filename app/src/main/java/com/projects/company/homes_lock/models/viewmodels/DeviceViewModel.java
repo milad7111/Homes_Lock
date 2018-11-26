@@ -12,6 +12,7 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
@@ -112,7 +113,10 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onFailure(Object response) {
-        Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
+        if (response instanceof FailureModel)
+            Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
+        else if (response instanceof ResponseBodyFailureModel)
+            Log.i(this.getClass().getSimpleName(), ((ResponseBodyFailureModel) response).getFailureMessage());
     }
     //endregion Device table
 
@@ -255,6 +259,12 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x04}, new byte[]{}));
     }
     //endregion BLE Methods
+
+    //region Online Methods
+    public void validateLockInOnlineDatabase(String serialNumber) {
+        mNetworkRepository.getADevice(this, serialNumber);
+    }
+    //endregion Online Methods
 
     //region Declare Methods
     public LiveData<Boolean> isConnected() {
