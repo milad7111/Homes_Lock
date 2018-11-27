@@ -3,7 +3,7 @@ package com.projects.company.homes_lock.models.datamodels.ble;
 import android.bluetooth.BluetoothDevice;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
-import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
+import com.projects.company.homes_lock.base.BaseModel;
 
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 

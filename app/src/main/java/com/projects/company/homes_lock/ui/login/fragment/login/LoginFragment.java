@@ -129,6 +129,7 @@ public class LoginFragment extends Fragment
     //region Login CallBacks
     @Override
     public void onLoginSuccessful(Object response) {
+        BaseApplication.activeUserId = ((User) response).getObjectId();
         mLoginViewModel.insertUser((User) response);
     }
 

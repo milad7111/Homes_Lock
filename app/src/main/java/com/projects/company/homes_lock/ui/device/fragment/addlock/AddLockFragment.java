@@ -14,6 +14,7 @@ import android.widget.Button;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
+import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
@@ -103,6 +104,19 @@ public class AddLockFragment extends BaseFragment
     }
     //endregion Main CallBacks
 
+    //region IAddLockFragment CallBacks
+    @Override
+    public void onFindLockInOnlineDataBase(Boolean findLockInOnlineDataBase) {
+        if (findLockInOnlineDataBase)
+            activeDialog = DialogHelper.handleAddLockOnlineDialog(this, true);
+    }
+
+    @Override
+    public void onInsertUserLockSuccessful(UserLock response) {
+
+    }
+    //endregion IAddLockFragment CallBacks
+
     //region Ble Callbacks
     @Override
     public void onFindBleSuccess(List devices) {
@@ -141,7 +155,7 @@ public class AddLockFragment extends BaseFragment
 
     private void addNewLock() {
         if (getUserLoginMode())
-            DialogHelper.handleAddLockOnlineDialog(this); // Means user Wrote username and password then clicked Login
+            activeDialog = DialogHelper.handleAddLockOnlineDialog(this, false); // Means user Wrote username and password then clicked Login
         else {
             mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
             if (BleHelper.getScanPermission(this))

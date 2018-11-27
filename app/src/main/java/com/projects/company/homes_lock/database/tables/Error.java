@@ -7,9 +7,10 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.projects.company.homes_lock.base.BaseModel;
 
 @Entity(tableName = "error")
-public class Error {
+public class Error extends BaseModel {
 
     //region Database attributes
     @PrimaryKey

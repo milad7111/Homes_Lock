@@ -60,7 +60,7 @@ public class LoginViewModel extends AndroidViewModel
     }
 
     @Override
-    public void onFailure(Object response) {
+    public void onSingleNetworkListenerFailure(Object response) {
         mILoginFragment.onLoginFailed(response);
     }
     //endregion Login Callbacks

@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
 import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
@@ -43,7 +44,14 @@ public class DialogHelper {
     private static ProgressDialog mProgressDialog;
     private static BleDeviceAdapter mBleDeviceAdapter;
     private static Dialog addNewLockDialogOffline;
+    private static Dialog addNewLockDialogOnline;
     //endregion Declare Objects
+
+    //region Declare Views
+    private static TextInputEditText tietLockNameDialogAddNewLock;
+    private static TextInputEditText tietLockSerialNumberDialogAddNewLock;
+    private static CheckBox chbLockFavoriteStatusDialogAddNewLock;
+    //endregion Declare Views
 
     //region Declare Methods
     public static Dialog handleShowListOfAvailableBleDevicesDialog(Fragment fragment, List<ScannedDeviceModel> devices) {
@@ -152,42 +160,43 @@ public class DialogHelper {
         return dialog;
     }
 
-    public static void handleAddLockOnlineDialog(Fragment fragment) {
-        Dialog dialog = new Dialog(fragment.getContext());
+    public static Dialog handleAddLockOnlineDialog(Fragment fragment, boolean lockExistenceStatus) {
+        if (addNewLockDialogOnline == null) {
+            addNewLockDialogOnline = new Dialog(fragment.getContext());
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_add_new_lock);
+            addNewLockDialogOnline.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            addNewLockDialogOnline.setContentView(R.layout.dialog_add_new_lock);
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-            }
-        });
+            addNewLockDialogOnline.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    addNewLockDialogOnline = null;
+                }
+            });
 
-        Button btnCancelDialogAddNewLock = dialog.findViewById(R.id.btn_cancel_dialog_add_new_lock);
-        Button btnAddDialogAddNewLock = dialog.findViewById(R.id.btn_add_dialog_add_new_lock);
+            Button btnCancelDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.btn_cancel_dialog_add_new_lock);
+            Button btnAddDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.btn_add_dialog_add_new_lock);
 
-        TextInputEditText tietLockNameDialogAddNewLock = dialog.findViewById(R.id.tiet_lock_name_dialog_add_new_lock);
-        TextInputEditText tietLockSerialNumberDialogAddNewLock = dialog.findViewById(R.id.tiet_lock_serial_number_dialog_add_new_lock);
+            tietLockNameDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.tiet_lock_name_dialog_add_new_lock);
+            tietLockSerialNumberDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.tiet_lock_serial_number_dialog_add_new_lock);
+            chbLockFavoriteStatusDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.chb_lock_favorite_status_dialog_add_new_lock);
 
-        CheckBox chbLockFavoriteStatusDialogAddNewLock = dialog.findViewById(R.id.chb_lock_favorite_status_dialog_add_new_lock);
+            btnCancelDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addNewLockDialogOnline.dismiss();
+                }
+            });
 
-        btnCancelDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.handleProgressDialog(fragment.getContext(), null, "Evaluating ...", true);
+                    ((AddLockFragment) fragment).mDeviceViewModel
+                            .validateLockInOnlineDatabase(fragment, Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
 
-        btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Evaluating ...", true);
-
-
-
-                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString());
-                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
+//                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString());
+//                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
 
 //                ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
 //                    @Override
@@ -198,14 +207,29 @@ public class DialogHelper {
 //                });
 //                ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mDevice));
 
-                saveLockAfterPaired = true;
+                    saveLockAfterPaired = true;
 
-                dialog.dismiss();
-            }
-        });
+                    addNewLockDialogOnline.dismiss();
+                }
+            });
+        } else {
+            if (lockExistenceStatus)
+                ((AddLockFragment) fragment).mDeviceViewModel.insertOnlineDevice(
+                        new UserLockModel(
+                                Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString(),
+                                true,
+                                chbLockFavoriteStatusDialogAddNewLock.isChecked()
+                        ));
+        }
 
-        dialog.show();
-        dialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(dialog));
+
+        if (!addNewLockDialogOnline.isShowing())
+            addNewLockDialogOnline.show();
+
+        addNewLockDialogOnline.show();
+        addNewLockDialogOnline.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(addNewLockDialogOnline));
+
+        return addNewLockDialogOnline;
     }
 
     public static void handleProgressDialog(Context context, String title, String message, boolean show) {

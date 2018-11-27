@@ -6,16 +6,21 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
+import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
@@ -30,6 +35,7 @@ import java.util.UUID;
 
 import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
+import okhttp3.ResponseBody;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
@@ -50,6 +56,7 @@ public class DeviceViewModel extends AndroidViewModel
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
     private IBleScanListener mIBleScanListener;
+    private IAddLockFragment mIAddLockFragment;
 
     private final BleDeviceManager mBleDeviceManager;
 
@@ -74,7 +81,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
     //endregion Declare Constructor
 
-    //region Device table
+    //region Device Table
     public LiveData<List<Device>> getAllLocalDevices() {
         return mLocalRepository.getAllDevices();
     }
@@ -91,7 +98,7 @@ public class DeviceViewModel extends AndroidViewModel
         mLocalRepository.insertDevice(device);
     }
 
-    public void insertLocalDevices(List<Device> devices) {
+    private void insertLocalDevices(List<Device> devices) {
         for (Device device : devices)
             mLocalRepository.insertDevice(device);
     }
@@ -99,26 +106,7 @@ public class DeviceViewModel extends AndroidViewModel
     public void deleteLocalDevice(Device device) {
         mLocalRepository.deleteDevice(device);
     }
-
-    @Override
-    public void onResponse(Object response) {
-        if (DataHelper.isInstanceOfList(response, Device.class.getName()))
-            insertLocalDevices((List<Device>) response);
-    }
-
-    @Override
-    public void onFailure(FailureModel response) {
-        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
-    }
-
-    @Override
-    public void onFailure(Object response) {
-        if (response instanceof FailureModel)
-            Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
-        else if (response instanceof ResponseBodyFailureModel)
-            Log.i(this.getClass().getSimpleName(), ((ResponseBodyFailureModel) response).getFailureMessage());
-    }
-    //endregion Device table
+    //endregion Device Table
 
     //region BLE CallBacks
     @Override
@@ -233,6 +221,32 @@ public class DeviceViewModel extends AndroidViewModel
     }
     //endregion BLE CallBacks
 
+    //region Network Callbacks
+    @Override
+    public void onResponse(Object response) {
+        if (DataHelper.isInstanceOfList(response, Device.class.getName()))
+            insertLocalDevices((List<Device>) response);
+        else if (response instanceof ResponseBody) {
+            if (mIAddLockFragment != null)
+                mIAddLockFragment.onFindLockInOnlineDataBase(response.toString().equals("1"));
+        } else if (response instanceof UserLock)
+            mIAddLockFragment.onInsertUserLockSuccessful((UserLock) response);
+    }
+
+    @Override
+    public void onSingleNetworkListenerFailure(Object response) {
+        if (response instanceof FailureModel)
+            Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
+        else if (response instanceof ResponseBodyFailureModel)
+            Log.i(this.getClass().getSimpleName(), ((ResponseBodyFailureModel) response).getFailureMessage());
+    }
+
+    @Override
+    public void onListNetworkListenerFailure(FailureModel response) {
+        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
+    }
+    //endregion Network Callbacks
+
     //region BLE Methods
     public void connect(IBleScanListener mIBleScanListener, final ScannedDeviceModel device) {
         this.mIBleScanListener = mIBleScanListener;
@@ -261,8 +275,13 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion BLE Methods
 
     //region Online Methods
-    public void validateLockInOnlineDatabase(String serialNumber) {
+    public void validateLockInOnlineDatabase(Fragment fragment, String serialNumber) {
+        mIAddLockFragment = (IAddLockFragment) fragment;
         mNetworkRepository.getADevice(this, serialNumber);
+    }
+
+    public void insertOnlineDevice(UserLockModel userLock) {
+        mNetworkRepository.insertLock(this, userLock);
     }
     //endregion Online Methods
 

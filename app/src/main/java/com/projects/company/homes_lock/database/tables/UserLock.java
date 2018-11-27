@@ -9,13 +9,14 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.projects.company.homes_lock.base.BaseModel;
 
 @Entity(tableName = "userLock",
         foreignKeys = {
                 @ForeignKey(entity = User.class, parentColumns = "objectId", childColumns = "userId"),
                 @ForeignKey(entity = Device.class, parentColumns = "objectId", childColumns = "deviceId")},
         indices = {@Index(value = {"userId"}), @Index(value = {"deviceId"})})
-public class UserLock {
+public class UserLock extends BaseModel {
 
     //region Database attributes
     @PrimaryKey
@@ -66,6 +67,14 @@ public class UserLock {
     //endregion Ignore server attributes
 
     public UserLock() {
+    }
+
+    @Ignore
+    public UserLock(String mUserId, String mDeviceId, String mLockName, boolean mFavorite) {
+        this.mUserId = mUserId;
+        this.mDeviceId = mDeviceId;
+        this.mLockName = mLockName;
+        this.mFavorite = mFavorite;
     }
 
     @NonNull

@@ -8,6 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.projects.company.homes_lock.base.BaseModel;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -23,7 +24,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                         childColumns = "objectId",
                         onDelete = CASCADE)
         })
-public class DeviceError {
+public class DeviceError extends BaseModel {
 
     //region Database attributes
     @PrimaryKey

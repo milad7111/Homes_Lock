@@ -1,13 +1,15 @@
 package com.projects.company.homes_lock.repositories.remote;
 
 import com.projects.company.homes_lock.base.BaseApplication;
+import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
-import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
-import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class NetworkRepository {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                listener.onFailure(new FailureModel(t.getMessage()));
+                listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
     }
@@ -53,13 +55,13 @@ public class NetworkRepository {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                listener.onFailure(new FailureModel(t.getMessage()));
+                listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
     }
 
     public void getADevice(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
-        BaseApplication.getRetrofitAPI().getADevice(String.format("serialNumber=%s", parameter)).enqueue(new Callback<ResponseBody>() {
+        BaseApplication.getRetrofitAPI().getADevice(BaseApplication.activeUserToken, String.format("serialNumber=%s", parameter)).enqueue(new Callback<ResponseBody>() {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -69,7 +71,22 @@ public class NetworkRepository {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                listener.onFailure(new ResponseBodyFailureModel(t.getMessage()));
+                listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
+            }
+        });
+    }
+
+    public void insertLock(final NetworkListener.SingleNetworkListener<BaseModel> listener, UserLockModel parameter) {
+        BaseApplication.getRetrofitAPI().addUserLock(BaseApplication.activeUserToken, parameter).enqueue(new Callback<UserLock>() {
+            @Override
+            public void onResponse(Call<UserLock> call, Response<UserLock> response) {
+                if (response != null && response.body() != null)
+                    listener.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserLock> call, Throwable t) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
     }
@@ -84,7 +101,7 @@ public class NetworkRepository {
 
             @Override
             public void onFailure(Call<List<Device>> call, Throwable t) {
-                listener.onFailure(new FailureModel(t.getMessage()));
+                listener.onListNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
     }

@@ -6,12 +6,12 @@ public interface NetworkListener {
     interface SingleNetworkListener<T> {
         void onResponse(T response);
 
-        void onFailure(T response);
+        void onSingleNetworkListenerFailure(T response);
     }
 
     interface ListNetworkListener<T> {
         void onResponse(T response);
 
-        void onFailure(FailureModel response);
+        void onListNetworkListenerFailure(FailureModel response);
     }
 }

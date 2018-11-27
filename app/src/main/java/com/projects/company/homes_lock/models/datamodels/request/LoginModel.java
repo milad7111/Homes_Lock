@@ -1,12 +1,13 @@
 package com.projects.company.homes_lock.models.datamodels.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
+import com.projects.company.homes_lock.base.BaseModel;
 
 public class LoginModel extends BaseModel {
 
     @SerializedName("login")
     private String mEmail;
+
     @SerializedName("password")
     private String mPassword;
 

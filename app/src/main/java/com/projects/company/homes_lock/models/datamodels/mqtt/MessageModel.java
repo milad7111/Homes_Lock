@@ -1,7 +1,7 @@
 package com.projects.company.homes_lock.models.datamodels.mqtt;
 
 import com.google.gson.annotations.SerializedName;
-import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
+import com.projects.company.homes_lock.base.BaseModel;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 

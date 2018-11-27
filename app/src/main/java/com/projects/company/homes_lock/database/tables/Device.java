@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.response.BaseModel;
+import com.projects.company.homes_lock.base.BaseModel;
 
 import java.util.List;
 
