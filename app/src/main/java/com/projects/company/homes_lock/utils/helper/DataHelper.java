@@ -16,14 +16,16 @@ public class DataHelper {
 
     public static boolean isInstanceOfList(Object object, String className) {
         try {
-            if (object instanceof List)
+            if (object instanceof List && ((List) object).size() != 0) {
                 for (Object obj : (List) object) {
                     if (Class.forName(className).isInstance(obj))
                         continue;
                     else
                         return false;
                 }
-            return true;
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

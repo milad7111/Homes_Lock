@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
@@ -46,6 +47,8 @@ public class AddLockFragment extends BaseFragment
     //endregion Declare Views
 
     //region Declare Variables
+    public static String lockObjectId;
+    public static String userLockObjectId;
     //endregion Declare Variables
 
     //region Declare Objects
@@ -112,8 +115,21 @@ public class AddLockFragment extends BaseFragment
     }
 
     @Override
-    public void onInsertUserLockSuccessful(UserLock response) {
+    public void onInsertUserLockSuccessful(UserLock userLock) {
+        userLockObjectId = userLock.getObjectId();
+        mDeviceViewModel.addLockToUserLock(userLockObjectId, lockObjectId);
+    }
 
+    @Override
+    public void onAddLockToUserLockSuccessful(Boolean addLockToUserLockSuccessful) {
+        if (addLockToUserLockSuccessful)
+            mDeviceViewModel.addUserLockToUser(userLockObjectId);
+    }
+
+    @Override
+    public void onAddUserLockToUserSuccessful(Boolean addUserLockToUserSuccessful) {
+        if (addUserLockToUserSuccessful)
+            Toast.makeText(getContext(), "Lock added Successfully", Toast.LENGTH_SHORT).show();
     }
     //endregion IAddLockFragment CallBacks
 

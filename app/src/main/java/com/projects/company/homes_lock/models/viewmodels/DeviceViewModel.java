@@ -11,9 +11,9 @@ import android.util.Log;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.request.TempListModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -50,6 +50,7 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Declare Constants
 
     //region Declare Variables
+    private String requestType = "";
     //endregion Declare Variables
 
     //region Declare Objects
@@ -227,10 +228,26 @@ public class DeviceViewModel extends AndroidViewModel
         if (DataHelper.isInstanceOfList(response, Device.class.getName()))
             insertLocalDevices((List<Device>) response);
         else if (response instanceof ResponseBody) {
+            switch (getRequestType()) {
+                case "validateLockInOnlineDatabase":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onFindLockInOnlineDataBase(((ResponseBody) response).source().toString().equals("[text=1]"));
+                    break;
+                case "addLockToUserLock":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onAddLockToUserLockSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
+                    break;
+                case "addUserLockToUser":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
+                    break;
+                default:
+                    break;
+            }
+        } else if (response instanceof UserLock) {
             if (mIAddLockFragment != null)
-                mIAddLockFragment.onFindLockInOnlineDataBase(response.toString().equals("1"));
-        } else if (response instanceof UserLock)
-            mIAddLockFragment.onInsertUserLockSuccessful((UserLock) response);
+                mIAddLockFragment.onInsertUserLockSuccessful((UserLock) response);
+        }
     }
 
     @Override
@@ -276,12 +293,23 @@ public class DeviceViewModel extends AndroidViewModel
 
     //region Online Methods
     public void validateLockInOnlineDatabase(Fragment fragment, String serialNumber) {
+        setRequestType("validateLockInOnlineDatabase");
         mIAddLockFragment = (IAddLockFragment) fragment;
         mNetworkRepository.getADevice(this, serialNumber);
     }
 
-    public void insertOnlineDevice(UserLockModel userLock) {
-        mNetworkRepository.insertLock(this, userLock);
+    public void insertOnlineUserLock(UserLockModel userLock) {
+        mNetworkRepository.insertUserLock(this, userLock);
+    }
+
+    public void addLockToUserLock(String userLockObjectId, String lockObjectId) {
+        setRequestType("addLockToUserLock");
+        mNetworkRepository.addLockToUserLock(this, userLockObjectId, new TempListModel(lockObjectId));
+    }
+
+    public void addUserLockToUser(String userLockObjectId) {
+        setRequestType("addUserLockToUser");
+        mNetworkRepository.addUserLockToUser(this, new TempListModel(userLockObjectId));
     }
     //endregion Online Methods
 
@@ -292,6 +320,14 @@ public class DeviceViewModel extends AndroidViewModel
 
     public LiveData<Boolean> isSupported() {
         return mIsSupported;
+    }
+
+    private void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
+    private String getRequestType() {
+        return requestType;
     }
     //endregion Declare Methods
 

@@ -192,29 +192,18 @@ public class DialogHelper {
                 @Override
                 public void onClick(View v) {
                     DialogHelper.handleProgressDialog(fragment.getContext(), null, "Evaluating ...", true);
+
+                    ((AddLockFragment) fragment).lockObjectId = Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString();
+
                     ((AddLockFragment) fragment).mDeviceViewModel
                             .validateLockInOnlineDatabase(fragment, Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
 
-//                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString());
-//                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
-
-//                ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
-//                    @Override
-//                    public void onChanged(@Nullable final List<Device> devices) {
-//                        ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
-//                                new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices));
-//                    }
-//                });
-//                ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mDevice));
-
-                    saveLockAfterPaired = true;
-
-                    addNewLockDialogOnline.dismiss();
+//                    addNewLockDialogOnline.dismiss();
                 }
             });
         } else {
             if (lockExistenceStatus)
-                ((AddLockFragment) fragment).mDeviceViewModel.insertOnlineDevice(
+                ((AddLockFragment) fragment).mDeviceViewModel.insertOnlineUserLock(
                         new UserLockModel(
                                 Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString(),
                                 true,

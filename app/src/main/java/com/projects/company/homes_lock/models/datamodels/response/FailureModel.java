@@ -10,9 +10,6 @@ public class FailureModel extends BaseModel {
     @SerializedName("code")
     private int mFailureCode;
 
-    public FailureModel() {
-    }
-
     public FailureModel(String mFailureMessage) {
         this.mFailureMessage = mFailureMessage;
     }

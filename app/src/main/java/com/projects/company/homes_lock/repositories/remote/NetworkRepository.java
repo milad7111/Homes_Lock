@@ -7,6 +7,7 @@ import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
+import com.projects.company.homes_lock.models.datamodels.request.TempListModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -61,22 +62,23 @@ public class NetworkRepository {
     }
 
     public void getADevice(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
-        BaseApplication.getRetrofitAPI().getADevice(BaseApplication.activeUserToken, String.format("serialNumber=%s", parameter)).enqueue(new Callback<ResponseBody>() {
+        BaseApplication.getRetrofitAPI().getADevice(BaseApplication.activeUserToken, String.format("serialNumber='%s'", parameter))
+                .enqueue(new Callback<ResponseBody>() {
 
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response != null && response.body() != null)
-                    listener.onResponse(response.body());
-            }
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response != null && response.body() != null)
+                            listener.onResponse(response.body());
+                    }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
-            }
-        });
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
+                    }
+                });
     }
 
-    public void insertLock(final NetworkListener.SingleNetworkListener<BaseModel> listener, UserLockModel parameter) {
+    public void insertUserLock(final NetworkListener.SingleNetworkListener<BaseModel> listener, UserLockModel parameter) {
         BaseApplication.getRetrofitAPI().addUserLock(BaseApplication.activeUserToken, parameter).enqueue(new Callback<UserLock>() {
             @Override
             public void onResponse(Call<UserLock> call, Response<UserLock> response) {
@@ -89,6 +91,44 @@ public class NetworkRepository {
                 listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
+    }
+
+    public void addLockToUserLock(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userLockObjectId, TempListModel parameter) {
+        BaseApplication.getRetrofitAPI().addLockToUserLock(
+                BaseApplication.activeUserToken,
+                userLockObjectId,
+                parameter)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response != null && response.body() != null)
+                            listener.onResponse(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
+                    }
+                });
+    }
+
+    public void addUserLockToUser(final NetworkListener.SingleNetworkListener<ResponseBody> listener, TempListModel parameter) {
+        BaseApplication.getRetrofitAPI().addUserLockToUser(
+                BaseApplication.activeUserToken,
+                BaseApplication.activeUserId,
+                parameter)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response != null && response.body() != null)
+                            listener.onResponse(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
+                    }
+                });
     }
 
     public void getAllDevices(final NetworkListener.ListNetworkListener<List<Device>> listener) {

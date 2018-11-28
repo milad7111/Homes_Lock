@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.database.daos;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.projects.company.homes_lock.database.tables.Device;
@@ -52,13 +53,13 @@ public abstract class UserDao {
     }
 
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract Long _insertUser(User user);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void _insertDeviceForUser(Device device);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void _insertUserLockForUser(UserLock userLock);
 
     @Query("SELECT * FROM user")

@@ -109,7 +109,7 @@ public class LoginFragment extends Fragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login_login_fragment:
-                DialogHelper.handleProgressDialog(getContext(), "Login", "Login process and read data ...", true);
+                DialogHelper.handleProgressDialog(getContext(), null, "Login process and read data ...", true);
                 mLoginViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
                 break;
             case R.id.txv_direct_connect_login_fragment:
