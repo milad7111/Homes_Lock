@@ -59,7 +59,6 @@
             android:layout_height="match_parent"
             android:hint="@string/dialog_hint_serial_number"
             android:inputType="textPassword"
-            android:text="8A5E2174-EA95-41A9-FF92-043FF547B900"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
 

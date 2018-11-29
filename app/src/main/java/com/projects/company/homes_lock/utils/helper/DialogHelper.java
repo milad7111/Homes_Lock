@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -191,14 +192,10 @@ public class DialogHelper {
             btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(fragment.getContext(), null, "Evaluating ...", true);
-
-                    ((AddLockFragment) fragment).lockObjectId = Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString();
+                    DialogHelper.handleProgressDialog(fragment.getContext(), null, "Finding Device ...", true);
 
                     ((AddLockFragment) fragment).mDeviceViewModel
                             .validateLockInOnlineDatabase(fragment, Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
-
-//                    addNewLockDialogOnline.dismiss();
                 }
             });
         } else {
@@ -228,13 +225,17 @@ public class DialogHelper {
 
         mHandler.postDelayed(() -> {
             DialogHelper.handleProgressDialog(false);
-        }, 10000);
+        }, 30000);
 
     }
 
     public static void handleProgressDialog(boolean show) {
         if (!show)
             ProgressDialogHelper.hide();
+    }
+
+    public static void handleProgressDialogMessage(Context context, String message) {
+        ProgressDialogHelper.setMessage(context, message);
     }
     //endregion Declare Methods
 
@@ -247,6 +248,16 @@ public class DialogHelper {
             } else {
                 mProgressDialog = new ProgressDialog(context);
                 mProgressDialog.setTitle(title);
+                mProgressDialog.setMessage(message);
+                mProgressDialog.show();
+            }
+        }
+
+        private static void setMessage(Context context, String message) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                hide();
+                mProgressDialog = new ProgressDialog(context);
+                mProgressDialog.setTitle(null);
                 mProgressDialog.setMessage(message);
                 mProgressDialog.show();
             }

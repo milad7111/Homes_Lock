@@ -3,7 +3,7 @@ package com.projects.company.homes_lock.utils.helper;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.SecurityAlarm;
+import com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 
 import java.lang.reflect.Type;

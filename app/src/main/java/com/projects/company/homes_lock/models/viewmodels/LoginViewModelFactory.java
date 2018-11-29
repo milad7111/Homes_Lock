@@ -17,6 +17,6 @@ public class LoginViewModelFactory extends ViewModelProvider.NewInstanceFactory 
 
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
-        return (T) new LoginViewModel(mApplication, mILoginFragment);
+        return (T) new UserViewModel(mApplication, mILoginFragment);
     }
 }

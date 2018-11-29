@@ -5,9 +5,9 @@ import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
+import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
-import com.projects.company.homes_lock.models.datamodels.request.TempListModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -61,8 +61,40 @@ public class NetworkRepository {
         });
     }
 
-    public void getADevice(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
-        BaseApplication.getRetrofitAPI().getADevice(BaseApplication.activeUserToken, String.format("serialNumber='%s'", parameter))
+    public void getUserWithObjectId(final NetworkListener.SingleNetworkListener<BaseModel> listener, String parameter) {
+        BaseApplication.getRetrofitAPI().getUserWithObjectId(parameter).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response != null && response.body() != null)
+                    listener.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
+            }
+        });
+    }
+
+    public void getDeviceCountsWithSerialNumber(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
+        BaseApplication.getRetrofitAPI().getDeviceCountsWithSerialNumber(BaseApplication.activeUserToken, String.format("serialNumber='%s'", parameter))
+                .enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response != null && response.body() != null)
+                            listener.onResponse(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
+                    }
+                });
+    }
+
+    public void getDeviceObjectIdWithSerialNumber(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
+        BaseApplication.getRetrofitAPI().getDeviceObjectIdWithSerialNumber(BaseApplication.activeUserToken, parameter)
                 .enqueue(new Callback<ResponseBody>() {
 
                     @Override
@@ -93,7 +125,7 @@ public class NetworkRepository {
         });
     }
 
-    public void addLockToUserLock(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userLockObjectId, TempListModel parameter) {
+    public void addLockToUserLock(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userLockObjectId, HelperModel parameter) {
         BaseApplication.getRetrofitAPI().addLockToUserLock(
                 BaseApplication.activeUserToken,
                 userLockObjectId,
@@ -112,10 +144,10 @@ public class NetworkRepository {
                 });
     }
 
-    public void addUserLockToUser(final NetworkListener.SingleNetworkListener<ResponseBody> listener, TempListModel parameter) {
+    public void addUserLockToUser(final NetworkListener.SingleNetworkListener<ResponseBody> listener, HelperModel parameter) {
         BaseApplication.getRetrofitAPI().addUserLockToUser(
                 BaseApplication.activeUserToken,
-                BaseApplication.activeUserId,
+                BaseApplication.activeUserObjectId,
                 parameter)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override

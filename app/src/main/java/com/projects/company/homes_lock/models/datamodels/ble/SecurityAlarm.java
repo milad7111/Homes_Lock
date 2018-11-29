@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.models.datamodels;
+package com.projects.company.homes_lock.models.datamodels.ble;
 
 public enum SecurityAlarm {
     SECURE,

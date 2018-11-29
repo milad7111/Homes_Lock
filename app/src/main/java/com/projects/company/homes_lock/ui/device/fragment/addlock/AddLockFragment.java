@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.ui.device.fragment.addlock;
 
 
 import android.app.Dialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -15,9 +16,15 @@ import android.widget.Toast;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
+import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.viewmodels.AddLockViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
+import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
+import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
@@ -53,6 +60,7 @@ public class AddLockFragment extends BaseFragment
 
     //region Declare Objects
     public static DeviceViewModel mDeviceViewModel;
+    private UserViewModel mUserViewModel;
     private Dialog activeDialog;
     public static ScannedDeviceModel mDevice;
     //endregion Declare Objects
@@ -76,6 +84,10 @@ public class AddLockFragment extends BaseFragment
 
         //region Initialize Objects
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+        this.mUserViewModel = ViewModelProviders.of(
+                this,
+                new AddLockViewModelFactory(getActivity().getApplication(), this))
+                .get(UserViewModel.class);
         //endregion Initialize Objects
     }
 
@@ -109,13 +121,15 @@ public class AddLockFragment extends BaseFragment
 
     //region IAddLockFragment CallBacks
     @Override
-    public void onFindLockInOnlineDataBase(Boolean findLockInOnlineDataBase) {
-        if (findLockInOnlineDataBase)
-            activeDialog = DialogHelper.handleAddLockOnlineDialog(this, true);
+    public void onFindLockInOnlineDataBase(String lockObjectId) {
+        DialogHelper.handleProgressDialogMessage(getContext(), "Adding Lock ...");
+        this.lockObjectId = lockObjectId;
+        activeDialog = DialogHelper.handleAddLockOnlineDialog(this, true);
     }
 
     @Override
     public void onInsertUserLockSuccessful(UserLock userLock) {
+        DialogHelper.handleProgressDialogMessage(getContext(), "Pairing User & Lock ...");
         userLockObjectId = userLock.getObjectId();
         mDeviceViewModel.addLockToUserLock(userLockObjectId, lockObjectId);
     }
@@ -128,8 +142,36 @@ public class AddLockFragment extends BaseFragment
 
     @Override
     public void onAddUserLockToUserSuccessful(Boolean addUserLockToUserSuccessful) {
+        DialogHelper.handleProgressDialogMessage(getContext(), "Reading data ...");
+
+        if (activeDialog != null)
+            activeDialog.dismiss();
+
         if (addUserLockToUserSuccessful)
             Toast.makeText(getContext(), "Lock added Successfully", Toast.LENGTH_SHORT).show();
+
+        mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
+    }
+
+    @Override
+    public void onGetUserSuccessful(User response) {
+        DialogHelper.handleProgressDialogMessage(getContext(), "Saving data ...");
+
+        BaseApplication.activeUserObjectId = response.getObjectId();
+        mUserViewModel.insertUser(response);
+    }
+
+    @Override
+    public void onDataInsert(Long id) {
+        DialogHelper.handleProgressDialogMessage(getContext(), "Displaying data ...");
+
+        if (id != -1)
+            mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
+                @Override
+                public void onChanged(@Nullable final List<Device> devices) {
+                    ((LockActivity) getActivity()).setViewPagerAdapter(new CustomDeviceAdapter(getActivity().getSupportFragmentManager(), devices));
+                }
+            });
     }
     //endregion IAddLockFragment CallBacks
 

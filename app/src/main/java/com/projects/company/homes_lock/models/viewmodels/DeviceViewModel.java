@@ -11,9 +11,10 @@ import android.util.Log;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.request.TempListModel;
+import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -231,7 +232,11 @@ public class DeviceViewModel extends AndroidViewModel
             switch (getRequestType()) {
                 case "validateLockInOnlineDatabase":
                     if (mIAddLockFragment != null)
-                        mIAddLockFragment.onFindLockInOnlineDataBase(((ResponseBody) response).source().toString().equals("[text=1]"));
+                        mIAddLockFragment.onFindLockInOnlineDataBase(
+                                ((ResponseBody) response).source().toString()
+                                        .replace("[text=", "")
+                                        .replace("]", "")
+                                        .replace("\"", ""));
                     break;
                 case "addLockToUserLock":
                     if (mIAddLockFragment != null)
@@ -247,7 +252,9 @@ public class DeviceViewModel extends AndroidViewModel
         } else if (response instanceof UserLock) {
             if (mIAddLockFragment != null)
                 mIAddLockFragment.onInsertUserLockSuccessful((UserLock) response);
-        }
+        } else if (response instanceof User)
+            if (mIAddLockFragment != null)
+                mIAddLockFragment.onGetUserSuccessful((User) response);
     }
 
     @Override
@@ -295,7 +302,7 @@ public class DeviceViewModel extends AndroidViewModel
     public void validateLockInOnlineDatabase(Fragment fragment, String serialNumber) {
         setRequestType("validateLockInOnlineDatabase");
         mIAddLockFragment = (IAddLockFragment) fragment;
-        mNetworkRepository.getADevice(this, serialNumber);
+        mNetworkRepository.getDeviceObjectIdWithSerialNumber(this, serialNumber);
     }
 
     public void insertOnlineUserLock(UserLockModel userLock) {
@@ -304,12 +311,12 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void addLockToUserLock(String userLockObjectId, String lockObjectId) {
         setRequestType("addLockToUserLock");
-        mNetworkRepository.addLockToUserLock(this, userLockObjectId, new TempListModel(lockObjectId));
+        mNetworkRepository.addLockToUserLock(this, userLockObjectId, new HelperModel(lockObjectId));
     }
 
     public void addUserLockToUser(String userLockObjectId) {
         setRequestType("addUserLockToUser");
-        mNetworkRepository.addUserLockToUser(this, new TempListModel(userLockObjectId));
+        mNetworkRepository.addUserLockToUser(this, new HelperModel(userLockObjectId));
     }
     //endregion Online Methods
 

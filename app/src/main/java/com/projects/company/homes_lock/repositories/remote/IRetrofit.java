@@ -5,7 +5,7 @@ import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
-import com.projects.company.homes_lock.models.datamodels.request.TempListModel;
+import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 
 import java.util.List;
@@ -28,9 +28,16 @@ public interface IRetrofit {
     @POST("users/register")
     Call<User> register(@Body RegisterModel parameter);
 
+    @GET("data/Users/{userObjectId}?relationsDepth=2")
+    Call<User> getUserWithObjectId(@Path("userObjectId") String userObjectId);
+
     @Headers({"Content-Type: application/json"})
     @GET("data/Device/count?")
-    Call<ResponseBody> getADevice(@Header("user-token") String userToken, @Query("where") String whereClause);
+    Call<ResponseBody> getDeviceCountsWithSerialNumber(@Header("user-token") String userToken, @Query("where") String whereClause);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("services/deviceService/getDeviceObjectIdBySerialNumber")
+    Call<ResponseBody> getDeviceObjectIdWithSerialNumber(@Header("user-token") String userToken, @Body String serialNumber);
 
     @GET("data/Device")
     Call<List<Device>> getAllDevices();
@@ -44,12 +51,12 @@ public interface IRetrofit {
     Call<ResponseBody> addLockToUserLock(
             @Header("user-token") String userToken,
             @Path("userLockObjectId") String userLockObjectId,
-            @Body TempListModel parameter);
+            @Body HelperModel parameter);
 
     @Headers({"Content-Type: application/json"})
     @POST("data/users/{userObjectId}/relatedUserLocks")
     Call<ResponseBody> addUserLockToUser(
             @Header("user-token") String userToken,
             @Path("userObjectId") String userObjectId,
-            @Body TempListModel parameter);
+            @Body HelperModel parameter);
 }

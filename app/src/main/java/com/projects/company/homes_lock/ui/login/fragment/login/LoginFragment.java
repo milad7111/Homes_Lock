@@ -14,14 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
-import com.projects.company.homes_lock.models.viewmodels.LoginViewModel;
 import com.projects.company.homes_lock.models.viewmodels.LoginViewModelFactory;
+import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
@@ -36,23 +35,24 @@ public class LoginFragment extends Fragment
         View.OnClickListener {
 
     //region Declare Constants
-    public static String TAG = LoginFragment.class.getName();
     //endregion Declare Constants
 
     //region Declare Views
     private TextInputEditText tietEmail;
     private TextInputEditText tietPassword;
-    private Button btnLogin;
+
     private TextView txvDirectConnect;
     private TextView txvSignUp;
     private TextView txvForgetPassword;
+
+    private Button btnLogin;
     //endregion Declare Views
 
     //region Declare Variables
     //endregion Declare Variables
 
     //region Declare Objects
-    private LoginViewModel mLoginViewModel;
+    private UserViewModel mUserViewModel;
     //endregion Declare Objects
 
     public LoginFragment() {
@@ -98,10 +98,10 @@ public class LoginFragment extends Fragment
         //endregion Setup Views
 
         //region Initialize Objects
-        this.mLoginViewModel = ViewModelProviders.of(
+        this.mUserViewModel = ViewModelProviders.of(
                 this,
                 new LoginViewModelFactory(getActivity().getApplication(), this))
-                .get(LoginViewModel.class);
+                .get(UserViewModel.class);
         //endregion Initialize Objects
     }
 
@@ -109,8 +109,8 @@ public class LoginFragment extends Fragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login_login_fragment:
-                DialogHelper.handleProgressDialog(getContext(), null, "Login process and read data ...", true);
-                mLoginViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
+                DialogHelper.handleProgressDialog(getContext(), null, "Login process ...", true);
+                mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
                 break;
             case R.id.txv_direct_connect_login_fragment:
                 BaseApplication.userLoginMode = false;
@@ -129,19 +129,19 @@ public class LoginFragment extends Fragment
     //region Login CallBacks
     @Override
     public void onLoginSuccessful(Object response) {
-        BaseApplication.activeUserId = ((User) response).getObjectId();
-        mLoginViewModel.insertUser((User) response);
+        BaseApplication.activeUserObjectId = ((User) response).getObjectId();
+        mUserViewModel.insertUser((User) response);
     }
 
     @Override
     public void onLoginFailed(Object response) {
         Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
-        Toast.makeText(getContext(), ((FailureModel) response).getFailureMessage(), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDataInsert(Long id) {
         if (id != -1) {
+            clearViews();
             startActivity(new Intent(getActivity(), LockActivity.class));
             BaseApplication.userLoginMode = true;
         }
@@ -149,5 +149,9 @@ public class LoginFragment extends Fragment
     //endregion Login CallBacks
 
     //region Declare Methods
+    private void clearViews() {
+        tietEmail.setText(null);
+        tietPassword.setText(null);
+    }
     //endregion Declare Methods
 }
