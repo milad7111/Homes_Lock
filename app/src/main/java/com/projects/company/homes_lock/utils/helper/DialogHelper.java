@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -55,7 +54,7 @@ public class DialogHelper {
     //endregion Declare Views
 
     //region Declare Methods
-    public static Dialog handleShowListOfAvailableBleDevicesDialog(Fragment fragment, List<ScannedDeviceModel> devices) {
+    public static Dialog handleDialogListOfAvailableBleDevices(Fragment fragment, List<ScannedDeviceModel> devices) {
         if (addNewLockDialogOffline == null) {
             addNewLockDialogOffline = new Dialog(fragment.getContext());
             addNewLockDialogOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -101,7 +100,53 @@ public class DialogHelper {
         return addNewLockDialogOffline;
     }
 
-    public static Dialog handleAddLockOfflineDialog(Fragment fragment) {
+    public static Dialog handleDialogListOfAvailableWifiNetworksAroundDevice(Fragment fragment, List<ScannedDeviceModel> devices) {
+        if (addNewLockDialogOffline == null) {
+            addNewLockDialogOffline = new Dialog(fragment.getContext());
+            addNewLockDialogOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            addNewLockDialogOffline.setContentView(R.layout.dialog_available_devices);
+
+            if (mBleDeviceAdapter == null)
+                mBleDeviceAdapter = new BleDeviceAdapter(fragment, devices);
+
+            RecyclerView rcvDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.rcv_dialog_available_devices);
+            Button btnCancelDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.btn_cancel_dialog_available_devices);
+            Button btnScanDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.btn_scan_dialog_available_devices);
+
+            rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+            rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
+            rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
+
+            btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
+                    addNewLockDialogOffline.dismiss();
+                    addNewLockDialogOffline = null;
+                }
+            });
+
+            btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
+                    BleHelper.findDevices(fragment);
+                }
+            });
+
+            BleHelper.findDevices(fragment);
+        } else
+            mBleDeviceAdapter.setBleDevices(devices);
+
+        if (!addNewLockDialogOffline.isShowing())
+            addNewLockDialogOffline.show();
+
+        addNewLockDialogOffline.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(addNewLockDialogOffline));
+
+        return addNewLockDialogOffline;
+    }
+
+    public static Dialog handleDialogAddLockOffline(Fragment fragment) {
         saveLockAfterPaired = false;
 
         Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
@@ -161,7 +206,7 @@ public class DialogHelper {
         return dialog;
     }
 
-    public static Dialog handleAddLockOnlineDialog(Fragment fragment, boolean lockExistenceStatus) {
+    public static Dialog handleDialogAddLockOnline(Fragment fragment, boolean lockExistenceStatus) {
         if (addNewLockDialogOnline == null) {
             addNewLockDialogOnline = new Dialog(fragment.getContext());
 
@@ -192,7 +237,11 @@ public class DialogHelper {
             btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(fragment.getContext(), null, "Finding Device ...", true);
+                    DialogHelper.handleProgressDialog(
+                            fragment.getContext(),
+                            null,
+                            String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(1, 8)),
+                            true);
 
                     ((AddLockFragment) fragment).mDeviceViewModel
                             .validateLockInOnlineDatabase(fragment, Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
@@ -219,48 +268,27 @@ public class DialogHelper {
     }
 
     public static void handleProgressDialog(Context context, String title, String message, boolean show) {
-        Handler mHandler = new Handler();
-        if (show)
+        if (show) {
+            Handler mHandler = new Handler();
+
             ProgressDialogHelper.show(context, title, message);
 
-        mHandler.postDelayed(() -> {
-            DialogHelper.handleProgressDialog(false);
-        }, 30000);
-
-    }
-
-    public static void handleProgressDialog(boolean show) {
-        if (!show)
+            mHandler.postDelayed(() -> {
+                handleProgressDialog(null, null, null, false);
+            }, 20000);
+        } else
             ProgressDialogHelper.hide();
-    }
-
-    public static void handleProgressDialogMessage(Context context, String message) {
-        ProgressDialogHelper.setMessage(context, message);
     }
     //endregion Declare Methods
 
     //region Declare Classes
     private static class ProgressDialogHelper {
         private static void show(Context context, String title, String message) {
-            if (mProgressDialog != null) {
-                if (!mProgressDialog.isShowing())
-                    mProgressDialog.show();
-            } else {
-                mProgressDialog = new ProgressDialog(context);
-                mProgressDialog.setTitle(title);
-                mProgressDialog.setMessage(message);
-                mProgressDialog.show();
-            }
-        }
-
-        private static void setMessage(Context context, String message) {
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                hide();
-                mProgressDialog = new ProgressDialog(context);
-                mProgressDialog.setTitle(null);
-                mProgressDialog.setMessage(message);
-                mProgressDialog.show();
-            }
+            hide();
+            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog.setTitle(title);
+            mProgressDialog.setMessage(message);
+            mProgressDialog.show();
         }
 
         private static void hide() {

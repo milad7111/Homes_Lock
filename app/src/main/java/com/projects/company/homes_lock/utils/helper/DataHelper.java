@@ -2,13 +2,15 @@ package com.projects.company.homes_lock.utils.helper;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DataHelper {
 
@@ -122,5 +124,17 @@ public class DataHelper {
 
     public static int calculateRSSI(int rssi) {
         return (int) (100.0f * (127.0f + rssi) / (127.0f + 20.0f));
+    }
+
+    public static int getRandomPercentNumber(int level, int total) {
+        return getRandomNumber((level - 1) * (100 / total), level * (100 / total));
+    }
+
+    private static int getRandomNumber(int min, int max) {
+        if (min >= max)
+            return -1;
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
     }
 }

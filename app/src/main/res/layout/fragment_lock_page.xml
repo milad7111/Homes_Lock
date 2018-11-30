@@ -123,7 +123,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_wifi_off" />
+            app:srcCompat="@drawable/ic_wifi_off_disable" />
 
         <ImageView
             android:id="@+id/img_ble_lock_page"
@@ -137,7 +137,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_manage_members" />
+            app:srcCompat="@drawable/ic_manage_members_disable" />
 
         <ImageView
             android:id="@+id/img_more_info_lock_page"

@@ -7,8 +7,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.base.BaseModel;
+import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 
 import java.util.List;
 
@@ -22,7 +22,6 @@ public class Device extends BaseModel {
     private String mObjectId;
 
     @ColumnInfo(name = "bleDeviceName")
-    @SerializedName("bleDeviceName")
     private String mBleDeviceName;
 
     @ColumnInfo(name = "bleDeviceMacAddress")
@@ -117,26 +116,6 @@ public class Device extends BaseModel {
 
     public Device() {
     }
-
-//    public Device(@NonNull String mObjectId) {
-//        this.mObjectId = mObjectId;
-//        this.mBleDeviceName = "BlueNRG";
-//        this.mBleDeviceMacAddress = "02:80:E1:00:34:12";
-//        this.mSerialNumber = mObjectId;
-//        this.mLockStatus = false;
-//        this.mDoorStatus = false;
-//        this.mInternetStatus = false;
-//        this.mBatteryPercentage = 50;
-//        this.mWifiStatus = false;
-//        this.mWifiStrength = -20;
-//        this.mMeanPowerCons = 0;
-//        this.mTemperature = 10;
-//        this.mHumidity = 5;
-//        this.mCOLevel = 0;
-//        this.mDeviceHealth = true;
-//        this.mFWVersion = 1;
-//        this.mLockPosition = 1;
-//    }
 
     @Ignore
     public Device(

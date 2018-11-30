@@ -25,12 +25,13 @@ public class BaseApplication extends Application {
      * true if user login with username & password in {@link com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment}
      * false if user login with direct connect option in {@link com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment}
      */
-    public static boolean userLoginMode = false;
+    private static boolean userLoginMode = false;
     public static String activeUserObjectId = null;
     public static String activeUserToken = null;
     private static volatile IRetrofit IRETROFIT = null;
     //endregion Declare Objects
 
+    //region Declare Methods
     public static synchronized IRetrofit getRetrofitAPI() {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -52,4 +53,13 @@ public class BaseApplication extends Application {
 
         return IRETROFIT;
     }
+
+    public static boolean isUserLoggedIn() {
+        return userLoginMode;
+    }
+
+    public static void setUserLoginMode(boolean userLoginMode) {
+        BaseApplication.userLoginMode = userLoginMode;
+    }
+    //endregion Declare Methods
 }

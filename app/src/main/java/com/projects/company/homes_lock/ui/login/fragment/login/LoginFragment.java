@@ -26,6 +26,8 @@ import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragme
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -113,7 +115,7 @@ public class LoginFragment extends Fragment
                 mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
                 break;
             case R.id.txv_direct_connect_login_fragment:
-                BaseApplication.userLoginMode = false;
+                setUserLoginMode(false);
                 startActivity(new Intent(getActivity(), LockActivity.class));
                 break;
             case R.id.txv_sign_up_login_fragment:
@@ -143,7 +145,7 @@ public class LoginFragment extends Fragment
         if (id != -1) {
             clearViews();
             startActivity(new Intent(getActivity(), LockActivity.class));
-            BaseApplication.userLoginMode = true;
+            setUserLoginMode(true);
         }
     }
     //endregion Login CallBacks

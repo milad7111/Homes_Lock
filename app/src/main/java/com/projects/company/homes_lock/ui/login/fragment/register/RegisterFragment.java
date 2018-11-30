@@ -23,6 +23,8 @@ import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -123,8 +125,7 @@ public class RegisterFragment extends Fragment
     //region Register Callbacks
     @Override
     public void onRegisterSuccessful(Object response) {
-//        clearViews();
-        DialogHelper.handleProgressDialog(false);
+        handleProgressDialog(null, null, null, false);
         Toast.makeText(getContext(), "Register user Successful", Toast.LENGTH_SHORT).show();
         txvLogin.performClick();
     }

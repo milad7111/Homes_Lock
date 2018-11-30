@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/ic_manage_members" />
+        tools:srcCompat="@drawable/ic_manage_members_disable" />
 
     <TextView
         android:id="@+id/txv_member_name"
@@ -50,6 +50,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/ic_manage_members" />
+        tools:srcCompat="@drawable/ic_manage_members_disable" />
 
 </android.support.constraint.ConstraintLayout>

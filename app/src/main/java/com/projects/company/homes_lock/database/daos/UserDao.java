@@ -18,7 +18,10 @@ public abstract class UserDao {
         Long id = _insertUser(user);
 
         for (UserLock userLock : user.getRelatedUserLocks()) {
-            insertDeviceForUser(userLock.getRelatedDevice());
+            Device tempDevice = userLock.getRelatedDevice();
+            tempDevice.setBleDeviceName(userLock.getLockName());
+
+            insertDeviceForUser(tempDevice);
 
             userLock.setDeviceId(userLock.getRelatedDevice().getObjectId());
             userLock.setUserId(user.getObjectId());

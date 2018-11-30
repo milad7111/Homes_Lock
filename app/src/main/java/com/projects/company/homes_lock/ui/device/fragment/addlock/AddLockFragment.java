@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
@@ -28,14 +27,17 @@ import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
+import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 
 import java.util.Collections;
 import java.util.List;
 
+import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_TIMEOUT_MODE;
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleDialogAddLockOnline;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -122,40 +124,63 @@ public class AddLockFragment extends BaseFragment
     //region IAddLockFragment CallBacks
     @Override
     public void onFindLockInOnlineDataBase(String lockObjectId) {
-        DialogHelper.handleProgressDialogMessage(getContext(), "Adding Lock ...");
+        DialogHelper.handleProgressDialog(
+                getContext(),
+                null,
+                String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(2, 8)),
+                true);
+
         this.lockObjectId = lockObjectId;
-        activeDialog = DialogHelper.handleAddLockOnlineDialog(this, true);
+        activeDialog = handleDialogAddLockOnline(this, true);
     }
 
     @Override
     public void onInsertUserLockSuccessful(UserLock userLock) {
-        DialogHelper.handleProgressDialogMessage(getContext(), "Pairing User & Lock ...");
+        DialogHelper.handleProgressDialog(
+                getContext(),
+                null,
+                String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(3, 8)),
+                true);
+
         userLockObjectId = userLock.getObjectId();
         mDeviceViewModel.addLockToUserLock(userLockObjectId, lockObjectId);
     }
 
     @Override
     public void onAddLockToUserLockSuccessful(Boolean addLockToUserLockSuccessful) {
-        if (addLockToUserLockSuccessful)
+        if (addLockToUserLockSuccessful) {
+            DialogHelper.handleProgressDialog(
+                    getContext(),
+                    null,
+                    String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(4, 8)),
+                    true);
             mDeviceViewModel.addUserLockToUser(userLockObjectId);
+        }
     }
 
     @Override
     public void onAddUserLockToUserSuccessful(Boolean addUserLockToUserSuccessful) {
-        DialogHelper.handleProgressDialogMessage(getContext(), "Reading data ...");
+        if (addUserLockToUserSuccessful) {
+            DialogHelper.handleProgressDialog(
+                    getContext(),
+                    null,
+                    String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(5, 8)),
+                    true);
 
-        if (activeDialog != null)
-            activeDialog.dismiss();
+            if (activeDialog != null)
+                activeDialog.dismiss();
 
-        if (addUserLockToUserSuccessful)
-            Toast.makeText(getContext(), "Lock added Successfully", Toast.LENGTH_SHORT).show();
-
-        mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
+            mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
+        }
     }
 
     @Override
     public void onGetUserSuccessful(User response) {
-        DialogHelper.handleProgressDialogMessage(getContext(), "Saving data ...");
+        DialogHelper.handleProgressDialog(
+                getContext(),
+                null,
+                String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(6, 8)),
+                true);
 
         BaseApplication.activeUserObjectId = response.getObjectId();
         mUserViewModel.insertUser(response);
@@ -163,12 +188,22 @@ public class AddLockFragment extends BaseFragment
 
     @Override
     public void onDataInsert(Long id) {
-        DialogHelper.handleProgressDialogMessage(getContext(), "Displaying data ...");
+        DialogHelper.handleProgressDialog(
+                getContext(),
+                null,
+                String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(7, 8)),
+                true);
 
         if (id != -1)
             mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
                 @Override
                 public void onChanged(@Nullable final List<Device> devices) {
+                    DialogHelper.handleProgressDialog(
+                            getContext(),
+                            null,
+                            String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(8, 8)),
+                            true);
+
                     ((LockActivity) getActivity()).setViewPagerAdapter(new CustomDeviceAdapter(getActivity().getSupportFragmentManager(), devices));
                 }
             });
@@ -178,12 +213,12 @@ public class AddLockFragment extends BaseFragment
     //region Ble Callbacks
     @Override
     public void onFindBleSuccess(List devices) {
-        activeDialog = DialogHelper.handleShowListOfAvailableBleDevicesDialog(this, devices);
+        activeDialog = DialogHelper.handleDialogListOfAvailableBleDevices(this, devices);
     }
 
     @Override
     public void onFindBleFault() {
-        activeDialog = DialogHelper.handleShowListOfAvailableBleDevicesDialog(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_TIMEOUT_MODE)));
+        activeDialog = DialogHelper.handleDialogListOfAvailableBleDevices(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_TIMEOUT_MODE)));
     }
 
     @Override
@@ -202,22 +237,18 @@ public class AddLockFragment extends BaseFragment
 
     @Override
     public void onBonded(BluetoothDevice device) {
-        activeDialog = DialogHelper.handleAddLockOfflineDialog(this);
+        activeDialog = DialogHelper.handleDialogAddLockOffline(this);
     }
     //endregion Ble Callbacks
 
     //region Declare Methods
-    private boolean getUserLoginMode() {
-        return BaseApplication.userLoginMode;
-    }
-
     private void addNewLock() {
-        if (getUserLoginMode())
-            activeDialog = DialogHelper.handleAddLockOnlineDialog(this, false); // Means user Wrote username and password then clicked Login
+        if (isUserLoggedIn())
+            activeDialog = handleDialogAddLockOnline(this, false); // Means user Wrote username and password then clicked Login
         else {
             mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
             if (BleHelper.getScanPermission(this))
-                activeDialog = DialogHelper.handleShowListOfAvailableBleDevicesDialog(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
+                activeDialog = DialogHelper.handleDialogListOfAvailableBleDevices(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE))); // Means user clicked Direct Connect
         }
     }
     //endregion Declare Methods

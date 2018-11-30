@@ -51,10 +51,10 @@ public class ViewHelper {
     public static void setLockStatusImage(ImageView imageViewLock, int lockStatus) {
         switch (lockStatus) {
             case 0:
-                imageViewLock.setImageResource(R.drawable.ic_lock_close);
+                imageViewLock.setImageResource(R.drawable.ic_lock_open);
                 break;
             case 1:
-                imageViewLock.setImageResource(R.drawable.ic_lock_open);
+                imageViewLock.setImageResource(R.drawable.ic_lock_close);
                 break;
             case 2:
                 imageViewLock.setImageResource(R.drawable.ic_lock_idle);
@@ -79,9 +79,11 @@ public class ViewHelper {
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
     }
 
-    public static void setConnectionStatusImage(ImageView imgConnectionStatusLockPage, Boolean wifiStatus, Boolean internetStatus, Integer wifiStrength) {
-        if (!wifiStatus)
-            imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_off);
+    public static void setConnectionStatusImage(ImageView imgConnectionStatusLockPage, int wifiStatus, Boolean internetStatus, Integer wifiStrength) {
+        if (wifiStatus == 0)
+            imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_off_disable);
+        else if (wifiStatus == 1)
+            imgConnectionStatusLockPage.setImageResource(R.drawable.ic_wifi_off_enable);
         else {
             if (!internetStatus) {
                 if (wifiStrength > -60)
@@ -118,7 +120,7 @@ public class ViewHelper {
             imgBleDeviceRSSI.setImageDrawable(null);
     }
 
-    public static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog){
+    public static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog) {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
 
         layoutParams.copyFrom(dialog.getWindow().getAttributes());
