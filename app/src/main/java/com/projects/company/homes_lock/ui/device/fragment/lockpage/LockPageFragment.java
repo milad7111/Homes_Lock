@@ -21,15 +21,15 @@ import android.widget.Toast;
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.ui.device.fragment.upgrade.MoreInfoFragment;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
-import com.projects.company.homes_lock.utils.helper.BleHelper;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
@@ -41,8 +41,10 @@ import java.util.Objects;
 import static android.support.v4.content.ContextCompat.getColor;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getSecurityAlarmColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getSecurityAlarmText;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
@@ -87,7 +89,7 @@ public class LockPageFragment extends Fragment
     //endregion Declare Variables
 
     //region Declare Objects
-    private DeviceViewModel mDeviceViewModel;
+    public static DeviceViewModel mDeviceViewModel;
     private static Device mDevice;
     private Dialog activeDialog;
     //endregion Declare Objects
@@ -120,7 +122,7 @@ public class LockPageFragment extends Fragment
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
 
         mDevice = getArguments() != null ?
-                (Device) DataHelper.convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
+                (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
                 : null;
         //endregion Initialize Objects
     }
@@ -204,15 +206,17 @@ public class LockPageFragment extends Fragment
     }
 
     @Override
-    public void onBleDeviceClick(ScannedDeviceModel device) {
-    }
-
-    @Override
-    public void onBondingRequired(BluetoothDevice device) {
+    public void onAdapterItemClick(BaseModel network) {
     }
 
     @Override
     public void onBonded(BluetoothDevice device) {
+    }
+
+    @Override
+    public void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel) {
+        activeDialog = DialogHelper.handleDialogListOfAvailableWifiNetworksAroundDevice(
+                this, Collections.singletonList(wifiNetworksModel));
     }
     //endregion BLE CallBacks
 
@@ -267,7 +271,8 @@ public class LockPageFragment extends Fragment
         if (isUserLoggedIn())
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
         else
-            activeDialog = DialogHelper.handleDialogListOfAvailableBleDevices(this, Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
+            activeDialog = DialogHelper.handleDialogListOfAvailableWifiNetworksAroundDevice(
+                    this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
     }
     //endregion Declare Methods
 
@@ -296,7 +301,7 @@ public class LockPageFragment extends Fragment
                     initBleInfo();
                 }
             });
-        } else if (BleHelper.getScanPermission(this))
+        } else if (getScanPermission(this))
             scanDevices();
     }
 

@@ -41,8 +41,8 @@ public class BleHelper {
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
 
-    public static final int FINDING_BLE_DEVICES_SCAN_MODE = 1000;
-    public static final int FINDING_BLE_DEVICES_TIMEOUT_MODE = 2000;
+    public static final int SEARCHING_SCAN_MODE = 1000;
+    public static final int SEARCHING_TIMEOUT_MODE = 2000;
 
     public static final int TIMES_TO_SCAN_BLE_DEVICES = 3;
     //endregion Declare Constants
@@ -190,7 +190,7 @@ public class BleHelper {
     }
 
     public static void findDevices(Fragment fragment) {
-        if (mBluetoothLEHelper != null && ! mBluetoothLEHelper.isScanning()) {
+        if (mBluetoothLEHelper != null && !mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
             mBluetoothLEHelper.scanLeDevice(true);
 
@@ -215,23 +215,23 @@ public class BleHelper {
     }
 
     public static boolean getScanPermission(Fragment fragment) {
-        if (BleHelper.isLocationRequired(fragment.getContext())) {
-            if (BleHelper.isLocationPermissionsGranted(fragment.getContext())) {
-                if (BleHelper.isBleEnabled())
+        if (isLocationRequired(fragment.getContext())) {
+            if (isLocationPermissionsGranted(fragment.getContext())) {
+                if (isBleEnabled())
                     return true;
-                else BleHelper.enableBluetooth(fragment.getActivity());
+                else enableBluetooth(fragment.getActivity());
             } else {
-                final boolean deniedForever = BleHelper.isLocationPermissionDeniedForever(fragment.getActivity());
+                final boolean deniedForever = isLocationPermissionDeniedForever(fragment.getActivity());
                 if (!deniedForever)
-                    BleHelper.grantLocationPermission(fragment.getActivity());
+                    grantLocationPermission(fragment.getActivity());
 
                 if (deniedForever)
-                    BleHelper.handlePermissionSettings(fragment.getActivity());
+                    handlePermissionSettings(fragment.getActivity());
             }
         } else {
-            if (BleHelper.isBleEnabled())
+            if (isBleEnabled())
                 return true;
-            else BleHelper.enableBluetooth(fragment.getActivity());
+            else enableBluetooth(fragment.getActivity());
         }
 
         return false;

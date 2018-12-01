@@ -12,13 +12,13 @@ import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.List;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_TIMEOUT_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.calculateRSSI;
 
 public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleDeviceViewHolder> {
 
@@ -52,15 +52,15 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             String name;
             int rssi;
 
-            if (mScannedDeviceModelList.get(i).getRSSI() == FINDING_BLE_DEVICES_SCAN_MODE ||
-                    mScannedDeviceModelList.get(i).getRSSI() == FINDING_BLE_DEVICES_TIMEOUT_MODE) {
-                name = mScannedDeviceModelList.get(i).getRSSI() == FINDING_BLE_DEVICES_SCAN_MODE ? "Scanning ..." : "Try again ...";
+            if (mScannedDeviceModelList.get(i).getRSSI() == SEARCHING_SCAN_MODE ||
+                    mScannedDeviceModelList.get(i).getRSSI() == SEARCHING_TIMEOUT_MODE) {
+                name = mScannedDeviceModelList.get(i).getRSSI() == SEARCHING_SCAN_MODE ? "Scanning ..." : "Try again ...";
                 rssi = mScannedDeviceModelList.get(i).getRSSI();
 
                 bleDeviceViewHolder.txvBleDeviceName.setTypeface(null, Typeface.ITALIC);
             } else {
                 name = mScannedDeviceModel.getName();
-                rssi = DataHelper.calculateRSSI(mScannedDeviceModel.getRSSI());
+                rssi = calculateRSSI(mScannedDeviceModel.getRSSI());
 
                 bleDeviceViewHolder.txvBleDeviceName.setTypeface(null, Typeface.NORMAL);
             }
@@ -72,7 +72,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
         bleDeviceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIAddLockFragment.onBleDeviceClick(mScannedDeviceModelList.get(i));
+                mIAddLockFragment.onAdapterItemClick(mScannedDeviceModelList.get(i));
             }
         });
     }
@@ -83,13 +83,13 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             return mScannedDeviceModelList.size();
         else return 0;
     }
+    //endregion Adapter CallBacks
 
     //region Declare Methods
     public void setBleDevices(List<ScannedDeviceModel> mScannedDeviceModelList) {
         this.mScannedDeviceModelList = mScannedDeviceModelList;
         notifyDataSetChanged();
     }
-    //endregion Adapter CallBacks
 
     class BleDeviceViewHolder extends RecyclerView.ViewHolder {
         TextView txvBleDeviceName;

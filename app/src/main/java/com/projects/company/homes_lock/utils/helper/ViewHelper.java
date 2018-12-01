@@ -11,8 +11,8 @@ import android.widget.ImageView;
 
 import com.projects.company.homes_lock.R;
 
-import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_TIMEOUT_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 
 /**
  * This is Helper Class helps Views
@@ -116,11 +116,11 @@ public class ViewHelper {
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_middle);
         else if (RSSIPercentage >= 75 && RSSIPercentage <= 100)
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_full);
-        else if (RSSIPercentage == FINDING_BLE_DEVICES_SCAN_MODE || RSSIPercentage == FINDING_BLE_DEVICES_TIMEOUT_MODE)
+        else if (RSSIPercentage == SEARCHING_SCAN_MODE || RSSIPercentage == SEARCHING_TIMEOUT_MODE)
             imgBleDeviceRSSI.setImageDrawable(null);
     }
 
-    public static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog) {
+    static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog) {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
 
         layoutParams.copyFrom(dialog.getWindow().getAttributes());

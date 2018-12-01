@@ -7,8 +7,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.projects.company.homes_lock.utils.helper.BleHelper;
-
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.UUID;
@@ -19,6 +17,7 @@ import no.nordicsemi.android.ble.Request;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_SERIAL;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.createCommand;
 
 public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
@@ -37,10 +36,10 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
             requests.push(Request.newEnableNotificationsRequest(mTXCharacteristic));
 
-            requests.push(Request.newWriteRequest(mRXCharacteristic, BleHelper.createCommand(new byte[]{0x01}, new byte[]{})));
+            requests.push(Request.newWriteRequest(mRXCharacteristic, createCommand(new byte[]{0x01}, new byte[]{})));
             requests.push(Request.newReadRequest(mTXCharacteristic));
 
-            requests.push(Request.newWriteRequest(mRXCharacteristic, BleHelper.createCommand(new byte[]{0x05}, new byte[]{})));
+            requests.push(Request.newWriteRequest(mRXCharacteristic, createCommand(new byte[]{0x05}, new byte[]{})));
             requests.push(Request.newReadRequest(mTXCharacteristic));
 
             return requests;

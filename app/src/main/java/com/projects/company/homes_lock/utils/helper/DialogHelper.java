@@ -21,18 +21,23 @@ import android.widget.CheckBox;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
 import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
+import com.projects.company.homes_lock.utils.ble.WifiNetworksAdapter;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.FINDING_BLE_DEVICES_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomPercentNumber;
 
 public class DialogHelper {
 
@@ -43,8 +48,10 @@ public class DialogHelper {
     //region Declare Objects
     private static ProgressDialog mProgressDialog;
     private static BleDeviceAdapter mBleDeviceAdapter;
+    private static WifiNetworksAdapter mWifiNetworksAdapter;
     private static Dialog addNewLockDialogOffline;
     private static Dialog addNewLockDialogOnline;
+    private static Dialog deviceWifiNetworkDialog;
     //endregion Declare Objects
 
     //region Declare Views
@@ -74,7 +81,7 @@ public class DialogHelper {
             btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
+                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
                     addNewLockDialogOffline.dismiss();
                     addNewLockDialogOffline = null;
                 }
@@ -83,12 +90,12 @@ public class DialogHelper {
             btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
-                    BleHelper.findDevices(fragment);
+                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
+                    findDevices(fragment);
                 }
             });
 
-            BleHelper.findDevices(fragment);
+            findDevices(fragment);
         } else
             mBleDeviceAdapter.setBleDevices(devices);
 
@@ -100,50 +107,50 @@ public class DialogHelper {
         return addNewLockDialogOffline;
     }
 
-    public static Dialog handleDialogListOfAvailableWifiNetworksAroundDevice(Fragment fragment, List<ScannedDeviceModel> devices) {
-        if (addNewLockDialogOffline == null) {
-            addNewLockDialogOffline = new Dialog(fragment.getContext());
-            addNewLockDialogOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            addNewLockDialogOffline.setContentView(R.layout.dialog_available_devices);
+    public static Dialog handleDialogListOfAvailableWifiNetworksAroundDevice(Fragment fragment, List<WifiNetworksModel> networks) {
+        if (deviceWifiNetworkDialog == null) {
+            deviceWifiNetworkDialog = new Dialog(fragment.getContext());
+            deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            deviceWifiNetworkDialog.setContentView(R.layout.dialog_available_networks);
 
-            if (mBleDeviceAdapter == null)
-                mBleDeviceAdapter = new BleDeviceAdapter(fragment, devices);
+            if (mWifiNetworksAdapter == null)
+                mWifiNetworksAdapter = new WifiNetworksAdapter(fragment, networks);
 
-            RecyclerView rcvDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.rcv_dialog_available_devices);
-            Button btnCancelDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.btn_cancel_dialog_available_devices);
-            Button btnScanDialogAvailableDevices = addNewLockDialogOffline.findViewById(R.id.btn_scan_dialog_available_devices);
+            RecyclerView rcvDialogAvailableNetworks = deviceWifiNetworkDialog.findViewById(R.id.rcv_dialog_available_networks);
+            Button btnCancelDialogAvailableNetworks = deviceWifiNetworkDialog.findViewById(R.id.btn_cancel_dialog_available_networks);
+            Button btnScanDialogAvailableNetworks = deviceWifiNetworkDialog.findViewById(R.id.btn_scan_dialog_available_networks);
 
-            rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
-            rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
-            rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
+            rcvDialogAvailableNetworks.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+            rcvDialogAvailableNetworks.setItemAnimator(new DefaultItemAnimator());
+            rcvDialogAvailableNetworks.setAdapter(mWifiNetworksAdapter);
 
-            btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+            btnCancelDialogAvailableNetworks.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
-                    addNewLockDialogOffline.dismiss();
-                    addNewLockDialogOffline = null;
+                    mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+                    deviceWifiNetworkDialog.dismiss();
+                    deviceWifiNetworkDialog = null;
                 }
             });
 
-            btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
+            btnScanDialogAvailableNetworks.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(FINDING_BLE_DEVICES_SCAN_MODE)));
-                    BleHelper.findDevices(fragment);
+                    mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+                    ((LockPageFragment) fragment).mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(fragment);
                 }
             });
 
-            BleHelper.findDevices(fragment);
+            ((LockPageFragment) fragment).mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(fragment);
         } else
-            mBleDeviceAdapter.setBleDevices(devices);
+            mWifiNetworksAdapter.addAvailableNetwork(networks.get(0));
 
-        if (!addNewLockDialogOffline.isShowing())
-            addNewLockDialogOffline.show();
+        if (!deviceWifiNetworkDialog.isShowing())
+            deviceWifiNetworkDialog.show();
 
-        addNewLockDialogOffline.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(addNewLockDialogOffline));
+        deviceWifiNetworkDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkDialog));
 
-        return addNewLockDialogOffline;
+        return deviceWifiNetworkDialog;
     }
 
     public static Dialog handleDialogAddLockOffline(Fragment fragment) {
@@ -240,7 +247,7 @@ public class DialogHelper {
                     DialogHelper.handleProgressDialog(
                             fragment.getContext(),
                             null,
-                            String.format("Adding Lock ... %d %%", DataHelper.getRandomPercentNumber(1, 8)),
+                            String.format("Adding Lock ... %d %%", getRandomPercentNumber(1, 8)),
                             true);
 
                     ((AddLockFragment) fragment).mDeviceViewModel

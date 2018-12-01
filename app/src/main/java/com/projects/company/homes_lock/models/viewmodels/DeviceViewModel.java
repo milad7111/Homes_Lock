@@ -14,6 +14,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
@@ -22,13 +23,12 @@ import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
-import com.projects.company.homes_lock.utils.helper.BleHelper;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +40,9 @@ import okhttp3.ResponseBody;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.createCommand;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.isInstanceOfList;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.subArrayByte;
 
 public class DeviceViewModel extends AndroidViewModel
         implements
@@ -58,6 +61,7 @@ public class DeviceViewModel extends AndroidViewModel
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
     private IBleScanListener mIBleScanListener;
+    private ILockPageFragment mILockPageFragment;
     private IAddLockFragment mIAddLockFragment;
 
     private final BleDeviceManager mBleDeviceManager;
@@ -206,12 +210,27 @@ public class DeviceViewModel extends AndroidViewModel
                         Log.d("Read deviceSerialNumber", responseValue[1] + "");
                         break;
                     case 0x04:
-                        Log.d("Read deviceErrorData", Arrays.toString(DataHelper.subArrayByte(responseValue, 1, responseValue.length)));
+                        Log.d("Read deviceErrorData", Arrays.toString(subArrayByte(responseValue, 1, responseValue.length)));
                         break;
                     case 0x05:
                         mLocalRepository.updateDeviceTemperature(LockPageFragment.getDevice().getObjectId(), responseValue[1]);
                         mLocalRepository.updateDeviceHumidity(LockPageFragment.getDevice().getObjectId(), responseValue[2]);
                         mLocalRepository.updateDeviceCoLevel(LockPageFragment.getDevice().getObjectId(), responseValue[3]);
+                        break;
+                    case 0x06:
+                        if (responseValue[1] == 0)
+                            getAvailableWifiNetworksAroundDevice(responseValue[2]);
+                        else
+                            getDeviceErrorFromBleDevice();
+                        break;
+                    case 0x07:
+                        if (mILockPageFragment != null)
+                            mILockPageFragment
+                                    .onFindNewNetworkAroundDevice(
+                                            new WifiNetworksModel(
+                                                    new String(subArrayByte(responseValue, 3, responseValue.length - 2)),
+                                                    0,
+                                                    responseValue[2]));
                         break;
                 }
             }
@@ -226,7 +245,7 @@ public class DeviceViewModel extends AndroidViewModel
     //region Network Callbacks
     @Override
     public void onResponse(Object response) {
-        if (DataHelper.isInstanceOfList(response, Device.class.getName()))
+        if (isInstanceOfList(response, Device.class.getName()))
             insertLocalDevices((List<Device>) response);
         else if (response instanceof ResponseBody) {
             switch (getRequestType()) {
@@ -285,16 +304,26 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void sendLockCommand(boolean lockCommand) {
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
     }
 
     private void getDeviceInfoFromBleDevice() {
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x01}, new byte[]{}));
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x05}, new byte[]{}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x01}, new byte[]{}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x05}, new byte[]{}));
+    }
+
+    public void getAvailableWifiNetworksCountAroundDevice(Fragment fragment) {
+        mILockPageFragment = (LockPageFragment) fragment;
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x06}, new byte[]{}));
+    }
+
+    private void getAvailableWifiNetworksAroundDevice(int networksCount) {
+        for (int i = 0; i < networksCount; i++)
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) i}));
     }
 
     private void getDeviceErrorFromBleDevice() {
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createCommand(new byte[]{0x04}, new byte[]{}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x04}, new byte[]{}));
     }
     //endregion BLE Methods
 
