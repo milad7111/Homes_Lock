@@ -9,12 +9,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +37,7 @@ import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMe
 import com.projects.company.homes_lock.ui.device.fragment.upgrade.MoreInfoFragment;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
+import com.projects.company.homes_lock.utils.ble.WifiNetworksAdapter;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
@@ -85,13 +92,21 @@ public class LockPageFragment extends Fragment
     //endregion Declare Views
 
     //region Declare Variables
-    boolean isConnectedToBleDevice;
+    private boolean isConnectedToBleDevice;
+    private int wifiNetworksCount = 0;
     //endregion Declare Variables
+
+    //region Declare Arrays & Lists
+    private List<WifiNetworksModel> mWifiNetworkList = new ArrayList<>();
+    //endregion Declare Arrays & Lists
 
     //region Declare Objects
     public static DeviceViewModel mDeviceViewModel;
     private static Device mDevice;
     private Dialog activeDialog;
+    private static WifiNetworksAdapter mWifiNetworksAdapter;
+    private static Dialog deviceWifiNetworkListDialog;
+    private static Dialog deviceWifiNetworkDialog;
     //endregion Declare Objects
 
     //region Constructor
@@ -207,6 +222,8 @@ public class LockPageFragment extends Fragment
 
     @Override
     public void onAdapterItemClick(BaseModel network) {
+        WifiNetworksModel tempNetwork = (WifiNetworksModel) network;
+        handleDialogSetDeviceWifiNetwork(tempNetwork);
     }
 
     @Override
@@ -214,9 +231,16 @@ public class LockPageFragment extends Fragment
     }
 
     @Override
+    public void onGetAvailableWifiNetworksCountAroundDevice(int count) {
+        wifiNetworksCount = count;
+    }
+
+    @Override
     public void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel) {
-        activeDialog = DialogHelper.handleDialogListOfAvailableWifiNetworksAroundDevice(
-                this, Collections.singletonList(wifiNetworksModel));
+        addFoundNetworkToList(wifiNetworksModel);
+
+        if (mWifiNetworkList.size() == wifiNetworksCount)
+            handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
     //endregion BLE CallBacks
 
@@ -271,8 +295,20 @@ public class LockPageFragment extends Fragment
         if (isUserLoggedIn())
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
         else
-            activeDialog = DialogHelper.handleDialogListOfAvailableWifiNetworksAroundDevice(
-                    this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+            handleDialogListOfAvailableWifiNetworksAroundDevice();
+    }
+
+    private void addFoundNetworkToList(WifiNetworksModel wifiNetworksModel) {
+        if (!findNetworkInList(wifiNetworksModel.getSSID()))
+            this.mWifiNetworkList.add(wifiNetworksModel);
+    }
+
+    private boolean findNetworkInList(String mSSID) {
+        for (WifiNetworksModel network : mWifiNetworkList)
+            if (network.getSSID().equals(mSSID))
+                return true;
+
+        return false;
     }
     //endregion Declare Methods
 
@@ -371,6 +407,100 @@ public class LockPageFragment extends Fragment
 
     public static Device getDevice() {
         return mDevice;
+    }
+
+    private void handleDialogListOfAvailableWifiNetworksAroundDevice() {
+        if (deviceWifiNetworkListDialog == null) {
+            deviceWifiNetworkListDialog = new Dialog(getActivity());
+            deviceWifiNetworkListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            deviceWifiNetworkListDialog.setContentView(R.layout.dialog_available_networks);
+
+            if (mWifiNetworksAdapter == null)
+                mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+
+            RecyclerView rcvDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.rcv_dialog_available_networks);
+            Button btnCancelDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_cancel_dialog_available_networks);
+            Button btnScanDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_scan_dialog_available_networks);
+
+            rcvDialogAvailableNetworks.setLayoutManager(new LinearLayoutManager(getContext()));
+            rcvDialogAvailableNetworks.setItemAnimator(new DefaultItemAnimator());
+            rcvDialogAvailableNetworks.setAdapter(mWifiNetworksAdapter);
+
+            btnCancelDialogAvailableNetworks.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+                    deviceWifiNetworkListDialog.dismiss();
+                    deviceWifiNetworkListDialog = null;
+                }
+            });
+
+            btnScanDialogAvailableNetworks.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+                    mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(getParentFragment());
+                }
+            });
+
+            mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
+        } else {
+            mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+            mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
+        }
+
+        if (!deviceWifiNetworkListDialog.isShowing())
+            deviceWifiNetworkListDialog.show();
+
+        deviceWifiNetworkListDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkListDialog));
+    }
+
+    private void handleDialogSetDeviceWifiNetwork(WifiNetworksModel wifiNetwork) {
+        if (deviceWifiNetworkDialog == null) {
+            deviceWifiNetworkDialog = new Dialog(getActivity());
+            deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            deviceWifiNetworkDialog.setContentView(R.layout.dialog_device_wifi_network_connect);
+
+            if (mWifiNetworksAdapter == null)
+                mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+
+            Spinner spnWifiTypeDialogDeviceWifiNetworkConnect =
+                    deviceWifiNetworkDialog.findViewById(R.id.spn_wifi_type_dialog_device_wifi_network_connect);
+            TextInputEditText tietWifiPasswordDialogDeviceWifiNetworkConnect =
+                    deviceWifiNetworkDialog.findViewById(R.id.tiet_wifi_password_dialog_device_wifi_network_connect);
+
+            Button btnCancelDialogDeviceWifiNetworkConnect =
+                    deviceWifiNetworkDialog.findViewById(R.id.btn_cancel_dialog_device_wifi_network_connect);
+            Button btnConnectDialogDeviceWifiNetworkConnect =
+                    deviceWifiNetworkDialog.findViewById(R.id.btn_connect_dialog_device_wifi_network_connect);
+
+            btnCancelDialogDeviceWifiNetworkConnect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deviceWifiNetworkDialog.dismiss();
+                    deviceWifiNetworkDialog = null;
+                }
+            });
+
+            btnConnectDialogDeviceWifiNetworkConnect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    wifiNetwork.setPassword(tietWifiPasswordDialogDeviceWifiNetworkConnect.getText().toString());
+                    wifiNetwork.setAuthenticateType(spnWifiTypeDialogDeviceWifiNetworkConnect.getSelectedItemPosition());
+                    mDeviceViewModel.setDeviceWifiNetwork(getParentFragment(), wifiNetwork);
+                }
+            });
+
+            mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
+        } else {
+            mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+            mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
+        }
+
+        if (!deviceWifiNetworkDialog.isShowing())
+            deviceWifiNetworkDialog.show();
+
+        deviceWifiNetworkDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkDialog));
     }
     //endregion Declare BLE Methods
 }

@@ -48,10 +48,8 @@ public class DialogHelper {
     //region Declare Objects
     private static ProgressDialog mProgressDialog;
     private static BleDeviceAdapter mBleDeviceAdapter;
-    private static WifiNetworksAdapter mWifiNetworksAdapter;
     private static Dialog addNewLockDialogOffline;
     private static Dialog addNewLockDialogOnline;
-    private static Dialog deviceWifiNetworkDialog;
     //endregion Declare Objects
 
     //region Declare Views
@@ -105,52 +103,6 @@ public class DialogHelper {
         addNewLockDialogOffline.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(addNewLockDialogOffline));
 
         return addNewLockDialogOffline;
-    }
-
-    public static Dialog handleDialogListOfAvailableWifiNetworksAroundDevice(Fragment fragment, List<WifiNetworksModel> networks) {
-        if (deviceWifiNetworkDialog == null) {
-            deviceWifiNetworkDialog = new Dialog(fragment.getContext());
-            deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            deviceWifiNetworkDialog.setContentView(R.layout.dialog_available_networks);
-
-            if (mWifiNetworksAdapter == null)
-                mWifiNetworksAdapter = new WifiNetworksAdapter(fragment, networks);
-
-            RecyclerView rcvDialogAvailableNetworks = deviceWifiNetworkDialog.findViewById(R.id.rcv_dialog_available_networks);
-            Button btnCancelDialogAvailableNetworks = deviceWifiNetworkDialog.findViewById(R.id.btn_cancel_dialog_available_networks);
-            Button btnScanDialogAvailableNetworks = deviceWifiNetworkDialog.findViewById(R.id.btn_scan_dialog_available_networks);
-
-            rcvDialogAvailableNetworks.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
-            rcvDialogAvailableNetworks.setItemAnimator(new DefaultItemAnimator());
-            rcvDialogAvailableNetworks.setAdapter(mWifiNetworksAdapter);
-
-            btnCancelDialogAvailableNetworks.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-                    deviceWifiNetworkDialog.dismiss();
-                    deviceWifiNetworkDialog = null;
-                }
-            });
-
-            btnScanDialogAvailableNetworks.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-                    ((LockPageFragment) fragment).mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(fragment);
-                }
-            });
-
-            ((LockPageFragment) fragment).mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(fragment);
-        } else
-            mWifiNetworksAdapter.addAvailableNetwork(networks.get(0));
-
-        if (!deviceWifiNetworkDialog.isShowing())
-            deviceWifiNetworkDialog.show();
-
-        deviceWifiNetworkDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkDialog));
-
-        return deviceWifiNetworkDialog;
     }
 
     public static Dialog handleDialogAddLockOffline(Fragment fragment) {

@@ -6,6 +6,7 @@ public class WifiNetworksModel extends BaseModel {
 
     //region Declare Objects
     private String mSSID;
+    private String mPassword;
     private int mAuthenticateType;
     private int mRSSI;
     //endregion Declare Objects
@@ -45,6 +46,14 @@ public class WifiNetworksModel extends BaseModel {
 
     public void setRSSI(int mRSSI) {
         this.mRSSI = mRSSI;
+    }
+
+    public String getPassword() {
+        return mPassword;
+    }
+
+    public void setPassword(String mPassword) {
+        this.mPassword = mPassword;
     }
     //endregion Declare Methods
 }

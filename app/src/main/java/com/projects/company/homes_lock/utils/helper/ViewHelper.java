@@ -67,15 +67,13 @@ public class ViewHelper {
     }
 
     public static void setBatteryStatusImage(ImageView imgBatteryStatusLockPage, Integer batteryPercentage) {
-        if (batteryPercentage < 25)
+        if (batteryPercentage >= 0 && batteryPercentage < 30)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_zero);
         else if (batteryPercentage >= 30 && batteryPercentage < 60)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_low);
         else if (batteryPercentage >= 60 && batteryPercentage < 90)
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_middle);
         else if (batteryPercentage >= 90)
-            imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
-        else
             imgBatteryStatusLockPage.setImageResource(R.drawable.ic_battery_full);
     }
 
@@ -108,7 +106,7 @@ public class ViewHelper {
     }
 
     public static void setRSSIImage(ImageView imgBleDeviceRSSI, Integer RSSIPercentage) {
-        if (RSSIPercentage < 25)
+        if (RSSIPercentage >= 0 && RSSIPercentage < 25)
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_zero);
         else if (RSSIPercentage >= 25 && RSSIPercentage < 50)
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_low);
@@ -118,9 +116,11 @@ public class ViewHelper {
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_full);
         else if (RSSIPercentage == SEARCHING_SCAN_MODE || RSSIPercentage == SEARCHING_TIMEOUT_MODE)
             imgBleDeviceRSSI.setImageDrawable(null);
+        else
+            imgBleDeviceRSSI.setImageResource(R.drawable.ic_rssi_zero);
     }
 
-    static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog) {
+    public static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog) {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
 
         layoutParams.copyFrom(dialog.getWindow().getAttributes());

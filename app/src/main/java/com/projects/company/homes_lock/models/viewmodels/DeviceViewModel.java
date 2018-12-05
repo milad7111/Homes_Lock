@@ -218,19 +218,44 @@ public class DeviceViewModel extends AndroidViewModel
                         mLocalRepository.updateDeviceCoLevel(LockPageFragment.getDevice().getObjectId(), responseValue[3]);
                         break;
                     case 0x06:
-                        if (responseValue[1] == 0)
+                        if (responseValue[1] == 0) {
                             getAvailableWifiNetworksAroundDevice(responseValue[2]);
-                        else
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onGetAvailableWifiNetworksCountAroundDevice((int) responseValue[2]);
+                        } else
                             getDeviceErrorFromBleDevice();
                         break;
                     case 0x07:
                         if (mILockPageFragment != null)
-                            mILockPageFragment
-                                    .onFindNewNetworkAroundDevice(
-                                            new WifiNetworksModel(
-                                                    new String(subArrayByte(responseValue, 3, responseValue.length - 2)),
-                                                    0,
-                                                    responseValue[2]));
+                            mILockPageFragment.onFindNewNetworkAroundDevice(
+                                    new WifiNetworksModel(
+                                            new String(subArrayByte(responseValue, 3, responseValue.length - 2)),
+                                            0,
+                                            responseValue[2]));
+                        break;
+                    case 0x08:
+                        if (responseValue[1] == 0)
+                            Log.d("OnNotify :", "wrote SSID successful.");
+                        else
+                            Log.d("OnNotify :", "SSID did not write.");
+                        break;
+                    case 0x09:
+                        if (responseValue[1] == 0)
+                            Log.d("OnNotify :", "wrote Password successful.");
+                        else
+                            Log.d("OnNotify :", "Password did not write.");
+                        break;
+                    case 0x0A:
+                        if (responseValue[1] == 0)
+                            Log.d("OnNotify :", "wrote Security successful.");
+                        else
+                            Log.d("OnNotify :", "Security did not write.");
+                        break;
+                    case 0x0B:
+                        if (responseValue[1] == 0)
+                            Log.d("OnNotify :", "Connection successful.");
+                        else
+                            Log.d("OnNotify :", "Connection Failed.");
                         break;
                 }
             }
@@ -320,6 +345,13 @@ public class DeviceViewModel extends AndroidViewModel
     private void getAvailableWifiNetworksAroundDevice(int networksCount) {
         for (int i = 0; i < networksCount; i++)
             mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) i}));
+    }
+
+    public void setDeviceWifiNetwork(Fragment parentFragment, WifiNetworksModel wifiNetwork) {
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x08}, wifiNetwork.getSSID().getBytes()));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x09}, wifiNetwork.getPassword().getBytes()));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0A}, new byte[]{(byte) wifiNetwork.getAuthenticateType()}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x01}));
     }
 
     private void getDeviceErrorFromBleDevice() {

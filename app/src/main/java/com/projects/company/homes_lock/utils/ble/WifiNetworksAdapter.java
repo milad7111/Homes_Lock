@@ -1,5 +1,6 @@
 package com.projects.company.homes_lock.utils.ble;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.calculateR
 public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapter.WifiNetworksViewHolder> {
 
     //region Declare Objects
+    private Activity mActivity;
     private LayoutInflater mInflater;
     private List<WifiNetworksModel> mWifiNetworksModelList;
     private IBleScanListener mILockPageFragment;
@@ -31,6 +33,7 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
     //region Constructor
     public WifiNetworksAdapter(Fragment fragment, List<WifiNetworksModel> mWifiNetworksModelList) {
         //region Initialize Objects
+        this.mActivity = fragment.getActivity();
         this.mInflater = LayoutInflater.from(fragment.getActivity());
         this.mWifiNetworksModelList = mWifiNetworksModelList;
         this.mILockPageFragment = (IBleScanListener) fragment;
@@ -86,27 +89,15 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
     //endregion Adapter CallBacks
 
     //region Declare Methods
-    public void addAvailableNetwork(WifiNetworksModel mWifiNetworksModel) {
-        if (!findNetworkInList(mWifiNetworksModel.getSSID())) {
-            this.mWifiNetworksModelList.add(mWifiNetworksModel);
-            notifyDataSetChanged();
-        }
-    }
-
     public void setAvailableNetworks(List<WifiNetworksModel> mWifiNetworksModelList) {
         this.mWifiNetworksModelList = mWifiNetworksModelList;
-        notifyDataSetChanged();
-    }
 
-    private boolean findNetworkInList(String mSSID) {
-        if (this.mWifiNetworksModelList.size() == 1 && this.mWifiNetworksModelList.get(0).getSSID() == null)
-            this.mWifiNetworksModelList.clear();
-
-        for (WifiNetworksModel network : mWifiNetworksModelList)
-            if (network.getSSID().equals(mSSID))
-                return true;
-
-        return false;
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     class WifiNetworksViewHolder extends RecyclerView.ViewHolder {

@@ -39,6 +39,7 @@
     <string name="fragment_hint_password">Password</string>
     <string name="fragment_hint_confirm_password">Confirm Password</string>
     <string name="fragment_hint_name">Name</string>
+    <string name="fragment_hint_mobile_number">Mobile number</string>
     <!--//endregion Fragment Hints-->
 
     <!--//region Fragment TextViews-->
@@ -50,6 +51,7 @@
     <string name="dialog_button_scan">SCAN</string>
     <string name="dialog_button_add">ADD</string>
     <string name="dialog_button_send_reset_password_link">Send reset password link</string>
+    <string name="dialog_button_connect">CONNECT</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->
@@ -109,7 +111,6 @@
     <string name="ble_state_connecting" translatable="false">Connecting…</string>
     <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
     <string name="ble_state_initializing" translatable="false">Initializing…</string>
-    <string name="fragment_hint_mobile_number">Mobile number</string>
     <!--//endregion BLE States-->
 
 </resources>

@@ -7,4 +7,6 @@ import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
  */
 public interface ILockPageFragment {
     void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel);
+
+    void onGetAvailableWifiNetworksCountAroundDevice(int count);
 }
