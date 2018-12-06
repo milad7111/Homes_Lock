@@ -234,28 +234,48 @@ public class DeviceViewModel extends AndroidViewModel
                                             responseValue[2]));
                         break;
                     case 0x08:
-                        if (responseValue[1] == 0)
+                        if (responseValue[1] == 0) {
                             Log.d("OnNotify :", "wrote SSID successful.");
-                        else
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkSSIDSuccessful();
+                        } else {
                             Log.d("OnNotify :", "SSID did not write.");
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkSSIDFailed();
+                        }
                         break;
                     case 0x09:
-                        if (responseValue[1] == 0)
+                        if (responseValue[1] == 0) {
                             Log.d("OnNotify :", "wrote Password successful.");
-                        else
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkPasswordSuccessful();
+                        } else {
                             Log.d("OnNotify :", "Password did not write.");
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkPasswordFailed();
+                        }
                         break;
                     case 0x0A:
-                        if (responseValue[1] == 0)
+                        if (responseValue[1] == 0) {
                             Log.d("OnNotify :", "wrote Security successful.");
-                        else
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkAuthenticationTypeSuccessful();
+                        } else {
                             Log.d("OnNotify :", "Security did not write.");
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkAuthenticationTypeFailed();
+                        }
                         break;
                     case 0x0B:
-                        if (responseValue[1] == 0)
+                        if (responseValue[1] == 0) {
                             Log.d("OnNotify :", "Connection successful.");
-                        else
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkSuccessful();
+                        } else {
                             Log.d("OnNotify :", "Connection Failed.");
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSetDeviceWifiNetworkFailed();
+                        }
                         break;
                 }
             }
@@ -356,6 +376,10 @@ public class DeviceViewModel extends AndroidViewModel
 
     private void getDeviceErrorFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x04}, new byte[]{}));
+    }
+
+    public void disconnectDeviceWifiNetwork() {
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x00}));
     }
     //endregion BLE Methods
 

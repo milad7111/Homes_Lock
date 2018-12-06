@@ -9,4 +9,20 @@ public interface ILockPageFragment {
     void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel);
 
     void onGetAvailableWifiNetworksCountAroundDevice(int count);
+
+    void onSetDeviceWifiNetworkSSIDSuccessful();
+
+    void onSetDeviceWifiNetworkSSIDFailed();
+
+    void onSetDeviceWifiNetworkPasswordSuccessful();
+
+    void onSetDeviceWifiNetworkPasswordFailed();
+
+    void onSetDeviceWifiNetworkAuthenticationTypeSuccessful();
+
+    void onSetDeviceWifiNetworkAuthenticationTypeFailed();
+
+    void onSetDeviceWifiNetworkSuccessful();
+
+    void onSetDeviceWifiNetworkFailed();
 }

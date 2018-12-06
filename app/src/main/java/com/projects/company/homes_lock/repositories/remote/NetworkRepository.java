@@ -11,6 +11,7 @@ import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 
 import java.util.List;
 
@@ -37,6 +38,10 @@ public class NetworkRepository {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response != null && response.body() != null)
                     listener.onResponse(response.body());
+                else
+                    listener.onSingleNetworkListenerFailure(
+                            new FailureModel((
+                                    new ResponseBodyModel(response.errorBody().source().toString())).getMessage()));
             }
 
             @Override

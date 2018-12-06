@@ -198,12 +198,19 @@ public class LockPageFragment extends Fragment
                 changeConnectionState();
                 break;
             case R.id.img_manage_members_lock_page:
-                setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new ManageMembersFragment());
+                handleLockMembers();
                 break;
             case R.id.img_more_info_lock_page:
                 setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new MoreInfoFragment());
                 break;
         }
+    }
+
+    private void handleLockMembers() {
+        if (isUserLoggedIn())
+            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new ManageMembersFragment());
+        else
+            Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
     }
 
     public interface OnFragmentInteractionListener {
@@ -242,6 +249,40 @@ public class LockPageFragment extends Fragment
         if (mWifiNetworkList.size() == wifiNetworksCount)
             handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
+
+    @Override
+    public void onSetDeviceWifiNetworkSSIDSuccessful() {
+    }
+
+    @Override
+    public void onSetDeviceWifiNetworkSSIDFailed() {
+    }
+
+    @Override
+    public void onSetDeviceWifiNetworkPasswordSuccessful() {
+    }
+
+    @Override
+    public void onSetDeviceWifiNetworkPasswordFailed() {
+    }
+
+    @Override
+    public void onSetDeviceWifiNetworkAuthenticationTypeSuccessful() {
+    }
+
+    @Override
+    public void onSetDeviceWifiNetworkAuthenticationTypeFailed() {
+    }
+
+    @Override
+    public void onSetDeviceWifiNetworkSuccessful() {
+        closeDialogHandleDeviceWifiNetwork();
+    }
+
+    @Override
+    public void onSetDeviceWifiNetworkFailed() {
+        closeDialogHandleDeviceWifiNetwork();
+    }
     //endregion BLE CallBacks
 
     //region Declare Methods
@@ -252,6 +293,8 @@ public class LockPageFragment extends Fragment
                 setDefault ? 0 : mDevice.getBatteryPercentage());
         setConnectionStatusImage(imgConnectionStatusLockPage,
                 setDefault ? 0 : (mDevice.getWifiStatus() ? 2 : 1), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+
+        imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
 
         if (setDefault)
             imgTemperatureCelsiusLockPage.setImageDrawable(null);
@@ -294,8 +337,11 @@ public class LockPageFragment extends Fragment
     private void handleLockInternetConnection() {
         if (isUserLoggedIn())
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
-        else
-            handleDialogListOfAvailableWifiNetworksAroundDevice();
+        else if (isConnectedToBleDevice)
+            if (mDevice.getWifiStatus())
+                mDeviceViewModel.disconnectDeviceWifiNetwork();
+            else
+                handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
 
     private void addFoundNetworkToList(WifiNetworksModel wifiNetworksModel) {
@@ -309,6 +355,13 @@ public class LockPageFragment extends Fragment
                 return true;
 
         return false;
+    }
+
+    private void closeDialogHandleDeviceWifiNetwork() {
+        deviceWifiNetworkDialog.dismiss();
+        deviceWifiNetworkDialog = null;
+        deviceWifiNetworkListDialog.dismiss();
+        deviceWifiNetworkListDialog = null;
     }
     //endregion Declare Methods
 

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
@@ -138,6 +139,8 @@ public class LoginFragment extends Fragment
     @Override
     public void onLoginFailed(Object response) {
         Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
+        Toast.makeText(getActivity(), ((FailureModel) response).getFailureMessage(), Toast.LENGTH_LONG).show();
+        DialogHelper.handleProgressDialog(null, null, null, false);
     }
 
     @Override
