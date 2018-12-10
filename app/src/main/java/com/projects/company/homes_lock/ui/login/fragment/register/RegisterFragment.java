@@ -54,9 +54,8 @@ public class RegisterFragment extends Fragment
     private UserViewModel mUserViewModel;
     //endregion Declare Objects
 
-    //region Declare Constructor
+    //region Constructor
     public RegisterFragment() {
-        // Required empty public constructor
     }
     //endregion Declare Constructor
 
@@ -78,7 +77,6 @@ public class RegisterFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 

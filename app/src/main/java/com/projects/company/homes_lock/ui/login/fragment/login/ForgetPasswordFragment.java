@@ -27,7 +27,6 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
     //endregion Declare Objects
 
     public ForgetPasswordFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -43,7 +42,6 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.dialog_forget_password, container, false);
     }
 

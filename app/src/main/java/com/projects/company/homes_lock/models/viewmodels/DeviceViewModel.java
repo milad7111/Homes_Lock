@@ -71,7 +71,7 @@ public class DeviceViewModel extends AndroidViewModel
     private final SingleLiveEvent<Boolean> mIsSupported = new SingleLiveEvent<>();
     //endregion Declare Objects
 
-    //region Declare Constructor
+    //region Constructor
     public DeviceViewModel(Application application) {
         super(application);
 

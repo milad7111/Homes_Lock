@@ -59,7 +59,6 @@ public class LoginFragment extends Fragment
     //endregion Declare Objects
 
     public LoginFragment() {
-        // Required empty public constructor
     }
 
     //region Main CallBacks
@@ -76,7 +75,6 @@ public class LoginFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 

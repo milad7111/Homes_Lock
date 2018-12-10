@@ -28,7 +28,6 @@ public class GrantProServicesFragment extends Fragment implements IGrantProServi
     //endregion Declare Objects
 
     public GrantProServicesFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -44,7 +43,6 @@ public class GrantProServicesFragment extends Fragment implements IGrantProServi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_grant_pro_services, container, false);
     }
 

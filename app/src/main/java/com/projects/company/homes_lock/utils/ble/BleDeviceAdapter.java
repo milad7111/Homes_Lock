@@ -99,12 +99,6 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             super(itemView);
             txvBleDeviceName = itemView.findViewById(R.id.txv_item_ble_device_name);
             imgBleDeviceRSSI = itemView.findViewById(R.id.img_item_ble_device_rssi);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
         }
     }
     //endregion Declare Methods

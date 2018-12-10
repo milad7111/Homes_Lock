@@ -1,133 +1,169 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_black_1000">
+    android:background="@color/md_black_1000"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:weightSum="19">
+        android:weightSum="22">
 
         <TextView
+            android:id="@+id/txv_firmware_version_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="Firmware Version"
+            android:text="@string/fragment_text_view_firmware_version"
             android:textColor="@color/md_grey_200"
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/txv_firmware_version_description_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="1.0.3"
+            android:text="@string/fragment_text_view_default_firmware_version"
             android:textColor="@color/md_grey_500"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/txv_door_installation_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="Door Installation"
+            android:text="@string/fragment_text_view__door_installation"
             android:textColor="@color/md_grey_200"
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/txv_door_installation_description_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Right handed"
+            android:text="@string/fragment_text_view_door_installation_value"
             android:textColor="@color/md_grey_500"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/txv_lock_stages_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="Lock Stages"
+            android:text="@string/fragment_text_view_lock_stages"
             android:textColor="@color/md_grey_200"
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/txv_lock_stages_description_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Two stages"
+            android:text="@string/fragment_text_view_lock_stages_value"
             android:textColor="@color/md_grey_500"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/txv_pro_services_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="Pro Services"
+            android:text="@string/fragment_text_view_pro_services"
             android:textColor="@color/md_grey_200"
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/txv_pro_services_description_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Not yet"
+            android:text="@string/fragment_text_view_pro_services_description"
             android:textColor="@color/md_grey_500"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/txv_remove_lock_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="Remove Lock"
+            android:text="@string/fragment_text_view_remove_lock"
             android:textColor="@color/md_red_A400"
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/txv_remove_lock_description_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="If you remove the lock, you can just add it again by pairing bluetooth"
+            android:text="@string/fragment_text_view_remove_lock_description"
             android:textColor="@color/md_grey_500"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/txv_change_password_online_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="Change Password"
+            android:text="@string/fragment_text_view_change_online_password"
             android:textColor="@color/md_grey_200"
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/txv_change_password_online_description_more_info_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Change online password"
+            android:text="@string/fragment_text_view_change_online_password_description"
+            android:textColor="@color/md_grey_500"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txv_change_pairing_password_more_info_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_change_pairing_password"
+            android:textColor="@color/md_grey_200"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txv_change_pairing_password_description_more_info_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_change_pairing_password_description"
             android:textColor="@color/md_grey_500"
             android:textSize="14sp" />
 

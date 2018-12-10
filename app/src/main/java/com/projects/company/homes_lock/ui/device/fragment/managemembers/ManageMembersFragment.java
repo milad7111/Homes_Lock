@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,8 +30,10 @@ public class ManageMembersFragment extends Fragment implements IManageMembersFra
     //region Declare Objects
     //endregion Declare Objects
 
+    //region Constructor
     public ManageMembersFragment() {
     }
+    //endregion Constructor
 
     //region Main Callbacks
     @Override
@@ -44,7 +49,6 @@ public class ManageMembersFragment extends Fragment implements IManageMembersFra
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_manage_members, container, false);
     }
 

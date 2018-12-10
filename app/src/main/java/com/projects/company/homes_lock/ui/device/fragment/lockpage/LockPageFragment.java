@@ -34,7 +34,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
-import com.projects.company.homes_lock.ui.device.fragment.upgrade.MoreInfoFragment;
+import com.projects.company.homes_lock.ui.device.fragment.setting.SettingFragment;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.WifiNetworksAdapter;
@@ -195,26 +195,15 @@ public class LockPageFragment extends Fragment
                 handleLockInternetConnection();
                 break;
             case R.id.img_ble_lock_page:
-                changeConnectionState();
+                handleLockBleConnection();
                 break;
             case R.id.img_manage_members_lock_page:
                 handleLockMembers();
                 break;
             case R.id.img_more_info_lock_page:
-                setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new MoreInfoFragment());
+                setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new SettingFragment());
                 break;
         }
-    }
-
-    private void handleLockMembers() {
-        if (isUserLoggedIn())
-            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new ManageMembersFragment());
-        else
-            Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
     //endregion Main CallBacks
 
@@ -363,10 +352,17 @@ public class LockPageFragment extends Fragment
         deviceWifiNetworkListDialog.dismiss();
         deviceWifiNetworkListDialog = null;
     }
+
+    private void handleLockMembers() {
+        if (isUserLoggedIn())
+            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new ManageMembersFragment());
+        else
+            Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
+    }
     //endregion Declare Methods
 
     //region Declare BLE Methods
-    private void changeConnectionState() {
+    private void handleLockBleConnection() {
         if (isConnectedToBleDevice)
             this.mDeviceViewModel.disconnect();
         else
@@ -556,4 +552,10 @@ public class LockPageFragment extends Fragment
         deviceWifiNetworkDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkDialog));
     }
     //endregion Declare BLE Methods
+
+    //region Declare Classes & Interfaces
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
+    //endregion Declare Classes & Interfaces
 }

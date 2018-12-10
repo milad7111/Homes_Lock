@@ -28,7 +28,6 @@ public class ProServicesListFragment extends Fragment implements IProServicesLis
     //endregion Declare Objects
 
     public ProServicesListFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -44,7 +43,6 @@ public class ProServicesListFragment extends Fragment implements IProServicesLis
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_pro_services_list, container, false);
     }
 

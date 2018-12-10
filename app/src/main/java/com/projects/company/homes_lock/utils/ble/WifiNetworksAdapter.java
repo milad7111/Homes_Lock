@@ -108,12 +108,6 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
             super(itemView);
             txvItemWifiSsidName = itemView.findViewById(R.id.txv_item_wifi_ssid_name);
             imgItemWifiRssiName = itemView.findViewById(R.id.img_item_wifi_rssi_name);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
         }
     }
     //endregion Declare Methods
