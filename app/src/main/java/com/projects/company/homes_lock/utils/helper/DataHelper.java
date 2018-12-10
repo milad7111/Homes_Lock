@@ -15,7 +15,7 @@ public class DataHelper {
 
     //region Declare Constants
     public static final int CHANGE_ONLINE_PASSWORD = 1000;
-    public static final int CHANGE_OFFLINE_PASSWORD = 2000;
+    public static final int CHANGE_PAIRING_PASSWORD = 2000;
 
     public static final int MEMBER_STATUS_PRIMARY_ADMIN = 1000;
     public static final int MEMBER_STATUS_SECONDARY_ADMIN = 2000;

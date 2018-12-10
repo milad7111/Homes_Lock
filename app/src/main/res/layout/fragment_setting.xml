@@ -14,7 +14,7 @@
         android:weightSum="22">
 
         <TextView
-            android:id="@+id/txv_firmware_version_more_info_fragment"
+            android:id="@+id/txv_firmware_version_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
@@ -25,7 +25,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txv_firmware_version_description_more_info_fragment"
+            android:id="@+id/txv_firmware_version_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
@@ -36,7 +36,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/txv_door_installation_more_info_fragment"
+            android:id="@+id/txv_door_installation_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
@@ -47,7 +47,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txv_door_installation_description_more_info_fragment"
+            android:id="@+id/txv_door_installation_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
@@ -58,7 +58,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/txv_lock_stages_more_info_fragment"
+            android:id="@+id/txv_lock_stages_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
@@ -69,7 +69,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txv_lock_stages_description_more_info_fragment"
+            android:id="@+id/txv_lock_stages_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
@@ -80,7 +80,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/txv_pro_services_more_info_fragment"
+            android:id="@+id/txv_pro_services_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
@@ -91,7 +91,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txv_pro_services_description_more_info_fragment"
+            android:id="@+id/txv_pro_services_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
@@ -102,7 +102,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/txv_remove_lock_more_info_fragment"
+            android:id="@+id/txv_remove_lock_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
@@ -113,7 +113,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txv_remove_lock_description_more_info_fragment"
+            android:id="@+id/txv_remove_lock_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
@@ -124,7 +124,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/txv_change_password_online_more_info_fragment"
+            android:id="@+id/txv_change_password_online_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
@@ -135,7 +135,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txv_change_password_online_description_more_info_fragment"
+            android:id="@+id/txv_change_password_online_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
@@ -146,7 +146,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/txv_change_pairing_password_more_info_fragment"
+            android:id="@+id/txv_change_pairing_password_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
@@ -157,7 +157,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txv_change_pairing_password_description_more_info_fragment"
+            android:id="@+id/txv_change_pairing_password_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
