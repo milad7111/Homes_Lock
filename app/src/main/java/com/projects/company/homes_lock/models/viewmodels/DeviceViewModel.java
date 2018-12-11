@@ -92,6 +92,10 @@ public class DeviceViewModel extends AndroidViewModel
         return mLocalRepository.getAllDevices();
     }
 
+    public List<Device> getAllUserLocks() {
+        return mLocalRepository.getAllUserLocks();
+    }
+
     public LiveData<Device> getDeviceInfo(String mActiveDeviceObjectId) {
         return mLocalRepository.getADevice(mActiveDeviceObjectId);
     }

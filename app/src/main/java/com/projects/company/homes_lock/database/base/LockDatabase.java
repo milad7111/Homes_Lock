@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
 import com.projects.company.homes_lock.database.daos.DeviceErrorDao;
 import com.projects.company.homes_lock.database.daos.ErrorDao;
+import com.projects.company.homes_lock.database.daos.LockUserViewDao;
 import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -64,5 +65,7 @@ public abstract class LockDatabase extends RoomDatabase {
     public abstract ErrorDao errorDao();
 
     public abstract UserLockDao userLockDao();
+
+    public abstract LockUserViewDao lockUserViewDao();
     //endregion declare Objects
 }

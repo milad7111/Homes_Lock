@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 
 import com.projects.company.homes_lock.database.base.LockDatabase;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
+import com.projects.company.homes_lock.database.daos.LockUserViewDao;
 import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
@@ -25,6 +26,7 @@ public class LocalRepository {
 
     //region Declare Objects
     private DeviceDao mDeviceDao;
+    private LockUserViewDao mLockUserViewDao;
     private UserDao mUserDao;
     private SharedPreferences mSharedPreferences = null;
     private static ILocalRepository mILocalRepository = null;
@@ -37,6 +39,7 @@ public class LocalRepository {
 
         //region Initialize Objects
         mDeviceDao = LockDatabase.getDatabase(application).deviceDao();
+        mLockUserViewDao = LockDatabase.getDatabase(application).lockUserViewDao();
         mUserDao = LockDatabase.getDatabase(application).userDao();
         mSharedPreferences = application.getSharedPreferences(application.getPackageName(), MODE_PRIVATE);
         //endregion Initialize Objects
@@ -49,6 +52,10 @@ public class LocalRepository {
 
     public LiveData<List<Device>> getAllDevices() {
         return mDeviceDao.getAllDevices();
+    }
+
+    public List<Device> getAllUserLocks() {
+        return mLockUserViewDao.getAllUserLocks();
     }
 
     public void insertDevice(Device device) {

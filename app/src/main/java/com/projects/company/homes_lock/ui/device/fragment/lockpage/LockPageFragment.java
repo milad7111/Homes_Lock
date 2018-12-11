@@ -98,6 +98,7 @@ public class LockPageFragment extends Fragment
 
     //region Declare Arrays & Lists
     private List<WifiNetworksModel> mWifiNetworkList = new ArrayList<>();
+    private List<Device> mAllUserLocks = new ArrayList<>();
     //endregion Declare Arrays & Lists
 
     //region Declare Objects
@@ -140,6 +141,8 @@ public class LockPageFragment extends Fragment
                 (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
                 : null;
         //endregion Initialize Objects
+
+        readAllLockInfo();
     }
 
     @Override
@@ -358,6 +361,16 @@ public class LockPageFragment extends Fragment
             setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new ManageMembersFragment());
         else
             Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
+    }
+
+    private void readAllLockInfo() {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                mAllUserLocks = mDeviceViewModel.getAllUserLocks();
+            }
+        }.start();
     }
     //endregion Declare Methods
 

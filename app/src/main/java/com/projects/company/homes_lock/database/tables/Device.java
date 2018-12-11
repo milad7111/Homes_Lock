@@ -311,4 +311,8 @@ public class Device extends BaseModel {
     public void setLockPosition(Integer mLockPosition) {
         this.mLockPosition = mLockPosition;
     }
+
+    public void setUserLocks(List<UserLock> userLocks) {
+        mRelatedUsers = userLocks;
+    }
 }
