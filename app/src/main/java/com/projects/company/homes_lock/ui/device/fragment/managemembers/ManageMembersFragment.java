@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
+
+import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +20,7 @@ import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragm
 public class ManageMembersFragment extends Fragment implements IManageMembersFragment {
 
     //region Declare Constants
+    private static final String ARG_PARAM = "param";
     //endregion Declare Constants
 
     //region Declare Views
@@ -28,10 +30,21 @@ public class ManageMembersFragment extends Fragment implements IManageMembersFra
     //endregion Declare Variables
 
     //region Declare Objects
+    private static Device mDevice;
     //endregion Declare Objects
 
     //region Constructor
     public ManageMembersFragment() {
+    }
+
+    public static ManageMembersFragment newInstance(Device device) {
+        ManageMembersFragment fragment = new ManageMembersFragment();
+        Bundle args = new Bundle();
+
+        args.putString(ARG_PARAM, new Gson().toJson(device));
+        fragment.setArguments(args);
+
+        return fragment;
     }
     //endregion Constructor
 
@@ -44,6 +57,9 @@ public class ManageMembersFragment extends Fragment implements IManageMembersFra
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mDevice = getArguments() != null ?
+                (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
+                : null;
         //endregion Initialize Objects
     }
 

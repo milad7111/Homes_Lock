@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
 
@@ -314,5 +315,17 @@ public class Device extends BaseModel {
 
     public void setUserLocks(List<UserLock> userLocks) {
         mRelatedUsers = userLocks;
+    }
+
+    public void setUserLocks(UserLock userLocks) {
+        mRelatedUsers.clear();
+        mRelatedUsers.add(userLocks);
+    }
+
+    public int getMemberAdminStatus() {
+        if (mRelatedUsers.size() == 1)
+            return mRelatedUsers.get(0).getAdminStatus() ? DataHelper.MEMBER_STATUS_PRIMARY_ADMIN : DataHelper.MEMBER_STATUS_NOT_ADMIN;
+        else
+            return -1;
     }
 }

@@ -11,6 +11,14 @@ import java.util.List;
 @Dao
 public abstract class LockUserViewDao {
 
+    public Device getUserLockInfo(String objectId) {
+
+        Device mDevice = getDevice(objectId);
+        mDevice.setUserLocks(getUserLock(objectId));
+
+        return mDevice;
+    }
+
     public List<Device> getAllUserLocks() {
         List<Device> mDevices = getDevices();
 
@@ -20,9 +28,15 @@ public abstract class LockUserViewDao {
         return mDevices;
     }
 
+    @Query("SELECT * FROM device WHERE objectId = :mObjectId")
+    abstract Device getDevice(String mObjectId);
+
     @Query("SELECT * FROM device")
     abstract List<Device> getDevices();
 
     @Query("SELECT * FROM userLock WHERE deviceId = :mDeviceId")
     abstract List<UserLock> getUserLocks(String mDeviceId);
+
+    @Query("SELECT * FROM userLock WHERE deviceId = :mDeviceId")
+    abstract UserLock getUserLock(String mDeviceId);
 }

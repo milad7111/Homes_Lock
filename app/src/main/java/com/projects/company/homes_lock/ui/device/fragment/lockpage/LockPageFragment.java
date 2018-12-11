@@ -204,7 +204,10 @@ public class LockPageFragment extends Fragment
                 handleLockMembers();
                 break;
             case R.id.img_more_info_lock_page:
-                setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new SettingFragment());
+                setFragment(
+                        (AppCompatActivity) Objects.requireNonNull(getActivity()),
+                        R.id.frg_lock_activity,
+                        SettingFragment.newInstance(mDevice));
                 break;
         }
     }
@@ -358,7 +361,7 @@ public class LockPageFragment extends Fragment
 
     private void handleLockMembers() {
         if (isUserLoggedIn())
-            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, new ManageMembersFragment());
+            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
         else
             Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
     }
@@ -368,7 +371,7 @@ public class LockPageFragment extends Fragment
             @Override
             public void run() {
                 super.run();
-                mAllUserLocks = mDeviceViewModel.getAllUserLocks();
+                mDevice = mDeviceViewModel.getUserLockInfo(mDevice.getObjectId());
             }
         }.start();
     }

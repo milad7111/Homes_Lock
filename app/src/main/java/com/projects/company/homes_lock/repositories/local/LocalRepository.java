@@ -105,6 +105,10 @@ public class LocalRepository {
         this.mILocalRepository = mILocalRepository;
         new insertUserAsyncTask(mUserDao).execute(user);
     }
+
+    public Device getUserLockInfo(String objectId) {
+        return mLockUserViewDao.getUserLockInfo(objectId);
+    }
     //endregion User and UserLock table
 
     //region Declare classes

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_ONLINE_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAIRING_PASSWORD;
@@ -162,6 +163,21 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     //endregion Main Callbacks
 
     //region Declare Methods
+    private void initViews() {
+        if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+            txvDoorInstallationSettingFragment.setVisibility(View.GONE);
+            txvDoorInstallationDescriptionSettingFragment.setVisibility(View.GONE);
+            txvLockStagesSettingFragment.setVisibility(View.GONE);
+            txvLockStagesDescriptionSettingFragment.setVisibility(View.GONE);
+            txvProServicesSettingFragment.setVisibility(View.GONE);
+            txvProServicesDescriptionSettingFragment.setVisibility(View.GONE);
+            txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
+            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
+            txvChangePairingPasswordSettingFragment.setVisibility(View.GONE);
+            txvChangePairingPasswordDescriptionSettingFragment.setVisibility(View.GONE);
+        }
+    }
+
     private void handleDoorInstallation() {
     }
 
