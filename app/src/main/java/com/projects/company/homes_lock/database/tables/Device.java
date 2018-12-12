@@ -11,6 +11,7 @@ import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "device")
@@ -318,7 +319,7 @@ public class Device extends BaseModel {
     }
 
     public void setUserLocks(UserLock userLocks) {
-        mRelatedUsers.clear();
+        mRelatedUsers = new ArrayList<>();
         mRelatedUsers.add(userLocks);
     }
 

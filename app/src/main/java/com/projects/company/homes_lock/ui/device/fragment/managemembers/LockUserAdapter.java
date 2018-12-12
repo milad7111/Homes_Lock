@@ -22,7 +22,7 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
     private Activity mActivity;
     private LayoutInflater mInflater;
     private List<MemberModel> mMemberModelList;
-    private ISettingFragment mISettingFragment;
+    private IManageMembersFragment mIManageMembersFragment;
     //endregion Declare Objects
 
     //region Constructor
@@ -31,7 +31,7 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
         this.mActivity = fragment.getActivity();
         this.mInflater = LayoutInflater.from(fragment.getActivity());
         this.mMemberModelList = mMemberModelList;
-        this.mISettingFragment = (ISettingFragment) fragment;
+        this.mIManageMembersFragment = (IManageMembersFragment) fragment;
         //endregion Initialize Objects
     }
     //endregion Constructor
@@ -55,7 +55,7 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
         lockMembersAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mISettingFragment.onAdapterItemClick(mMemberModelList.get(i));
+                mIManageMembersFragment.onAdapterItemClick(mMemberModelList.get(i));
             }
         });
     }

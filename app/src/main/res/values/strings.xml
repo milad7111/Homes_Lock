@@ -45,6 +45,19 @@
     <!--//region Fragment TextViews-->
     <string name="fragment_text_view_login">Login</string>
     <string name="fragment_text_view_firmware_version">Firmware Version</string>
+    <string name="fragment_text_view_default_firmware_version">1.0.3</string>
+    <string name="fragment_text_view__door_installation">Door Installation</string>
+    <string name="fragment_text_view_door_installation_value">Right handed</string>
+    <string name="fragment_text_view_lock_stages">Lock Stages</string>
+    <string name="fragment_text_view_lock_stages_value">Two stages</string>
+    <string name="fragment_text_view_pro_services">Pro Services</string>
+    <string name="fragment_text_view_pro_services_description">Not yet</string>
+    <string name="fragment_text_view_remove_lock">Remove Lock</string>
+    <string name="fragment_text_view_remove_lock_description">If you remove the lock, you can just add it again by pairing bluetooth</string>
+    <string name="fragment_text_view_change_online_password">Change Online Password</string>
+    <string name="fragment_text_view_change_online_password_description">This is reachable when you are Connect to Lock</string>
+    <string name="fragment_text_view_change_pairing_password">Change Pairing Password</string>
+    <string name="fragment_text_view_change_pairing_password_description">This is reachable when you are Connect to Lock</string>
     <!--//endregion Fragment TextViews-->
 
     <!--//region Dialog Buttons-->
@@ -53,6 +66,7 @@
     <string name="dialog_button_add">ADD</string>
     <string name="dialog_button_send_reset_password_link">Send reset password link</string>
     <string name="dialog_button_connect">CONNECT</string>
+    <string name="dialog_button_apply">APPLY</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->
@@ -112,19 +126,6 @@
     <string name="ble_state_connecting" translatable="false">Connecting…</string>
     <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
     <string name="ble_state_initializing" translatable="false">Initializing…</string>
-    <string name="fragment_text_view_default_firmware_version">1.0.3</string>
-    <string name="fragment_text_view__door_installation">Door Installation</string>
-    <string name="fragment_text_view_door_installation_value">Right handed</string>
-    <string name="fragment_text_view_lock_stages">Lock Stages</string>
-    <string name="fragment_text_view_lock_stages_value">Two stages</string>
-    <string name="fragment_text_view_pro_services">Pro Services</string>
-    <string name="fragment_text_view_pro_services_description">Not yet</string>
-    <string name="fragment_text_view_remove_lock">Remove Lock</string>
-    <string name="fragment_text_view_remove_lock_description">If you remove the lock, you can just add it again by pairing bluetooth</string>
-    <string name="fragment_text_view_change_online_password">Change Online Password</string>
-    <string name="fragment_text_view_change_online_password_description">This is reachable when you are Connect to Lock</string>
-    <string name="fragment_text_view_change_pairing_password">Change Pairing Password</string>
-    <string name="fragment_text_view_change_pairing_password_description">This is reachable when you are Connect to Lock</string>
     <!--//endregion BLE States-->
 
 </resources>

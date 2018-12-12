@@ -44,6 +44,14 @@ public class BleHelper {
     public static final int SEARCHING_SCAN_MODE = 1000;
     public static final int SEARCHING_TIMEOUT_MODE = 2000;
 
+    public static final int DOOR_INSTALLATION_SETTING_LEFT_HANDED = 1000;
+    public static final int DOOR_INSTALLATION_SETTING_RIGHT_HANDED = 2000;
+
+    public static final int LOCK_STAGES_NINETY_DEGREES = 1000;
+    public static final int LOCK_STAGES_ONE_STAGE = 2000;
+    public static final int LOCK_STAGES_TWO_STAGE = 3000;
+    public static final int LOCK_STAGES_THREE_STAGE = 4000;
+
     public static final int TIMES_TO_SCAN_BLE_DEVICES = 3;
     //endregion Declare Constants
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.MemberModel;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
 
@@ -79,6 +80,12 @@ public class ManageMembersFragment extends Fragment implements IManageMembersFra
         //endregion Setup Views
     }
     //endregion Main Callbacks
+
+    //region IManageMembersFragment Callbacks
+    @Override
+    public void onAdapterItemClick(MemberModel member) {
+    }
+    //endregion IManageMembersFragment Callbacks
 
     //region Declare Methods
     //endregion Declare Methods

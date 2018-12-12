@@ -25,6 +25,7 @@ import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
+import com.projects.company.homes_lock.ui.device.fragment.setting.ISettingFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
@@ -63,6 +64,7 @@ public class DeviceViewModel extends AndroidViewModel
     private IBleScanListener mIBleScanListener;
     private ILockPageFragment mILockPageFragment;
     private IAddLockFragment mIAddLockFragment;
+    private ISettingFragment mISettingFragment;
 
     private final BleDeviceManager mBleDeviceManager;
 
@@ -285,6 +287,14 @@ public class DeviceViewModel extends AndroidViewModel
                                 mILockPageFragment.onSetDeviceWifiNetworkFailed();
                         }
                         break;
+                    case 0x0C:
+                        if (mISettingFragment != null)
+                            mISettingFragment.onSetDoorInstallationSetting(responseValue[1] == 0);
+                        break;
+                    case 0x0D:
+                        if (mISettingFragment != null)
+                            mISettingFragment.onSetLockStagesSetting(responseValue[1] == 0);
+                        break;
                 }
             }
         }
@@ -366,7 +376,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void getAvailableWifiNetworksCountAroundDevice(Fragment fragment) {
-        mILockPageFragment = (LockPageFragment) fragment;
+        mILockPageFragment = (ILockPageFragment) fragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x06}, new byte[]{}));
     }
 
@@ -388,6 +398,16 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void disconnectDeviceWifiNetwork() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x00}));
+    }
+
+    public void setDeviceDoorInstallationSetting(Fragment parentFragment, int selectedDoorInstallationOption) {
+        mISettingFragment = (ISettingFragment) parentFragment;
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0C}, new byte[]{0x00}));
+    }
+
+    public void setDeviceLockStagesSetting(Fragment parentFragment, int selectedLockStagesOption) {
+        mISettingFragment = (ISettingFragment) parentFragment;
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0D}, new byte[]{0x00}));
     }
     //endregion BLE Methods
 

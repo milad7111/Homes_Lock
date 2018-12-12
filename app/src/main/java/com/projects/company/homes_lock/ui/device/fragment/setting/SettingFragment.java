@@ -1,19 +1,33 @@
 package com.projects.company.homes_lock.ui.device.fragment.setting;
 
 
+import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
+import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_LEFT_HANDED;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_NINETY_DEGREES;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_ONE_STAGE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_THREE_STAGE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_TWO_STAGE;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_ONLINE_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAIRING_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
@@ -21,7 +35,8 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJso
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingFragment extends Fragment implements View.OnClickListener {
+public class SettingFragment extends Fragment
+        implements ISettingFragment, View.OnClickListener {
 
     //region Declare Constants
     private static final String ARG_PARAM = "param";
@@ -46,7 +61,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     //endregion Declare Variables
 
     //region Declare Objects
+    private Fragment mFragment;
+    public static DeviceViewModel mDeviceViewModel;
     private static Device mDevice;
+    private Dialog doorInstallationDialog;
+    private Dialog lockStagesDialog;
     //endregion Declare Objects
 
     //region Constructor
@@ -73,6 +92,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mFragment = this;
+
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+
         mDevice = getArguments() != null ?
                 (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
                 : null;
@@ -117,6 +140,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         txvChangePairingPasswordSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordDescriptionSettingFragment.setOnClickListener(this);
         //endregion Setup Views
+
+        initViews();
     }
 
     @Override
@@ -162,6 +187,17 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     }
     //endregion Main Callbacks
 
+    //region ISettingFragment Callbacks
+    @Override
+    public void onSetDoorInstallationSetting(boolean value) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+    }
+
+    @Override
+    public void onSetLockStagesSetting(boolean value) {
+    }
+    //endregion ISettingFragment Callbacks
+
     //region Declare Methods
     private void initViews() {
         if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
@@ -179,9 +215,73 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     }
 
     private void handleDoorInstallation() {
+        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+            doorInstallationDialog = new Dialog(getActivity());
+            doorInstallationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            doorInstallationDialog.setContentView(R.layout.dialog_door_installation);
+
+            RadioGroup rdgMainDialogDoorInstallation =
+                    doorInstallationDialog.findViewById(R.id.rdg_main_dialog_door_installation);
+
+            Button btnCancelDialogDoorInstallation =
+                    doorInstallationDialog.findViewById(R.id.btn_cancel_dialog_door_installation);
+            Button btnApplyDialogDoorInstallation =
+                    doorInstallationDialog.findViewById(R.id.btn_apply_dialog_door_installation);
+
+            btnCancelDialogDoorInstallation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doorInstallationDialog.dismiss();
+                    doorInstallationDialog = null;
+                }
+            });
+
+            btnApplyDialogDoorInstallation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Door installation setup ...", true);
+                    mDeviceViewModel.setDeviceDoorInstallationSetting(mFragment, findSelectedDoorInstallationOption(rdgMainDialogDoorInstallation));
+                }
+            });
+        }
+
+        doorInstallationDialog.show();
+        doorInstallationDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(doorInstallationDialog));
     }
 
     private void handleLockStages() {
+        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+            lockStagesDialog = new Dialog(getActivity());
+            lockStagesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            lockStagesDialog.setContentView(R.layout.dialog_lock_stages);
+
+            RadioGroup rdgMainDialogLockStages =
+                    lockStagesDialog.findViewById(R.id.rdg_main_dialog_lock_stages);
+
+            Button btnCancelDialogLockStages =
+                    lockStagesDialog.findViewById(R.id.btn_cancel_dialog_lock_stages);
+            Button btnApplyDialogLockStages =
+                    lockStagesDialog.findViewById(R.id.btn_apply_dialog_lock_stages);
+
+            btnCancelDialogLockStages.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    lockStagesDialog.dismiss();
+                    lockStagesDialog = null;
+                }
+            });
+
+            btnApplyDialogLockStages.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Lock stages setup ...", true);
+                    mDeviceViewModel.setDeviceLockStagesSetting(mFragment, findSelectedLockStagesOption(rdgMainDialogLockStages));
+                }
+            });
+        }
+
+        lockStagesDialog.show();
+        lockStagesDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(lockStagesDialog));
     }
 
     private void handleProServices() {
@@ -250,6 +350,32 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     }
 
     private void handleDialogChangePairingPassword() {
+    }
+
+    private int findSelectedDoorInstallationOption(RadioGroup radioGroup) {
+        switch (radioGroup.getCheckedRadioButtonId()) {
+            case R.id.rdb_left_handed_dialog_door_installation:
+                return DOOR_INSTALLATION_SETTING_LEFT_HANDED;
+            case R.id.rdb_right_handed_dialog_door_installation:
+                return DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
+            default:
+                return -1;
+        }
+    }
+
+    private int findSelectedLockStagesOption(RadioGroup radioGroup) {
+        switch (radioGroup.getCheckedRadioButtonId()) {
+            case R.id.rdb_ninety_degrees_dialog_lock_stages:
+                return LOCK_STAGES_NINETY_DEGREES;
+            case R.id.rdb_one_stage_dialog_lock_stages:
+                return LOCK_STAGES_ONE_STAGE;
+            case R.id.rdb_two_stage_dialog_lock_stages:
+                return LOCK_STAGES_TWO_STAGE;
+            case R.id.rdb_three_stage_dialog_lock_stages:
+                return LOCK_STAGES_THREE_STAGE;
+            default:
+                return -1;
+        }
     }
     //endregion Declare Methods
 }
