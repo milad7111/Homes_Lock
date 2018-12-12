@@ -295,6 +295,18 @@ public class DeviceViewModel extends AndroidViewModel
                         if (mISettingFragment != null)
                             mISettingFragment.onSetLockStagesSetting(responseValue[1] == 0);
                         break;
+                    case 0x0F:
+                        if (mISettingFragment != null)
+                            mISettingFragment.onChangeOnlinePassword(responseValue[1] == 0);
+                        break;
+                    case 0x10:
+                        if (mISettingFragment != null)
+                            mISettingFragment.onChangePairingPassword(responseValue[1] == 0);
+                        break;
+                    case 0x11:
+                        if (mISettingFragment != null)
+                            mISettingFragment.onRemoveLock(responseValue[1] == 0);
+                        break;
                 }
             }
         }
@@ -408,6 +420,21 @@ public class DeviceViewModel extends AndroidViewModel
     public void setDeviceLockStagesSetting(Fragment parentFragment, int selectedLockStagesOption) {
         mISettingFragment = (ISettingFragment) parentFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0D}, new byte[]{0x00}));
+    }
+
+    public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
+        mISettingFragment = (ISettingFragment) parentFragment;
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0F}, new byte[]{0x00}));
+    }
+
+    public void changePairingPasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
+        mISettingFragment = (ISettingFragment) parentFragment;
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x10}, new byte[]{0x00}));
+    }
+
+    public void removeLock(Fragment parentFragment, boolean removeAllMembers) {
+        mISettingFragment = (ISettingFragment) parentFragment;
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x11}, new byte[]{0x00}));
     }
     //endregion BLE Methods
 

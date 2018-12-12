@@ -1,10 +1,24 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_layout_border"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txv_title_dialog_device_wifi_network_connect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/dialog_title_device_wifi_network_connect"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_wifi_password_dialog_device_wifi_network_connect"
@@ -16,7 +30,7 @@
         android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_device_wifi_network_connect"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="#fff">
 
@@ -64,7 +78,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_toStartOf="@id/btn_no_dialog_enable_location"
         android:background="@color/transparent"
         android:text="@string/dialog_button_connect"
         android:textColor="@color/md_white_1000"

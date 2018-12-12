@@ -6,6 +6,21 @@
     android:background="@drawable/background_layout_border"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/txv_title_dialog_device_door_installation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/dialog_title_door_installation"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <RadioGroup
         android:id="@+id/rdg_main_dialog_door_installation"
         android:layout_width="wrap_content"
@@ -13,7 +28,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_device_door_installation">
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/rdb_right_handed_dialog_door_installation"
@@ -54,7 +69,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_toStartOf="@id/btn_no_dialog_enable_location"
         android:background="@color/transparent"
         android:text="@string/dialog_button_apply"
         android:textColor="@color/md_white_1000"

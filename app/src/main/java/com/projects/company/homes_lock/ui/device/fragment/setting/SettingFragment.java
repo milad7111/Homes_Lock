@@ -5,12 +5,14 @@ import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -21,6 +23,8 @@ import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
+
+import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_LEFT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
@@ -36,7 +40,9 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJso
  * A simple {@link Fragment} subclass.
  */
 public class SettingFragment extends Fragment
-        implements ISettingFragment, View.OnClickListener {
+        implements
+        ISettingFragment,
+        View.OnClickListener {
 
     //region Declare Constants
     private static final String ARG_PARAM = "param";
@@ -66,6 +72,9 @@ public class SettingFragment extends Fragment
     private static Device mDevice;
     private Dialog doorInstallationDialog;
     private Dialog lockStagesDialog;
+    private Dialog changeOnlinePasswordDialog;
+    private Dialog changePairingPasswordDialog;
+    private Dialog removeLockDialog;
     //endregion Declare Objects
 
     //region Constructor
@@ -191,10 +200,46 @@ public class SettingFragment extends Fragment
     @Override
     public void onSetDoorInstallationSetting(boolean value) {
         DialogHelper.handleProgressDialog(null, null, null, false);
+        if (doorInstallationDialog != null) {
+            doorInstallationDialog.dismiss();
+            doorInstallationDialog = null;
+        }
     }
 
     @Override
     public void onSetLockStagesSetting(boolean value) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        if (doorInstallationDialog != null) {
+            lockStagesDialog.dismiss();
+            lockStagesDialog = null;
+        }
+    }
+
+    @Override
+    public void onChangeOnlinePassword(boolean value) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        if (changeOnlinePasswordDialog != null) {
+            changeOnlinePasswordDialog.dismiss();
+            changeOnlinePasswordDialog = null;
+        }
+    }
+
+    @Override
+    public void onChangePairingPassword(boolean value) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        if (changePairingPasswordDialog != null) {
+            changePairingPasswordDialog.dismiss();
+            changePairingPasswordDialog = null;
+        }
+    }
+
+    @Override
+    public void onRemoveLock(boolean value) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        if (removeLockDialog != null) {
+            removeLockDialog.dismiss();
+            removeLockDialog = null;
+        }
     }
     //endregion ISettingFragment Callbacks
 
@@ -288,12 +333,44 @@ public class SettingFragment extends Fragment
     }
 
     private void handleRemoveLock() {
+        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+            removeLockDialog = new Dialog(getActivity());
+            removeLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            removeLockDialog.setContentView(R.layout.dialog_remove_lock);
+
+            CheckBox chbRemoveAllMembersDialogRemoveLock =
+                    removeLockDialog.findViewById(R.id.chb_remove_all_members_dialog_remove_lock);
+
+            Button btnCancelDialogRemoveLock =
+                    removeLockDialog.findViewById(R.id.btn_cancel_dialog_remove_lock);
+            Button btnRemoveDialogRemoveLock =
+                    removeLockDialog.findViewById(R.id.btn_remove_dialog_remove_lock);
+
+            btnCancelDialogRemoveLock.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeLockDialog.dismiss();
+                    removeLockDialog = null;
+                }
+            });
+
+            btnRemoveDialogRemoveLock.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Remove lock ...", true);
+                    mDeviceViewModel.removeLock(mFragment, chbRemoveAllMembersDialogRemoveLock.isChecked());
+                }
+            });
+        }
+
+        removeLockDialog.show();
+        removeLockDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(removeLockDialog));
     }
 
     private void handleChangePassword(int changeStatus) {
         switch (changeStatus) {
             case CHANGE_ONLINE_PASSWORD:
-                handleDialogChangePasswordOnline();
+                handleDialogChangeOnlinePassword();
                 break;
             case CHANGE_PAIRING_PASSWORD:
                 handleDialogChangePairingPassword();
@@ -301,55 +378,82 @@ public class SettingFragment extends Fragment
         }
     }
 
-    private void handleDialogChangePasswordOnline() {
-//        if (deviceWifiNetworkDialog == null) {
-//            deviceWifiNetworkDialog = new Dialog(getActivity());
-//            deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//            deviceWifiNetworkDialog.setContentView(R.layout.dialog_device_wifi_network_connect);
-//
-//            if (mWifiNetworksAdapter == null)
-//                mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-//
-//            Spinner spnWifiTypeDialogDeviceWifiNetworkConnect =
-//                    deviceWifiNetworkDialog.findViewById(R.id.spn_wifi_type_dialog_device_wifi_network_connect);
-//            TextInputEditText tietWifiPasswordDialogDeviceWifiNetworkConnect =
-//                    deviceWifiNetworkDialog.findViewById(R.id.tiet_wifi_password_dialog_device_wifi_network_connect);
-//
-//            Button btnCancelDialogDeviceWifiNetworkConnect =
-//                    deviceWifiNetworkDialog.findViewById(R.id.btn_cancel_dialog_device_wifi_network_connect);
-//            Button btnConnectDialogDeviceWifiNetworkConnect =
-//                    deviceWifiNetworkDialog.findViewById(R.id.btn_connect_dialog_device_wifi_network_connect);
-//
-//            btnCancelDialogDeviceWifiNetworkConnect.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    deviceWifiNetworkDialog.dismiss();
-//                    deviceWifiNetworkDialog = null;
-//                }
-//            });
-//
-//            btnConnectDialogDeviceWifiNetworkConnect.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    wifiNetwork.setPassword(tietWifiPasswordDialogDeviceWifiNetworkConnect.getText().toString());
-//                    wifiNetwork.setAuthenticateType(spnWifiTypeDialogDeviceWifiNetworkConnect.getSelectedItemPosition());
-//                    mDeviceViewModel.setDeviceWifiNetwork(getParentFragment(), wifiNetwork);
-//                }
-//            });
-//
-//            mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
-//        } else {
-//            mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-//            mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
-//        }
-//
-//        if (!deviceWifiNetworkDialog.isShowing())
-//            deviceWifiNetworkDialog.show();
-//
-//        deviceWifiNetworkDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkDialog));
+    private void handleDialogChangeOnlinePassword() {
+        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+            changeOnlinePasswordDialog = new Dialog(getActivity());
+            changeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            changeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
+
+            TextInputEditText tietOldPasswordDialogChangeOnlinePassword =
+                    changeOnlinePasswordDialog.findViewById(R.id.tiet_old_password_dialog_change_online_password);
+            TextInputEditText tietNewPasswordDialogChangeOnlinePassword =
+                    changeOnlinePasswordDialog.findViewById(R.id.tiet_new_password_dialog_change_online_password);
+
+            Button btnCancelDialogChangeOnlinePassword =
+                    changeOnlinePasswordDialog.findViewById(R.id.btn_cancel_dialog_change_online_password);
+            Button btnApplyDialogChangeOnlinePassword =
+                    changeOnlinePasswordDialog.findViewById(R.id.btn_apply_dialog_change_online_password);
+
+            btnCancelDialogChangeOnlinePassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeOnlinePasswordDialog.dismiss();
+                    changeOnlinePasswordDialog = null;
+                }
+            });
+
+            btnApplyDialogChangeOnlinePassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change online password ...", true);
+                    mDeviceViewModel.changeOnlinePasswordViaBle(mFragment,
+                            Objects.requireNonNull(tietOldPasswordDialogChangeOnlinePassword.getText()).toString(),
+                            Objects.requireNonNull(tietNewPasswordDialogChangeOnlinePassword.getText()).toString());
+                }
+            });
+        }
+
+        changeOnlinePasswordDialog.show();
+        changeOnlinePasswordDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(changeOnlinePasswordDialog));
     }
 
     private void handleDialogChangePairingPassword() {
+        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+            changePairingPasswordDialog = new Dialog(getActivity());
+            changePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            changePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
+
+            TextInputEditText tietOldPasswordDialogChangePairingPassword =
+                    changePairingPasswordDialog.findViewById(R.id.tiet_old_password_dialog_change_pairing_password);
+            TextInputEditText tietNewPasswordDialogChangePairingPassword =
+                    changePairingPasswordDialog.findViewById(R.id.tiet_new_password_dialog_change_pairing_password);
+
+            Button btnCancelDialogChangePairingPassword =
+                    changePairingPasswordDialog.findViewById(R.id.btn_cancel_dialog_change_pairing_password);
+            Button btnApplyDialogChangePairingPassword =
+                    changePairingPasswordDialog.findViewById(R.id.btn_apply_dialog_change_pairing_password);
+
+            btnCancelDialogChangePairingPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changePairingPasswordDialog.dismiss();
+                    changePairingPasswordDialog = null;
+                }
+            });
+
+            btnApplyDialogChangePairingPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change pairing password ...", true);
+                    mDeviceViewModel.changePairingPasswordViaBle(mFragment,
+                            Objects.requireNonNull(tietOldPasswordDialogChangePairingPassword.getText()).toString(),
+                            Objects.requireNonNull(tietNewPasswordDialogChangePairingPassword.getText()).toString());
+                }
+            });
+        }
+
+        changePairingPasswordDialog.show();
+        changePairingPasswordDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(changePairingPasswordDialog));
     }
 
     private int findSelectedDoorInstallationOption(RadioGroup radioGroup) {

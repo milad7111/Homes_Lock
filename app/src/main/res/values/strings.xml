@@ -23,15 +23,10 @@
     <!--//region Activity and Fragment Titles-->
     <!--//endregion Activity and Fragment Titles-->
 
-    <!--//region Dialog Titles-->
-    <string name="dialog_title_pair_with_ble_device">Pairing</string>
-    <string name="dialog_title_add_new_lock">Add new lock</string>
-    <string name="dialog_title_forget_password">Forget password</string>
-    <!--//endregion Dialog Titles-->
-
     <!--//region Fragment Buttons-->
     <string name="fragment_button_add_new_lock">Add new lock</string>
     <string name="fragment_button_sign_up">SignUp</string>
+    <string name="fragment_button_login">LOGIN</string>
     <!--//endregion Fragment Buttons-->
 
     <!--//region Fragment Hints-->
@@ -40,6 +35,8 @@
     <string name="fragment_hint_confirm_password">Confirm Password</string>
     <string name="fragment_hint_name">Name</string>
     <string name="fragment_hint_mobile_number">Mobile number</string>
+    <string name="fragment_hint_password_old">Old password</string>
+    <string name="fragment_hint_password_new">New password</string>
     <!--//endregion Fragment Hints-->
 
     <!--//region Fragment TextViews-->
@@ -58,7 +55,25 @@
     <string name="fragment_text_view_change_online_password_description">This is reachable when you are Connect to Lock</string>
     <string name="fragment_text_view_change_pairing_password">Change Pairing Password</string>
     <string name="fragment_text_view_change_pairing_password_description">This is reachable when you are Connect to Lock</string>
+    <string name="fragment_text_view_direct_connect">Direct Connect</string>
+    <string name="fragment_text_view_sign_up">Sign Up</string>
+    <string name="fragment_text_view_forget_password">Forget Password</string>
     <!--//endregion Fragment TextViews-->
+
+    <!--//region Dialog Titles-->
+    <string name="dialog_title_pair_with_ble_device">Pairing</string>
+    <string name="dialog_title_add_new_lock">Add new lock</string>
+    <string name="dialog_title_forget_password">Forget password</string>
+    <string name="dialog_title_change_online_password">Change online password</string>
+    <string name="dialog_title_change_pairing_password">Change pairing password</string>
+    <string name="dialog_title_add_member">Add member</string>
+    <string name="dialog_title_available_devices">Available devices</string>
+    <string name="dialog_title_available_networks">Available networks</string>
+    <string name="dialog_title_device_wifi_network_connect">Connect Lock to network</string>
+    <string name="dialog_title_door_installation">Door installation</string>
+    <string name="dialog_title_lock_stages">Lock stages</string>
+    <string name="dialog_title_remove_lock">Remove lock</string>
+    <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->
     <string name="dialog_button_cancel">CANCEL</string>
@@ -67,6 +82,7 @@
     <string name="dialog_button_send_reset_password_link">Send reset password link</string>
     <string name="dialog_button_connect">CONNECT</string>
     <string name="dialog_button_apply">APPLY</string>
+    <string name="dialog_button_pair">PAIR</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->
@@ -89,7 +105,12 @@
     <string name="dialog_hint_serial_number">Serial number</string>
     <string name="dialog_hint_email">Email : example@mail.com</string>
     <string name="dialog_hint_wifi_password">Wifi password</string>
+    <string name="dialog_hint_security_password">Security password</string>
     <!--//endregion Dialog Hints-->
+
+    <!--//endregion Dialog TextViews-->
+    <string name="dialog_text_view_sure">Are you sure?</string>
+    <!--//endregion Dialog TextViews-->
 
     <!--//region Dialog Spinner-->
     <string-array name="dialog_spinner_list_wifi_type">
@@ -126,6 +147,7 @@
     <string name="ble_state_connecting" translatable="false">Connecting…</string>
     <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
     <string name="ble_state_initializing" translatable="false">Initializing…</string>
+    <string name="dialog_button_remove">REMOVE</string>
     <!--//endregion BLE States-->
 
 </resources>

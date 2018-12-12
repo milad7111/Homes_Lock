@@ -1,12 +1,42 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_layout_border"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/txv_title_dialog_remove_lock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/dialog_title_remove_lock"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txv_message_dialog_remove_lock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/dialog_text_view_sure"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_remove_lock" />
+
     <CheckBox
-        android:id="@+id/chb_lock_favorite_status_dialog_add_new_lock"
+        android:id="@+id/chb_remove_all_members_dialog_remove_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -15,6 +45,31 @@
         android:text="@string/dialog_check_box_remove_all_members"
         android:textColor="@color/md_white_1000"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txv_message_dialog_remove_lock" />
+
+    <Button
+        android:id="@+id/btn_cancel_dialog_remove_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:text="@string/dialog_button_cancel"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chb_remove_all_members_dialog_remove_lock" />
+
+    <Button
+        android:id="@+id/btn_remove_dialog_remove_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:text="@string/dialog_button_remove"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_remove_lock"
+        app:layout_constraintTop_toBottomOf="@+id/chb_remove_all_members_dialog_remove_lock" />
 
 </android.support.constraint.ConstraintLayout>

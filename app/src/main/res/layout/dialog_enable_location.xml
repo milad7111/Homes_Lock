@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:gravity="left|center_vertical"
+        android:gravity="start|center_vertical"
         android:text="Enable location status"
         android:textColor="@color/md_white_1000"
         android:textSize="20sp"
