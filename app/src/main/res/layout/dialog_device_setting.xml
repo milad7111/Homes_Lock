@@ -1,0 +1,149 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_layout_border"
+    android:fillViewport="true"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txv_title_door_installation_dialog_device_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="start|center_vertical"
+            android:text="@string/dialog_title_door_installation_device_setting"
+            android:textColor="@color/md_white_1000"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/rdg_door_installation_dialog_device_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txv_title_door_installation_dialog_device_setting">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rdb_right_handed_dialog_device_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:buttonTint="@color/md_white_1000"
+                android:checked="true"
+                android:text="@string/dialog_radio_button_right_handed"
+                android:textColor="@color/md_white_1000" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rdb_left_handed_dialog_device_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/md_white_1000"
+                android:text="@string/dialog_radio_button_left_handed"
+                android:textColor="@color/md_white_1000" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/txv_title_lock_stages_dialog_device_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="start|center_vertical"
+            android:text="@string/dialog_title_lock_stages_device_setting"
+            android:textColor="@color/md_white_1000"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_device_setting" />
+
+        <RadioGroup
+            android:id="@+id/rdg_lock_stages_dialog_device_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txv_title_lock_stages_dialog_device_setting">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rdb_ninety_degrees_dialog_device_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:buttonTint="@color/md_white_1000"
+                android:checked="true"
+                android:text="@string/dialog_radio_button_ninety_degrees"
+                android:textColor="@color/md_white_1000" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rdb_one_stage_dialog_device_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:buttonTint="@color/md_white_1000"
+                android:text="@string/dialog_radio_button_one_stage"
+                android:textColor="@color/md_white_1000" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rdb_two_stages_dialog_device_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:buttonTint="@color/md_white_1000"
+                android:text="@string/dialog_radio_button_two_stages"
+                android:textColor="@color/md_white_1000" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rdb_three_stages_dialog_device_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:buttonTint="@color/md_white_1000"
+                android:text="@string/dialog_radio_button_three_stages"
+                android:textColor="@color/md_white_1000" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btn_cancel_dialog_device_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/transparent"
+            android:text="@string/dialog_button_cancel"
+            android:textColor="@color/md_white_1000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rdg_lock_stages_dialog_device_setting" />
+
+        <Button
+            android:id="@+id/btn_apply_dialog_device_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/transparent"
+            android:text="@string/dialog_button_apply"
+            android:textColor="@color/md_white_1000"
+            app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_device_setting"
+            app:layout_constraintTop_toBottomOf="@+id/rdg_lock_stages_dialog_device_setting" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

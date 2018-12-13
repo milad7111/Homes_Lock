@@ -289,23 +289,15 @@ public class DeviceViewModel extends AndroidViewModel
                         break;
                     case 0x0C:
                         if (mISettingFragment != null)
-                            mISettingFragment.onSetDoorInstallationSetting(responseValue[1] == 0);
+                            mISettingFragment.onSetDeviceSetting(responseValue[1] == 0);
                         break;
                     case 0x0D:
                         if (mISettingFragment != null)
-                            mISettingFragment.onSetLockStagesSetting(responseValue[1] == 0);
-                        break;
-                    case 0x0F:
-                        if (mISettingFragment != null)
                             mISettingFragment.onChangeOnlinePassword(responseValue[1] == 0);
                         break;
-                    case 0x10:
+                    case 0x0E:
                         if (mISettingFragment != null)
                             mISettingFragment.onChangePairingPassword(responseValue[1] == 0);
-                        break;
-                    case 0x11:
-                        if (mISettingFragment != null)
-                            mISettingFragment.onRemoveLock(responseValue[1] == 0);
                         break;
                 }
             }
@@ -412,29 +404,24 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x00}));
     }
 
-    public void setDeviceDoorInstallationSetting(Fragment parentFragment, int selectedDoorInstallationOption) {
+    public void setDeviceSetting(Fragment parentFragment, int selectedDoorInstallationOption, int selectedLockStagesOption) {
         mISettingFragment = (ISettingFragment) parentFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0C}, new byte[]{0x00}));
     }
 
-    public void setDeviceLockStagesSetting(Fragment parentFragment, int selectedLockStagesOption) {
+    public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
         mISettingFragment = (ISettingFragment) parentFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0D}, new byte[]{0x00}));
     }
 
-    public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
-        mISettingFragment = (ISettingFragment) parentFragment;
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0F}, new byte[]{0x00}));
-    }
-
     public void changePairingPasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x10}, new byte[]{0x00}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0E}, new byte[]{0x00}));
     }
 
     public void removeLock(Fragment parentFragment, boolean removeAllMembers) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x11}, new byte[]{0x00}));
+        //TODO remove Lock
     }
     //endregion BLE Methods
 

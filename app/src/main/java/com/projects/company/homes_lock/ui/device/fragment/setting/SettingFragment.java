@@ -49,10 +49,8 @@ public class SettingFragment extends Fragment
     //endregion Declare Constants
 
     //region Declare Views
-    private TextView txvDoorInstallationSettingFragment;
-    private TextView txvDoorInstallationDescriptionSettingFragment;
-    private TextView txvLockStagesSettingFragment;
-    private TextView txvLockStagesDescriptionSettingFragment;
+    private TextView txvDeviceSettingSettingFragment;
+    private TextView txvDeviceSettingDescriptionSettingFragment;
     private TextView txvProServicesSettingFragment;
     private TextView txvProServicesDescriptionSettingFragment;
     private TextView txvRemoveLockSettingFragment;
@@ -70,7 +68,7 @@ public class SettingFragment extends Fragment
     private Fragment mFragment;
     public static DeviceViewModel mDeviceViewModel;
     private static Device mDevice;
-    private Dialog doorInstallationDialog;
+    private Dialog deviceSettingDialog;
     private Dialog lockStagesDialog;
     private Dialog changeOnlinePasswordDialog;
     private Dialog changePairingPasswordDialog;
@@ -121,10 +119,8 @@ public class SettingFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
-        txvDoorInstallationSettingFragment = view.findViewById(R.id.txv_door_installation_setting_fragment);
-        txvDoorInstallationDescriptionSettingFragment = view.findViewById(R.id.txv_door_installation_description_setting_fragment);
-        txvLockStagesSettingFragment = view.findViewById(R.id.txv_lock_stages_setting_fragment);
-        txvLockStagesDescriptionSettingFragment = view.findViewById(R.id.txv_lock_stages_description_setting_fragment);
+        txvDeviceSettingSettingFragment = view.findViewById(R.id.txv_device_setting_setting_fragment);
+        txvDeviceSettingDescriptionSettingFragment = view.findViewById(R.id.txv_device_setting_description_setting_fragment);
         txvProServicesSettingFragment = view.findViewById(R.id.txv_pro_services_setting_fragment);
         txvProServicesDescriptionSettingFragment = view.findViewById(R.id.txv_pro_services_description_setting_fragment);
         txvRemoveLockSettingFragment = view.findViewById(R.id.txv_remove_lock_setting_fragment);
@@ -136,10 +132,8 @@ public class SettingFragment extends Fragment
         //endregion Initialize Views
 
         //region Setup Views
-        txvDoorInstallationSettingFragment.setOnClickListener(this);
-        txvDoorInstallationDescriptionSettingFragment.setOnClickListener(this);
-        txvLockStagesSettingFragment.setOnClickListener(this);
-        txvLockStagesDescriptionSettingFragment.setOnClickListener(this);
+        txvDeviceSettingSettingFragment.setOnClickListener(this);
+        txvDeviceSettingDescriptionSettingFragment.setOnClickListener(this);
         txvProServicesSettingFragment.setOnClickListener(this);
         txvProServicesDescriptionSettingFragment.setOnClickListener(this);
         txvRemoveLockSettingFragment.setOnClickListener(this);
@@ -156,17 +150,11 @@ public class SettingFragment extends Fragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.txv_door_installation_setting_fragment:
-                handleDoorInstallation();
+            case R.id.txv_device_setting_setting_fragment:
+                handleDeviceSetting();
                 break;
-            case R.id.txv_door_installation_description_setting_fragment:
-                handleDoorInstallation();
-                break;
-            case R.id.txv_lock_stages_setting_fragment:
-                handleLockStages();
-                break;
-            case R.id.txv_lock_stages_description_setting_fragment:
-                handleLockStages();
+            case R.id.txv_device_setting_description_setting_fragment:
+                handleDeviceSetting();
                 break;
             case R.id.txv_pro_services_setting_fragment:
                 handleProServices();
@@ -198,21 +186,7 @@ public class SettingFragment extends Fragment
 
     //region ISettingFragment Callbacks
     @Override
-    public void onSetDoorInstallationSetting(boolean value) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
-        if (doorInstallationDialog != null) {
-            doorInstallationDialog.dismiss();
-            doorInstallationDialog = null;
-        }
-    }
-
-    @Override
-    public void onSetLockStagesSetting(boolean value) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
-        if (doorInstallationDialog != null) {
-            lockStagesDialog.dismiss();
-            lockStagesDialog = null;
-        }
+    public void onSetDeviceSetting(boolean value) {
     }
 
     @Override
@@ -246,10 +220,8 @@ public class SettingFragment extends Fragment
     //region Declare Methods
     private void initViews() {
         if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            txvDoorInstallationSettingFragment.setVisibility(View.GONE);
-            txvDoorInstallationDescriptionSettingFragment.setVisibility(View.GONE);
-            txvLockStagesSettingFragment.setVisibility(View.GONE);
-            txvLockStagesDescriptionSettingFragment.setVisibility(View.GONE);
+            txvDeviceSettingSettingFragment.setVisibility(View.GONE);
+            txvDeviceSettingDescriptionSettingFragment.setVisibility(View.GONE);
             txvProServicesSettingFragment.setVisibility(View.GONE);
             txvProServicesDescriptionSettingFragment.setVisibility(View.GONE);
             txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
@@ -259,74 +231,44 @@ public class SettingFragment extends Fragment
         }
     }
 
-    private void handleDoorInstallation() {
+    private void handleDeviceSetting() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            doorInstallationDialog = new Dialog(getActivity());
-            doorInstallationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            doorInstallationDialog.setContentView(R.layout.dialog_door_installation);
+            deviceSettingDialog = new Dialog(getActivity());
+            deviceSettingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            deviceSettingDialog.setContentView(R.layout.dialog_device_setting);
 
-            RadioGroup rdgMainDialogDoorInstallation =
-                    doorInstallationDialog.findViewById(R.id.rdg_main_dialog_door_installation);
+            RadioGroup rdgDoorInstallationDialogDeviceSetting =
+                    deviceSettingDialog.findViewById(R.id.rdg_door_installation_dialog_device_setting);
+            RadioGroup rdgLockStagesDialogDeviceSetting =
+                    deviceSettingDialog.findViewById(R.id.rdg_lock_stages_dialog_device_setting);
 
             Button btnCancelDialogDoorInstallation =
-                    doorInstallationDialog.findViewById(R.id.btn_cancel_dialog_door_installation);
+                    deviceSettingDialog.findViewById(R.id.btn_cancel_dialog_device_setting);
             Button btnApplyDialogDoorInstallation =
-                    doorInstallationDialog.findViewById(R.id.btn_apply_dialog_door_installation);
+                    deviceSettingDialog.findViewById(R.id.btn_apply_dialog_device_setting);
 
             btnCancelDialogDoorInstallation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    doorInstallationDialog.dismiss();
-                    doorInstallationDialog = null;
+                    deviceSettingDialog.dismiss();
+                    deviceSettingDialog = null;
                 }
             });
 
             btnApplyDialogDoorInstallation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Door installation setup ...", true);
-                    mDeviceViewModel.setDeviceDoorInstallationSetting(mFragment, findSelectedDoorInstallationOption(rdgMainDialogDoorInstallation));
+                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Device setting setup ...", true);
+                    mDeviceViewModel.setDeviceSetting(
+                            mFragment,
+                            findSelectedDoorInstallationOption(rdgDoorInstallationDialogDeviceSetting),
+                            findSelectedLockStagesOption(rdgLockStagesDialogDeviceSetting));
                 }
             });
         }
 
-        doorInstallationDialog.show();
-        doorInstallationDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(doorInstallationDialog));
-    }
-
-    private void handleLockStages() {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            lockStagesDialog = new Dialog(getActivity());
-            lockStagesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            lockStagesDialog.setContentView(R.layout.dialog_lock_stages);
-
-            RadioGroup rdgMainDialogLockStages =
-                    lockStagesDialog.findViewById(R.id.rdg_main_dialog_lock_stages);
-
-            Button btnCancelDialogLockStages =
-                    lockStagesDialog.findViewById(R.id.btn_cancel_dialog_lock_stages);
-            Button btnApplyDialogLockStages =
-                    lockStagesDialog.findViewById(R.id.btn_apply_dialog_lock_stages);
-
-            btnCancelDialogLockStages.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    lockStagesDialog.dismiss();
-                    lockStagesDialog = null;
-                }
-            });
-
-            btnApplyDialogLockStages.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Lock stages setup ...", true);
-                    mDeviceViewModel.setDeviceLockStagesSetting(mFragment, findSelectedLockStagesOption(rdgMainDialogLockStages));
-                }
-            });
-        }
-
-        lockStagesDialog.show();
-        lockStagesDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(lockStagesDialog));
+        deviceSettingDialog.show();
+        deviceSettingDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceSettingDialog));
     }
 
     private void handleProServices() {
@@ -458,9 +400,9 @@ public class SettingFragment extends Fragment
 
     private int findSelectedDoorInstallationOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.rdb_left_handed_dialog_door_installation:
+            case R.id.rdb_right_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_LEFT_HANDED;
-            case R.id.rdb_right_handed_dialog_door_installation:
+            case R.id.rdb_left_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
             default:
                 return -1;
@@ -469,13 +411,13 @@ public class SettingFragment extends Fragment
 
     private int findSelectedLockStagesOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.rdb_ninety_degrees_dialog_lock_stages:
+            case R.id.rdb_ninety_degrees_dialog_device_setting:
                 return LOCK_STAGES_NINETY_DEGREES;
-            case R.id.rdb_one_stage_dialog_lock_stages:
+            case R.id.rdb_one_stage_dialog_device_setting:
                 return LOCK_STAGES_ONE_STAGE;
-            case R.id.rdb_two_stage_dialog_lock_stages:
+            case R.id.rdb_two_stages_dialog_device_setting:
                 return LOCK_STAGES_TWO_STAGE;
-            case R.id.rdb_three_stage_dialog_lock_stages:
+            case R.id.rdb_three_stages_dialog_device_setting:
                 return LOCK_STAGES_THREE_STAGE;
             default:
                 return -1;

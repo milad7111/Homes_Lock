@@ -70,8 +70,8 @@
     <string name="dialog_title_available_devices">Available devices</string>
     <string name="dialog_title_available_networks">Available networks</string>
     <string name="dialog_title_device_wifi_network_connect">Connect Lock to network</string>
-    <string name="dialog_title_door_installation">Door installation</string>
-    <string name="dialog_title_lock_stages">Lock stages</string>
+    <string name="dialog_title_door_installation_device_setting">Door installation</string>
+    <string name="dialog_title_lock_stages_device_setting">Lock stages</string>
     <string name="dialog_title_remove_lock">Remove lock</string>
     <!--//endregion Dialog Titles-->
 
@@ -96,8 +96,8 @@
     <string name="dialog_radio_button_left_handed">Left Handed</string>
     <string name="dialog_radio_button_ninety_degrees">90 degrees</string>
     <string name="dialog_radio_button_one_stage">One stage</string>
-    <string name="dialog_radio_button_two_stage">Two stage</string>
-    <string name="dialog_radio_button_three_stage">Three stage</string>
+    <string name="dialog_radio_button_two_stages">Two stages</string>
+    <string name="dialog_radio_button_three_stages">Three stages</string>
     <!--//endregion Dialog RadioButtons-->
 
     <!--//region Dialog Hints-->
@@ -148,6 +148,8 @@
     <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
     <string name="ble_state_initializing" translatable="false">Initializing…</string>
     <string name="dialog_button_remove">REMOVE</string>
+    <string name="fragment_text_view_device_setting">Device setting</string>
+    <string name="fragment_text_view_device_setting_value"><![CDATA[Door installation & Lock stages]]></string>
     <!--//endregion BLE States-->
 
 </resources>

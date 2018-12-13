@@ -2,8 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_layout_border"
-    android:orientation="vertical">
+    android:background="@drawable/background_layout_border">
 
     <TextView
         android:id="@+id/txv_title_dialog_device_wifi_network_connect"
