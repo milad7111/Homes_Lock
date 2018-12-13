@@ -8,7 +8,9 @@ public interface ISettingFragment {
 
     void onChangePairingPassword(boolean value);
 
-    void onRemoveLock(boolean value);
-
     void onSetDeviceSetting(boolean value);
+
+    void onRemoveAllLockMembers(String count);
+
+    void onRemoveDeviceForOneMember(String count);
 }

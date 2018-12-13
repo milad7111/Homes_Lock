@@ -82,7 +82,8 @@ public class NetworkRepository {
     }
 
     public void getDeviceCountsWithSerialNumber(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
-        BaseApplication.getRetrofitAPI().getDeviceCountsWithSerialNumber(BaseApplication.activeUserToken, String.format("serialNumber='%s'", parameter))
+        BaseApplication.getRetrofitAPI().getDeviceCountsWithSerialNumber(BaseApplication.activeUserToken,
+                String.format("serialNumber='%s'", parameter))
                 .enqueue(new Callback<ResponseBody>() {
 
                     @Override
@@ -181,6 +182,39 @@ public class NetworkRepository {
                 listener.onListNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
+    }
+
+    public void removeDeviceForAllMembers(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String objectId) {
+        BaseApplication.getRetrofitAPI().removeDeviceForAllMembers(BaseApplication.activeUserToken,
+                String.format("relatedDevice.objectId='%s'", objectId)).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response != null && response.body() != null)
+                    listener.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
+            }
+        });
+    }
+
+    public void removeDeviceForOneMember(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String lockObjectId, String userLockObjectId) {
+        BaseApplication.getRetrofitAPI().removeDeviceForForOneMember(BaseApplication.activeUserToken,
+                String.format("relatedDevice.objectId='%s' and objectId='%s'", lockObjectId, userLockObjectId))
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response != null && response.body() != null)
+                            listener.onResponse(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
+                    }
+                });
     }
     //endregion Declare Methods
 }

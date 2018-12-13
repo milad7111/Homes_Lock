@@ -34,4 +34,7 @@ public interface UserLockDao {
 
     @Query("SELECT * FROM userLock WHERE objectId=:userObjectId")
     List<UserLock> getUserLocksByUser(final int userObjectId);
+
+    @Query("DELETE FROM userLock")
+    void clearAllData();
 }

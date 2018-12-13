@@ -73,4 +73,7 @@ public abstract class UserDao {
 
     @Query("SELECT * FROM device WHERE objectId = :mDeviceId")
     abstract Device _getDeviceByObjectId(String mDeviceId);
+
+    @Query("DELETE FROM user")
+    public void clearAllData(){};
 }

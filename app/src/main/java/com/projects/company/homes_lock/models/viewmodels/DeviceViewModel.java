@@ -332,15 +332,32 @@ public class DeviceViewModel extends AndroidViewModel
                     if (mIAddLockFragment != null)
                         mIAddLockFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
                     break;
+                case "removeDeviceForAllMembers":
+                    if (mISettingFragment != null)
+                        mISettingFragment.onRemoveAllLockMembers(
+                                ((ResponseBody) response).source().toString()
+                                        .replace("[text=", "")
+                                        .replace("]", "")
+                                        .replace("\"", ""));
+                    break;
+                case "removeDeviceForOneMember":
+                    if (mISettingFragment != null)
+                        mISettingFragment.onRemoveDeviceForOneMember(
+                                ((ResponseBody) response).source().toString()
+                                        .replace("[text=", "")
+                                        .replace("]", "")
+                                        .replace("\"", ""));
+                    break;
                 default:
                     break;
             }
         } else if (response instanceof UserLock) {
             if (mIAddLockFragment != null)
                 mIAddLockFragment.onInsertUserLockSuccessful((UserLock) response);
-        } else if (response instanceof User)
+        } else if (response instanceof User) {
             if (mIAddLockFragment != null)
                 mIAddLockFragment.onGetUserSuccessful((User) response);
+        }
     }
 
     @Override
@@ -390,6 +407,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void setDeviceWifiNetwork(Fragment parentFragment, WifiNetworksModel wifiNetwork) {
+        mILockPageFragment = (ILockPageFragment) parentFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x08}, wifiNetwork.getSSID().getBytes()));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x09}, wifiNetwork.getPassword().getBytes()));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0A}, new byte[]{(byte) wifiNetwork.getAuthenticateType()}));
@@ -419,9 +437,18 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0E}, new byte[]{0x00}));
     }
 
-    public void removeLock(Fragment parentFragment, boolean removeAllMembers) {
+    public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        //TODO remove Lock
+        if (mDevice.isLockSavedInServer()) {
+            if (removeAllMembers) {
+                setRequestType("removeDeviceForAllMembers");
+                mNetworkRepository.removeDeviceForAllMembers(this, mDevice.getObjectId());
+            } else {
+                setRequestType("removeDeviceForOneMember");
+                mNetworkRepository.removeDeviceForOneMember(this, mDevice.getObjectId(), mDevice.getUserLockObjectId());
+            }
+        } else
+            mLocalRepository.deleteDevice(mDevice);
     }
     //endregion BLE Methods
 

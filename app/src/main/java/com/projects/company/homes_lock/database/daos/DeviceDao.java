@@ -23,9 +23,6 @@ public interface DeviceDao extends BaseDao<Device> {
     @Update
     void update(Device... device);
 
-    @Query("DELETE FROM device")
-    void deleteAll();
-
     @Query("SELECT * FROM device")
     LiveData<List<Device>> getAllDevices();
 
@@ -55,4 +52,7 @@ public interface DeviceDao extends BaseDao<Device> {
 
     @Query("UPDATE device SET coLevel = :mCoLevel  WHERE objectId = :mDeviceObjectId")
     void setCoLevel(String mDeviceObjectId, byte mCoLevel);
+
+    @Query("DELETE FROM device")
+    void clearAllData();
 }

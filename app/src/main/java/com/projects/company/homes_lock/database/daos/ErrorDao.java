@@ -23,9 +23,9 @@ public interface ErrorDao {
     @Update
     void update(Error... errors);
 
-    @Query("DELETE FROM error")
-    void deleteAll();
-
     @Query("SELECT * FROM error")
     LiveData<List<Error>> getAllErrors();
+
+    @Query("DELETE FROM error")
+    void clearAllData();
 }

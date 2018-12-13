@@ -3,9 +3,9 @@ package com.projects.company.homes_lock.repositories.remote;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
+import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
-import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -59,4 +60,12 @@ public interface IRetrofit {
             @Header("user-token") String userToken,
             @Path("userObjectId") String userObjectId,
             @Body HelperModel parameter);
+
+    @Headers({"Content-Type: application/json"})
+    @DELETE("data/bulk/UserLock?")
+    Call<ResponseBody> removeDeviceForAllMembers(@Header("user-token") String userToken, @Query("where") String whereClause);
+
+    @Headers({"Content-Type: application/json"})
+    @DELETE("data/bulk/UserLock?")
+    Call<ResponseBody> removeDeviceForForOneMember(@Header("user-token") String userToken, @Query("where") String whereClause);
 }

@@ -23,12 +23,12 @@ public interface DeviceErrorDao {
     @Update
     void update(DeviceError... deviceErrors);
 
-    @Query("DELETE FROM deviceError")
-    void deleteAll();
-
     @Query("SELECT * FROM deviceError")
     LiveData<List<DeviceError>> getAllDeviceErrors();
 
     @Query("SELECT * FROM deviceError WHERE objectId=:deviceObjectId")
     List<DeviceError> getDeviceErrorsByDevice(final int deviceObjectId);
+
+    @Query("DELETE FROM deviceError")
+    void clearAllData();
 }

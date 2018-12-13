@@ -324,9 +324,32 @@ public class Device extends BaseModel {
     }
 
     public int getMemberAdminStatus() {
-        if (mRelatedUsers.size() == 1)
+        if (mRelatedUsers != null && mRelatedUsers.size() != 0)
             return mRelatedUsers.get(0).getAdminStatus() ? DataHelper.MEMBER_STATUS_PRIMARY_ADMIN : DataHelper.MEMBER_STATUS_NOT_ADMIN;
-        else
-            return -1;
+
+        return -1;
+    }
+
+    public boolean isLockSavedInServer() {
+        if (mRelatedUsers != null)
+            return mRelatedUsers.size() != 0;
+
+        return false;
+    }
+
+    public int getAdminMembersCount() {
+        int count = 0;
+        for (UserLock userLock : mRelatedUsers)
+            if (userLock.getAdminStatus())
+                count++;
+
+        return count;
+    }
+
+    public String getUserLockObjectId() {
+        if (mRelatedUsers != null && mRelatedUsers.size() != 0)
+            return mRelatedUsers.get(0).getObjectId();
+
+        return null;
     }
 }

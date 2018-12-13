@@ -187,6 +187,11 @@ public class SettingFragment extends Fragment
     //region ISettingFragment Callbacks
     @Override
     public void onSetDeviceSetting(boolean value) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        if (removeLockDialog != null) {
+            removeLockDialog.dismiss();
+            removeLockDialog = null;
+        }
     }
 
     @Override
@@ -208,7 +213,16 @@ public class SettingFragment extends Fragment
     }
 
     @Override
-    public void onRemoveLock(boolean value) {
+    public void onRemoveAllLockMembers(String count) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        if (removeLockDialog != null) {
+            removeLockDialog.dismiss();
+            removeLockDialog = null;
+        }
+    }
+
+    @Override
+    public void onRemoveDeviceForOneMember(String count) {
         DialogHelper.handleProgressDialog(null, null, null, false);
         if (removeLockDialog != null) {
             removeLockDialog.dismiss();
@@ -283,6 +297,16 @@ public class SettingFragment extends Fragment
             CheckBox chbRemoveAllMembersDialogRemoveLock =
                     removeLockDialog.findViewById(R.id.chb_remove_all_members_dialog_remove_lock);
 
+            if (mDevice.getAdminMembersCount() == 1) {//TODO I must get this from server
+                chbRemoveAllMembersDialogRemoveLock.setChecked(true);
+                chbRemoveAllMembersDialogRemoveLock.setEnabled(false);
+            }
+
+            if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+                chbRemoveAllMembersDialogRemoveLock.setChecked(false);
+                chbRemoveAllMembersDialogRemoveLock.setVisibility(View.GONE);
+            }
+
             Button btnCancelDialogRemoveLock =
                     removeLockDialog.findViewById(R.id.btn_cancel_dialog_remove_lock);
             Button btnRemoveDialogRemoveLock =
@@ -300,7 +324,10 @@ public class SettingFragment extends Fragment
                 @Override
                 public void onClick(View v) {
                     DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Remove lock ...", true);
-                    mDeviceViewModel.removeLock(mFragment, chbRemoveAllMembersDialogRemoveLock.isChecked());
+                    mDeviceViewModel.removeDevice(
+                            mFragment,
+                            chbRemoveAllMembersDialogRemoveLock.isChecked(),
+                            mDevice);
                 }
             });
         }

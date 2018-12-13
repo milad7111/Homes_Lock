@@ -6,4 +6,6 @@ package com.projects.company.homes_lock.repositories.local;
 
 public interface ILocalRepository<T> {
     void onDataInsert(Long id);
+
+    void onClearAllData();
 }

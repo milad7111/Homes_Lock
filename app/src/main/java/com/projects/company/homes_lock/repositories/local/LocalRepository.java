@@ -7,8 +7,11 @@ import android.os.AsyncTask;
 
 import com.projects.company.homes_lock.database.base.LockDatabase;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
+import com.projects.company.homes_lock.database.daos.DeviceErrorDao;
+import com.projects.company.homes_lock.database.daos.ErrorDao;
 import com.projects.company.homes_lock.database.daos.LockUserViewDao;
 import com.projects.company.homes_lock.database.daos.UserDao;
+import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 
@@ -25,9 +28,12 @@ public class LocalRepository {
     //endregion Declare Variables
 
     //region Declare Objects
-    private DeviceDao mDeviceDao;
-    private LockUserViewDao mLockUserViewDao;
     private UserDao mUserDao;
+    private UserLockDao mUserLockDao;
+    private DeviceDao mDeviceDao;
+    private DeviceErrorDao mDeviceErrorDao;
+    private ErrorDao mErrorDao;
+    private LockUserViewDao mLockUserViewDao;
     private SharedPreferences mSharedPreferences = null;
     private static ILocalRepository mILocalRepository = null;
     //endregion Declare Objects
@@ -38,9 +44,12 @@ public class LocalRepository {
         //endregion Initialize Variables
 
         //region Initialize Objects
-        mDeviceDao = LockDatabase.getDatabase(application).deviceDao();
-        mLockUserViewDao = LockDatabase.getDatabase(application).lockUserViewDao();
         mUserDao = LockDatabase.getDatabase(application).userDao();
+        mUserLockDao = LockDatabase.getDatabase(application).userLockDao();
+        mDeviceDao = LockDatabase.getDatabase(application).deviceDao();
+        mDeviceErrorDao = LockDatabase.getDatabase(application).deviceErrorDao();
+        mErrorDao = LockDatabase.getDatabase(application).errorDao();
+        mLockUserViewDao = LockDatabase.getDatabase(application).lockUserViewDao();
         mSharedPreferences = application.getSharedPreferences(application.getPackageName(), MODE_PRIVATE);
         //endregion Initialize Objects
     }
@@ -103,7 +112,7 @@ public class LocalRepository {
     //region User and UserLock table
     public void insertUser(User user, ILocalRepository mILocalRepository) {
         this.mILocalRepository = mILocalRepository;
-        new insertUserAsyncTask(mUserDao).execute(user);
+        new clearAllDataAndInsertUserAsyncTask(mUserDao, mUserLockDao, mDeviceDao, mDeviceErrorDao, mErrorDao, user).execute();
     }
 
     public Device getUserLockInfo(String objectId) {
@@ -162,12 +171,52 @@ public class LocalRepository {
                 mILocalRepository.onDataInsert(id);
         }
     }
+
+    private static class clearAllDataAndInsertUserAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private UserDao mUserDao;
+        private UserLockDao mUserLockDao;
+        private DeviceDao mDeviceDao;
+        private DeviceErrorDao mDeviceErrorDao;
+        private ErrorDao mErrorDao;
+        private User mUser;
+
+        clearAllDataAndInsertUserAsyncTask(
+                UserDao mUserDao, UserLockDao mUserLockDao, DeviceDao mDeviceDao,
+                DeviceErrorDao mDeviceErrorDao, ErrorDao mErrorDao, User mUser) {
+            this.mUserDao = mUserDao;
+            this.mUserLockDao = mUserLockDao;
+            this.mDeviceDao = mDeviceDao;
+            this.mDeviceErrorDao = mDeviceErrorDao;
+            this.mErrorDao = mErrorDao;
+            this.mUser = mUser;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            this.mUserDao.clearAllData();
+            this.mUserLockDao.clearAllData();
+            this.mDeviceDao.clearAllData();
+            this.mDeviceErrorDao.clearAllData();
+            this.mErrorDao.clearAllData();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (mILocalRepository != null)
+                mILocalRepository.onClearAllData();
+            new insertUserAsyncTask(mUserDao).execute(mUser);
+        }
+    }
     //endregion Declare classes
 
     //region SharePreferences
     public boolean isFirstTimeLaunchApp() {
         if (mSharedPreferences.getBoolean("firstRun", true)) {
-            mSharedPreferences.edit().putBoolean("firstRun", false).commit();
+            mSharedPreferences.edit().putBoolean("firstRun", false).apply();
             return true;
         }
 

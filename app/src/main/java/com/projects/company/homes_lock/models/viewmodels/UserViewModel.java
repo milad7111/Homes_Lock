@@ -116,7 +116,7 @@ public class UserViewModel extends AndroidViewModel
     }
     //endregion Login & Register Callbacks
 
-    //region LocalRepository Callbacks
+    //region ILocalRepository Callbacks
     @Override
     public void onDataInsert(Long id) {
         Log.d(getClass().getName(), "Data inserted with Id : " + id);
@@ -126,5 +126,9 @@ public class UserViewModel extends AndroidViewModel
         else if (mIAddLockFragment != null)
             mIAddLockFragment.onDataInsert(id);
     }
-    //endregion LocalRepository Callbacks
+
+    @Override
+    public void onClearAllData() {
+    }
+    //endregion ILocalRepository Callbacks
 }
