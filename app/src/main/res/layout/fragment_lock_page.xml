@@ -87,7 +87,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/txv_humidity_lock_page"
         app:layout_constraintEnd_toStartOf="@+id/txv_humidity_lock_page"
         app:layout_constraintStart_toEndOf="@+id/txv_temperature_lock_page"
-        tools:srcCompat="@drawable/ic_temperature_celsius" />
+        tools:srcCompat="@drawable/ic_valid_temperature_celsius" />
 
     <ImageView
         android:id="@+id/img_water_percent_lock_page"
@@ -116,14 +116,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_battery_zero" />
+            app:srcCompat="@drawable/ic_valid_battery_zero" />
 
         <ImageView
             android:id="@+id/img_connection_status_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_wifi_off_disable" />
+            app:srcCompat="@drawable/ic_invalid_wifi_off" />
 
         <ImageView
             android:id="@+id/img_ble_lock_page"

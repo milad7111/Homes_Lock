@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -98,14 +99,13 @@ public class LockPageFragment extends Fragment
 
     //region Declare Arrays & Lists
     private List<WifiNetworksModel> mWifiNetworkList = new ArrayList<>();
-    private List<Device> mAllUserLocks = new ArrayList<>();
     //endregion Declare Arrays & Lists
 
     //region Declare Objects
-    public static DeviceViewModel mDeviceViewModel;
+    private Context mContext;
+    private DeviceViewModel mDeviceViewModel;
     private static Device mDevice;
-    private Dialog activeDialog;
-    private static WifiNetworksAdapter mWifiNetworksAdapter;
+    private WifiNetworksAdapter mWifiNetworksAdapter;
     private static Dialog deviceWifiNetworkListDialog;
     private static Dialog deviceWifiNetworkDialog;
     //endregion Declare Objects
@@ -135,6 +135,7 @@ public class LockPageFragment extends Fragment
         //endregion Initialize Variables
 
         //region Initialize Objects
+        mContext = getContext();
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
 
         mDevice = getArguments() != null ?
@@ -183,8 +184,7 @@ public class LockPageFragment extends Fragment
         //region init
         ViewHelper.setContext(getContext());
         handleProgressDialog(null, null, null, false);
-        txvLockNameLockPage.setText(mDevice.getBleDeviceName());
-        imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
+        updateViewData(true);
         //endregion init
     }
 
@@ -282,22 +282,18 @@ public class LockPageFragment extends Fragment
 
     //region Declare Methods
     private void updateViewData(boolean setDefault) {
+
         setLockStatusImage(imgLockStatusLockPage,
                 setDefault ? 2 : (mDevice.getLockStatus() ? 1 : 0));
-        setBatteryStatusImage(imgBatteryStatusLockPage,
-                setDefault ? 0 : mDevice.getBatteryPercentage());
-        setConnectionStatusImage(imgConnectionStatusLockPage,
-                setDefault ? 0 : (mDevice.getWifiStatus() ? 2 : 1), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+
+        setBatteryStatusImage(setDefault, imgBatteryStatusLockPage, mDevice.getBatteryPercentage());
+        setConnectionStatusImage(
+                imgConnectionStatusLockPage, setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
 
         imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
-
-        if (setDefault)
-            imgTemperatureCelsiusLockPage.setImageDrawable(null);
-        else
-            imgTemperatureCelsiusLockPage.setImageResource(R.drawable.ic_temperature_celsius);
-
+        imgTemperatureCelsiusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_temperature_celsius : R.drawable.ic_valid_temperature_celsius);
         imgWaterPercentLockPage.setImageDrawable(setDefault ? null : getResources().getDrawable(R.drawable.water_percent));
-
+        txvLockNameLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
         txvLockNameLockPage.setText(mDevice.getBleDeviceName());
 
         txvSecurityAlarmLockPage.setText(
@@ -305,14 +301,13 @@ public class LockPageFragment extends Fragment
                         "Data Not Synced" :
                         getSecurityAlarmText(mDevice.getLockStatus(), mDevice.getDoorStatus()));
         txvSecurityAlarmLockPage.setTextColor(
-                setDefault ?
-                        getColor(getActivity(), R.color.md_grey_500) :
-                        getColor(getActivity(), getSecurityAlarmColor(mDevice.getLockStatus(), mDevice.getDoorStatus())));
+                setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, getSecurityAlarmColor(mDevice.getLockStatus(), mDevice.getDoorStatus())));
 
-        txvTemperatureLockPage.setText(
-                setDefault ? "" : mDevice.getTemperature().toString());
-        txvHumidityLockPage.setText(
-                setDefault ? "" : mDevice.getHumidity().toString());
+        txvTemperatureLockPage.setText(mDevice.getTemperature().toString());
+        txvTemperatureLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
+
+        txvHumidityLockPage.setText(mDevice.getHumidity().toString());
+        txvHumidityLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
 
         txvNewUpdateLockPage.setText(null);
 
@@ -334,7 +329,7 @@ public class LockPageFragment extends Fragment
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
         else if (isConnectedToBleDevice)
             if (mDevice.getWifiStatus())
-                mDeviceViewModel.disconnectDeviceWifiNetwork();
+                this.mDeviceViewModel.disconnectDeviceWifiNetwork();
             else
                 handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
@@ -371,7 +366,7 @@ public class LockPageFragment extends Fragment
             @Override
             public void run() {
                 super.run();
-                mDevice = mDeviceViewModel.getUserLockInfo(mDevice.getObjectId());
+                mDevice = LockPageFragment.this.mDeviceViewModel.getUserLockInfo(mDevice.getObjectId());
             }
         }.start();
     }
@@ -442,7 +437,7 @@ public class LockPageFragment extends Fragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
-        mDeviceViewModel.sendLockCommand(lockCommand);
+        this.mDeviceViewModel.sendLockCommand(lockCommand);
     }
 
     private void initBleInfo() {
@@ -504,11 +499,11 @@ public class LockPageFragment extends Fragment
                 @Override
                 public void onClick(View v) {
                     mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-                    mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(getParentFragment());
+                    LockPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(getParentFragment());
                 }
             });
 
-            mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
+            LockPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
         } else {
             mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
             mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
@@ -552,11 +547,11 @@ public class LockPageFragment extends Fragment
                 public void onClick(View v) {
                     wifiNetwork.setPassword(tietWifiPasswordDialogDeviceWifiNetworkConnect.getText().toString());
                     wifiNetwork.setAuthenticateType(spnWifiTypeDialogDeviceWifiNetworkConnect.getSelectedItemPosition());
-                    mDeviceViewModel.setDeviceWifiNetwork(getParentFragment(), wifiNetwork);
+                    LockPageFragment.this.mDeviceViewModel.setDeviceWifiNetwork(getParentFragment(), wifiNetwork);
                 }
             });
 
-            mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
+            LockPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
         } else {
             mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
             mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
