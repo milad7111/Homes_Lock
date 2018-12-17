@@ -184,7 +184,7 @@ public class LockPageFragment extends Fragment
         //region init
         ViewHelper.setContext(getContext());
         handleProgressDialog(null, null, null, false);
-        updateViewData(true);
+        updateViewData(!isUserLoggedIn());
         //endregion init
     }
 
@@ -291,8 +291,6 @@ public class LockPageFragment extends Fragment
                 imgConnectionStatusLockPage, setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
 
         imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
-        imgTemperatureCelsiusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_temperature_celsius : R.drawable.ic_valid_temperature_celsius);
-        imgWaterPercentLockPage.setImageDrawable(setDefault ? null : getResources().getDrawable(R.drawable.water_percent));
         txvLockNameLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
         txvLockNameLockPage.setText(mDevice.getBleDeviceName());
 
@@ -303,9 +301,13 @@ public class LockPageFragment extends Fragment
         txvSecurityAlarmLockPage.setTextColor(
                 setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, getSecurityAlarmColor(mDevice.getLockStatus(), mDevice.getDoorStatus())));
 
+        imgTemperatureCelsiusLockPage.setImageResource(
+                setDefault ? R.drawable.ic_invalid_temperature_celsius : R.drawable.ic_valid_temperature_celsius);
         txvTemperatureLockPage.setText(mDevice.getTemperature().toString());
         txvTemperatureLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
 
+        imgWaterPercentLockPage.setImageResource(
+                setDefault ? R.drawable.ic_invalid_water_percent : R.drawable.ic_valid_water_percent);
         txvHumidityLockPage.setText(mDevice.getHumidity().toString());
         txvHumidityLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
 
