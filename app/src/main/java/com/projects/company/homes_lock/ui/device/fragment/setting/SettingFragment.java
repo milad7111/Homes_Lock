@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
@@ -53,12 +54,12 @@ public class SettingFragment extends Fragment
     private TextView txvDeviceSettingDescriptionSettingFragment;
     private TextView txvProServicesSettingFragment;
     private TextView txvProServicesDescriptionSettingFragment;
-    private TextView txvRemoveLockSettingFragment;
-    private TextView txvRemoveLockDescriptionSettingFragment;
     private TextView txvChangePasswordOnlineSettingFragment;
     private TextView txvChangePasswordOnlineDescriptionSettingFragment;
     private TextView txvChangePairingPasswordSettingFragment;
     private TextView txvChangePairingPasswordDescriptionSettingFragment;
+    private TextView txvRemoveLockSettingFragment;
+    private TextView txvRemoveLockDescriptionSettingFragment;
     //endregion Declare Views
 
     //region Declare Variables
@@ -66,10 +67,9 @@ public class SettingFragment extends Fragment
 
     //region Declare Objects
     private Fragment mFragment;
-    public static DeviceViewModel mDeviceViewModel;
-    private static Device mDevice;
+    private DeviceViewModel mDeviceViewModel;
+    private Device mDevice;
     private Dialog deviceSettingDialog;
-    private Dialog lockStagesDialog;
     private Dialog changeOnlinePasswordDialog;
     private Dialog changePairingPasswordDialog;
     private Dialog removeLockDialog;
@@ -123,12 +123,12 @@ public class SettingFragment extends Fragment
         txvDeviceSettingDescriptionSettingFragment = view.findViewById(R.id.txv_device_setting_description_setting_fragment);
         txvProServicesSettingFragment = view.findViewById(R.id.txv_pro_services_setting_fragment);
         txvProServicesDescriptionSettingFragment = view.findViewById(R.id.txv_pro_services_description_setting_fragment);
-        txvRemoveLockSettingFragment = view.findViewById(R.id.txv_remove_lock_setting_fragment);
-        txvRemoveLockDescriptionSettingFragment = view.findViewById(R.id.txv_remove_lock_description_setting_fragment);
         txvChangePasswordOnlineSettingFragment = view.findViewById(R.id.txv_change_password_online_setting_fragment);
         txvChangePasswordOnlineDescriptionSettingFragment = view.findViewById(R.id.txv_change_password_online_description_setting_fragment);
         txvChangePairingPasswordSettingFragment = view.findViewById(R.id.txv_change_pairing_password_setting_fragment);
         txvChangePairingPasswordDescriptionSettingFragment = view.findViewById(R.id.txv_change_pairing_password_description_setting_fragment);
+        txvRemoveLockSettingFragment = view.findViewById(R.id.txv_remove_lock_setting_fragment);
+        txvRemoveLockDescriptionSettingFragment = view.findViewById(R.id.txv_remove_lock_description_setting_fragment);
         //endregion Initialize Views
 
         //region Setup Views
@@ -136,12 +136,12 @@ public class SettingFragment extends Fragment
         txvDeviceSettingDescriptionSettingFragment.setOnClickListener(this);
         txvProServicesSettingFragment.setOnClickListener(this);
         txvProServicesDescriptionSettingFragment.setOnClickListener(this);
-        txvRemoveLockSettingFragment.setOnClickListener(this);
-        txvRemoveLockDescriptionSettingFragment.setOnClickListener(this);
         txvChangePasswordOnlineSettingFragment.setOnClickListener(this);
         txvChangePasswordOnlineDescriptionSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordDescriptionSettingFragment.setOnClickListener(this);
+        txvRemoveLockSettingFragment.setOnClickListener(this);
+        txvRemoveLockDescriptionSettingFragment.setOnClickListener(this);
         //endregion Setup Views
 
         initViews();
@@ -243,11 +243,17 @@ public class SettingFragment extends Fragment
             txvChangePairingPasswordSettingFragment.setVisibility(View.GONE);
             txvChangePairingPasswordDescriptionSettingFragment.setVisibility(View.GONE);
         }
+
+        if (!BaseApplication.isUserLoggedIn()) {
+            txvRemoveLockSettingFragment.setVisibility(View.GONE);
+            txvRemoveLockDescriptionSettingFragment.setVisibility(View.GONE);
+        }
+
     }
 
     private void handleDeviceSetting() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            deviceSettingDialog = new Dialog(getActivity());
+            deviceSettingDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             deviceSettingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceSettingDialog.setContentView(R.layout.dialog_device_setting);
 
@@ -290,7 +296,7 @@ public class SettingFragment extends Fragment
 
     private void handleRemoveLock() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            removeLockDialog = new Dialog(getActivity());
+            removeLockDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             removeLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             removeLockDialog.setContentView(R.layout.dialog_remove_lock);
 
@@ -349,7 +355,7 @@ public class SettingFragment extends Fragment
 
     private void handleDialogChangeOnlinePassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changeOnlinePasswordDialog = new Dialog(getActivity());
+            changeOnlinePasswordDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             changeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
 
@@ -388,7 +394,7 @@ public class SettingFragment extends Fragment
 
     private void handleDialogChangePairingPassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changePairingPasswordDialog = new Dialog(getActivity());
+            changePairingPasswordDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             changePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
 
