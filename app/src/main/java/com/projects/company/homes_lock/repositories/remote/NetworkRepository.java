@@ -216,5 +216,21 @@ public class NetworkRepository {
                     }
                 });
     }
+
+    public void getLockUsersByLockObjectId(final NetworkListener.ListNetworkListener<List<User>> listener, String lockObjectId) {
+        BaseApplication.getRetrofitAPI().getLockUsersByLockObjectId(
+                String.format("relatedUserLocks.relatedDevice.objectId='%s'", lockObjectId)).enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response != null && response.body() != null)
+                    listener.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                listener.onListNetworkListenerFailure(new FailureModel(t.getMessage()));
+            }
+        });
+    }
     //endregion Declare Methods
 }

@@ -248,7 +248,6 @@ public class SettingFragment extends Fragment
             txvRemoveLockSettingFragment.setVisibility(View.GONE);
             txvRemoveLockDescriptionSettingFragment.setVisibility(View.GONE);
         }
-
     }
 
     private void handleDeviceSetting() {

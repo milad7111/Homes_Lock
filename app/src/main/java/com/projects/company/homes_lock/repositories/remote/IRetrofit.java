@@ -68,4 +68,7 @@ public interface IRetrofit {
     @Headers({"Content-Type: application/json"})
     @DELETE("data/bulk/UserLock?")
     Call<ResponseBody> removeDeviceForForOneMember(@Header("user-token") String userToken, @Query("where") String whereClause);
+
+    @GET("data/Users?")
+    Call<List<User>> getLockUsersByLockObjectId(@Query("where") String whereClause);
 }

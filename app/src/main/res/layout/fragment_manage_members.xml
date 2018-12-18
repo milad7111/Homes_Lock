@@ -8,13 +8,13 @@
     android:padding="8dp">
 
     <ScrollView
-        android:id="@+id/sv_dialog_available_networks"
+        android:id="@+id/scv_manage_members_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/btn_cancel_dialog_available_networks">
+        app:layout_constraintBottom_toTopOf="@+id/btn_sync_manage_members_fragment">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcv_dialog_available_networks"
+            android:id="@+id/rcv_manage_members_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_member_list" />
@@ -22,7 +22,7 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/btn_cancel_dialog_available_networks"
+        android:id="@+id/btn_sync_manage_members_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

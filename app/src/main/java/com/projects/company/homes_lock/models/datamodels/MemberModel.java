@@ -1,6 +1,6 @@
 package com.projects.company.homes_lock.models.datamodels;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
@@ -12,26 +12,22 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STA
 
 public class MemberModel {
 
-    private Context mContext;
-
-    private Drawable mMemberAvatar;
+    private int mMemberAvatarDrawableId;
     private String mMemberName;
     private int mMemberAdminStatus;
 
-    public MemberModel(Context mContext, Drawable mMemberAvatar, String mMemberName, int mMemberAdminStatus) {
-        this.mContext = mContext;
-
-        this.mMemberAvatar = mMemberAvatar;
+    public MemberModel(int mMemberDrawableId, String mMemberName, int mMemberAdminStatus) {
+        this.mMemberAvatarDrawableId = mMemberDrawableId;
         this.mMemberName = mMemberName;
         this.mMemberAdminStatus = mMemberAdminStatus;
     }
 
-    public Drawable getMemberAvatar() {
-        return mMemberAvatar;
+    public int getMemberAvatarDrawableId() {
+        return mMemberAvatarDrawableId;
     }
 
-    public void setMemberAvatar(Drawable mUserIcon) {
-        this.mMemberAvatar = mUserIcon;
+    public void setMemberAvatarDrawableId(int mMemberDrawableId) {
+        this.mMemberAvatarDrawableId = mMemberDrawableId;
     }
 
     public String getMemberName() {
@@ -50,16 +46,16 @@ public class MemberModel {
         this.mMemberAdminStatus = mAdminStatus;
     }
 
-    public Drawable getMemberActionIcon() {
+    public int getMemberActionDrawableId() {
         switch (mMemberAdminStatus) {
             case MEMBER_STATUS_PRIMARY_ADMIN:
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_admin_user_status_primary);
+                return R.drawable.ic_admin_user_status_primary;
             case MEMBER_STATUS_SECONDARY_ADMIN:
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_admin_user_status_secondary);
+                return R.drawable.ic_admin_user_status_secondary;
             case MEMBER_STATUS_NOT_ADMIN:
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_delete);
+                return R.drawable.ic_delete;
             default:
-                return null;
+                return -1;
         }
     }
 }

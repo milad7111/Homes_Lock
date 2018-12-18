@@ -5,6 +5,7 @@ package com.projects.company.homes_lock.base;
  */
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,6 +31,16 @@ public class BaseApplication extends Application {
     public static String activeUserToken = null;
     private static volatile IRetrofit IRETROFIT = null;
     //endregion Declare Objects
+
+    //region Main Callbacks
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    //endregion Main Callbacks
 
     //region Declare Methods
     public static synchronized IRetrofit getRetrofitAPI() {

@@ -47,9 +47,9 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
         if (mMemberModelList != null) {
             MemberModel mMemberModel = mMemberModelList.get(i);
 
-            lockMembersAdapterViewHolder.imgMemberAvatar.setImageDrawable(mMemberModel.getMemberAvatar());
+            lockMembersAdapterViewHolder.imgMemberAvatar.setImageResource(mMemberModel.getMemberAvatarDrawableId());
             lockMembersAdapterViewHolder.txvMemberName.setText(mMemberModel.getMemberName());
-            lockMembersAdapterViewHolder.imgMemberAction.setImageDrawable(mMemberModel.getMemberActionIcon());
+            lockMembersAdapterViewHolder.imgMemberAction.setImageResource(mMemberModel.getMemberActionDrawableId());
         }
 
         lockMembersAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

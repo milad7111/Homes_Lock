@@ -7,18 +7,25 @@ import android.util.Log;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
+import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.repositories.local.ILocalRepository;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
+import com.projects.company.homes_lock.ui.device.fragment.managemembers.IManageMembersFragment;
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
 import com.projects.company.homes_lock.ui.login.fragment.register.IRegisterFragment;
 import com.projects.company.homes_lock.utils.helper.ValidationHelper;
 
+import java.util.List;
+
+import static com.projects.company.homes_lock.utils.helper.DataHelper.isInstanceOfList;
+
 public class UserViewModel extends AndroidViewModel
         implements
         NetworkListener.SingleNetworkListener,
+        NetworkListener.ListNetworkListener,
         ILocalRepository {
 
     //region Declare Constants
@@ -31,6 +38,7 @@ public class UserViewModel extends AndroidViewModel
     private ILoginFragment mILoginFragment;
     private IRegisterFragment mIRegisterFragment;
     private IAddLockFragment mIAddLockFragment;
+    private IManageMembersFragment mIManageMembersFragment;
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
     //endregion Declare Objects
@@ -74,6 +82,19 @@ public class UserViewModel extends AndroidViewModel
         //endregion Initialize Objects
     }
 
+    public UserViewModel(Application application, IManageMembersFragment mIManageMembersFragment) {
+        super(application);
+
+        //region Initialize Variables
+        //endregion Initialize Variables
+
+        //region Initialize Objects
+        this.mIManageMembersFragment = mIManageMembersFragment;
+        this.mLocalRepository = new LocalRepository(application);//TODO if not need delete this line
+        this.mNetworkRepository = new NetworkRepository();
+        //endregion Initialize Objects
+    }
+
     //region Declare Online Methods
     public void getUserWithObjectId(String userObjectId) {
         mNetworkRepository.getUserWithObjectId(this, userObjectId);
@@ -93,11 +114,18 @@ public class UserViewModel extends AndroidViewModel
     public void insertUser(User user) {
         mLocalRepository.insertUser(user, this);
     }
+
+    public void getLockUsersByLockObjectId(String lockObjectId) {
+        mNetworkRepository.getLockUsersByLockObjectId(this, lockObjectId);
+    }
     //endregion Declare Methods
 
-    //region Login & Register Callbacks
+    //region Network Callbacks
     @Override
     public void onResponse(Object response) {
+        if (isInstanceOfList(response, User.class.getName()))
+            if (mIManageMembersFragment != null)
+                mIManageMembersFragment.onGetUserLockData((List<User>) response);
         if (response instanceof User)
             if (mILoginFragment != null)
                 mILoginFragment.onLoginSuccessful(response);
@@ -114,7 +142,12 @@ public class UserViewModel extends AndroidViewModel
         else if (mIRegisterFragment != null)
             mIRegisterFragment.onRegisterFailed(response);
     }
-    //endregion Login & Register Callbacks
+
+    @Override
+    public void onListNetworkListenerFailure(FailureModel response) {
+        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
+    }
+    //endregion Network Callbacks
 
     //region ILocalRepository Callbacks
     @Override
