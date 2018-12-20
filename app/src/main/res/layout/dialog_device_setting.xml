@@ -41,7 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:buttonTint="@color/md_white_1000"
                 android:checked="true"
                 android:text="@string/dialog_radio_button_right_handed"
                 android:textColor="@color/md_white_1000" />
@@ -50,7 +49,6 @@
                 android:id="@+id/rdb_left_handed_dialog_device_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/md_white_1000"
                 android:text="@string/dialog_radio_button_left_handed"
                 android:textColor="@color/md_white_1000" />
 
@@ -85,7 +83,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:buttonTint="@color/md_white_1000"
                 android:checked="true"
                 android:text="@string/dialog_radio_button_ninety_degrees"
                 android:textColor="@color/md_white_1000" />
@@ -95,7 +92,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:buttonTint="@color/md_white_1000"
                 android:text="@string/dialog_radio_button_one_stage"
                 android:textColor="@color/md_white_1000" />
 
@@ -104,7 +100,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:buttonTint="@color/md_white_1000"
                 android:text="@string/dialog_radio_button_two_stages"
                 android:textColor="@color/md_white_1000" />
 
@@ -113,7 +108,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:buttonTint="@color/md_white_1000"
                 android:text="@string/dialog_radio_button_three_stages"
                 android:textColor="@color/md_white_1000" />
 

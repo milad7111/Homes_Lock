@@ -40,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:buttonTint="@color/md_white_1000"
         android:text="@string/dialog_check_box_remove_all_members"
         android:textColor="@color/md_white_1000"
         app:layout_constraintStart_toStartOf="parent"

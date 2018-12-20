@@ -43,11 +43,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-    <!--<android.support.v7.widget.RecyclerView-->
-    <!--android:id="@+id/rcv_ble_devices"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:background="@android:color/darker_gray"-->
-    <!--tools:listitem="@layout/item_ble_devices" />-->
-
 </android.support.constraint.ConstraintLayout>

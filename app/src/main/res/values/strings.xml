@@ -129,6 +129,7 @@
 
     <!--//region Fragment Buttons-->
     <string name="fragment_button_sync">SYNC</string>
+    <string name="fragment_button_add">ADD</string>
     <!--//endregion Fragment Buttons-->
 
     <!--//region EditText Hints-->
