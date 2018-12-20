@@ -37,8 +37,6 @@
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor">
 
-            <requestFocus />
-
         </android.support.design.widget.TextInputEditText>
 
     </android.support.design.widget.TextInputLayout>

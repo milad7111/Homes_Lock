@@ -441,7 +441,7 @@ public class DeviceViewModel extends AndroidViewModel
                 mNetworkRepository.removeDeviceForAllMembers(this, mDevice.getObjectId());
             } else {
                 setRequestType("removeDeviceForOneMember");
-                mNetworkRepository.removeDeviceForOneMember(this, mDevice.getObjectId(), mDevice.getUserLockObjectId());
+                mNetworkRepository.removeDeviceForOneMember(this, mDevice.getUserLockObjectId());
             }
         } else
             mLocalRepository.deleteDevice(mDevice);

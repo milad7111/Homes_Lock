@@ -136,9 +136,9 @@ public class LoginFragment extends Fragment
     }
 
     @Override
-    public void onLoginFailed(Object response) {
-        Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
-        Toast.makeText(getActivity(), ((FailureModel) response).getFailureMessage(), Toast.LENGTH_LONG).show();
+    public void onLoginFailed(FailureModel response) {
+        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
+        Toast.makeText(getActivity(), response.getFailureMessage(), Toast.LENGTH_LONG).show();
         DialogHelper.handleProgressDialog(null, null, null, false);
     }
 

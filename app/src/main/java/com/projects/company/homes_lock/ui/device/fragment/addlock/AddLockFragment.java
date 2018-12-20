@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.AddLockViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
@@ -185,6 +187,11 @@ public class AddLockFragment extends BaseFragment
 
         BaseApplication.activeUserObjectId = response.getObjectId();
         mUserViewModel.insertUser(response);
+    }
+
+    @Override
+    public void onGetUserFailed(FailureModel response) {
+        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
     }
 
     @Override

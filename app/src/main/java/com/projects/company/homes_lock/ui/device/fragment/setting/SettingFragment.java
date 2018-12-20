@@ -219,6 +219,12 @@ public class SettingFragment extends Fragment
             removeLockDialog.dismiss();
             removeLockDialog = null;
         }
+
+        logoutLocally();
+    }
+
+    private void logoutLocally() {
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     @Override
@@ -228,6 +234,8 @@ public class SettingFragment extends Fragment
             removeLockDialog.dismiss();
             removeLockDialog = null;
         }
+
+        logoutLocally();
     }
     //endregion ISettingFragment Callbacks
 
@@ -261,12 +269,12 @@ public class SettingFragment extends Fragment
             RadioGroup rdgLockStagesDialogDeviceSetting =
                     deviceSettingDialog.findViewById(R.id.rdg_lock_stages_dialog_device_setting);
 
-            Button btnCancelDialogDoorInstallation =
+            Button btnCancelDialogDeviceSetting =
                     deviceSettingDialog.findViewById(R.id.btn_cancel_dialog_device_setting);
-            Button btnApplyDialogDoorInstallation =
+            Button btnApplyDialogDeviceSetting =
                     deviceSettingDialog.findViewById(R.id.btn_apply_dialog_device_setting);
 
-            btnCancelDialogDoorInstallation.setOnClickListener(new View.OnClickListener() {
+            btnCancelDialogDeviceSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     deviceSettingDialog.dismiss();
@@ -274,7 +282,7 @@ public class SettingFragment extends Fragment
                 }
             });
 
-            btnApplyDialogDoorInstallation.setOnClickListener(new View.OnClickListener() {
+            btnApplyDialogDeviceSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Device setting setup ...", true);

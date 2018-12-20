@@ -1,5 +1,6 @@
 package com.projects.company.homes_lock.utils.ble;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.calculateR
 public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleDeviceViewHolder> {
 
     //region Declare Objects
+    private Activity mActivity;
     private LayoutInflater mInflater;
     private List<ScannedDeviceModel> mScannedDeviceModelList;
     private IBleScanListener mIAddLockFragment;
@@ -31,6 +33,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     //region Constructor
     public BleDeviceAdapter(Fragment fragment, List<ScannedDeviceModel> mScannedDeviceModelList) {
         //region Initialize Objects
+        this.mActivity = fragment.getActivity();
         this.mInflater = LayoutInflater.from(fragment.getActivity());
         this.mScannedDeviceModelList = mScannedDeviceModelList;
         this.mIAddLockFragment = (IBleScanListener) fragment;
@@ -54,7 +57,8 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
 
             if (mScannedDeviceModelList.get(i).getRSSI() == SEARCHING_SCAN_MODE ||
                     mScannedDeviceModelList.get(i).getRSSI() == SEARCHING_TIMEOUT_MODE) {
-                name = mScannedDeviceModelList.get(i).getRSSI() == SEARCHING_SCAN_MODE ? "Scanning ..." : "Try again ...";
+                name = mScannedDeviceModelList.get(i).getRSSI() == SEARCHING_SCAN_MODE ?
+                        mActivity.getString(R.string.adapter_empty_scanning) : mActivity.getString(R.string.adapter_empty_try_again);
                 rssi = mScannedDeviceModelList.get(i).getRSSI();
 
                 bleDeviceViewHolder.txvBleDeviceName.setTypeface(null, Typeface.ITALIC);

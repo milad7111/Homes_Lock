@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +62,8 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
     }
 
     @Override
-    public void onLoginFailed(Object response) {
+    public void onLoginFailed(FailureModel response) {
+
     }
 
     @Override

@@ -15,11 +15,13 @@ public class MemberModel {
     private int mMemberAvatarDrawableId;
     private String mMemberName;
     private int mMemberAdminStatus;
+    private String mMemberUserLockObjectId;
 
-    public MemberModel(int mMemberDrawableId, String mMemberName, int mMemberAdminStatus) {
+    public MemberModel(int mMemberDrawableId, String mMemberName, int mMemberAdminStatus, String mMemberUserLockObjectId) {
         this.mMemberAvatarDrawableId = mMemberDrawableId;
         this.mMemberName = mMemberName;
         this.mMemberAdminStatus = mMemberAdminStatus;
+        this.mMemberUserLockObjectId = mMemberUserLockObjectId;
     }
 
     public int getMemberAvatarDrawableId() {
@@ -74,5 +76,9 @@ public class MemberModel {
 
     public boolean hasMemberType(){
         return mMemberAdminStatus != MEMBER_STATUS_NOT_ADMIN;
+    }
+
+    public String getMemberUserLockObjectId() {
+        return mMemberUserLockObjectId;
     }
 }

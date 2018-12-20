@@ -1,6 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.managemembers;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,8 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.MemberModel;
 
 import java.util.List;
+
+import static com.projects.company.homes_lock.utils.helper.DataHelper.LOCK_MEMBERS_SYNCING_MODE;
 
 public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMembersAdapterViewHolder> {
 
@@ -44,35 +47,40 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
     @Override
     public void onBindViewHolder(@NonNull LockMembersAdapterViewHolder lockMembersAdapterViewHolder, final int i) {
         if (mMemberModelList != null) {
-            MemberModel mMemberModel = mMemberModelList.get(i);
+            if (mMemberModelList.get(0).getMemberAdminStatus() == LOCK_MEMBERS_SYNCING_MODE) {
+                lockMembersAdapterViewHolder.imgMemberAvatar.setVisibility(View.GONE);
+                lockMembersAdapterViewHolder.txvMemberName.setTypeface(null, Typeface.ITALIC);
+                lockMembersAdapterViewHolder.txvMemberName.setText(mActivity.getString(R.string.adapter_empty_syncing));
+            } else {
+                MemberModel mMemberModel = mMemberModelList.get(i);
 
-            lockMembersAdapterViewHolder.imgMemberAvatar.setImageResource(mMemberModel.getMemberAvatarDrawableId());
-            lockMembersAdapterViewHolder.txvMemberName.setText(mMemberModel.getMemberName());
+                lockMembersAdapterViewHolder.imgMemberAvatar.setImageResource(mMemberModel.getMemberAvatarDrawableId());
+                lockMembersAdapterViewHolder.txvMemberName.setText(mMemberModel.getMemberName());
 
-            if (mMemberModel.hasMemberAction()) {
-                lockMembersAdapterViewHolder.imgMemberAction.setVisibility(View.VISIBLE);
-                lockMembersAdapterViewHolder.imgMemberAction.setImageResource(mMemberModel.getMemberActionDrawableId());
-            }
+                if (mMemberModel.hasMemberAction()) {
+                    lockMembersAdapterViewHolder.imgMemberAction.setVisibility(View.VISIBLE);
+                    lockMembersAdapterViewHolder.imgMemberAction.setImageResource(mMemberModel.getMemberActionDrawableId());
+                }
 
-            if (mMemberModel.hasMemberType()) {
-                lockMembersAdapterViewHolder.imgMemberType.setVisibility(View.VISIBLE);
-                lockMembersAdapterViewHolder.imgMemberType.setImageResource(mMemberModel.getMemberTypeDrawableId());
+                if (mMemberModel.hasMemberType()) {
+                    lockMembersAdapterViewHolder.imgMemberType.setVisibility(View.VISIBLE);
+                    lockMembersAdapterViewHolder.imgMemberType.setImageResource(mMemberModel.getMemberTypeDrawableId());
+                }
+
+                lockMembersAdapterViewHolder.imgMemberAction.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mIManageMembersFragment.onActionUserClick(mMemberModelList.get(i));
+                    }
+                });
+
+                lockMembersAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                });
             }
         }
-
-        lockMembersAdapterViewHolder.imgMemberAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mIManageMembersFragment.onActionUserClick(mMemberModelList.get(i));
-            }
-        });
-
-        lockMembersAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mIManageMembersFragment.onAdapterItemClick(mMemberModelList.get(i));
-            }
-        });
     }
 
     @Override
@@ -83,18 +91,7 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
     }
     //endregion Adapter CallBacks
 
-    //region Declare Methods
-    public void setMembers(List<MemberModel> mMemberModelList) {
-        this.mMemberModelList = mMemberModelList;
-
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
-    }
-
+    //region Declare Classes & Interfaces
     class LockMembersAdapterViewHolder extends RecyclerView.ViewHolder {
         ImageView imgMemberAvatar;
         TextView txvMemberName;
@@ -110,5 +107,5 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
             imgMemberType = itemView.findViewById(R.id.img_member_type);
         }
     }
-    //endregion Declare Methods
+    //endregion Declare Classes & Interfaces
 }

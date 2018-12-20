@@ -129,18 +129,13 @@ public class RegisterFragment extends Fragment
     }
 
     @Override
-    public void onRegisterFailed(Object response) {
-        Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
+    public void onRegisterFailed(FailureModel response) {
+        handleProgressDialog(null, null, null, false);
+        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
+        Toast.makeText(getContext(), response.getFailureMessage(), Toast.LENGTH_SHORT).show();
     }
     //endregion Register Callbacks
 
     //region Declare Methods
-    private void clearViews() {
-        tietEmail.setText(null);
-        tietUserName.setText(null);
-        tietMobileNumber.setText(null);
-        tietPassword.setText(null);
-        tietConfirmPassword.setText(null);
-    }
     //endregion Declare Methods
 }

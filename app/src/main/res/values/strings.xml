@@ -58,6 +58,8 @@
     <string name="fragment_text_view_direct_connect">Direct Connect</string>
     <string name="fragment_text_view_sign_up">Sign Up</string>
     <string name="fragment_text_view_forget_password">Forget Password</string>
+    <string name="fragment_text_view_device_setting">Device setting</string>
+    <string name="fragment_text_view_device_setting_value"><![CDATA[Door installation & Lock stages]]></string>
     <!--//endregion Fragment TextViews-->
 
     <!--//region Dialog Titles-->
@@ -73,6 +75,7 @@
     <string name="dialog_title_door_installation_device_setting">Door installation</string>
     <string name="dialog_title_lock_stages_device_setting">Lock stages</string>
     <string name="dialog_title_remove_lock">Remove lock</string>
+    <string name="dialog_title_remove_member">Remove member</string>
     <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->
@@ -83,12 +86,14 @@
     <string name="dialog_button_connect">CONNECT</string>
     <string name="dialog_button_apply">APPLY</string>
     <string name="dialog_button_pair">PAIR</string>
+    <string name="dialog_button_remove">REMOVE</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->
     <string name="dialog_check_box_favorite">Favorite</string>
     <string name="dialog_check_box_admin">Admin</string>
     <string name="dialog_check_box_remove_all_members">Remove all members</string>
+    <string name="dialog_check_box_remove_member">Confirm remove member</string>
     <!--//endregion Dialog Checkboxes-->
 
     <!--//region Dialog RadioButtons-->
@@ -147,9 +152,12 @@
     <string name="ble_state_connecting" translatable="false">Connecting…</string>
     <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
     <string name="ble_state_initializing" translatable="false">Initializing…</string>
-    <string name="dialog_button_remove">REMOVE</string>
-    <string name="fragment_text_view_device_setting">Device setting</string>
-    <string name="fragment_text_view_device_setting_value"><![CDATA[Door installation & Lock stages]]></string>
     <!--//endregion BLE States-->
+
+    <!--//region Adapter Empty-->
+    <string name="adapter_empty_syncing">Syncing ...</string>
+    <string name="adapter_empty_scanning">Scanning ...</string>
+    <string name="adapter_empty_try_again">Try again ...</string>
+    <!--//endregion Adapter Empty-->
 
 </resources>

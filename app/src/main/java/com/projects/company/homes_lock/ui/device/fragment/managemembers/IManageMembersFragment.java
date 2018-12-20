@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.ui.device.fragment.managemembers;
 
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.MemberModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
 import java.util.List;
 
@@ -10,9 +11,13 @@ import java.util.List;
  */
 
 public interface IManageMembersFragment {
-    void onGetUserLockData(List<User> response);
+    void onGetUserLockDataSuccessful(List<User> response);
 
-    void onAdapterItemClick(MemberModel member);
+    void onGetUserLockDataFailed(Object response);
 
     void onActionUserClick(MemberModel member);
+
+    void onRemoveMemberSuccessful(Long deletionTime);
+
+    void onRemoveMemberFailed(ResponseBodyFailureModel response);
 }

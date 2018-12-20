@@ -14,6 +14,7 @@ import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
+import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 
 import java.util.List;
 
@@ -81,24 +82,6 @@ public class NetworkRepository {
                 listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
-    }
-
-    public void getDeviceCountsWithSerialNumber(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
-        BaseApplication.getRetrofitAPI().getDeviceCountsWithSerialNumber(BaseApplication.activeUserToken,
-                String.format("serialNumber='%s'", parameter))
-                .enqueue(new Callback<ResponseBody>() {
-
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response != null && response.body() != null)
-                            listener.onResponse(response.body());
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
-                    }
-                });
     }
 
     public void getDeviceObjectIdWithSerialNumber(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
@@ -187,9 +170,8 @@ public class NetworkRepository {
         });
     }
 
-    public void removeDeviceForOneMember(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String lockObjectId, String userLockObjectId) {
-        BaseApplication.getRetrofitAPI().removeDeviceForForOneMember(BaseApplication.activeUserToken,
-                String.format("relatedDevice.objectId='%s' and objectId='%s'", lockObjectId, userLockObjectId))
+    public void removeDeviceForOneMember(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userLockObjectId) {
+        BaseApplication.getRetrofitAPI().removeDeviceForOneMember(BaseApplication.activeUserToken, userLockObjectId)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

@@ -120,7 +120,7 @@ public class LocalRepository {
     }
     //endregion User and UserLock table
 
-    //region Declare classes
+    //region Declare Classes & Interfaces
     private static class insertDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
 
         private DeviceDao mDeviceDao;
@@ -211,7 +211,7 @@ public class LocalRepository {
             new insertUserAsyncTask(mUserDao).execute(mUser);
         }
     }
-    //endregion Declare classes
+    //endregion Declare Classes & Interfaces
 
     //region SharePreferences
     public boolean isFirstTimeLaunchApp() {

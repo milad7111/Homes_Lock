@@ -17,11 +17,14 @@ public class DataHelper {
     public static final int CHANGE_ONLINE_PASSWORD = 1000;
     public static final int CHANGE_PAIRING_PASSWORD = 2000;
 
+    public static final int LOCK_MEMBERS_SYNCING_MODE = -1;
     public static final int MEMBER_STATUS_PRIMARY_ADMIN = 1000;
     public static final int MEMBER_STATUS_SECONDARY_ADMIN = 2000;
     public static final int MEMBER_STATUS_NOT_ADMIN = 3000;
 
     static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 0;
+
+    public static final int NOT_DEFINED_INTEGER_NUMBER = -1;
     //endregion Declare Constants
 
     //region Declare Methods

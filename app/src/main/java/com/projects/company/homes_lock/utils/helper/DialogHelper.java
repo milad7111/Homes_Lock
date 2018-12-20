@@ -240,7 +240,7 @@ public class DialogHelper {
     }
     //endregion Declare Methods
 
-    //region Declare Classes
+    //region Declare Classes & Interfaces
     private static class ProgressDialogHelper {
         private static void show(Context context, String title, String message) {
             hide();
@@ -257,7 +257,7 @@ public class DialogHelper {
             }
         }
     }
-    //endregion Declare Classes
+    //endregion Declare Classes & Interfaces
 
     //region NotUsed
     public static void handleEnableLocationDialog(Activity activity) {
