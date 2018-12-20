@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_NOT_ADMIN;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_SECONDARY_ADMIN;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
 
 /**
@@ -128,11 +129,20 @@ public class ManageMembersFragment extends Fragment
     public void onGetUserLockData(List<User> response) {
         ArrayList<MemberModel> mMemberList = new ArrayList<>();
 
+        boolean findPrimaryAdmin = false;
         for (User user : response) {
-            mMemberList.add(new MemberModel(
-                    R.drawable.ic_default_not_admin_user,
-                    user.getName(),
-                    user.getRelatedUserLocks().get(0).getAdminStatus() ? MEMBER_STATUS_PRIMARY_ADMIN : MEMBER_STATUS_NOT_ADMIN));
+            int adminStatus;
+            if (user.getRelatedUserLocks().get(0).getAdminStatus()) {
+                if (findPrimaryAdmin)
+                    adminStatus = MEMBER_STATUS_SECONDARY_ADMIN;
+                else {
+                    adminStatus = MEMBER_STATUS_PRIMARY_ADMIN;
+                    findPrimaryAdmin = true;
+                }
+            } else
+                adminStatus = MEMBER_STATUS_NOT_ADMIN;
+
+            mMemberList.add(new MemberModel(R.drawable.ic_default_not_admin_user, user.getName(), adminStatus));
         }
         mLockUserAdapter = new LockUserAdapter(this, mMemberList);
         rcvManageMembersFragment.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -142,6 +152,11 @@ public class ManageMembersFragment extends Fragment
 
     @Override
     public void onAdapterItemClick(MemberModel member) {
+    }
+
+    @Override
+    public void onActionUserClick(MemberModel member) {
+        Toast.makeText(getContext(), "delete" + member.getMemberName(), Toast.LENGTH_SHORT).show();
     }
     //endregion IManageMembersFragment Callbacks
 

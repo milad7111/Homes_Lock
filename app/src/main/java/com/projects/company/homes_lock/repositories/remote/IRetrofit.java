@@ -30,7 +30,7 @@ public interface IRetrofit {
     Call<User> register(@Body RegisterModel parameter);
 
     @GET("data/Users/{userObjectId}?relationsDepth=2")
-    Call<User> getUserWithObjectId(@Path("userObjectId") String userObjectId);
+    Call<User> getUserWithObjectId(@Header("user-token") String userToken, @Path("userObjectId") String userObjectId);
 
     @Headers({"Content-Type: application/json"})
     @GET("data/Device/count?")
@@ -39,9 +39,6 @@ public interface IRetrofit {
     @Headers({"Content-Type: application/json"})
     @POST("services/deviceService/getDeviceObjectIdBySerialNumber")
     Call<ResponseBody> getDeviceObjectIdWithSerialNumber(@Header("user-token") String userToken, @Body String serialNumber);
-
-    @GET("data/Device")
-    Call<List<Device>> getAllDevices();
 
     @Headers({"Content-Type: application/json"})
     @POST("data/UserLock")
@@ -69,6 +66,7 @@ public interface IRetrofit {
     @DELETE("data/bulk/UserLock?")
     Call<ResponseBody> removeDeviceForForOneMember(@Header("user-token") String userToken, @Query("where") String whereClause);
 
+    @Headers({"Content-Type: application/json"})
     @GET("data/Users?")
-    Call<List<User>> getLockUsersByLockObjectId(@Query("where") String whereClause);
+    Call<List<User>> getLockUsersByLockObjectId(@Header("user-token") String userToken, @Query("where") String whereClause, @Query("sortBy") String sortClause);
 }

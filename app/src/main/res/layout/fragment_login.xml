@@ -5,26 +5,20 @@
     android:background="@color/md_black_1000"
     android:padding="16dp">
 
-    <LinearLayout
-        android:id="@+id/rel_login_screen_login_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+    <ImageView
+        android:id="@+id/img_login_screen_login_fragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center"
+        android:contentDescription="@string/content_description_img_login_screen_login_fragment"
         app:layout_constraintBottom_toTopOf="@+id/txil_email_login_fragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/img_login_screen_login_fragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/content_description_img_login_screen_login_fragment"
-            android:src="@drawable/ic_lock_idle" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_homes_lock_idle" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_email_login_fragment"

@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.models.datamodels.MemberModel;
-import com.projects.company.homes_lock.ui.device.fragment.setting.ISettingFragment;
 
 import java.util.List;
 
@@ -49,8 +48,24 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
 
             lockMembersAdapterViewHolder.imgMemberAvatar.setImageResource(mMemberModel.getMemberAvatarDrawableId());
             lockMembersAdapterViewHolder.txvMemberName.setText(mMemberModel.getMemberName());
-            lockMembersAdapterViewHolder.imgMemberAction.setImageResource(mMemberModel.getMemberActionDrawableId());
+
+            if (mMemberModel.hasMemberAction()) {
+                lockMembersAdapterViewHolder.imgMemberAction.setVisibility(View.VISIBLE);
+                lockMembersAdapterViewHolder.imgMemberAction.setImageResource(mMemberModel.getMemberActionDrawableId());
+            }
+
+            if (mMemberModel.hasMemberType()) {
+                lockMembersAdapterViewHolder.imgMemberType.setVisibility(View.VISIBLE);
+                lockMembersAdapterViewHolder.imgMemberType.setImageResource(mMemberModel.getMemberTypeDrawableId());
+            }
         }
+
+        lockMembersAdapterViewHolder.imgMemberAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIManageMembersFragment.onActionUserClick(mMemberModelList.get(i));
+            }
+        });
 
         lockMembersAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +99,7 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
         ImageView imgMemberAvatar;
         TextView txvMemberName;
         ImageView imgMemberAction;
+        ImageView imgMemberType;
 
         private LockMembersAdapterViewHolder(View itemView) {
             super(itemView);
@@ -91,6 +107,7 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
             imgMemberAvatar = itemView.findViewById(R.id.img_member_avatar);
             txvMemberName = itemView.findViewById(R.id.txv_member_name);
             imgMemberAction = itemView.findViewById(R.id.img_member_action);
+            imgMemberType = itemView.findViewById(R.id.img_member_type);
         }
     }
     //endregion Declare Methods

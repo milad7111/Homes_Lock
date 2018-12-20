@@ -131,6 +131,7 @@ public class LoginFragment extends Fragment
     @Override
     public void onLoginSuccessful(Object response) {
         BaseApplication.activeUserObjectId = ((User) response).getObjectId();
+        BaseApplication.activeUserToken = ((User) response).getUserToken();
         mUserViewModel.insertUser((User) response);
     }
 

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.util.Log;
 
+import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;

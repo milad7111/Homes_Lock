@@ -48,14 +48,31 @@ public class MemberModel {
 
     public int getMemberActionDrawableId() {
         switch (mMemberAdminStatus) {
-            case MEMBER_STATUS_PRIMARY_ADMIN:
-                return R.drawable.ic_admin_user_status_primary;
             case MEMBER_STATUS_SECONDARY_ADMIN:
-                return R.drawable.ic_admin_user_status_secondary;
+                return R.drawable.ic_delete;
             case MEMBER_STATUS_NOT_ADMIN:
                 return R.drawable.ic_delete;
             default:
                 return -1;
         }
+    }
+
+    public int getMemberTypeDrawableId() {
+        switch (mMemberAdminStatus) {
+            case MEMBER_STATUS_PRIMARY_ADMIN:
+                return R.drawable.ic_admin_user_status_primary;
+            case MEMBER_STATUS_SECONDARY_ADMIN:
+                return R.drawable.ic_admin_user_status_secondary;
+            default:
+                return -1;
+        }
+    }
+
+    public boolean hasMemberAction(){
+        return mMemberAdminStatus != MEMBER_STATUS_PRIMARY_ADMIN;
+    }
+
+    public boolean hasMemberType(){
+        return mMemberAdminStatus != MEMBER_STATUS_NOT_ADMIN;
     }
 }

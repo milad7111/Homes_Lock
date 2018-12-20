@@ -106,10 +106,6 @@ public class DeviceViewModel extends AndroidViewModel
         return mLocalRepository.getADevice(mActiveDeviceObjectId);
     }
 
-    public void getAllServerDevices() {
-        mNetworkRepository.getAllDevices(this);
-    }
-
     public void insertLocalDevice(Device device) {
         mLocalRepository.insertDevice(device);
     }

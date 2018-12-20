@@ -10,7 +10,9 @@ import java.util.List;
  */
 
 public interface IManageMembersFragment {
+    void onGetUserLockData(List<User> response);
+
     void onAdapterItemClick(MemberModel member);
 
-    void onGetUserLockData(List<User> response);
+    void onActionUserClick(MemberModel member);
 }
