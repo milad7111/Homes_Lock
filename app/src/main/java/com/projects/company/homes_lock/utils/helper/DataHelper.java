@@ -46,6 +46,18 @@ public class DataHelper {
         }
     }
 
+    public static boolean isEmptyList(Object object) {
+        try {
+            if (object instanceof List && ((List) object).size() == 0)
+                return true;
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean containsValueInListOfObjects(List<?> listOfObjects, String substring) {
         // This method search a list of object's Model (every model has getSpecialValue method)
         // Return TRUE if find special substring else return false

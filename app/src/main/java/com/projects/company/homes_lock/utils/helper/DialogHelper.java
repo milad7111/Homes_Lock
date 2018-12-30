@@ -108,7 +108,7 @@ public class DialogHelper {
     public static Dialog handleDialogAddLockOffline(Fragment fragment) {
         saveLockAfterPaired = false;
 
-        Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
+        Dialog dialog = new Dialog(fragment.getContext());
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_add_new_lock);
@@ -141,8 +141,8 @@ public class DialogHelper {
             public void onClick(View v) {
                 DialogHelper.handleProgressDialog(fragment.getContext(), null, "Saving ...", true);
 
-                ((AddLockFragment) fragment).mDevice.setName(Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString());
-                ((AddLockFragment) fragment).mDevice.setSerialNumber(Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
+                ((AddLockFragment) fragment).mDevice.setName(tietLockNameDialogAddNewLock.getText().toString());
+                ((AddLockFragment) fragment).mDevice.setSerialNumber(tietLockSerialNumberDialogAddNewLock.getText().toString());
 
                 ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
                     @Override
@@ -203,14 +203,14 @@ public class DialogHelper {
                             true);
 
                     ((AddLockFragment) fragment).mDeviceViewModel
-                            .validateLockInOnlineDatabase(fragment, Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
+                            .validateLockInOnlineDatabase(fragment, tietLockSerialNumberDialogAddNewLock.getText().toString());
                 }
             });
         } else {
             if (lockExistenceStatus)
                 ((AddLockFragment) fragment).mDeviceViewModel.insertOnlineUserLock(
                         new UserLockModel(
-                                Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString(),
+                                tietLockNameDialogAddNewLock.getText().toString(),
                                 true,
                                 chbLockFavoriteStatusDialogAddNewLock.isChecked()
                         ));
@@ -289,7 +289,7 @@ public class DialogHelper {
     }
 
     public static Dialog handlePairWithBleDeviceDialog(Fragment fragment, ScannedDeviceModel mScannedDeviceModel) {
-        Dialog dialog = new Dialog(Objects.requireNonNull(fragment.getContext()));
+        Dialog dialog = new Dialog(fragment.getContext());
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_pair_with_ble_device);
@@ -310,7 +310,7 @@ public class DialogHelper {
             @Override
             public void onClick(View v) {
                 DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
-                mScannedDeviceModel.getDevice().setPin(Objects.requireNonNull(txieSecurityCodeDialogPairWithBleDevice.getText()).toString().getBytes());
+                mScannedDeviceModel.getDevice().setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
                 mScannedDeviceModel.getDevice().createBond();
             }
         });

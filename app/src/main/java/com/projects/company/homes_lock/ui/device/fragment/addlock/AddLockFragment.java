@@ -22,6 +22,7 @@ import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.AddLockViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
@@ -126,7 +127,7 @@ public class AddLockFragment extends BaseFragment
 
     //region IAddLockFragment CallBacks
     @Override
-    public void onFindLockInOnlineDataBase(String lockObjectId) {
+    public void onFindLockInOnlineDataBaseSuccessful(String lockObjectId) {
         DialogHelper.handleProgressDialog(
                 getContext(),
                 null,
@@ -135,6 +136,10 @@ public class AddLockFragment extends BaseFragment
 
         this.lockObjectId = lockObjectId;
         activeDialog = handleDialogAddLockOnline(this, true);
+    }
+
+    @Override
+    public void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response) {
     }
 
     @Override
@@ -150,6 +155,10 @@ public class AddLockFragment extends BaseFragment
     }
 
     @Override
+    public void onInsertUserLockFailed(FailureModel response) {
+    }
+
+    @Override
     public void onAddLockToUserLockSuccessful(Boolean addLockToUserLockSuccessful) {
         if (addLockToUserLockSuccessful) {
             DialogHelper.handleProgressDialog(
@@ -157,8 +166,13 @@ public class AddLockFragment extends BaseFragment
                     null,
                     String.format("Adding Lock ... %d %%", getRandomPercentNumber(4, 8)),
                     true);
-            mDeviceViewModel.addUserLockToUser(userLockObjectId);
-        }
+            mDeviceViewModel.addUserLockToUser(BaseApplication.activeUserObjectId, userLockObjectId);
+        } else
+            onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
+    }
+
+    @Override
+    public void onAddLockToUserLockFailed(ResponseBodyFailureModel response) {
     }
 
     @Override
@@ -170,11 +184,18 @@ public class AddLockFragment extends BaseFragment
                     String.format("Adding Lock ... %d %%", getRandomPercentNumber(5, 8)),
                     true);
 
-            if (activeDialog != null)
+            if (activeDialog != null) {
                 activeDialog.dismiss();
+                activeDialog = null;
+            }
 
             mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
-        }
+        } else
+            onAddUserLockToUserFailed(new ResponseBodyFailureModel("add user lock to user failed."));
+    }
+
+    @Override
+    public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
     }
 
     @Override

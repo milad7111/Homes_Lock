@@ -132,6 +132,7 @@ public class LoginFragment extends Fragment
     public void onLoginSuccessful(Object response) {
         BaseApplication.activeUserObjectId = ((User) response).getObjectId();
         BaseApplication.activeUserToken = ((User) response).getUserToken();
+        BaseApplication.activeUserEmail = ((User) response).getEmail();
         mUserViewModel.insertUser((User) response);
     }
 

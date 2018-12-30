@@ -25,6 +25,7 @@ import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
+import com.projects.company.homes_lock.ui.device.fragment.managemembers.IManageMembersFragment;
 import com.projects.company.homes_lock.ui.device.fragment.setting.ISettingFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
@@ -64,6 +65,7 @@ public class DeviceViewModel extends AndroidViewModel
     private IBleScanListener mIBleScanListener;
     private ILockPageFragment mILockPageFragment;
     private IAddLockFragment mIAddLockFragment;
+    private IManageMembersFragment mIManageMembersFragment;
     private ISettingFragment mISettingFragment;
 
     private final BleDeviceManager mBleDeviceManager;
@@ -142,14 +144,12 @@ public class DeviceViewModel extends AndroidViewModel
     public void onDeviceDisconnected(final BluetoothDevice device) {
         mIsConnected.postValue(false);
         mIsSupported.postValue(false);
-//        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
     public void onLinklossOccur(final BluetoothDevice device) {
         mIsConnected.postValue(false);
         mIsSupported.postValue(false);
-//        DialogHelper.handleProgressDialog(false);
     }
 
     @Override
@@ -314,7 +314,7 @@ public class DeviceViewModel extends AndroidViewModel
             switch (getRequestType()) {
                 case "validateLockInOnlineDatabase":
                     if (mIAddLockFragment != null)
-                        mIAddLockFragment.onFindLockInOnlineDataBase(
+                        mIAddLockFragment.onFindLockInOnlineDataBaseSuccessful(
                                 ((ResponseBody) response).source().toString()
                                         .replace("[text=", "")
                                         .replace("]", "")
@@ -323,14 +323,18 @@ public class DeviceViewModel extends AndroidViewModel
                 case "addLockToUserLock":
                     if (mIAddLockFragment != null)
                         mIAddLockFragment.onAddLockToUserLockSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
+                    else if (mIManageMembersFragment != null)
+                        mIManageMembersFragment.onAddLockToUserLockSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
                     break;
                 case "addUserLockToUser":
                     if (mIAddLockFragment != null)
                         mIAddLockFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
+                    else if (mIManageMembersFragment != null)
+                        mIManageMembersFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
                     break;
                 case "removeDeviceForAllMembers":
                     if (mISettingFragment != null)
-                        mISettingFragment.onRemoveAllLockMembers(
+                        mISettingFragment.onRemoveAllLockMembersSuccessful(
                                 ((ResponseBody) response).source().toString()
                                         .replace("[text=", "")
                                         .replace("]", "")
@@ -338,7 +342,7 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case "removeDeviceForOneMember":
                     if (mISettingFragment != null)
-                        mISettingFragment.onRemoveDeviceForOneMember(
+                        mISettingFragment.onRemoveDeviceForOneMemberSuccessful(
                                 ((ResponseBody) response).source().toString()
                                         .replace("[text=", "")
                                         .replace("]", "")
@@ -350,6 +354,8 @@ public class DeviceViewModel extends AndroidViewModel
         } else if (response instanceof UserLock) {
             if (mIAddLockFragment != null)
                 mIAddLockFragment.onInsertUserLockSuccessful((UserLock) response);
+            else if (mIManageMembersFragment != null)
+                mIManageMembersFragment.onInsertUserLockSuccessful((UserLock) response);
         } else if (response instanceof User) {
             if (mIAddLockFragment != null)
                 mIAddLockFragment.onGetUserSuccessful((User) response);
@@ -358,15 +364,52 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onSingleNetworkListenerFailure(Object response) {
-        if (response instanceof FailureModel)
-            Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
-        else if (response instanceof ResponseBodyFailureModel)
-            Log.i(this.getClass().getSimpleName(), ((ResponseBodyFailureModel) response).getFailureMessage());
+        if (response instanceof ResponseBodyFailureModel) {
+            switch (getRequestType()) {
+                case "validateLockInOnlineDatabase":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onFindLockInOnlineDataBaseFailed((ResponseBodyFailureModel) response);
+                    break;
+                case "addLockToUserLock":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onAddLockToUserLockFailed((ResponseBodyFailureModel) response);
+                    else if (mIManageMembersFragment != null)
+                        mIManageMembersFragment.onAddLockToUserLockFailed((ResponseBodyFailureModel) response);
+                    break;
+                case "addUserLockToUser":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onAddUserLockToUserFailed((ResponseBodyFailureModel) response);
+                    else if (mIManageMembersFragment != null)
+                        mIManageMembersFragment.onAddUserLockToUserFailed((ResponseBodyFailureModel) response);
+                    break;
+                case "removeDeviceForAllMembers":
+                    if (mISettingFragment != null)
+                        mISettingFragment.onRemoveAllLockMembersFailed((ResponseBodyFailureModel) response);
+                    break;
+                case "removeDeviceForOneMember":
+                    if (mISettingFragment != null)
+                        mISettingFragment.onRemoveDeviceForOneMemberFailed((ResponseBodyFailureModel) response);
+                    break;
+                default:
+                    break;
+            }
+        } else if (response instanceof FailureModel) {
+            if (mIAddLockFragment != null) {
+                switch (getRequestType()) {
+                    case "############"://TODO i do not know this label is true
+                        mIAddLockFragment.onGetUserFailed((FailureModel) response);
+                        break;
+                    case "insertOnlineUserLock":
+                        mIAddLockFragment.onInsertUserLockFailed((FailureModel) response);
+                        break;
+                }
+            } else if (mIManageMembersFragment != null)
+                mIManageMembersFragment.onInsertUserLockFailed((FailureModel) response);
+        }
     }
 
     @Override
     public void onListNetworkListenerFailure(FailureModel response) {
-        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
     }
     //endregion Network Callbacks
 
@@ -456,6 +499,12 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void insertOnlineUserLock(UserLockModel userLock) {
+        setRequestType("insertOnlineUserLock");
+        mNetworkRepository.insertUserLock(this, userLock);
+    }
+
+    public void insertOnlineUserLock(IManageMembersFragment mIManageMembersFragment, UserLockModel userLock) {
+        this.mIManageMembersFragment = mIManageMembersFragment;
         mNetworkRepository.insertUserLock(this, userLock);
     }
 
@@ -464,9 +513,9 @@ public class DeviceViewModel extends AndroidViewModel
         mNetworkRepository.addLockToUserLock(this, userLockObjectId, new HelperModel(lockObjectId));
     }
 
-    public void addUserLockToUser(String userLockObjectId) {
+    public void addUserLockToUser(String userObjectId, String userLockObjectId) {
         setRequestType("addUserLockToUser");
-        mNetworkRepository.addUserLockToUser(this, new HelperModel(userLockObjectId));
+        mNetworkRepository.addUserLockToUser(this, userObjectId, new HelperModel(userLockObjectId));
     }
     //endregion Online Methods
 

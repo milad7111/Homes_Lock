@@ -31,7 +31,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center_vertical|start"
-        android:textColor="@color/md_white_1000"
+        android:textColor="@color/list_item_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/img_member_action"
         app:layout_constraintStart_toEndOf="@+id/img_member_avatar"

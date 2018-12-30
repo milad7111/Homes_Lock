@@ -205,7 +205,7 @@ public class LockPageFragment extends Fragment
                 break;
             case R.id.img_more_info_lock_page:
                 setFragment(
-                        (AppCompatActivity) Objects.requireNonNull(getActivity()),
+                        (AppCompatActivity) getActivity(),
                         R.id.frg_lock_activity,
                         SettingFragment.newInstance(mDevice));
                 break;
@@ -358,7 +358,7 @@ public class LockPageFragment extends Fragment
 
     private void handleLockMembers() {
         if (isUserLoggedIn())
-            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
+            setFragment((AppCompatActivity) getActivity(), R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
         else
             Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
     }

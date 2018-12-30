@@ -18,7 +18,7 @@
             android:layout_marginBottom="2dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_firmware_version"
-            android:textColor="@color/md_grey_200"
+            android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,7 +29,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_default_firmware_version"
-            android:textColor="@color/md_grey_500"
+            android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_device_setting_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_firmware_version_setting_fragment" />
@@ -41,7 +41,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_device_setting"
-            android:textColor="@color/md_grey_200"
+            android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_device_setting_description_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_firmware_version_description_setting_fragment" />
@@ -53,7 +53,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_device_setting_value"
-            android:textColor="@color/md_grey_500"
+            android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_pro_services_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_device_setting_setting_fragment" />
@@ -65,7 +65,7 @@
             android:layout_marginBottom="2dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_pro_services"
-            android:textColor="@color/md_grey_200"
+            android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_pro_services_description_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_device_setting_description_setting_fragment" />
@@ -77,7 +77,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_pro_services_description"
-            android:textColor="@color/md_grey_500"
+            android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_change_password_online_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_pro_services_setting_fragment" />
@@ -89,7 +89,7 @@
             android:layout_marginBottom="2dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_change_online_password"
-            android:textColor="@color/md_grey_200"
+            android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_change_password_online_description_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_pro_services_description_setting_fragment" />
@@ -101,7 +101,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_change_online_password_description"
-            android:textColor="@color/md_grey_500"
+            android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_change_pairing_password_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_change_password_online_setting_fragment" />
@@ -113,7 +113,7 @@
             android:layout_marginBottom="2dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_change_pairing_password"
-            android:textColor="@color/md_grey_200"
+            android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_change_pairing_password_description_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_change_password_online_description_setting_fragment" />
@@ -125,7 +125,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_change_pairing_password_description"
-            android:textColor="@color/md_grey_500"
+            android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@+id/txv_change_pairing_password_setting_fragment" />
 
@@ -136,7 +136,7 @@
             android:layout_marginBottom="2dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_remove_lock"
-            android:textColor="@color/md_red_A400"
+            android:textColor="@color/remove_lock_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_remove_lock_description_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_change_pairing_password_description_setting_fragment" />
@@ -148,7 +148,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:text="@string/fragment_text_view_remove_lock_description"
-            android:textColor="@color/md_grey_500"
+            android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@+id/txv_remove_lock_setting_fragment" />
 

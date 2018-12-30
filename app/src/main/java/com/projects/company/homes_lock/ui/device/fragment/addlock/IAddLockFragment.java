@@ -3,12 +3,13 @@ package com.projects.company.homes_lock.ui.device.fragment.addlock;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
 /**
  * This is AddLockFragment Interface
  */
 public interface IAddLockFragment {
-    void onFindLockInOnlineDataBase(String response);
+    void onFindLockInOnlineDataBaseSuccessful(String response);
 
     void onInsertUserLockSuccessful(UserLock response);
 
@@ -21,4 +22,12 @@ public interface IAddLockFragment {
     void onGetUserFailed(FailureModel response);
 
     void onDataInsert(Long id);
+
+    void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response);
+
+    void onInsertUserLockFailed(FailureModel response);
+
+    void onAddLockToUserLockFailed(ResponseBodyFailureModel response);
+
+    void onAddUserLockToUserFailed(ResponseBodyFailureModel response);
 }

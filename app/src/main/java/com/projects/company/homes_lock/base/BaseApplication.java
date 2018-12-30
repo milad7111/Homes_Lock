@@ -27,8 +27,11 @@ public class BaseApplication extends Application {
      * false if user login with direct connect option in {@link com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment}
      */
     private static boolean userLoginMode = false;
+
     public static String activeUserObjectId = null;
     public static String activeUserToken = null;
+    public static String activeUserEmail = null;
+
     private static volatile IRetrofit IRETROFIT = null;
     //endregion Declare Objects
 

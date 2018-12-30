@@ -26,6 +26,7 @@ import java.util.List;
 
 import okhttp3.ResponseBody;
 
+import static com.projects.company.homes_lock.utils.helper.DataHelper.isEmptyList;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.isInstanceOfList;
 
 public class UserViewModel extends AndroidViewModel
@@ -107,10 +108,7 @@ public class UserViewModel extends AndroidViewModel
     //region Network Callbacks
     @Override
     public void onResponse(Object response) {
-        if (isInstanceOfList(response, User.class.getName())) {
-            if (mIManageMembersFragment != null)
-                mIManageMembersFragment.onGetUserLockDataSuccessful((List<User>) response);
-        } else if (response instanceof User) {
+        if (response instanceof User) {
             if (mILoginFragment != null)
                 mILoginFragment.onLoginSuccessful(response);
             else if (mIRegisterFragment != null)
@@ -134,6 +132,19 @@ public class UserViewModel extends AndroidViewModel
                     }
                     break;
             }
+        } else if (mIManageMembersFragment != null) {
+            if (isInstanceOfList(response, User.class.getName())) {
+                if (getRequestType().equals("getLockUsersByLockObjectId"))
+                    mIManageMembersFragment.onGetUserLockDataSuccessful((List<User>) response);
+                else if (getRequestType().equals("getUserListWithEmailAddress"))
+                    mIManageMembersFragment.onGetUserListWithEmailAddressSuccessful((List<User>) response);
+            } else if (isEmptyList(response)) {
+                if (getRequestType().equals("getLockUsersByLockObjectId"))
+                    mIManageMembersFragment.onGetUserLockDataFailed(new FailureModel("there is no UserLock"));
+                else if (getRequestType().equals("getUserListWithEmailAddress"))
+                    mIManageMembersFragment.onGetUserListWithEmailAddressFailed(
+                            new FailureModel("there is no User With specific EmailAddress"));
+            }
         }
     }
 
@@ -151,8 +162,12 @@ public class UserViewModel extends AndroidViewModel
 
     @Override
     public void onListNetworkListenerFailure(FailureModel response) {
-        if (getRequestType().equals("getLockUsersByLockObjectId") && mIManageMembersFragment != null)
-            mIManageMembersFragment.onGetUserLockDataFailed(response);
+        if (mIManageMembersFragment != null) {
+            if (getRequestType().equals("getLockUsersByLockObjectId"))
+                mIManageMembersFragment.onGetUserLockDataFailed(response);
+            else if (getRequestType().equals("getUserListWithEmailAddress"))
+                mIManageMembersFragment.onGetUserListWithEmailAddressFailed(response);
+        }
     }
     //endregion Network Callbacks
 
@@ -194,6 +209,11 @@ public class UserViewModel extends AndroidViewModel
     public void getLockUsersByLockObjectId(String lockObjectId) {
         setRequestType("getLockUsersByLockObjectId");
         mNetworkRepository.getLockUsersByLockObjectId(this, lockObjectId);
+    }
+
+    public void getUserListWithEmailAddress(String emailAddress) {
+        setRequestType("getUserListWithEmailAddress");
+        mNetworkRepository.getUserListWithEmailAddress(this, emailAddress);
     }
 
     public void removeLockMember(String userLockObjectId) {

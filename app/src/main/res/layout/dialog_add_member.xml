@@ -40,7 +40,11 @@
             android:hint="@string/dialog_hint_email"
             android:inputType="textEmailAddress"
             android:textColor="@color/hintColor"
-            android:textColorHint="@color/hintColor" />
+            android:textColorHint="@color/hintColor">
+
+            <requestFocus />
+
+        </android.support.design.widget.TextInputEditText>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -69,15 +73,53 @@
     </android.support.design.widget.TextInputLayout>
 
     <CheckBox
-        android:id="@+id/chb_user_admin_status_dialog_add_member"
+        android:id="@+id/chb_member_admin_status_dialog_add_member"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:drawableTint="@color/check_box_tint_color"
         android:text="@string/dialog_check_box_admin"
-        android:textColor="@color/md_white_1000"
+        android:textColor="@color/check_box_text_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txil_lock_name_dialog_add_member" />
+
+    <CheckBox
+        android:id="@+id/chb_lock_favorite_status_dialog_add_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableTint="@color/check_box_tint_color"
+        android:text="@string/dialog_check_box_favorite"
+        android:textColor="@color/check_box_text_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chb_member_admin_status_dialog_add_member" />
+
+    <Button
+        android:id="@+id/btn_cancel_dialog_add_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:text="@string/dialog_button_cancel"
+        android:textColor="@color/button_text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chb_lock_favorite_status_dialog_add_member" />
+
+    <Button
+        android:id="@+id/btn_add_dialog_add_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:text="@string/dialog_button_add"
+        android:textColor="@color/button_text_color"
+        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_add_member"
+        app:layout_constraintTop_toBottomOf="@+id/chb_lock_favorite_status_dialog_add_member" />
 
 </android.support.constraint.ConstraintLayout>
 

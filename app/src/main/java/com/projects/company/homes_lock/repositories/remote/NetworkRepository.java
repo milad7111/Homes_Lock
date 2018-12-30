@@ -1,10 +1,7 @@
 package com.projects.company.homes_lock.repositories.remote;
 
-import android.util.Log;
-
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseModel;
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
@@ -14,7 +11,6 @@ import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
-import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 
 import java.util.List;
 
@@ -135,10 +131,10 @@ public class NetworkRepository {
                 });
     }
 
-    public void addUserLockToUser(final NetworkListener.SingleNetworkListener<ResponseBody> listener, HelperModel parameter) {
+    public void addUserLockToUser(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userObjectId, HelperModel parameter) {
         BaseApplication.getRetrofitAPI().addUserLockToUser(
                 BaseApplication.activeUserToken,
-                BaseApplication.activeUserObjectId,
+                userObjectId,
                 parameter)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -187,8 +183,27 @@ public class NetworkRepository {
     }
 
     public void getLockUsersByLockObjectId(final NetworkListener.ListNetworkListener<List<User>> listener, String lockObjectId) {
-        BaseApplication.getRetrofitAPI().getLockUsersByLockObjectId(BaseApplication.activeUserToken,
-                String.format("relatedUserLocks.relatedDevice.objectId='%s'", lockObjectId), "relatedUserLocks.created").enqueue(new Callback<List<User>>() {
+        BaseApplication.getRetrofitAPI().getLockUsersByLockObjectId(
+                BaseApplication.activeUserToken,
+                String.format("relatedUserLocks.relatedDevice.objectId='%s'", lockObjectId), "relatedUserLocks.created")
+                .enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response != null && response.body() != null)
+                    listener.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                listener.onListNetworkListenerFailure(new FailureModel(t.getMessage()));
+            }
+        });
+    }
+
+    public void getUserListWithEmailAddress(final NetworkListener.ListNetworkListener<List<User>> listener, String emailAddress) {
+        BaseApplication.getRetrofitAPI().getUserListWithEmailAddress(
+                BaseApplication.activeUserToken,
+                String.format("email='%s'", emailAddress)).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response != null && response.body() != null)

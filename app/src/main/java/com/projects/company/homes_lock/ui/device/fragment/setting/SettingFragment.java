@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
@@ -213,7 +214,7 @@ public class SettingFragment extends Fragment
     }
 
     @Override
-    public void onRemoveAllLockMembers(String count) {
+    public void onRemoveAllLockMembersSuccessful(String count) {
         DialogHelper.handleProgressDialog(null, null, null, false);
         if (removeLockDialog != null) {
             removeLockDialog.dismiss();
@@ -221,14 +222,15 @@ public class SettingFragment extends Fragment
         }
 
         logoutLocally();
-    }
-
-    private void logoutLocally() {
-        Objects.requireNonNull(getActivity()).finish();
     }
 
     @Override
-    public void onRemoveDeviceForOneMember(String count) {
+    public void onRemoveAllLockMembersFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
+    public void onRemoveDeviceForOneMemberSuccessful(String count) {
         DialogHelper.handleProgressDialog(null, null, null, false);
         if (removeLockDialog != null) {
             removeLockDialog.dismiss();
@@ -236,6 +238,11 @@ public class SettingFragment extends Fragment
         }
 
         logoutLocally();
+    }
+
+    @Override
+    public void onRemoveDeviceForOneMemberFailed(ResponseBodyFailureModel response) {
+
     }
     //endregion ISettingFragment Callbacks
 
@@ -260,7 +267,7 @@ public class SettingFragment extends Fragment
 
     private void handleDeviceSetting() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            deviceSettingDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
+            deviceSettingDialog = new Dialog(mFragment.getContext());
             deviceSettingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceSettingDialog.setContentView(R.layout.dialog_device_setting);
 
@@ -303,7 +310,7 @@ public class SettingFragment extends Fragment
 
     private void handleRemoveLock() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            removeLockDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
+            removeLockDialog = new Dialog(mFragment.getContext());
             removeLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             removeLockDialog.setContentView(R.layout.dialog_remove_lock);
 
@@ -362,7 +369,7 @@ public class SettingFragment extends Fragment
 
     private void handleDialogChangeOnlinePassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changeOnlinePasswordDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
+            changeOnlinePasswordDialog = new Dialog(mFragment.getContext());
             changeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
 
@@ -389,8 +396,8 @@ public class SettingFragment extends Fragment
                 public void onClick(View v) {
                     DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change online password ...", true);
                     mDeviceViewModel.changeOnlinePasswordViaBle(mFragment,
-                            Objects.requireNonNull(tietOldPasswordDialogChangeOnlinePassword.getText()).toString(),
-                            Objects.requireNonNull(tietNewPasswordDialogChangeOnlinePassword.getText()).toString());
+                            tietOldPasswordDialogChangeOnlinePassword.getText().toString(),
+                            tietNewPasswordDialogChangeOnlinePassword.getText().toString());
                 }
             });
         }
@@ -401,7 +408,7 @@ public class SettingFragment extends Fragment
 
     private void handleDialogChangePairingPassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changePairingPasswordDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
+            changePairingPasswordDialog = new Dialog(mFragment.getContext());
             changePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
 
@@ -428,8 +435,8 @@ public class SettingFragment extends Fragment
                 public void onClick(View v) {
                     DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change pairing password ...", true);
                     mDeviceViewModel.changePairingPasswordViaBle(mFragment,
-                            Objects.requireNonNull(tietOldPasswordDialogChangePairingPassword.getText()).toString(),
-                            Objects.requireNonNull(tietNewPasswordDialogChangePairingPassword.getText()).toString());
+                            tietOldPasswordDialogChangePairingPassword.getText().toString(),
+                            tietNewPasswordDialogChangePairingPassword.getText().toString());
                 }
             });
         }
@@ -462,6 +469,10 @@ public class SettingFragment extends Fragment
             default:
                 return -1;
         }
+    }
+
+    private void logoutLocally() {
+        getActivity().finish();
     }
     //endregion Declare Methods
 }

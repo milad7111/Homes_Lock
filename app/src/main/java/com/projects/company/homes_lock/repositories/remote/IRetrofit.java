@@ -33,8 +33,8 @@ public interface IRetrofit {
     Call<User> getUserWithObjectId(@Header("user-token") String userToken, @Path("userObjectId") String userObjectId);
 
     @Headers({"Content-Type: application/json"})
-    @GET("data/Device/count?")
-    Call<ResponseBody> getDeviceCountsWithSerialNumber(@Header("user-token") String userToken, @Query("where") String whereClause);
+    @GET("data/users?")
+    Call<List<User>> getUserListWithEmailAddress(@Header("user-token") String userToken, @Query("where") String whereClause);
 
     @Headers({"Content-Type: application/json"})
     @POST("services/deviceService/getDeviceObjectIdBySerialNumber")
@@ -46,17 +46,11 @@ public interface IRetrofit {
 
     @Headers({"Content-Type: application/json"})
     @POST("data/UserLock/{userLockObjectId}/relatedDevice")
-    Call<ResponseBody> addLockToUserLock(
-            @Header("user-token") String userToken,
-            @Path("userLockObjectId") String userLockObjectId,
-            @Body HelperModel parameter);
+    Call<ResponseBody> addLockToUserLock(@Header("user-token") String userToken, @Path("userLockObjectId") String userLockObjectId, @Body HelperModel parameter);
 
     @Headers({"Content-Type: application/json"})
     @POST("data/users/{userObjectId}/relatedUserLocks")
-    Call<ResponseBody> addUserLockToUser(
-            @Header("user-token") String userToken,
-            @Path("userObjectId") String userObjectId,
-            @Body HelperModel parameter);
+    Call<ResponseBody> addUserLockToUser(@Header("user-token") String userToken, @Path("userObjectId") String userObjectId, @Body HelperModel parameter);
 
     @Headers({"Content-Type: application/json"})
     @DELETE("data/bulk/UserLock?")
