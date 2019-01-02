@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "986179328070",
+    "firebase_url": "https://homestechlock.firebaseio.com",
+    "project_id": "homestechlock",
+    "storage_bucket": "homestechlock.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986179328070:android:6457cfada071c91b",
+        "android_client_info": {
+          "package_name": "com.projects.company.homes_lock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986179328070-6ph1drgo996jugpud63f66q8g3582rht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcZJ_Na3emmq_3rRgaQhLLTlrPZJONyI0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -87,4 +87,11 @@ dependencies {
 
     //handle multidex enable in lower api than 21
     implementation 'com.android.support:multidex:1.0.3'
+
+    //handle push notification
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
 }
+
+apply plugin: 'com.google.gms.google-services'
