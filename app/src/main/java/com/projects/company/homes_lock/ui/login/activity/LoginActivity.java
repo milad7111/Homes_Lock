@@ -1,10 +1,12 @@
 package com.projects.company.homes_lock.ui.login.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
+import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 public class LoginActivity extends BaseActivity implements ILoginActivity {
@@ -44,8 +46,14 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        Fragment mFragment = getSupportFragmentManager().findFragmentById(R.id.frg_login_activity);
+
+        if (mFragment instanceof LoginFragment)
+            finishAffinity();
+        else if (mFragment instanceof RegisterFragment)
+            ViewHelper.setFragment(this, R.id.frg_login_activity, new LoginFragment());
+        else
+            super.onBackPressed();
     }
 
     //region Declare Methods

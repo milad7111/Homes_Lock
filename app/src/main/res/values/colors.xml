@@ -20,6 +20,7 @@
     <color name="background_list_items">#A2A2A2</color>
 
     <!--//region Navigation Drawer-->
+    <color name="color_drawer_background">#1A2127</color>
     <color name="color_nav_header_title">#E6E9F8</color>
     <color name="color_nav_header_sub_title">#fff</color>
     <color name="color_drawer_icons">#BABCBE</color>

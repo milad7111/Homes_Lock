@@ -19,6 +19,7 @@ public class AboutUsActivity extends BaseActivity {
     //region Declare Objects
     //endregion Declare Objects
 
+    //region Main Callbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +34,7 @@ public class AboutUsActivity extends BaseActivity {
         //region Initialize Views
         //endregion Initialize Views
     }
+    //endregion Main Callbacks
 
     //region Declare Methods
     //endregion Declare Methods

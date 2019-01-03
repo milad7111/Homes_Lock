@@ -1,11 +1,13 @@
 package com.projects.company.homes_lock.ui.device.activity;
 
-import android.arch.lifecycle.Observer;
+import android.app.ActivityManager;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -18,10 +20,16 @@ import android.view.WindowManager;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.ui.aboutus.AboutUsActivity;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
+import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
+import com.projects.company.homes_lock.ui.device.fragment.setting.SettingFragment;
+import com.projects.company.homes_lock.ui.notification.NotificationActivity;
+import com.projects.company.homes_lock.ui.proservices.activity.ProServicesActivity;
+import com.projects.company.homes_lock.ui.setting.SettingActivity;
+import com.projects.company.homes_lock.ui.support.SupportActivity;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
@@ -29,7 +37,6 @@ import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class LockActivity extends BaseActivity
         implements
@@ -118,10 +125,27 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if (activityLockDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+//        super.onBackPressed();
+
+        if (activityLockDrawerLayout.isDrawerOpen(GravityCompat.START))
             activityLockDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        else {
+            Fragment mFragment = getSupportFragmentManager().findFragmentById(R.id.frg_lock_activity);
+
+            if (mFragment instanceof ManageMembersFragment)
+                getSupportFragmentManager().popBackStackImmediate();
+            else if (mFragment instanceof SettingFragment)
+                getSupportFragmentManager().popBackStackImmediate();
+            else if (mViewPager.getChildCount() == 0)
+                finish();
+            else {
+                if (mViewPager.getCurrentItem() == 0)
+                    finish();
+                else if (mViewPager.getCurrentItem() == mViewPager.getChildCount() - 1)
+                    mViewPager.setCurrentItem(0);
+                else
+                    mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+            }
         }
     }
 
@@ -136,27 +160,26 @@ public class LockActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_locks:
-                // Handle the nav_camera action
+                handleNavigationItemSelected(R.id.nav_locks);
                 break;
             case R.id.nav_notifications:
-                // Handle the nav_gallery action
+                handleNavigationItemSelected(R.id.nav_notifications);
                 break;
             case R.id.nav_store:
-                // Handle the nav_slideshow action
+                handleNavigationItemSelected(R.id.nav_store);
                 break;
             case R.id.nav_support:
-                // Handle the nav_manage action
+                handleNavigationItemSelected(R.id.nav_support);
                 break;
             case R.id.nav_settings:
-                // Handle the nav_share action
+                handleNavigationItemSelected(R.id.nav_settings);
                 break;
             case R.id.nav_about_us:
-                // Handle the nav_send action
+                handleNavigationItemSelected(R.id.nav_about_us);
                 break;
         }
 
@@ -215,14 +238,45 @@ public class LockActivity extends BaseActivity
     //endregion MQTT CallBacks
 
     //region Declare Methods
+    private void initMQTT() {
+        MQTTHandler.setup(this, this);
+    }
+
+    private void handleNavigationItemSelected(int itemId) {
+        switch (itemId) {
+            case R.id.nav_locks:
+                if (!getTopActivityClassName().equals(LockActivity.class.getName()))
+                    startActivity(new Intent(LockActivity.this, LockActivity.class));
+                break;
+            case R.id.nav_notifications:
+                if (!getTopActivityClassName().equals(NotificationActivity.class.getName()))
+                    startActivity(new Intent(LockActivity.this, NotificationActivity.class));
+                break;
+            case R.id.nav_store:
+                if (!getTopActivityClassName().equals(ProServicesActivity.class.getName()))
+                    startActivity(new Intent(LockActivity.this, ProServicesActivity.class));
+                break;
+            case R.id.nav_support:
+                if (!getTopActivityClassName().equals(SupportActivity.class.getName()))
+                    startActivity(new Intent(LockActivity.this, SupportActivity.class));
+                break;
+            case R.id.nav_settings:
+                if (!getTopActivityClassName().equals(SettingActivity.class.getName()))
+                    startActivity(new Intent(LockActivity.this, SettingActivity.class));
+                break;
+            case R.id.nav_about_us:
+                if (!getTopActivityClassName().equals(AboutUsActivity.class.getName()))
+                    startActivity(new Intent(LockActivity.this, AboutUsActivity.class));
+                break;
+        }
+    }
+
     public void getAllDevices() {
-        this.mDeviceViewModel.getAllLocalDevices().observe(this, new Observer<List<Device>>() {
-            @Override
-            public void onChanged(@Nullable final List<Device> devices) {
-                if (mAdapter.getCount() == 1) { //just when initialize lockpage we need set adapter
-                    mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
-                    setViewPagerAdapter(mAdapter);
-                }
+        this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
+            if (mAdapter.getCount() == 1) { //just when initialize lockPage we need set adapter
+                mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
+                setViewPagerAdapter(mAdapter);
+                mViewPager.setCurrentItem(0);
             }
         });
     }
@@ -231,8 +285,9 @@ public class LockActivity extends BaseActivity
         mViewPager.setAdapter(adapter);
     }
 
-    private void initMQTT() {
-        MQTTHandler.setup(this, this);
+    private String getTopActivityClassName() {
+        return ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE))
+                .getRunningTasks(1).get(0).topActivity.getClassName();
     }
     //endregion Declare Methods
 }
