@@ -139,8 +139,8 @@
     <!--//endregion Messages-->
 
     <!--//region Actions and Menu Items and Nav Header-->
-    <string name="nav_header_title" translatable="false">Homes Lock</string>
-    <string name="nav_header_subtitle" translatable="false">Homes.lock.org</string>
+    <string name="nav_header_title" translatable="false">Ali Musavi</string>
+    <string name="nav_header_subtitle" translatable="false">alimusavi@gmail.com</string>
     <!--//endregion Actions and Menu Items and Nav Header-->
 
     <!--//region Urls-->

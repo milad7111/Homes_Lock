@@ -18,8 +18,8 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="NavigationView">
-        <item name="android:textColorSecondary">@color/md_white_1000</item>
-        <item name="android:textColorPrimary">@color/md_white_1000</item>
+        <item name="android:textColorSecondary">@color/color_drawer_icons</item>
+        <item name="android:textColorPrimary">@color/color_drawer_item_text_color</item>
     </style>
 
 </resources>

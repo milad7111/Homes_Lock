@@ -5,6 +5,8 @@ package com.projects.company.homes_lock.base;
  */
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.google.gson.Gson;
@@ -43,6 +45,11 @@ public class BaseApplication extends Application {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
     //endregion Main Callbacks
 
     //region Declare Methods
