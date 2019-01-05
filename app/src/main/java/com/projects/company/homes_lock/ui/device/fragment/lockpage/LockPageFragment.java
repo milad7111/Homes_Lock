@@ -44,7 +44,6 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static android.support.v4.content.ContextCompat.getColor;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
@@ -185,6 +184,8 @@ public class LockPageFragment extends Fragment
         ViewHelper.setContext(getContext());
         handleProgressDialog(null, null, null, false);
         updateViewData(!isUserLoggedIn());
+
+        this.mDeviceViewModel.initMQTT(getActivity());
         //endregion init
     }
 
@@ -571,4 +572,7 @@ public class LockPageFragment extends Fragment
         void onFragmentInteraction(Uri uri);
     }
     //endregion Declare Classes & Interfaces
+
+    //region Declare Methods
+    //endregion Declare Methods
 }

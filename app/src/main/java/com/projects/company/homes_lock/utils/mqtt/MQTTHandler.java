@@ -22,7 +22,7 @@ public class MQTTHandler {
     public static void setup(final IMQTTListener mIMQTTListener, Context mContext) {
         client = new MqttAndroidClient(
                 mContext,
-                "tcp://broker.hivemq.com",
+                "tcp://185.208.175.56",
                 MqttClient.generateClientId());
 
         client.setCallback(new MqttCallback() {
@@ -78,7 +78,7 @@ public class MQTTHandler {
 
     public static void subscribe(final IMQTTListener mIMQTTListener) {
         try {
-            IMqttToken subToken = client.subscribe("#", 1);
+            IMqttToken subToken = client.subscribe("response", 0);
 
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
@@ -98,12 +98,11 @@ public class MQTTHandler {
         }
     }
 
-    public static void toggle(final IMQTTListener mIMQTTListener, String mLockSerialNumber) {
-        String payload = "toggle";
+    public static void toggle(final IMQTTListener mIMQTTListener, String mLockSerialNumber, byte[] command) {
         IMqttDeliveryToken publishToken = null;
 
         try {
-            publishToken = client.publish("toggle/" + mLockSerialNumber, new MqttMessage(payload.getBytes("UTF-8")));
+            publishToken = client.publish("cmd", new MqttMessage(command));
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }

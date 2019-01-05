@@ -42,7 +42,6 @@ public class LockActivity extends BaseActivity
         implements
         ILockActivity,
         NavigationView.OnNavigationItemSelectedListener,
-        IMQTTListener,
         LockPageFragment.OnFragmentInteractionListener {
 
     //region Declare Constants
@@ -125,8 +124,6 @@ public class LockActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-
         if (activityLockDrawerLayout.isDrawerOpen(GravityCompat.START))
             activityLockDrawerLayout.closeDrawer(GravityCompat.START);
         else {
@@ -192,56 +189,7 @@ public class LockActivity extends BaseActivity
     }
     //endregion Main CallBacks
 
-    //region MQTT CallBacks
-    @Override
-    public void onConnectionToBrokerLost(Object response) {
-    }
-
-    @Override
-    public void onMessageArrived(Object response) {
-        MessageModel mMessageModel;
-        if (response instanceof MessageModel) {
-            mMessageModel = (MessageModel) response;
-            String payload = new String(mMessageModel.getMqttMessagePayload());
-        }
-    }
-
-    @Override
-    public void onDeliveryMessageComplete(Object response) {
-
-    }
-
-    @Override
-    public void onConnectionSuccessful(Object response) {
-        MQTTHandler.subscribe(this);
-    }
-
-    @Override
-    public void onConnectionFailure(Object response) {
-    }
-
-    @Override
-    public void onSubscribeSuccessful(Object response) {
-    }
-
-    @Override
-    public void onSubscribeFailure(Object response) {
-    }
-
-    @Override
-    public void onPublishSuccessful(Object response) {
-    }
-
-    @Override
-    public void onPublishFailure(Object response) {
-    }
-    //endregion MQTT CallBacks
-
     //region Declare Methods
-    private void initMQTT() {
-        MQTTHandler.setup(this, this);
-    }
-
     private void handleNavigationItemSelected(int itemId) {
         switch (itemId) {
             case R.id.nav_locks:
