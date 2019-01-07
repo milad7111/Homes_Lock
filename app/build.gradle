@@ -93,8 +93,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
-    //handle circular imageview
-//    implementation 'com.mikhaellopez:circularimageview:3.2.0'
+    //handle backendless
+    implementation group: 'com.backendless', name: 'backendless', version: '5.2.2'
+
+    //handle real-time database and real-time messaging
+    implementation ('io.socket:socket.io-client:1.0.0') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

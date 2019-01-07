@@ -13,6 +13,7 @@ import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity(tableName = "device")
 public class Device extends BaseModel {
@@ -175,6 +176,26 @@ public class Device extends BaseModel {
         this.mDeviceHealth = false;
         this.mFWVersion = 0;
         this.mLockPosition = 0;
+    }
+
+    public Device(Map updatedLock) {
+        this.mObjectId = updatedLock.get("objectId").toString();
+        this.mBleDeviceName = updatedLock.get("bleDeviceName").toString();
+        this.mBleDeviceMacAddress = updatedLock.get("bleDeviceMacAddress").toString();
+        this.mSerialNumber = updatedLock.get("serialNumber").toString();
+        this.mLockStatus = Boolean.valueOf(updatedLock.get("lockStatus").toString());
+        this.mDoorStatus = Boolean.valueOf(updatedLock.get("doorStatus").toString());
+        this.mInternetStatus = Boolean.valueOf(updatedLock.get("internetStatus").toString());
+        this.mBatteryPercentage = Integer.valueOf(updatedLock.get("batteryStatus").toString());
+        this.mWifiStatus = Boolean.valueOf(updatedLock.get("wifiStatus").toString());
+        this.mWifiStrength = Integer.valueOf(updatedLock.get("wifiStrength").toString());
+        this.mMeanPowerCons = Integer.valueOf(updatedLock.get("meanPowerCons").toString());
+        this.mTemperature = Integer.valueOf(updatedLock.get("temperature").toString());
+        this.mHumidity = Integer.valueOf(updatedLock.get("humidity").toString());
+        this.mCOLevel = Integer.valueOf(updatedLock.get("coLevel").toString());
+        this.mDeviceHealth = Boolean.valueOf(updatedLock.get("deviceHealth").toString());
+        this.mFWVersion = Integer.valueOf(updatedLock.get("fwVersion").toString());
+        this.mLockPosition = Integer.valueOf(updatedLock.get("lockPosition").toString());
     }
 
     @NonNull

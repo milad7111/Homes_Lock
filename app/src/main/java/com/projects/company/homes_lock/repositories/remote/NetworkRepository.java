@@ -1,7 +1,12 @@
 package com.projects.company.homes_lock.repositories.remote;
 
+import com.backendless.Backendless;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.rt.data.EventHandler;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseModel;
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
@@ -13,6 +18,7 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -187,17 +193,17 @@ public class NetworkRepository {
                 BaseApplication.activeUserToken,
                 String.format("relatedUserLocks.relatedDevice.objectId='%s'", lockObjectId), "relatedUserLocks.created")
                 .enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response != null && response.body() != null)
-                    listener.onResponse(response.body());
-            }
+                    @Override
+                    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                        if (response != null && response.body() != null)
+                            listener.onResponse(response.body());
+                    }
 
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                listener.onListNetworkListenerFailure(new FailureModel(t.getMessage()));
-            }
-        });
+                    @Override
+                    public void onFailure(Call<List<User>> call, Throwable t) {
+                        listener.onListNetworkListenerFailure(new FailureModel(t.getMessage()));
+                    }
+                });
     }
 
     public void getUserListWithEmailAddress(final NetworkListener.ListNetworkListener<List<User>> listener, String emailAddress) {
@@ -213,6 +219,23 @@ public class NetworkRepository {
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 listener.onListNetworkListenerFailure(new FailureModel(t.getMessage()));
+            }
+        });
+    }
+
+    public void setListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
+        final EventHandler<Map> lockObject = Backendless.Data.of("Device").rt();
+
+        lockObject.addUpdateListener(String.format("objectId = '%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
+            @Override
+            public void handleResponse(Map updatedLock) {
+                updatedLock.put("bleDeviceName", mDevice.getBleDeviceName());
+                listener.onResponse(new Device(updatedLock));
+            }
+
+            @Override
+            public void handleFault(BackendlessFault t) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
     }

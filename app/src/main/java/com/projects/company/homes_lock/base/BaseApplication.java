@@ -9,6 +9,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.backendless.Backendless;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.projects.company.homes_lock.BuildConfig;
@@ -19,6 +20,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_ANDROID_API_KEY;
+import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_APPLICATION_ID;
 import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_BASE_URL_HTTPS_REST;
 
 public class BaseApplication extends Application {
@@ -43,6 +46,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        Backendless.initApp(this, BACKENDLESS_APPLICATION_ID, BACKENDLESS_ANDROID_API_KEY);
     }
 
     @Override

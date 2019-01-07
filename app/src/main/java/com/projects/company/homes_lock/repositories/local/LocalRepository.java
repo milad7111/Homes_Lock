@@ -107,6 +107,10 @@ public class LocalRepository {
     public void updateDeviceCoLevel(String mDeviceObjectId, byte coLevel) {
         mDeviceDao.setCoLevel(mDeviceObjectId, coLevel);
     }
+
+    public void updateDevice(Device device) {
+        new updateDeviceAsyncTask(mDeviceDao).execute(device);
+    }
     //endregion Device table
 
     //region User and UserLock table
@@ -132,6 +136,21 @@ public class LocalRepository {
         @Override
         protected final Void doInBackground(Device... device) {
             this.mDeviceDao.insert(device);
+            return null;
+        }
+    }
+
+    private static class updateDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
+
+        private DeviceDao mDeviceDao;
+
+        updateDeviceAsyncTask(DeviceDao mDeviceDao) {
+            this.mDeviceDao = mDeviceDao;
+        }
+
+        @Override
+        protected final Void doInBackground(Device... device) {
+            this.mDeviceDao.update(device);
             return null;
         }
     }

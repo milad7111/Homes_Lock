@@ -183,7 +183,11 @@ public class LockPageFragment extends Fragment
         //region init
         ViewHelper.setContext(getContext());
         handleProgressDialog(null, null, null, false);
+
         updateViewData(!isUserLoggedIn());
+
+        if (isUserLoggedIn())
+            this.mDeviceViewModel.setListenerForDevice(this, mDevice);
 
         this.mDeviceViewModel.initMQTT(getActivity());
         //endregion init
@@ -279,11 +283,17 @@ public class LockPageFragment extends Fragment
     public void onSetDeviceWifiNetworkFailed() {
         closeDialogHandleDeviceWifiNetwork();
     }
+
+    @Override
+    public void onGetUpdatedDevice(Device response) {
+        mDevice = response;
+        updateViewData(false);
+        this.mDeviceViewModel.updateDevice(response);
+    }
     //endregion BLE CallBacks
 
     //region Declare Methods
     private void updateViewData(boolean setDefault) {
-
         setLockStatusImage(imgLockStatusLockPage,
                 setDefault ? 2 : (mDevice.getLockStatus() ? 1 : 0));
 

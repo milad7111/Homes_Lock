@@ -367,6 +367,9 @@ public class DeviceViewModel extends AndroidViewModel
         } else if (response instanceof User) {
             if (mIAddLockFragment != null)
                 mIAddLockFragment.onGetUserSuccessful((User) response);
+        } else if (response instanceof Device) {
+            if (mILockPageFragment != null)
+                mILockPageFragment.onGetUpdatedDevice((Device) response);
         }
     }
 
@@ -578,6 +581,15 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Online Methods
 
     //region Declare Methods
+    public void initMQTT(Context context) {
+        if (BaseApplication.isUserLoggedIn())
+            MQTTHandler.setup(this, context);
+    }
+
+    public void updateDevice(Device device){
+        mLocalRepository.updateDevice(device);
+    }
+
     public LiveData<Boolean> isConnected() {
         return mIsConnected;
     }
@@ -594,9 +606,9 @@ public class DeviceViewModel extends AndroidViewModel
         return requestType;
     }
 
-    public void initMQTT(Context context) {
-        if (BaseApplication.isUserLoggedIn())
-            MQTTHandler.setup(this, context);
+    public void setListenerForDevice(Fragment fragment, Device mDevice) {
+        mILockPageFragment = (ILockPageFragment) fragment;
+        mNetworkRepository.setListenerForDevice(this, mDevice);
     }
     //endregion Declare Methods
 
