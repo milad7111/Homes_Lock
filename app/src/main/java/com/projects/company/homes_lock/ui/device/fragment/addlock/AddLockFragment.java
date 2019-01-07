@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
@@ -189,6 +190,7 @@ public class AddLockFragment extends BaseFragment
                 activeDialog = null;
             }
 
+            mDeviceViewModel.enablePushNotification(lockObjectId);
             mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
         } else
             onAddUserLockToUserFailed(new ResponseBodyFailureModel("add user lock to user failed."));
@@ -236,6 +238,16 @@ public class AddLockFragment extends BaseFragment
                     ((LockActivity) getActivity()).setViewPagerAdapter(new CustomDeviceAdapter(getActivity().getSupportFragmentManager(), devices));
                 }
             });
+    }
+
+    @Override
+    public void onDeviceRegistrationPushNotificationSuccessful(String registrationId) {
+        Log.i(getTag(), "Device registered for push notification with registrationId: " + registrationId);
+    }
+
+    @Override
+    public void onDeviceRegistrationPushNotificationFailed(ResponseBodyFailureModel response) {
+        Toast.makeText(getContext(), response.getFailureMessage(), Toast.LENGTH_LONG).show();
     }
     //endregion IAddLockFragment CallBacks
 

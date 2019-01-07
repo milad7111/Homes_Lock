@@ -172,12 +172,7 @@ public class DialogHelper {
             addNewLockDialogOnline.requestWindowFeature(Window.FEATURE_NO_TITLE);
             addNewLockDialogOnline.setContentView(R.layout.dialog_add_new_lock);
 
-            addNewLockDialogOnline.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    addNewLockDialogOnline = null;
-                }
-            });
+            addNewLockDialogOnline.setOnDismissListener(dialog -> addNewLockDialogOnline = null);
 
             Button btnCancelDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.btn_cancel_dialog_add_new_lock);
             Button btnAddDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.btn_add_dialog_add_new_lock);
@@ -186,25 +181,17 @@ public class DialogHelper {
             tietLockSerialNumberDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.tiet_lock_serial_number_dialog_add_new_lock);
             chbLockFavoriteStatusDialogAddNewLock = addNewLockDialogOnline.findViewById(R.id.chb_lock_favorite_status_dialog_add_new_lock);
 
-            btnCancelDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addNewLockDialogOnline.dismiss();
-                }
-            });
+            btnCancelDialogAddNewLock.setOnClickListener(v -> addNewLockDialogOnline.dismiss());
 
-            btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(
-                            fragment.getContext(),
-                            null,
-                            String.format("Adding Lock ... %d %%", getRandomPercentNumber(1, 8)),
-                            true);
+            btnAddDialogAddNewLock.setOnClickListener(v -> {
+                DialogHelper.handleProgressDialog(
+                        fragment.getContext(),
+                        null,
+                        String.format("Adding Lock ... %d %%", getRandomPercentNumber(1, 8)),
+                        true);
 
-                    ((AddLockFragment) fragment).mDeviceViewModel
-                            .validateLockInOnlineDatabase(fragment, tietLockSerialNumberDialogAddNewLock.getText().toString());
-                }
+                ((AddLockFragment) fragment).mDeviceViewModel
+                        .validateLockInOnlineDatabase(fragment, tietLockSerialNumberDialogAddNewLock.getText().toString());
             });
         } else {
             if (lockExistenceStatus)

@@ -30,4 +30,8 @@ public interface IAddLockFragment {
     void onAddLockToUserLockFailed(ResponseBodyFailureModel response);
 
     void onAddUserLockToUserFailed(ResponseBodyFailureModel response);
+
+    void onDeviceRegistrationPushNotificationSuccessful(String registrationId);
+
+    void onDeviceRegistrationPushNotificationFailed(ResponseBodyFailureModel response);
 }

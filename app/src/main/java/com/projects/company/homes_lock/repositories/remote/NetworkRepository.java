@@ -1,8 +1,11 @@
 package com.projects.company.homes_lock.repositories.remote;
 
+import android.util.Log;
+
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.push.DeviceRegistrationResult;
 import com.backendless.rt.data.EventHandler;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseModel;
@@ -46,7 +49,7 @@ public class NetworkRepository {
                 else
                     listener.onSingleNetworkListenerFailure(
                             new FailureModel((
-                                    new ResponseBodyModel(response.errorBody().source().toString())).getMessage()));
+                                    new ResponseBodyModel(response.errorBody().source().toString(), false)).getMessage()));
             }
 
             @Override
@@ -225,7 +228,6 @@ public class NetworkRepository {
 
     public void setListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
         final EventHandler<Map> lockObject = Backendless.Data.of("Device").rt();
-
         lockObject.addUpdateListener(String.format("objectId = '%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
             @Override
             public void handleResponse(Map updatedLock) {
@@ -236,6 +238,20 @@ public class NetworkRepository {
             @Override
             public void handleFault(BackendlessFault t) {
                 listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
+            }
+        });
+    }
+
+    public void enablePushNotification(final NetworkListener.SingleNetworkListener<ResponseBody> listener, List<String> channels) {
+        Backendless.Messaging.registerDevice(channels, new AsyncCallback<DeviceRegistrationResult>() {
+            @Override
+            public void handleResponse(DeviceRegistrationResult response) {
+                listener.onResponse(new ResponseBodyModel(response.getDeviceToken(), true));
+            }
+
+            @Override
+            public void handleFault(BackendlessFault t) {
+                listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
             }
         });
     }

@@ -22,6 +22,7 @@ import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
@@ -38,6 +39,7 @@ import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -356,6 +358,10 @@ public class DeviceViewModel extends AndroidViewModel
                                         .replace("]", "")
                                         .replace("\"", ""));
                     break;
+                case "enablePushNotification":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onDeviceRegistrationPushNotificationSuccessful(((ResponseBodyModel) response).getRegistrationId());
+                    break;
                 default:
                     break;
             }
@@ -400,6 +406,10 @@ public class DeviceViewModel extends AndroidViewModel
                 case "removeDeviceForOneMember":
                     if (mISettingFragment != null)
                         mISettingFragment.onRemoveDeviceForOneMemberFailed((ResponseBodyFailureModel) response);
+                    break;
+                case "enablePushNotification":
+                    if (mIAddLockFragment != null)
+                        mIAddLockFragment.onDeviceRegistrationPushNotificationFailed((ResponseBodyFailureModel) response);
                     break;
                 default:
                     break;
@@ -578,6 +588,16 @@ public class DeviceViewModel extends AndroidViewModel
         setRequestType("addUserLockToUser");
         mNetworkRepository.addUserLockToUser(this, userObjectId, new HelperModel(userLockObjectId));
     }
+
+    public void setListenerForDevice(Fragment fragment, Device mDevice) {
+        mILockPageFragment = (ILockPageFragment) fragment;
+        mNetworkRepository.setListenerForDevice(this, mDevice);
+    }
+
+    public void enablePushNotification(String lockObjectId) {
+        setRequestType("enablePushNotification");
+        mNetworkRepository.enablePushNotification(this, Collections.singletonList(lockObjectId));
+    }
     //endregion Online Methods
 
     //region Declare Methods
@@ -586,7 +606,7 @@ public class DeviceViewModel extends AndroidViewModel
             MQTTHandler.setup(this, context);
     }
 
-    public void updateDevice(Device device){
+    public void updateDevice(Device device) {
         mLocalRepository.updateDevice(device);
     }
 
@@ -604,11 +624,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     private String getRequestType() {
         return requestType;
-    }
-
-    public void setListenerForDevice(Fragment fragment, Device mDevice) {
-        mILockPageFragment = (ILockPageFragment) fragment;
-        mNetworkRepository.setListenerForDevice(this, mDevice);
     }
     //endregion Declare Methods
 

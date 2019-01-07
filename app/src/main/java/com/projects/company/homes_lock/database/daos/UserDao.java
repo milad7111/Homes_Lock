@@ -17,17 +17,18 @@ public abstract class UserDao {
     public Long insert(User user) {
         Long id = _insertUser(user);
 
-        for (UserLock userLock : user.getRelatedUserLocks()) {
-            Device tempDevice = userLock.getRelatedDevice();
-            tempDevice.setBleDeviceName(userLock.getLockName());
+        if (user.getRelatedUserLocks() != null)
+            for (UserLock userLock : user.getRelatedUserLocks()) {
+                Device tempDevice = userLock.getRelatedDevice();
+                tempDevice.setBleDeviceName(userLock.getLockName());
 
-            insertDeviceForUser(tempDevice);
+                insertDeviceForUser(tempDevice);
 
-            userLock.setDeviceId(userLock.getRelatedDevice().getObjectId());
-            userLock.setUserId(user.getObjectId());
+                userLock.setDeviceId(userLock.getRelatedDevice().getObjectId());
+                userLock.setUserId(user.getObjectId());
 
-            insertUserLockForUser(userLock);
-        }
+                insertUserLockForUser(userLock);
+            }
 
         return id;
     }
@@ -75,5 +76,8 @@ public abstract class UserDao {
     abstract Device _getDeviceByObjectId(String mDeviceId);
 
     @Query("DELETE FROM user")
-    public void clearAllData(){};
+    public void clearAllData() {
+    }
+
+    ;
 }

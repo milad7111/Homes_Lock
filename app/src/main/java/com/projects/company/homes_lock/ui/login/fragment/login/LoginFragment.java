@@ -28,6 +28,7 @@ import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -107,10 +108,16 @@ public class LoginFragment extends Fragment
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        handleProgressDialog(null, null, null, false);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login_login_fragment:
-                DialogHelper.handleProgressDialog(getContext(), null, "Login process ...", true);
+                handleProgressDialog(getContext(), null, "Login process ...", true);
                 mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
                 break;
             case R.id.txv_direct_connect_login_fragment:
@@ -140,7 +147,7 @@ public class LoginFragment extends Fragment
     public void onLoginFailed(FailureModel response) {
 //        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
         Toast.makeText(getActivity(), response.getFailureMessage(), Toast.LENGTH_LONG).show();
-        DialogHelper.handleProgressDialog(null, null, null, false);
+        handleProgressDialog(null, null, null, false);
     }
 
     @Override
