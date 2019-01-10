@@ -22,6 +22,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.AddLockViewModelFactory;
@@ -70,6 +71,7 @@ public class AddLockFragment extends BaseFragment
     private UserViewModel mUserViewModel;
     private Dialog activeDialog;
     public static ScannedDeviceModel mDevice;
+    public static TempDeviceModel mTempDevice;
     //endregion Declare Objects
 
     //region Constructor
@@ -95,6 +97,8 @@ public class AddLockFragment extends BaseFragment
                 this,
                 new AddLockViewModelFactory(getActivity().getApplication(), this))
                 .get(UserViewModel.class);
+
+        this.mTempDevice = new TempDeviceModel();
         //endregion Initialize Objects
     }
 
@@ -286,6 +290,7 @@ public class AddLockFragment extends BaseFragment
             activeDialog = handleDialogAddLockOnline(this, false); // Means user Wrote username and password then clicked Login
         else {
             mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
+            this.mTempDevice = new TempDeviceModel();
             if (getScanPermission(this))
                 activeDialog = DialogHelper.handleDialogListOfAvailableBleDevices(this, Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
         }

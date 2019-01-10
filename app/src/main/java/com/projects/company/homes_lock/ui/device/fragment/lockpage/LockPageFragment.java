@@ -27,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
-import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -51,7 +50,6 @@ import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mB
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
-import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getSecurityAlarmColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getSecurityAlarmText;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;

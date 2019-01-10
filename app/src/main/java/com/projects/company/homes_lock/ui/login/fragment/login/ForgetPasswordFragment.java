@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,9 +30,12 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
     //region Declare Objects
     //endregion Declare Objects
 
+    //region Constructor
     public ForgetPasswordFragment() {
     }
+    //endregion Constructor
 
+    //region Main Callbacks
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +62,12 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
         //region Setup Views
         //endregion Setup Views
     }
+    //endregion Main Callbacks
 
+    //region ILoginFragment
     @Override
-    public void onLoginSuccessful(Object response) {
+    public void onLoginSuccessful(User user) {
+
     }
 
     @Override
@@ -70,6 +79,57 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
     public void onDataInsert(Long id) {
 
     }
+
+    @Override
+    public void onFindLockInOnlineDataBaseSuccessful(String response) {
+
+    }
+
+    @Override
+    public void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
+    public void onInsertUserLockSuccessful(UserLock response) {
+
+    }
+
+    @Override
+    public void onInsertUserLockFailed(FailureModel response) {
+
+    }
+
+    @Override
+    public void onAddLockToUserLockSuccessful(Boolean response) {
+
+    }
+
+    @Override
+    public void onAddLockToUserLockFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
+    public void onAddUserLockToUserSuccessful(Boolean response) {
+
+    }
+
+    @Override
+    public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
+    public void onGetUserSuccessful(User response) {
+
+    }
+
+    @Override
+    public void onGetUserFailed(FailureModel response) {
+
+    }
+    //endregion ILoginFragment
 
     //region Declare Methods
     //endregion Declare Methods

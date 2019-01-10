@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.ArrayList;
@@ -23,9 +24,6 @@ public class Device extends BaseModel {
     @ColumnInfo(name = "objectId")
     @SerializedName("objectId")
     private String mObjectId;
-
-    @ColumnInfo(name = "bleDeviceName")
-    private String mBleDeviceName;
 
     @ColumnInfo(name = "bleDeviceMacAddress")
     @SerializedName("bleDeviceMacAddress")
@@ -117,6 +115,17 @@ public class Device extends BaseModel {
     private User mUser;
     //endregion Ignore server attributes
 
+    //region Not Database Attributes
+    @ColumnInfo(name = "bleDeviceName")
+    private String mBleDeviceName;
+
+    @ColumnInfo(name = "favoriteStatus")
+    private boolean mFavoriteStatus;
+    //endregion Not Database Attributes
+
+    //region Constructor
+    //endregion Constructor
+
     public Device() {
     }
 
@@ -158,11 +167,12 @@ public class Device extends BaseModel {
         this.mLockPosition = mLockPosition;
     }
 
-    public Device(ScannedDeviceModel device) {
-        this.mObjectId = device.getSerialNumber();
-        this.mBleDeviceName = device.getName();
-        this.mBleDeviceMacAddress = device.getMacAddress();
-        this.mSerialNumber = device.getSerialNumber();
+    public Device(TempDeviceModel device) {
+        this.mObjectId = device.getDeviceSerialNumber();
+        this.mBleDeviceName = device.getDeviceName();
+        this.mBleDeviceMacAddress = device.getDeviceMacAddress();
+        this.mSerialNumber = device.getDeviceSerialNumber();
+        this.mFavoriteStatus = device.isFavoriteLock();
         this.mLockStatus = false;
         this.mDoorStatus = false;
         this.mInternetStatus = false;
@@ -351,7 +361,7 @@ public class Device extends BaseModel {
         return -1;
     }
 
-    public boolean isLockSavedInServer() {
+    public boolean isLockSavedInServerByCheckUserLocks() {
         if (mRelatedUsers != null)
             return mRelatedUsers.size() != 0;
 
@@ -372,5 +382,17 @@ public class Device extends BaseModel {
             return mRelatedUsers.get(0).getObjectId();
 
         return null;
+    }
+
+    public boolean isLockSavedInServer(){
+        return !this.getObjectId().equals(this.getSerialNumber());
+    }
+
+    public void setFavoriteStatus(boolean mFavoriteStatus) {
+        this.mFavoriteStatus = mFavoriteStatus;
+    }
+
+    public boolean isFavoriteStatus() {
+        return mFavoriteStatus;
     }
 }

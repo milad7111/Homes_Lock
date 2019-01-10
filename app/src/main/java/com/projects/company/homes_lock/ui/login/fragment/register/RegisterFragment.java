@@ -57,7 +57,7 @@ public class RegisterFragment extends Fragment
     //region Constructor
     public RegisterFragment() {
     }
-    //endregion Declare Constructor
+    //endregion Constructor
 
     //region Main Callbacks
     @Override

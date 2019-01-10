@@ -110,7 +110,7 @@ public class UserViewModel extends AndroidViewModel
     public void onResponse(Object response) {
         if (response instanceof User) {
             if (mILoginFragment != null)
-                mILoginFragment.onLoginSuccessful(response);
+                mILoginFragment.onLoginSuccessful((User) response);
             else if (mIRegisterFragment != null)
                 mIRegisterFragment.onRegisterSuccessful(response);
             else if (mIAddLockFragment != null)

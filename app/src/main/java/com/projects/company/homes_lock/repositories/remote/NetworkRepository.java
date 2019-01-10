@@ -1,7 +1,5 @@
 package com.projects.company.homes_lock.repositories.remote;
 
-import android.util.Log;
-
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
@@ -12,7 +10,7 @@ import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
-import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
+import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
@@ -121,7 +119,7 @@ public class NetworkRepository {
         });
     }
 
-    public void addLockToUserLock(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userLockObjectId, HelperModel parameter) {
+    public void addLockToUserLock(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userLockObjectId, AddRelationHelperModel parameter) {
         BaseApplication.getRetrofitAPI().addLockToUserLock(
                 BaseApplication.activeUserToken,
                 userLockObjectId,
@@ -140,7 +138,7 @@ public class NetworkRepository {
                 });
     }
 
-    public void addUserLockToUser(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userObjectId, HelperModel parameter) {
+    public void addUserLockToUser(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String userObjectId, AddRelationHelperModel parameter) {
         BaseApplication.getRetrofitAPI().addUserLockToUser(
                 BaseApplication.activeUserToken,
                 userObjectId,

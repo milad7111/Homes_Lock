@@ -18,7 +18,7 @@ import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
-import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
+import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -26,6 +26,7 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyMo
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
+import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
@@ -97,7 +98,7 @@ public class DeviceViewModel extends AndroidViewModel
         this.mBleDeviceManager.setGattCallbacks(this);
         //endregion Initialize Objects
     }
-    //endregion Declare Constructor
+    //endregion Constructor
 
     //region Device Table
     public LiveData<List<Device>> getAllLocalDevices() {
@@ -213,10 +214,12 @@ public class DeviceViewModel extends AndroidViewModel
     private void handleReceivedResponse(byte[] responseValue) {
         switch (responseValue[0]) {
             case 0x01:
-                mLocalRepository.updateDeviceLockStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] >> 4 == 1);
-                mLocalRepository.updateDeviceDoorStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] << 4);
-                mLocalRepository.updateDeviceBatteryStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
-                mLocalRepository.updateDeviceConnectionStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue);
+                if (mILockPageFragment != null) {
+                    mLocalRepository.updateDeviceLockStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] >> 4 == 1);
+                    mLocalRepository.updateDeviceDoorStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] << 4);
+                    mLocalRepository.updateDeviceBatteryStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
+                    mLocalRepository.updateDeviceConnectionStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue);
+                }
                 break;
             case 0x02:
                 if (responseValue[1] == 0)
@@ -231,13 +234,15 @@ public class DeviceViewModel extends AndroidViewModel
                 Log.d("Read deviceErrorData", Arrays.toString(subArrayByte(responseValue, 1, responseValue.length)));
                 break;
             case 0x05:
-                mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1]);
-                mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
-                mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[3]);
+                if (mILockPageFragment != null) {
+                    mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1]);
+                    mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
+                    mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[3]);
+                }
                 break;
             case 0x06:
                 if (responseValue[1] == 0) {
-                    getAvailableWifiNetworksAroundDevice(responseValue[2]);
+                    getAvailableWifiNetworksAroundDevice(mILockPageFragment, responseValue[2]);
                     if (mILockPageFragment != null)
                         mILockPageFragment.onGetAvailableWifiNetworksCountAroundDevice((int) responseValue[2]);
                 } else
@@ -512,7 +517,9 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x06}, new byte[]{}));
     }
 
-    private void getAvailableWifiNetworksAroundDevice(int networksCount) {
+    private void getAvailableWifiNetworksAroundDevice(ILockPageFragment mILockPageFragment, int networksCount) {
+        this.mILockPageFragment = mILockPageFragment;
+
         for (int i = 0; i < networksCount; i++)
             mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) i}));
     }
@@ -550,7 +557,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        if (mDevice.isLockSavedInServer()) {
+        if (mDevice.isLockSavedInServerByCheckUserLocks()) {
             if (removeAllMembers) {
                 setRequestType("removeDeviceForAllMembers");
                 mNetworkRepository.removeDeviceForAllMembers(this, mDevice.getObjectId());
@@ -564,6 +571,12 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion BLE Methods
 
     //region Online Methods
+    public void validateLockInOnlineDatabase(AddLockFragment fragment, String serialNumber) {
+        setRequestType("validateLockInOnlineDatabase");
+        mIAddLockFragment = fragment;
+        mNetworkRepository.getDeviceObjectIdWithSerialNumber(this, serialNumber);
+    }
+
     public void validateLockInOnlineDatabase(Fragment fragment, String serialNumber) {
         setRequestType("validateLockInOnlineDatabase");
         mIAddLockFragment = (IAddLockFragment) fragment;
@@ -582,12 +595,12 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void addLockToUserLock(String userLockObjectId, String lockObjectId) {
         setRequestType("addLockToUserLock");
-        mNetworkRepository.addLockToUserLock(this, userLockObjectId, new HelperModel(lockObjectId));
+        mNetworkRepository.addLockToUserLock(this, userLockObjectId, new AddRelationHelperModel(lockObjectId));
     }
 
     public void addUserLockToUser(String userObjectId, String userLockObjectId) {
         setRequestType("addUserLockToUser");
-        mNetworkRepository.addUserLockToUser(this, userObjectId, new HelperModel(userLockObjectId));
+        mNetworkRepository.addUserLockToUser(this, userObjectId, new AddRelationHelperModel(userLockObjectId));
     }
 
     public void setListenerForDevice(Fragment fragment, Device mDevice) {

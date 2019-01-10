@@ -1,9 +1,8 @@
 package com.projects.company.homes_lock.repositories.remote;
 
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
-import com.projects.company.homes_lock.models.datamodels.request.HelperModel;
+import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
@@ -47,11 +46,11 @@ public interface IRetrofit {
 
     @Headers({"Content-Type: application/json"})
     @PUT("data/UserLock/{userLockObjectId}/relatedDevice")
-    Call<ResponseBody> addLockToUserLock(@Header("user-token") String userToken, @Path("userLockObjectId") String userLockObjectId, @Body HelperModel parameter);
+    Call<ResponseBody> addLockToUserLock(@Header("user-token") String userToken, @Path("userLockObjectId") String userLockObjectId, @Body AddRelationHelperModel parameter);
 
     @Headers({"Content-Type: application/json"})
     @PUT("data/users/{userObjectId}/relatedUserLocks")
-    Call<ResponseBody> addUserLockToUser(@Header("user-token") String userToken, @Path("userObjectId") String userObjectId, @Body HelperModel parameter);
+    Call<ResponseBody> addUserLockToUser(@Header("user-token") String userToken, @Path("userObjectId") String userObjectId, @Body AddRelationHelperModel parameter);
 
     @Headers({"Content-Type: application/json"})
     @DELETE("data/bulk/UserLock?")

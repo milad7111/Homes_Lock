@@ -11,25 +11,25 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 public interface IAddLockFragment {
     void onFindLockInOnlineDataBaseSuccessful(String response);
 
+    void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response);
+
     void onInsertUserLockSuccessful(UserLock response);
+
+    void onInsertUserLockFailed(FailureModel response);
 
     void onAddLockToUserLockSuccessful(Boolean response);
 
+    void onAddLockToUserLockFailed(ResponseBodyFailureModel response);
+
     void onAddUserLockToUserSuccessful(Boolean response);
+
+    void onAddUserLockToUserFailed(ResponseBodyFailureModel response);
 
     void onGetUserSuccessful(User response);
 
     void onGetUserFailed(FailureModel response);
 
     void onDataInsert(Long id);
-
-    void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response);
-
-    void onInsertUserLockFailed(FailureModel response);
-
-    void onAddLockToUserLockFailed(ResponseBodyFailureModel response);
-
-    void onAddUserLockToUserFailed(ResponseBodyFailureModel response);
 
     void onDeviceRegistrationPushNotificationSuccessful(String registrationId);
 

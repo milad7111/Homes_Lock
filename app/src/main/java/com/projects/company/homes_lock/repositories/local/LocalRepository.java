@@ -63,6 +63,10 @@ public class LocalRepository {
         return mDeviceDao.getAllDevices();
     }
 
+    public Device getUserLockInfo(String objectId) {
+        return mLockUserViewDao.getUserLockInfo(objectId);
+    }
+
     public List<Device> getAllUserLocks() {
         return mLockUserViewDao.getAllUserLocks();
     }
@@ -117,10 +121,6 @@ public class LocalRepository {
     public void insertUser(User user, ILocalRepository mILocalRepository) {
         this.mILocalRepository = mILocalRepository;
         new clearAllDataAndInsertUserAsyncTask(mUserDao, mUserLockDao, mDeviceDao, mDeviceErrorDao, mErrorDao, user).execute();
-    }
-
-    public Device getUserLockInfo(String objectId) {
-        return mLockUserViewDao.getUserLockInfo(objectId);
     }
     //endregion User and UserLock table
 

@@ -72,5 +72,8 @@ public class ScannedDeviceModel extends BaseModel {
     public void setSerialNumber(String mSerialNumber) {
         this.mSerialNumber = mSerialNumber;
     }
+
+    public void setFavoriteStatus(boolean checked) {
+    }
     //endregion Declare Methods
 }

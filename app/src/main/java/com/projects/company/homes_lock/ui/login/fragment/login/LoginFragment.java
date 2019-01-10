@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,21 @@ import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.database.tables.UserLock;
+import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
+import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.LoginViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
@@ -53,14 +59,23 @@ public class LoginFragment extends Fragment
     //endregion Declare Views
 
     //region Declare Variables
+    private int savedDevicesIndex = 0;
+
+    private String lockObjectId = "";
+    private String userLockObjectId = "";
     //endregion Declare Variables
 
     //region Declare Objects
     private UserViewModel mUserViewModel;
+    private DeviceViewModel mDeviceViewModel;
+
+    private List<Device> notSavedDevices;
     //endregion Declare Objects
 
+    //region Constructor
     public LoginFragment() {
     }
+    //endregion Constructor
 
     //region Main CallBacks
     @Override
@@ -71,6 +86,7 @@ public class LoginFragment extends Fragment
         //endregion Initialize Variables
 
         //region Initialize Objects
+        notSavedDevices = new ArrayList<>();
         //endregion Initialize Objects
     }
 
@@ -104,6 +120,8 @@ public class LoginFragment extends Fragment
                 this,
                 new LoginViewModelFactory(getActivity().getApplication(), this))
                 .get(UserViewModel.class);
+
+        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
         //endregion Initialize Objects
     }
 
@@ -118,7 +136,16 @@ public class LoginFragment extends Fragment
         switch (v.getId()) {
             case R.id.btn_login_login_fragment:
                 handleProgressDialog(getContext(), null, "Login process ...", true);
-                mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
+                this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
+                    notSavedDevices = new ArrayList<>();
+
+                    for (Device device : devices) {
+                        if (!device.isLockSavedInServer())
+                            notSavedDevices.add(device);
+                    }
+
+                    mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
+                });
                 break;
             case R.id.txv_direct_connect_login_fragment:
                 setUserLoginMode(false);
@@ -136,11 +163,15 @@ public class LoginFragment extends Fragment
 
     //region Login CallBacks
     @Override
-    public void onLoginSuccessful(Object response) {
-        BaseApplication.activeUserObjectId = ((User) response).getObjectId();
-        BaseApplication.activeUserToken = ((User) response).getUserToken();
-        BaseApplication.activeUserEmail = ((User) response).getEmail();
-        mUserViewModel.insertUser((User) response);
+    public void onLoginSuccessful(User user) {
+        BaseApplication.activeUserObjectId = user.getObjectId();
+        BaseApplication.activeUserToken = user.getUserToken();
+        BaseApplication.activeUserEmail = user.getEmail();
+
+        if (notSavedDevices.size() != 0)
+            saveLocalDevicesToServer();
+        else
+            mUserViewModel.insertUser(user);
     }
 
     @Override
@@ -148,6 +179,69 @@ public class LoginFragment extends Fragment
 //        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
         Toast.makeText(getActivity(), response.getFailureMessage(), Toast.LENGTH_LONG).show();
         handleProgressDialog(null, null, null, false);
+    }
+
+    @Override
+    public void onFindLockInOnlineDataBaseSuccessful(String lockObjectId) {
+        this.lockObjectId = lockObjectId;
+        this.mDeviceViewModel.insertOnlineUserLock(
+                new UserLockModel(
+                        notSavedDevices.get(savedDevicesIndex).getBleDeviceName(),
+                        true,
+                        notSavedDevices.get(savedDevicesIndex).isFavoriteStatus()
+                ));
+    }
+
+    @Override
+    public void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
+    public void onInsertUserLockSuccessful(UserLock userLock) {
+        this.userLockObjectId = userLock.getObjectId();
+        mDeviceViewModel.addLockToUserLock(this.userLockObjectId, this.lockObjectId);
+    }
+
+    @Override
+    public void onInsertUserLockFailed(FailureModel response) {
+
+    }
+
+    @Override
+    public void onAddLockToUserLockSuccessful(Boolean addLockToUserLockSuccessful) {
+        if (addLockToUserLockSuccessful)
+            mDeviceViewModel.addUserLockToUser(BaseApplication.activeUserObjectId, this.userLockObjectId);
+        else
+            onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
+    }
+
+    @Override
+    public void onAddLockToUserLockFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
+    public void onAddUserLockToUserSuccessful(Boolean response) {
+        if (++savedDevicesIndex < notSavedDevices.size())
+            saveLocalDevicesToServer();
+        else
+            mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
+    }
+
+    @Override
+    public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
+    public void onGetUserSuccessful(User user) {
+        mUserViewModel.insertUser(user);
+    }
+
+    @Override
+    public void onGetUserFailed(FailureModel response) {
+
     }
 
     @Override
@@ -164,6 +258,10 @@ public class LoginFragment extends Fragment
     private void clearViews() {
         tietEmail.setText(null);
         tietPassword.setText(null);
+    }
+
+    private void saveLocalDevicesToServer() {
+        this.mDeviceViewModel.validateLockInOnlineDatabase(this, notSavedDevices.get(savedDevicesIndex).getSerialNumber());
     }
     //endregion Declare Methods
 }

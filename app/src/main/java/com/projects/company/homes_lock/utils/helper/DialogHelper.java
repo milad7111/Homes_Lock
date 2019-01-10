@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -21,18 +20,14 @@ import android.widget.CheckBox;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
 import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
-import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
-import com.projects.company.homes_lock.utils.ble.WifiNetworksAdapter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
@@ -113,12 +108,9 @@ public class DialogHelper {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_add_new_lock);
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (!saveLockAfterPaired)
-                    mBluetoothLEHelper.unPairDevice(((AddLockFragment) fragment).mDevice.getDevice().getAddress());
-            }
+        dialog.setOnDismissListener(mDialog -> {
+            if (!saveLockAfterPaired)
+                mBluetoothLEHelper.unPairDevice(((AddLockFragment) fragment).mDevice.getDevice().getAddress());
         });
 
         Button btnCancelDialogAddNewLock = dialog.findViewById(R.id.btn_cancel_dialog_add_new_lock);
@@ -129,34 +121,27 @@ public class DialogHelper {
 
         CheckBox chbLockFavoriteStatusDialogAddNewLock = dialog.findViewById(R.id.chb_lock_favorite_status_dialog_add_new_lock);
 
-        btnCancelDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        btnCancelDialogAddNewLock.setOnClickListener(v -> dialog.dismiss());
 
-        btnAddDialogAddNewLock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Saving ...", true);
+        btnAddDialogAddNewLock.setOnClickListener(v -> {
+            DialogHelper.handleProgressDialog(fragment.getContext(), null, "Saving ...", true);
 
-                ((AddLockFragment) fragment).mDevice.setName(tietLockNameDialogAddNewLock.getText().toString());
-                ((AddLockFragment) fragment).mDevice.setSerialNumber(tietLockSerialNumberDialogAddNewLock.getText().toString());
+            ((AddLockFragment) fragment).mTempDevice.setDeviceName(tietLockNameDialogAddNewLock.getText().toString());
+            ((AddLockFragment) fragment).mTempDevice.setDeviceSerialNumber(tietLockSerialNumberDialogAddNewLock.getText().toString());
+            ((AddLockFragment) fragment).mTempDevice.setFavoriteStatus(chbLockFavoriteStatusDialogAddNewLock.isChecked());
+            ((AddLockFragment) fragment).mTempDevice.setDeviceMacAddress(((AddLockFragment) fragment).mDevice.getMacAddress());
 
-                ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
-                    @Override
-                    public void onChanged(@Nullable final List<Device> devices) {
-                        ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
-                                new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices));
-                    }
-                });
-                ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mDevice));
+            ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
+                @Override
+                public void onChanged(@Nullable final List<Device> devices) {
+                    ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
+                            new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices));
+                }
+            });
+            ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mTempDevice));
 
-                saveLockAfterPaired = true;
-
-                dialog.dismiss();
-            }
+            saveLockAfterPaired = true;
+            dialog.dismiss();
         });
 
         dialog.show();
