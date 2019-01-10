@@ -16,12 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
+        android:contentDescription="TODO"
+        android:focusable="false"
         android:src="@drawable/ic_lock_idle"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="TODO" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_add_new_lock"
@@ -29,9 +30,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@color/button_back_color"
+        android:focusable="true"
         android:text="@string/fragment_button_add_new_lock"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline">
+
+        <requestFocus />
+
+    </Button>
 
 </android.support.constraint.ConstraintLayout>

@@ -103,7 +103,7 @@ public class LockPageFragment extends Fragment
     //region Declare Objects
     private Context mContext;
     private DeviceViewModel mDeviceViewModel;
-    private static Device mDevice;
+    private Device mDevice;
     private WifiNetworksAdapter mWifiNetworksAdapter;
     private static Dialog deviceWifiNetworkListDialog;
     private static Dialog deviceWifiNetworkDialog;
@@ -115,10 +115,12 @@ public class LockPageFragment extends Fragment
 
     public static LockPageFragment newInstance(Device device) {
         LockPageFragment fragment = new LockPageFragment();
-        Bundle args = new Bundle();
+//        Bundle args = new Bundle();
+//
+//        args.putString(ARG_PARAM, new Gson().toJson(device));
+//        fragment.setArguments(args);
 
-        args.putString(ARG_PARAM, new Gson().toJson(device));
-        fragment.setArguments(args);
+        fragment.mDevice = device;
 
         return fragment;
     }
@@ -137,9 +139,9 @@ public class LockPageFragment extends Fragment
         mContext = getContext();
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
 
-        mDevice = getArguments() != null ?
-                (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
-                : null;
+//        mDevice = getArguments() != null ?
+//                (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
+//                : null;
         //endregion Initialize Objects
 
         readAllLockInfo();
@@ -450,7 +452,7 @@ public class LockPageFragment extends Fragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
-        this.mDeviceViewModel.sendLockCommand(lockCommand);
+        this.mDeviceViewModel.sendLockCommand(this, lockCommand);
     }
 
     private void initBleInfo() {
@@ -478,7 +480,7 @@ public class LockPageFragment extends Fragment
         return mScannedDeviceModelList;
     }
 
-    public static Device getDevice() {
+    public Device getDevice() {
         return mDevice;
     }
 

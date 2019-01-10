@@ -209,6 +209,8 @@ public class AddLockFragment extends BaseFragment
                 true);
 
         BaseApplication.activeUserObjectId = response.getObjectId();
+        BaseApplication.activeUserToken = response.getUserToken();
+        ((LockActivity) getActivity()).PERMISSION_READ_ALL_LOCAL_DEVICES = true;
         mUserViewModel.insertUser(response);
     }
 
@@ -220,7 +222,7 @@ public class AddLockFragment extends BaseFragment
     @Override
     public void onDataInsert(Long id) {
         DialogHelper.handleProgressDialog(
-                getContext(),
+                mUserViewModel.getApplication().getBaseContext(),
                 null,
                 String.format("Adding Lock ... %d %%", getRandomPercentNumber(7, 8)),
                 true);

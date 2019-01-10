@@ -82,7 +82,7 @@
     <string name="dialog_button_cancel">CANCEL</string>
     <string name="dialog_button_scan">SCAN</string>
     <string name="dialog_button_add">ADD</string>
-    <string name="dialog_button_send_reset_password_link">Send reset password link</string>
+    <string name="dialog_button_submit">Submit</string>
     <string name="dialog_button_connect">CONNECT</string>
     <string name="dialog_button_apply">APPLY</string>
     <string name="dialog_button_pair">PAIR</string>

@@ -10,23 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:focusable="false"
         android:gravity="start|center_vertical"
         android:text="Enable location status"
         android:textColor="@color/md_white_1000"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_no_dialog_enable_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:background="@color/transparent"
-        android:text="NO"
-        android:textColor="@color/md_white_1000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location" />
 
     <Button
         android:id="@+id/btn_yes_dialog_enable_location"
@@ -36,9 +25,25 @@
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@id/btn_no_dialog_enable_location"
         android:background="@color/transparent"
+        android:focusable="true"
+        android:nextFocusDown="@+id/btn_no_dialog_enable_location"
         android:text="YES"
         android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toStartOf="@+id/btn_no_dialog_enable_location"
+        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location" />
+
+    <Button
+        android:id="@+id/btn_no_dialog_enable_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:background="@color/transparent"
+        android:focusable="true"
+        android:nextFocusDown="@+id/btn_yes_dialog_enable_location"
+        android:text="NO"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location" />
 
 </android.support.constraint.ConstraintLayout>

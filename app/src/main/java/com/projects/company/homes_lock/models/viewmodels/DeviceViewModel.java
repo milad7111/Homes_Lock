@@ -213,10 +213,10 @@ public class DeviceViewModel extends AndroidViewModel
     private void handleReceivedResponse(byte[] responseValue) {
         switch (responseValue[0]) {
             case 0x01:
-                mLocalRepository.updateDeviceLockStatus(LockPageFragment.getDevice().getObjectId(), responseValue[1] >> 4 == 1);
-                mLocalRepository.updateDeviceDoorStatus(LockPageFragment.getDevice().getObjectId(), responseValue[1] << 4);
-                mLocalRepository.updateDeviceBatteryStatus(LockPageFragment.getDevice().getObjectId(), responseValue[2]);
-                mLocalRepository.updateDeviceConnectionStatus(LockPageFragment.getDevice().getObjectId(), responseValue);
+                mLocalRepository.updateDeviceLockStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] >> 4 == 1);
+                mLocalRepository.updateDeviceDoorStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] << 4);
+                mLocalRepository.updateDeviceBatteryStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
+                mLocalRepository.updateDeviceConnectionStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue);
                 break;
             case 0x02:
                 if (responseValue[1] == 0)
@@ -231,9 +231,9 @@ public class DeviceViewModel extends AndroidViewModel
                 Log.d("Read deviceErrorData", Arrays.toString(subArrayByte(responseValue, 1, responseValue.length)));
                 break;
             case 0x05:
-                mLocalRepository.updateDeviceTemperature(LockPageFragment.getDevice().getObjectId(), responseValue[1]);
-                mLocalRepository.updateDeviceHumidity(LockPageFragment.getDevice().getObjectId(), responseValue[2]);
-                mLocalRepository.updateDeviceCoLevel(LockPageFragment.getDevice().getObjectId(), responseValue[3]);
+                mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1]);
+                mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
+                mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[3]);
                 break;
             case 0x06:
                 if (responseValue[1] == 0) {
@@ -494,7 +494,8 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.disconnect();
     }
 
-    public void sendLockCommand(boolean lockCommand) {
+    public void sendLockCommand(LockPageFragment fragment, boolean lockCommand) {
+        mILockPageFragment = fragment;
         if (BaseApplication.isUserLoggedIn())
             MQTTHandler.toggle(this, "", createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
         else

@@ -21,8 +21,10 @@
             android:id="@+id/tiet_email_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
             android:hint="@string/fragment_hint_email"
             android:inputType="textEmailAddress"
+            android:nextFocusDown="@+id/tiet_user_name_register_fragment"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor">
 
@@ -46,8 +48,10 @@
             android:id="@+id/tiet_user_name_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
             android:hint="@string/fragment_hint_name"
             android:inputType="text"
+            android:nextFocusDown="@+id/tiet_mobile_number_register_fragment"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
 
@@ -67,8 +71,10 @@
             android:id="@+id/tiet_mobile_number_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
             android:hint="@string/fragment_hint_mobile_number"
             android:inputType="phone"
+            android:nextFocusDown="@+id/tiet_password_register_fragment"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
 
@@ -90,8 +96,10 @@
             android:id="@+id/tiet_password_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
             android:hint="@string/fragment_hint_password"
             android:inputType="textPassword"
+            android:nextFocusDown="@+id/tiet_confirm_password_register_fragment"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
 
@@ -113,8 +121,10 @@
             android:id="@+id/tiet_confirm_password_register_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
             android:hint="@string/fragment_hint_confirm_password"
             android:inputType="textPassword"
+            android:nextFocusDown="@+id/btn_sign_up_register_fragment"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
 
@@ -126,6 +136,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@color/button_back_color"
+        android:focusable="true"
+        android:nextFocusDown="@+id/txv_login_register_fragment"
         android:text="@string/fragment_button_sign_up"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/txil_confirm_password_register_fragment"
@@ -138,6 +150,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        android:focusable="true"
+        android:nextFocusDown="@+id/tiet_email_register_fragment"
         android:text="@string/fragment_text_view_login"
         android:textColor="@color/md_white_1000"
         android:textSize="18sp"

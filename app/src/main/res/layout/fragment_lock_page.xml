@@ -14,6 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/content_description_img_lock_status_symbol_lock_page"
+        android:focusable="false"
         android:src="@drawable/ic_lock_idle"
         app:layout_constraintBottom_toTopOf="@+id/txv_lock_name_lock_page"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
+        android:focusable="false"
         android:textColor="@color/md_grey_500"
         app:layout_constraintBottom_toTopOf="@+id/txv_security_alarm_lock_page"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="16dp"
+        android:focusable="false"
         android:textColor="@color/md_yellow_500"
         android:textSize="8sp"
         app:layout_constraintBottom_toTopOf="@+id/txv_security_alarm_lock_page"
@@ -49,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
+        android:focusable="false"
         android:text="Data Not Synced"
         android:textColor="@color/md_grey_500"
         app:layout_constraintBottom_toTopOf="@+id/lnr_action_images_lock_page"
@@ -60,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:focusable="false"
         android:textColor="@color/md_grey_300"
         app:layout_constraintBottom_toTopOf="@+id/lnr_action_images_lock_page"
         app:layout_constraintEnd_toStartOf="@+id/txv_humidity_lock_page"
@@ -71,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:focusable="false"
         android:textColor="@color/md_grey_300"
         app:layout_constraintBottom_toTopOf="@+id/lnr_action_images_lock_page"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,6 +90,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/content_description_img_temperature_celsius_lock_page"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="@+id/txv_humidity_lock_page"
         app:layout_constraintEnd_toStartOf="@+id/txv_humidity_lock_page"
         app:layout_constraintStart_toEndOf="@+id/txv_temperature_lock_page"
@@ -95,6 +102,7 @@
         android:layout_height="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/content_description_img_water_percent_lock_page"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="@+id/img_temperature_celsius_lock_page"
         app:layout_constraintEnd_toEndOf="@+id/txv_humidity_lock_page"
         app:layout_constraintStart_toStartOf="@+id/txv_humidity_lock_page"
@@ -107,6 +115,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:focusable="false"
         android:orientation="horizontal"
         android:weightSum="5"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -116,6 +125,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
             app:srcCompat="@drawable/ic_valid_battery_zero" />
 
         <ImageView
@@ -123,6 +133,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
             app:srcCompat="@drawable/ic_invalid_wifi_off" />
 
         <ImageView
@@ -130,6 +141,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
             app:srcCompat="@drawable/ic_ble_disconnect" />
 
         <ImageView
@@ -137,6 +149,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
             app:srcCompat="@drawable/ic_manage_members_disable" />
 
         <ImageView
@@ -144,6 +157,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
             app:srcCompat="@drawable/ic_more_info" />
 
     </LinearLayout>

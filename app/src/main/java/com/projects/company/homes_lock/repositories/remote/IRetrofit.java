@@ -18,6 +18,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -45,11 +46,11 @@ public interface IRetrofit {
     Call<UserLock> addUserLock(@Header("user-token") String userToken, @Body UserLockModel parameter);
 
     @Headers({"Content-Type: application/json"})
-    @POST("data/UserLock/{userLockObjectId}/relatedDevice")
+    @PUT("data/UserLock/{userLockObjectId}/relatedDevice")
     Call<ResponseBody> addLockToUserLock(@Header("user-token") String userToken, @Path("userLockObjectId") String userLockObjectId, @Body HelperModel parameter);
 
     @Headers({"Content-Type: application/json"})
-    @POST("data/users/{userObjectId}/relatedUserLocks")
+    @PUT("data/users/{userObjectId}/relatedUserLocks")
     Call<ResponseBody> addUserLockToUser(@Header("user-token") String userToken, @Path("userObjectId") String userObjectId, @Body HelperModel parameter);
 
     @Headers({"Content-Type: application/json"})

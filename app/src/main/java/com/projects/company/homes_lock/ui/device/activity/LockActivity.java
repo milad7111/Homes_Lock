@@ -56,6 +56,7 @@ public class LockActivity extends BaseActivity
     //endregion Declare Views
 
     //region Declare Variables
+    public static boolean PERMISSION_READ_ALL_LOCAL_DEVICES = true;
     //endregion Declare Variables
 
     //region Declare Objects
@@ -73,6 +74,10 @@ public class LockActivity extends BaseActivity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_lock);
+
+        //region Initialize Variables
+        PERMISSION_READ_ALL_LOCAL_DEVICES = true;
+        //region Initialize Variables
 
         //region Initialize Views
         appBarLockToolbar = findViewById(R.id.appBarLock_toolbar);
@@ -221,10 +226,12 @@ public class LockActivity extends BaseActivity
 
     public void getAllDevices() {
         this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
-            if (mAdapter.getCount() == 1) { //just when initialize lockPage we need set adapter
+            if (PERMISSION_READ_ALL_LOCAL_DEVICES) { //just when initialize lockPage we need set adapter
                 mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), devices);
                 setViewPagerAdapter(mAdapter);
                 mViewPager.setCurrentItem(0);
+
+                PERMISSION_READ_ALL_LOCAL_DEVICES = false;
             }
         });
     }
