@@ -36,7 +36,7 @@ public interface DeviceDao extends BaseDao<Device> {
     LiveData<Device> getDevice(final String mDeviceObjectId);
 
     @Query("UPDATE device SET doorStatus = :mDoorStatus WHERE objectId = :mDeviceObjectId")
-    void setDoorStatus(final String mDeviceObjectId, int mDoorStatus);
+    void setDoorStatus(final String mDeviceObjectId, boolean mDoorStatus);
 
     @Query("UPDATE device SET batteryStatus = :mBatteryStatus WHERE objectId = :mDeviceObjectId")
     void setBatteryStatus(String mDeviceObjectId, int mBatteryStatus);

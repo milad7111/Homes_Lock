@@ -36,6 +36,7 @@ import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
+import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
@@ -215,8 +216,10 @@ public class DeviceViewModel extends AndroidViewModel
         switch (responseValue[0]) {
             case 0x01:
                 if (mILockPageFragment != null) {
-                    mLocalRepository.updateDeviceLockStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] >> 4 == 1);
-                    mLocalRepository.updateDeviceDoorStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1] << 4);
+                    mLocalRepository.updateDeviceLockStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            DataHelper.getNibble(responseValue[1], true) == 1);
+                    mLocalRepository.updateDeviceDoorStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            DataHelper.getNibble(responseValue[1], false) == 1);
                     mLocalRepository.updateDeviceBatteryStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
                     mLocalRepository.updateDeviceConnectionStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue);
                 }
@@ -491,7 +494,6 @@ public class DeviceViewModel extends AndroidViewModel
         this.mIBleScanListener = mIBleScanListener;
         final LogSession logSession = Logger.newSession(getApplication(), null, device.getMacAddress(), device.getName());
         mBleDeviceManager.setLogger(logSession);
-
         mBleDeviceManager.connect(device.getDevice());
     }
 
@@ -508,8 +510,18 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void getDeviceInfoFromBleDevice() {
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x01}, new byte[]{}));
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x05}, new byte[]{}));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x01}, new byte[]{}));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Log.e(this.getClass().getName(), e.getMessage());
+                }
+                mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x05}, new byte[]{}));
+            }
+        }).start();
     }
 
     public void getAvailableWifiNetworksCountAroundDevice(Fragment fragment) {
@@ -568,6 +580,14 @@ public class DeviceViewModel extends AndroidViewModel
         } else
             mLocalRepository.deleteDevice(mDevice);
     }
+
+    public LiveData<Boolean> isConnected() {
+        return mIsConnected;
+    }
+
+    public LiveData<Boolean> isSupported() {
+        return mIsSupported;
+    }
     //endregion BLE Methods
 
     //region Online Methods
@@ -620,16 +640,12 @@ public class DeviceViewModel extends AndroidViewModel
             MQTTHandler.setup(this, context);
     }
 
+    public void disconnectMQTT() {
+        MQTTHandler.disconnect(this);
+    }
+
     public void updateDevice(Device device) {
         mLocalRepository.updateDevice(device);
-    }
-
-    public LiveData<Boolean> isConnected() {
-        return mIsConnected;
-    }
-
-    public LiveData<Boolean> isSupported() {
-        return mIsSupported;
     }
 
     private void setRequestType(String requestType) {

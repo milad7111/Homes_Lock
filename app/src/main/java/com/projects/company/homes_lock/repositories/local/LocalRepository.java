@@ -14,6 +14,7 @@ import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class LocalRepository {
         mDeviceDao.setLockStatus(mDeviceObjectId, mLockStatus);
     }
 
-    public void updateDeviceDoorStatus(String mDeviceObjectId, int mDoorStatus) {
+    public void updateDeviceDoorStatus(String mDeviceObjectId, boolean mDoorStatus) {
         mDeviceDao.setDoorStatus(mDeviceObjectId, mDoorStatus);
     }
 
@@ -97,7 +98,9 @@ public class LocalRepository {
 
     public void updateDeviceConnectionStatus(String mDeviceObjectId, byte[] connectionSetting) {
         mDeviceDao.setConnectionStatus(mDeviceObjectId,
-                connectionSetting[3] >> 4 == 1, connectionSetting[3] << 4 == 1, connectionSetting[4]);
+                DataHelper.getNibble(connectionSetting[3], true) == 1,
+                DataHelper.getNibble(connectionSetting[3], false) == 1,
+                connectionSetting[4]);
     }
 
     public void updateDeviceTemperature(String mDeviceObjectId, byte temperature) {

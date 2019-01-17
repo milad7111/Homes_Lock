@@ -28,6 +28,10 @@ public class DataHelper {
     //endregion Declare Constants
 
     //region Declare Methods
+    public static int getNibble(byte number, boolean highNibble) {
+        return highNibble ? number & 0xf0 : number & 0x0f;
+    }
+
     public static boolean isInstanceOfList(Object object, String className) {
         try {
             if (object instanceof List && ((List) object).size() != 0) {

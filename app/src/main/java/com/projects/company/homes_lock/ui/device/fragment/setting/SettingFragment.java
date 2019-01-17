@@ -37,6 +37,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_ONLINE_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAIRING_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -146,6 +147,12 @@ public class SettingFragment extends Fragment
         //endregion Setup Views
 
         initViews();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handleProgressDialog(null, null, null, false);
     }
 
     @Override

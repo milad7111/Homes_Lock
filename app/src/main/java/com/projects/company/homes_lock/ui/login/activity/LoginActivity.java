@@ -9,6 +9,8 @@ import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+
 public class LoginActivity extends BaseActivity implements ILoginActivity {
 
     //region Declare Constants
@@ -23,6 +25,7 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
     //region Declare Objects
     //endregion Declare Objects
 
+    //region Main Callbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
         else
             super.onBackPressed();
     }
+    //endregion Main Callbacks
 
     //region Declare Methods
     //endregion Declare Methods

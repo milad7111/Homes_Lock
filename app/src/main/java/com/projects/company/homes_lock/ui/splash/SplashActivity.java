@@ -6,10 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.models.viewmodels.SplashViewModel;
 import com.projects.company.homes_lock.ui.login.activity.LoginActivity;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     //region Declare Constants
     //endregion Declare Constants

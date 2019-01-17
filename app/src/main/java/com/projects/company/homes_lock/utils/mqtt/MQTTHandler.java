@@ -124,4 +124,8 @@ public class MQTTHandler {
         else
             Log.e(TAG, "publishToken is null.");
     }
+
+    public static void disconnect(final IMQTTListener mIMQTTListener){
+        client.close();
+    }
 }

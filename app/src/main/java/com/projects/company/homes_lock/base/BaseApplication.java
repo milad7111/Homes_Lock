@@ -1,7 +1,7 @@
 package com.projects.company.homes_lock.base;
 
-/**
- * This is Application Class of Project
+/*
+  This is Application Class of Project
  */
 
 import android.app.Application;
@@ -41,7 +41,6 @@ public class BaseApplication extends Application {
     //endregion Declare Objects
 
     //region Main Callbacks
-
     @Override
     public void onCreate() {
         super.onCreate();

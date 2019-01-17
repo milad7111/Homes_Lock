@@ -136,16 +136,17 @@ public class LoginFragment extends Fragment
         switch (v.getId()) {
             case R.id.btn_login_login_fragment:
                 handleProgressDialog(getContext(), null, "Login process ...", true);
-                this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
-                    notSavedDevices = new ArrayList<>();
-
-                    for (Device device : devices) {
-                        if (!device.isLockSavedInServer())
-                            notSavedDevices.add(device);
-                    }
-
-                    mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
-                });
+                mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
+//                this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
+//                    notSavedDevices = new ArrayList<>();
+//
+//                    for (Device device : devices) {
+//                        if (!device.isLockSavedInServer())
+//                            notSavedDevices.add(device);
+//                    }
+//
+//                    mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
+//                });
                 break;
             case R.id.txv_direct_connect_login_fragment:
                 setUserLoginMode(false);
@@ -168,9 +169,9 @@ public class LoginFragment extends Fragment
         BaseApplication.activeUserToken = user.getUserToken();
         BaseApplication.activeUserEmail = user.getEmail();
 
-        if (notSavedDevices.size() != 0)
-            saveLocalDevicesToServer();
-        else
+//        if (notSavedDevices.size() != 0)
+//            saveLocalDevicesToServer();
+//        else
             mUserViewModel.insertUser(user);
     }
 
@@ -223,9 +224,9 @@ public class LoginFragment extends Fragment
 
     @Override
     public void onAddUserLockToUserSuccessful(Boolean response) {
-        if (++savedDevicesIndex < notSavedDevices.size())
-            saveLocalDevicesToServer();
-        else
+//        if (++savedDevicesIndex < notSavedDevices.size())
+//            saveLocalDevicesToServer();
+//        else
             mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
     }
 

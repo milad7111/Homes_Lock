@@ -44,6 +44,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_T
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomPercentNumber;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleDialogAddLockOnline;
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -118,6 +119,12 @@ public class AddLockFragment extends BaseFragment
         //region Setup Views
         btnAddNewLock.setOnClickListener(this);
         //endregion Setup Views
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handleProgressDialog(null, null, null, false);
     }
 
     @Override
@@ -226,7 +233,7 @@ public class AddLockFragment extends BaseFragment
     @Override
     public void onDataInsert(Long id) {
         DialogHelper.handleProgressDialog(
-                mUserViewModel.getApplication().getBaseContext(),
+                getActivity(),
                 null,
                 String.format("Adding Lock ... %d %%", getRandomPercentNumber(7, 8)),
                 true);

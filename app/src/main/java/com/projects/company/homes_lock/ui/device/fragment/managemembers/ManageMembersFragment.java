@@ -151,6 +151,12 @@ public class ManageMembersFragment extends Fragment
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        handleProgressDialog(null, null, null, false);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_sync_manage_members_fragment:

@@ -14,13 +14,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
-import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.aboutus.AboutUsActivity;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
@@ -32,8 +32,6 @@ import com.projects.company.homes_lock.ui.setting.SettingActivity;
 import com.projects.company.homes_lock.ui.support.SupportActivity;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
-import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
-import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
@@ -48,10 +46,8 @@ public class LockActivity extends BaseActivity
     //endregion Declare Constants
 
     //region Declare Views
-    private Toolbar appBarLockToolbar;
     private DrawerLayout activityLockDrawerLayout;
-    private NavigationView activityLockNavigationView;
-    private static ViewPager mViewPager;
+    private ViewPager mViewPager;
     WormDotsIndicator mWormDotsIndicator;
     //endregion Declare Views
 
@@ -60,7 +56,6 @@ public class LockActivity extends BaseActivity
     //endregion Declare Variables
 
     //region Declare Objects
-    private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DeviceViewModel mDeviceViewModel;
     private CustomDeviceAdapter mAdapter;
     public static CustomBluetoothLEHelper mBluetoothLEHelper;
@@ -79,10 +74,13 @@ public class LockActivity extends BaseActivity
         PERMISSION_READ_ALL_LOCAL_DEVICES = true;
         //region Initialize Variables
 
+        //region Declare Local Views
+        Toolbar appBarLockToolbar = findViewById(R.id.appBarLock_toolbar);
+        NavigationView activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
+        //endregion Declare Local Views
+
         //region Initialize Views
-        appBarLockToolbar = findViewById(R.id.appBarLock_toolbar);
         activityLockDrawerLayout = findViewById(R.id.activityLock_drawer_layout);
-        activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
         mViewPager = findViewById(R.id.view_pager);
         mWormDotsIndicator = findViewById(R.id.worm_dots_indicator);
         //endregion Initialize Views
@@ -90,14 +88,16 @@ public class LockActivity extends BaseActivity
         //region Initialize Variables
         //endregion Initialize Variables
 
-        //region Initialize Objects
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(
+        //region Declare Local Objects
+        ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 activityLockDrawerLayout,
                 appBarLockToolbar,
                 R.string.content_description_navigation_drawer_open,
                 R.string.content_description_navigation_drawer_close);
+        //endregion Declare Local Objects
 
+        //region Initialize Objects
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
         //endregion Initialize Objects
 
@@ -236,8 +236,12 @@ public class LockActivity extends BaseActivity
         });
     }
 
-    public static void setViewPagerAdapter(PagerAdapter adapter) {
-        mViewPager.setAdapter(adapter);
+    public void setViewPagerAdapter(PagerAdapter adapter) {
+        try {
+            mViewPager.setAdapter(adapter);
+        } catch (Exception e) {
+            Log.e(LockActivity.class.getName(), e.getMessage());
+        }
     }
 
     private String getTopActivityClassName() {

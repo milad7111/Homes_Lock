@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+
 public class AboutUsActivity extends BaseActivity {
 
     //region Declare Constants

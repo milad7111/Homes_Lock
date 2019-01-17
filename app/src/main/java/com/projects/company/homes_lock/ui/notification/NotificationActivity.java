@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseActivity;
 
-public class NotificationActivity extends AppCompatActivity {
+import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+
+public class NotificationActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

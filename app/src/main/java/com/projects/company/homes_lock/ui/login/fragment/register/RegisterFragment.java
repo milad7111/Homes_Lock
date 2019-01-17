@@ -101,6 +101,12 @@ public class RegisterFragment extends Fragment
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        handleProgressDialog(null, null, null, false);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_sign_up_register_fragment:
