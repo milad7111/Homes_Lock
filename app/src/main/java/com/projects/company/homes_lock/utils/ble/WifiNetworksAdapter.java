@@ -72,12 +72,7 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
             ViewHelper.setRSSIImage(wifiNetworksViewHolder.imgItemWifiRssiName, rssi);
         }
 
-        wifiNetworksViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mILockPageFragment.onAdapterItemClick(mWifiNetworksModelList.get(i));
-            }
-        });
+        wifiNetworksViewHolder.itemView.setOnClickListener(v -> mILockPageFragment.onAdapterItemClick(mWifiNetworksModelList.get(i)));
     }
 
     @Override

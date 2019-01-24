@@ -71,21 +71,15 @@ public class DialogHelper {
             rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
             rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
 
-            btnCancelDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
-                    addNewLockDialogOffline.dismiss();
-                    addNewLockDialogOffline = null;
-                }
+            btnCancelDialogAvailableDevices.setOnClickListener(v -> {
+                mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
+                addNewLockDialogOffline.dismiss();
+                addNewLockDialogOffline = null;
             });
 
-            btnScanDialogAvailableDevices.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
-                    findDevices(fragment);
-                }
+            btnScanDialogAvailableDevices.setOnClickListener(v -> {
+                mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
+                findDevices(fragment);
             });
 
             findDevices(fragment);
@@ -241,19 +235,11 @@ public class DialogHelper {
         Button btnNoDialogEnableLocation = dialog.findViewById(R.id.btn_no_dialog_enable_location);
         Button btnYesDialogEnableLocation = dialog.findViewById(R.id.btn_yes_dialog_enable_location);
 
-        btnNoDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        btnNoDialogEnableLocation.setOnClickListener(v -> dialog.dismiss());
 
-        btnYesDialogEnableLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BleHelper.enableLocation(activity);
-                dialog.dismiss();
-            }
+        btnYesDialogEnableLocation.setOnClickListener(v -> {
+            BleHelper.enableLocation(activity);
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -271,20 +257,12 @@ public class DialogHelper {
 
         TextInputEditText txieSecurityCodeDialogPairWithBleDevice = dialog.findViewById(R.id.tiet_security_code_dialog_pair_with_ble_device);
 
-        btnCancelDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        btnCancelDialogPairWithBleDevice.setOnClickListener(v -> dialog.dismiss());
 
-        btnPairDialogPairWithBleDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
-                mScannedDeviceModel.getDevice().setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
-                mScannedDeviceModel.getDevice().createBond();
-            }
+        btnPairDialogPairWithBleDevice.setOnClickListener(v -> {
+            DialogHelper.handleProgressDialog(fragment.getContext(), null, "Pairing ...", true);
+            mScannedDeviceModel.getDevice().setPin(txieSecurityCodeDialogPairWithBleDevice.getText().toString().getBytes());
+            mScannedDeviceModel.getDevice().createBond();
         });
 
         dialog.show();

@@ -11,21 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomDeviceAdapter extends SmartFragmentStatePagerAdapter {
-    private List<Device> mDeviceList = new ArrayList<>();
 
+    //region Declare List & Arrays
+    private List<Device> mDeviceList = new ArrayList<>();
+    //endregion Declare List & Arrays
+
+    //region Constructor
     public CustomDeviceAdapter(FragmentManager fragmentManager, List<Device> mDeviceList) {
         super(fragmentManager);
 
         this.mDeviceList = mDeviceList;
     }
+    //endregion Constructor
 
-    // Returns total number of pages
+    //region Main Callbacks
     @Override
     public int getCount() {
         return mDeviceList.size() + 1;
     }
 
-    // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
         if (position != getCount() - 1)
@@ -34,9 +38,15 @@ public class CustomDeviceAdapter extends SmartFragmentStatePagerAdapter {
             return AddLockFragment.newInstance();
     }
 
-    // Returns the page title for the top indicator
     @Override
     public CharSequence getPageTitle(int position) {
         return "Page " + position;
     }
+    //endregion Main Callbacks
+
+    //region Declare Methods
+    void setDevices(List<Device> devices) {
+        this.mDeviceList = devices;
+    }
+    //region Declare Methods
 }

@@ -73,12 +73,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
             ViewHelper.setRSSIImage(bleDeviceViewHolder.imgBleDeviceRSSI, rssi);
         }
 
-        bleDeviceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mIAddLockFragment.onAdapterItemClick(mScannedDeviceModelList.get(i));
-            }
-        });
+        bleDeviceViewHolder.itemView.setOnClickListener(v -> mIAddLockFragment.onAdapterItemClick(mScannedDeviceModelList.get(i)));
     }
 
     @Override

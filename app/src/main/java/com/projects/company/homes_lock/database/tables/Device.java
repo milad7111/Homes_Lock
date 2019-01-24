@@ -33,6 +33,10 @@ public class Device extends BaseModel {
     @SerializedName("serialNumber")
     private String mSerialNumber;
 
+    @Ignore
+    @SerializedName("devicePassword")
+    private String mDevicePassword;
+
     @ColumnInfo(name = "lockStatus")
     @SerializedName("lockStatus")
     private Boolean mLockStatus;

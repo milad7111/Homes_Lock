@@ -67,17 +67,9 @@ public class LockUserAdapter extends RecyclerView.Adapter<LockUserAdapter.LockMe
                     lockMembersAdapterViewHolder.imgMemberType.setImageResource(mMemberModel.getMemberTypeDrawableId());
                 }
 
-                lockMembersAdapterViewHolder.imgMemberAction.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mIManageMembersFragment.onActionUserClick(mMemberModelList.get(i));
-                    }
-                });
+                lockMembersAdapterViewHolder.imgMemberAction.setOnClickListener(v -> mIManageMembersFragment.onActionUserClick(mMemberModelList.get(i)));
 
-                lockMembersAdapterViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
+                lockMembersAdapterViewHolder.itemView.setOnClickListener(v -> {
                 });
             }
         }

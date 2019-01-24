@@ -401,21 +401,15 @@ public class ManageMembersFragment extends Fragment
             Button btnRemoveDialogRemoveMember =
                     mRemoveLockMemberDialog.findViewById(R.id.btn_remove_dialog_remove_member);
 
-            btnCancelDialogRemoveMember.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mRemoveLockMemberDialog.dismiss();
-                    mRemoveLockMemberDialog = null;
-                }
+            btnCancelDialogRemoveMember.setOnClickListener(v -> {
+                mRemoveLockMemberDialog.dismiss();
+                mRemoveLockMemberDialog = null;
             });
 
-            btnRemoveDialogRemoveMember.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (chbConfirmRemoveMemberDialogRemoveMember.isChecked()) {
-                        handleProgressDialog(mFragment.getContext(), null, "Remove Member ...", true);
-                        mUserViewModel.removeLockMember(member.getMemberUserLockObjectId());
-                    }
+            btnRemoveDialogRemoveMember.setOnClickListener(v -> {
+                if (chbConfirmRemoveMemberDialogRemoveMember.isChecked()) {
+                    handleProgressDialog(mFragment.getContext(), null, "Remove Member ...", true);
+                    mUserViewModel.removeLockMember(member.getMemberUserLockObjectId());
                 }
             });
         }

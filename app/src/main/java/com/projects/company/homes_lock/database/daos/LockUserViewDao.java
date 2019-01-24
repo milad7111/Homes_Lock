@@ -14,7 +14,9 @@ public abstract class LockUserViewDao {
     public Device getUserLockInfo(String objectId) {
 
         Device mDevice = getDevice(objectId);
-        mDevice.setUserLocks(getUserLock(objectId));
+
+        if (getUserLock(objectId) != null)
+            mDevice.setUserLocks(getUserLock(objectId));
 
         return mDevice;
     }

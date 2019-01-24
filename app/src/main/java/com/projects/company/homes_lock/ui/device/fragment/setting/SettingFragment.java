@@ -1,12 +1,12 @@
 package com.projects.company.homes_lock.ui.device.fragment.setting;
 
-
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
@@ -25,8 +26,6 @@ import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
-
-import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_LEFT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
@@ -194,12 +193,17 @@ public class SettingFragment extends Fragment
 
     //region ISettingFragment Callbacks
     @Override
-    public void onSetDeviceSetting(boolean value) {
+    public void onSetDeviceSetting(boolean deviceSettingStatus) {
         DialogHelper.handleProgressDialog(null, null, null, false);
-        if (removeLockDialog != null) {
-            removeLockDialog.dismiss();
-            removeLockDialog = null;
-        }
+
+        if (deviceSettingStatus) {
+            if (deviceSettingDialog != null) {
+                deviceSettingDialog.dismiss();
+                deviceSettingDialog = null;
+            }
+            Log.i(getTag(), "Device Setting set successfully");
+        } else
+            Toast.makeText(getContext(), "Device Setting failed.", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -278,33 +282,23 @@ public class SettingFragment extends Fragment
             deviceSettingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceSettingDialog.setContentView(R.layout.dialog_device_setting);
 
-            RadioGroup rdgDoorInstallationDialogDeviceSetting =
-                    deviceSettingDialog.findViewById(R.id.rdg_door_installation_dialog_device_setting);
-            RadioGroup rdgLockStagesDialogDeviceSetting =
-                    deviceSettingDialog.findViewById(R.id.rdg_lock_stages_dialog_device_setting);
+            RadioGroup rdgDoorInstallationDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.rdg_door_installation_dialog_device_setting);
+            RadioGroup rdgLockStagesDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.rdg_lock_stages_dialog_device_setting);
 
-            Button btnCancelDialogDeviceSetting =
-                    deviceSettingDialog.findViewById(R.id.btn_cancel_dialog_device_setting);
-            Button btnApplyDialogDeviceSetting =
-                    deviceSettingDialog.findViewById(R.id.btn_apply_dialog_device_setting);
+            Button btnCancelDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.btn_cancel_dialog_device_setting);
+            Button btnApplyDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.btn_apply_dialog_device_setting);
 
-            btnCancelDialogDeviceSetting.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deviceSettingDialog.dismiss();
-                    deviceSettingDialog = null;
-                }
+            btnCancelDialogDeviceSetting.setOnClickListener(v -> {
+                deviceSettingDialog.dismiss();
+                deviceSettingDialog = null;
             });
 
-            btnApplyDialogDeviceSetting.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Device setting setup ...", true);
-                    mDeviceViewModel.setDeviceSetting(
-                            mFragment,
-                            findSelectedDoorInstallationOption(rdgDoorInstallationDialogDeviceSetting),
-                            findSelectedLockStagesOption(rdgLockStagesDialogDeviceSetting));
-                }
+            btnApplyDialogDeviceSetting.setOnClickListener(v -> {
+                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Device setting setup ...", true);
+                mDeviceViewModel.setDeviceSetting(
+                        mFragment,
+                        findSelectedDoorInstallationOption(rdgDoorInstallationDialogDeviceSetting),
+                        findSelectedLockStagesOption(rdgLockStagesDialogDeviceSetting));
             });
         }
 
@@ -339,23 +333,17 @@ public class SettingFragment extends Fragment
             Button btnRemoveDialogRemoveLock =
                     removeLockDialog.findViewById(R.id.btn_remove_dialog_remove_lock);
 
-            btnCancelDialogRemoveLock.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    removeLockDialog.dismiss();
-                    removeLockDialog = null;
-                }
+            btnCancelDialogRemoveLock.setOnClickListener(v -> {
+                removeLockDialog.dismiss();
+                removeLockDialog = null;
             });
 
-            btnRemoveDialogRemoveLock.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Remove lock ...", true);
-                    mDeviceViewModel.removeDevice(
-                            mFragment,
-                            chbRemoveAllMembersDialogRemoveLock.isChecked(),
-                            mDevice);
-                }
+            btnRemoveDialogRemoveLock.setOnClickListener(v -> {
+                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Remove lock ...", true);
+                mDeviceViewModel.removeDevice(
+                        mFragment,
+                        chbRemoveAllMembersDialogRemoveLock.isChecked(),
+                        mDevice);
             });
         }
 
@@ -390,22 +378,16 @@ public class SettingFragment extends Fragment
             Button btnApplyDialogChangeOnlinePassword =
                     changeOnlinePasswordDialog.findViewById(R.id.btn_apply_dialog_change_online_password);
 
-            btnCancelDialogChangeOnlinePassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    changeOnlinePasswordDialog.dismiss();
-                    changeOnlinePasswordDialog = null;
-                }
+            btnCancelDialogChangeOnlinePassword.setOnClickListener(v -> {
+                changeOnlinePasswordDialog.dismiss();
+                changeOnlinePasswordDialog = null;
             });
 
-            btnApplyDialogChangeOnlinePassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change online password ...", true);
-                    mDeviceViewModel.changeOnlinePasswordViaBle(mFragment,
-                            tietOldPasswordDialogChangeOnlinePassword.getText().toString(),
-                            tietNewPasswordDialogChangeOnlinePassword.getText().toString());
-                }
+            btnApplyDialogChangeOnlinePassword.setOnClickListener(v -> {
+                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change online password ...", true);
+                mDeviceViewModel.changeOnlinePasswordViaBle(mFragment,
+                        tietOldPasswordDialogChangeOnlinePassword.getText().toString(),
+                        tietNewPasswordDialogChangeOnlinePassword.getText().toString());
             });
         }
 
@@ -429,22 +411,16 @@ public class SettingFragment extends Fragment
             Button btnApplyDialogChangePairingPassword =
                     changePairingPasswordDialog.findViewById(R.id.btn_apply_dialog_change_pairing_password);
 
-            btnCancelDialogChangePairingPassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    changePairingPasswordDialog.dismiss();
-                    changePairingPasswordDialog = null;
-                }
+            btnCancelDialogChangePairingPassword.setOnClickListener(v -> {
+                changePairingPasswordDialog.dismiss();
+                changePairingPasswordDialog = null;
             });
 
-            btnApplyDialogChangePairingPassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change pairing password ...", true);
-                    mDeviceViewModel.changePairingPasswordViaBle(mFragment,
-                            tietOldPasswordDialogChangePairingPassword.getText().toString(),
-                            tietNewPasswordDialogChangePairingPassword.getText().toString());
-                }
+            btnApplyDialogChangePairingPassword.setOnClickListener(v -> {
+                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change pairing password ...", true);
+                mDeviceViewModel.changePairingPasswordViaBle(mFragment,
+                        tietOldPasswordDialogChangePairingPassword.getText().toString(),
+                        tietNewPasswordDialogChangePairingPassword.getText().toString());
             });
         }
 
@@ -452,7 +428,7 @@ public class SettingFragment extends Fragment
         changePairingPasswordDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(changePairingPasswordDialog));
     }
 
-    private int findSelectedDoorInstallationOption(RadioGroup radioGroup) {
+    private byte findSelectedDoorInstallationOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.rdb_right_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_LEFT_HANDED;
@@ -463,7 +439,7 @@ public class SettingFragment extends Fragment
         }
     }
 
-    private int findSelectedLockStagesOption(RadioGroup radioGroup) {
+    private byte findSelectedLockStagesOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.rdb_ninety_degrees_dialog_device_setting:
                 return LOCK_STAGES_NINETY_DEGREES;

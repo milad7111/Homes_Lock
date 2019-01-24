@@ -44,13 +44,13 @@ public class BleHelper {
     public static final int SEARCHING_SCAN_MODE = 1000;
     public static final int SEARCHING_TIMEOUT_MODE = 2000;
 
-    public static final int DOOR_INSTALLATION_SETTING_LEFT_HANDED = 1000;
-    public static final int DOOR_INSTALLATION_SETTING_RIGHT_HANDED = 2000;
+    public static final byte DOOR_INSTALLATION_SETTING_RIGHT_HANDED = 0;
+    public static final byte DOOR_INSTALLATION_SETTING_LEFT_HANDED = 1;
 
-    public static final int LOCK_STAGES_NINETY_DEGREES = 1000;
-    public static final int LOCK_STAGES_ONE_STAGE = 2000;
-    public static final int LOCK_STAGES_TWO_STAGE = 3000;
-    public static final int LOCK_STAGES_THREE_STAGE = 4000;
+    public static final byte LOCK_STAGES_NINETY_DEGREES = 0;
+    public static final byte LOCK_STAGES_ONE_STAGE = 1;
+    public static final byte LOCK_STAGES_TWO_STAGE = 2;
+    public static final byte LOCK_STAGES_THREE_STAGE = 3;
 
     public static final int TIMES_TO_SCAN_BLE_DEVICES = 3;
     //endregion Declare Constants
@@ -173,7 +173,7 @@ public class BleHelper {
         return fullCommand;
     }
 
-    private static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
+    public static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
         byte[] finalArray = new byte[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, finalArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, finalArray, firstArray.length, secondArray.length);

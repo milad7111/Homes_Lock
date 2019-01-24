@@ -47,8 +47,8 @@ public class LockActivity extends BaseActivity
 
     //region Declare Views
     private DrawerLayout activityLockDrawerLayout;
-    private ViewPager mViewPager;
-    WormDotsIndicator mWormDotsIndicator;
+    public ViewPager mViewPager;
+    public WormDotsIndicator mWormDotsIndicator;
     //endregion Declare Views
 
     //region Declare Variables
@@ -113,9 +113,9 @@ public class LockActivity extends BaseActivity
         //region init
         mViewPager.setOffscreenPageLimit(2);
         mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), new ArrayList<>());
-        setViewPagerAdapter(mAdapter);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mWormDotsIndicator.setViewPager(mViewPager);
+        setViewPagerAdapter(mAdapter);
 
         getAllDevices();
         //endregion init
@@ -240,7 +240,7 @@ public class LockActivity extends BaseActivity
         try {
             mViewPager.setAdapter(adapter);
         } catch (Exception e) {
-            Log.e(LockActivity.class.getName(), e.getMessage());
+            Log.e(LockActivity.class.getName(), "Set ViewPager Adapter failed.");
         }
     }
 

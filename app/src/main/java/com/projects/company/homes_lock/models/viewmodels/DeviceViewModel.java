@@ -36,6 +36,7 @@ import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
+import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
@@ -552,9 +553,10 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x00}));
     }
 
-    public void setDeviceSetting(Fragment parentFragment, int selectedDoorInstallationOption, int selectedLockStagesOption) {
+    public void setDeviceSetting(Fragment parentFragment, byte doorInstallationOption, byte lockStagesOption) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0C}, new byte[]{0x00}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0C},
+                BleHelper.mergeArrays(new byte[]{doorInstallationOption}, new byte[]{lockStagesOption})));
     }
 
     public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
@@ -565,20 +567,6 @@ public class DeviceViewModel extends AndroidViewModel
     public void changePairingPasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
         mISettingFragment = (ISettingFragment) parentFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0E}, new byte[]{0x00}));
-    }
-
-    public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
-        mISettingFragment = (ISettingFragment) parentFragment;
-        if (mDevice.isLockSavedInServerByCheckUserLocks()) {
-            if (removeAllMembers) {
-                setRequestType("removeDeviceForAllMembers");
-                mNetworkRepository.removeDeviceForAllMembers(this, mDevice.getObjectId());
-            } else {
-                setRequestType("removeDeviceForOneMember");
-                mNetworkRepository.removeDeviceForOneMember(this, mDevice.getUserLockObjectId());
-            }
-        } else
-            mLocalRepository.deleteDevice(mDevice);
     }
 
     public LiveData<Boolean> isConnected() {
@@ -631,6 +619,20 @@ public class DeviceViewModel extends AndroidViewModel
     public void enablePushNotification(String lockObjectId) {
         setRequestType("enablePushNotification");
         mNetworkRepository.enablePushNotification(this, Collections.singletonList(lockObjectId));
+    }
+
+    public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
+        mISettingFragment = (ISettingFragment) parentFragment;
+        if (mDevice.isLockSavedInServerByCheckUserLocks()) {
+            if (removeAllMembers) {
+                setRequestType("removeDeviceForAllMembers");
+                mNetworkRepository.removeDeviceForAllMembers(this, mDevice.getObjectId());
+            } else {
+                setRequestType("removeDeviceForOneMember");
+                mNetworkRepository.removeDeviceForOneMember(this, mDevice.getUserLockObjectId());
+            }
+        } else
+            mLocalRepository.deleteDevice(mDevice);
     }
     //endregion Online Methods
 
