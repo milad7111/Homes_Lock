@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.projects.company.homes_lock.database.base.LockDatabase;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
@@ -94,6 +95,8 @@ public class LocalRepository {
 
     public void updateDeviceBatteryStatus(String mDeviceObjectId, int mBatteryStatus) {
         mDeviceDao.setBatteryStatus(mDeviceObjectId, mBatteryStatus);
+        LiveData<Device> h = mDeviceDao.getDevice(mDeviceObjectId);
+        Log.e(this.getClass().getName(), "fvvrv");
     }
 
     public void updateDeviceConnectionStatus(String mDeviceObjectId, byte[] connectionSetting) {

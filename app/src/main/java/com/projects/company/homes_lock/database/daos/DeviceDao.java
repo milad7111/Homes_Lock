@@ -41,7 +41,7 @@ public interface DeviceDao extends BaseDao<Device> {
     @Query("UPDATE device SET batteryStatus = :mBatteryStatus WHERE objectId = :mDeviceObjectId")
     void setBatteryStatus(String mDeviceObjectId, int mBatteryStatus);
 
-    @Query("UPDATE device SET wifiStatus = :mWifiStatus & internetStatus = :mInternetStatus & wifiStrength = :mWifiStrength  WHERE objectId = :mDeviceObjectId")
+    @Query("UPDATE device SET wifiStatus = :mWifiStatus, internetStatus = :mInternetStatus, wifiStrength = :mWifiStrength  WHERE objectId = :mDeviceObjectId")
     void setConnectionStatus(String mDeviceObjectId, boolean mWifiStatus, boolean mInternetStatus, int mWifiStrength);
 
     @Query("UPDATE device SET temperature = :mTemperature  WHERE objectId = :mDeviceObjectId")

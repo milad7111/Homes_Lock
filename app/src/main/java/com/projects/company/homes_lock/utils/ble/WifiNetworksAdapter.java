@@ -66,13 +66,16 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
                 rssi = calculateRSSI(mWifiNetworksModel.getRSSI());
 
                 wifiNetworksViewHolder.txvItemWifiSsidName.setTypeface(null, Typeface.NORMAL);
+                wifiNetworksViewHolder.itemView.setOnClickListener(v -> {
+                    if (mWifiNetworksModelList.get(i).getRSSI() != SEARCHING_SCAN_MODE &&
+                            mWifiNetworksModelList.get(i).getRSSI() != SEARCHING_TIMEOUT_MODE)
+                        mILockPageFragment.onAdapterItemClick(mWifiNetworksModelList.get(i));
+                });
             }
 
             wifiNetworksViewHolder.txvItemWifiSsidName.setText(name);
             ViewHelper.setRSSIImage(wifiNetworksViewHolder.imgItemWifiRssiName, rssi);
         }
-
-        wifiNetworksViewHolder.itemView.setOnClickListener(v -> mILockPageFragment.onAdapterItemClick(mWifiNetworksModelList.get(i)));
     }
 
     @Override
@@ -87,12 +90,7 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
     public void setAvailableNetworks(List<WifiNetworksModel> mWifiNetworksModelList) {
         this.mWifiNetworksModelList = mWifiNetworksModelList;
 
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
+        mActivity.runOnUiThread(() -> notifyDataSetChanged());
     }
 
     class WifiNetworksViewHolder extends RecyclerView.ViewHolder {

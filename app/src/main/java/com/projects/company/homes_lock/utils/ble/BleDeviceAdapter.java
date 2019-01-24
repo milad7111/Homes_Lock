@@ -69,11 +69,15 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
                 bleDeviceViewHolder.txvBleDeviceName.setTypeface(null, Typeface.NORMAL);
             }
 
+            bleDeviceViewHolder.itemView.setOnClickListener(v -> {
+                if (mScannedDeviceModelList.get(i).getRSSI() != SEARCHING_SCAN_MODE &&
+                        mScannedDeviceModelList.get(i).getRSSI() != SEARCHING_TIMEOUT_MODE)
+                    mIAddLockFragment.onAdapterItemClick(mScannedDeviceModelList.get(i));
+            });
+
             bleDeviceViewHolder.txvBleDeviceName.setText(name);
             ViewHelper.setRSSIImage(bleDeviceViewHolder.imgBleDeviceRSSI, rssi);
         }
-
-        bleDeviceViewHolder.itemView.setOnClickListener(v -> mIAddLockFragment.onAdapterItemClick(mScannedDeviceModelList.get(i)));
     }
 
     @Override

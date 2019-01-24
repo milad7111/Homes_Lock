@@ -39,6 +39,7 @@ import com.projects.company.homes_lock.ui.device.fragment.setting.SettingFragmen
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.WifiNetworksAdapter;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
@@ -285,11 +286,13 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onSetDeviceWifiNetworkSuccessful() {
+        DialogHelper.handleProgressDialog(null, null, null, false);
         closeDialogHandleDeviceWifiNetwork();
     }
 
     @Override
     public void onSetDeviceWifiNetworkFailed() {
+        DialogHelper.handleProgressDialog(null, null, null, false);
         closeDialogHandleDeviceWifiNetwork();
     }
 
@@ -347,9 +350,10 @@ public class LockPageFragment extends BaseFragment
         if (isUserLoggedIn())
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
         else if (isConnectedToBleDevice)
-            if (mDevice.getWifiStatus())
-                this.mDeviceViewModel.disconnectDeviceWifiNetwork();
-            else
+            if (mDevice.getWifiStatus()) {
+                DialogHelper.handleProgressDialog(getContext(), null, "Disconnect Internet Connection ...", true);
+                this.mDeviceViewModel.disconnectDeviceWifiNetwork(this);
+            } else
                 handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
 
@@ -367,10 +371,12 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void closeDialogHandleDeviceWifiNetwork() {
-        deviceWifiNetworkDialog.dismiss();
-        deviceWifiNetworkDialog = null;
-        deviceWifiNetworkListDialog.dismiss();
-        deviceWifiNetworkListDialog = null;
+        if (deviceWifiNetworkDialog != null) {
+            deviceWifiNetworkDialog.dismiss();
+            deviceWifiNetworkDialog = null;
+            deviceWifiNetworkListDialog.dismiss();
+            deviceWifiNetworkListDialog = null;
+        }
     }
 
     private void handleLockMembers() {
@@ -443,6 +449,7 @@ public class LockPageFragment extends BaseFragment
                 this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
                     isConnectedToBleDevice = isConnected;
                     ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
+                    updateViewData(!isConnected);
                     initBleInfo();
                 });
                 return true;
@@ -481,7 +488,7 @@ public class LockPageFragment extends BaseFragment
 
     private void handleDialogListOfAvailableWifiNetworksAroundDevice() {
         if (deviceWifiNetworkListDialog == null) {
-            deviceWifiNetworkListDialog = new Dialog(getActivity());
+            deviceWifiNetworkListDialog = new Dialog(getContext());
             deviceWifiNetworkListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceWifiNetworkListDialog.setContentView(R.layout.dialog_available_networks);
 
@@ -504,7 +511,7 @@ public class LockPageFragment extends BaseFragment
 
             btnScanDialogAvailableNetworks.setOnClickListener(v -> {
                 mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-                LockPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(getParentFragment());
+                LockPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
             });
 
             LockPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);
@@ -521,7 +528,7 @@ public class LockPageFragment extends BaseFragment
 
     private void handleDialogSetDeviceWifiNetwork(WifiNetworksModel wifiNetwork) {
         if (deviceWifiNetworkDialog == null) {
-            deviceWifiNetworkDialog = new Dialog(getActivity());
+            deviceWifiNetworkDialog = new Dialog(getContext());
             deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceWifiNetworkDialog.setContentView(R.layout.dialog_device_wifi_network_connect);
 
@@ -546,7 +553,8 @@ public class LockPageFragment extends BaseFragment
             btnConnectDialogDeviceWifiNetworkConnect.setOnClickListener(v -> {
                 wifiNetwork.setPassword(tietWifiPasswordDialogDeviceWifiNetworkConnect.getText().toString());
                 wifiNetwork.setAuthenticateType(spnWifiTypeDialogDeviceWifiNetworkConnect.getSelectedItemPosition());
-                LockPageFragment.this.mDeviceViewModel.setDeviceWifiNetwork(getParentFragment(), wifiNetwork);
+                DialogHelper.handleProgressDialog(getContext(), null, "Set Internet Connection ...", true);
+                LockPageFragment.this.mDeviceViewModel.setDeviceWifiNetwork(this, wifiNetwork);
             });
 
             LockPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksCountAroundDevice(this);

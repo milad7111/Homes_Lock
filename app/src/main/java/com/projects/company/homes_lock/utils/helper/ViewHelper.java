@@ -67,13 +67,17 @@ public class ViewHelper {
     }
 
     public static void setBatteryStatusImage(boolean setDefault, ImageView imgBatteryStatusLockPage, Integer batteryPercentage) {
-        if (batteryPercentage >= 0 && batteryPercentage < 30)
+        if (batteryPercentage >= 0 && batteryPercentage < 15)
             imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_zero : R.drawable.ic_valid_battery_zero);
-        else if (batteryPercentage >= 30 && batteryPercentage < 60)
+        else if (batteryPercentage >= 15 && batteryPercentage < 25)
+            imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_very_low : R.drawable.ic_valid_battery_very_low);
+        else if (batteryPercentage >= 25 && batteryPercentage < 45)
             imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_low : R.drawable.ic_valid_battery_low);
-        else if (batteryPercentage >= 60 && batteryPercentage < 90)
+        else if (batteryPercentage >= 45 && batteryPercentage < 65)
             imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_middle : R.drawable.ic_valid_battery_middle);
-        else if (batteryPercentage >= 90)
+        else if (batteryPercentage >= 65 && batteryPercentage < 85)
+            imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_high : R.drawable.ic_valid_battery_high);
+        else if (batteryPercentage >= 85)
             imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_full : R.drawable.ic_valid_battery_full);
     }
 

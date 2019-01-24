@@ -295,11 +295,11 @@ public class DeviceViewModel extends AndroidViewModel
                 break;
             case 0x0B:
                 if (responseValue[1] == 0) {
-                    Log.d("OnNotify :", "Connection successful.");
+                    Log.d("OnNotify :", "Internet Connection Command successful.");
                     if (mILockPageFragment != null)
                         mILockPageFragment.onSetDeviceWifiNetworkSuccessful();
                 } else {
-                    Log.d("OnNotify :", "Connection Failed.");
+                    Log.d("OnNotify :", "Internet Connection Command Failed.");
                     if (mILockPageFragment != null)
                         mILockPageFragment.onSetDeviceWifiNetworkFailed();
                 }
@@ -493,6 +493,11 @@ public class DeviceViewModel extends AndroidViewModel
     //region BLE Methods
     public void connect(IBleScanListener mIBleScanListener, final ScannedDeviceModel device) {
         this.mIBleScanListener = mIBleScanListener;
+        if (mIBleScanListener instanceof ILockPageFragment)
+            this.mILockPageFragment = (ILockPageFragment) mIBleScanListener;
+        else if (mIBleScanListener instanceof IAddLockFragment)
+            this.mIAddLockFragment = (IAddLockFragment) mIBleScanListener;
+
         final LogSession logSession = Logger.newSession(getApplication(), null, device.getMacAddress(), device.getName());
         mBleDeviceManager.setLogger(logSession);
         mBleDeviceManager.connect(device.getDevice());
@@ -525,8 +530,8 @@ public class DeviceViewModel extends AndroidViewModel
         }).start();
     }
 
-    public void getAvailableWifiNetworksCountAroundDevice(Fragment fragment) {
-        mILockPageFragment = (ILockPageFragment) fragment;
+    public void getAvailableWifiNetworksCountAroundDevice(ILockPageFragment mILockPageFragment) {
+        this.mILockPageFragment = mILockPageFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x06}, new byte[]{}));
     }
 
@@ -537,20 +542,23 @@ public class DeviceViewModel extends AndroidViewModel
             mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) i}));
     }
 
-    public void setDeviceWifiNetwork(Fragment parentFragment, WifiNetworksModel wifiNetwork) {
-        mILockPageFragment = (ILockPageFragment) parentFragment;
+    public void setDeviceWifiNetwork(ILockPageFragment mILockPageFragment, WifiNetworksModel wifiNetwork) {
+        this.mILockPageFragment = mILockPageFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x08}, wifiNetwork.getSSID().getBytes()));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x09}, wifiNetwork.getPassword().getBytes()));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0A}, new byte[]{(byte) wifiNetwork.getAuthenticateType()}));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x01}));
+        getDeviceInfoFromBleDevice();
     }
 
     private void getDeviceErrorFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x04}, new byte[]{}));
     }
 
-    public void disconnectDeviceWifiNetwork() {
+    public void disconnectDeviceWifiNetwork(ILockPageFragment mILockPageFragment) {
+        this.mILockPageFragment = mILockPageFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x00}));
+        getDeviceInfoFromBleDevice();
     }
 
     public void setDeviceSetting(Fragment parentFragment, byte doorInstallationOption, byte lockStagesOption) {
