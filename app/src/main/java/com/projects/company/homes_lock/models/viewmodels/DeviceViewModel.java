@@ -217,9 +217,9 @@ public class DeviceViewModel extends AndroidViewModel
         switch (responseValue[0]) {
             case 0x01:
                 if (mILockPageFragment != null) {
-                    mLocalRepository.updateDeviceLockStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                    mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                             DataHelper.getNibble(responseValue[1], true) == 1);
-                    mLocalRepository.updateDeviceDoorStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                    mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                             DataHelper.getNibble(responseValue[1], false) == 1);
                     mLocalRepository.updateDeviceBatteryStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
                     mLocalRepository.updateDeviceConnectionStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue);

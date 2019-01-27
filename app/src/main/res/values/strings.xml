@@ -1,7 +1,7 @@
 <resources>
 
     <!--//region Main-->
-    <string name="app_name" translatable="false">Homes_Lock</string>
+    <string name="app_name" translatable="false">Homes</string>
     <!--//endregion Main-->
 
     <!--//region Content Description-->

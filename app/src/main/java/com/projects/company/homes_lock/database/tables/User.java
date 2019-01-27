@@ -31,7 +31,7 @@ public class User extends BaseModel {
 
     @ColumnInfo(name = "userStatus")
     @SerializedName("userStatus")
-    private boolean mUserStatus;
+    private boolean mUserStatus = false;
 
     @ColumnInfo(name = "mobileNumber")
     @SerializedName("mobileNumber")

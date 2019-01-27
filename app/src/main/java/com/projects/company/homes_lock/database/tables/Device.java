@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.projects.company.homes_lock.base.BaseModel;
-import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 
@@ -37,17 +36,17 @@ public class Device extends BaseModel {
     @SerializedName("devicePassword")
     private String mDevicePassword;
 
-    @ColumnInfo(name = "lockStatus")
-    @SerializedName("lockStatus")
-    private Boolean mLockStatus;
+    @ColumnInfo(name = "isLocked")
+    @SerializedName("isLocked")
+    private Boolean mIsLocked = false;
 
-    @ColumnInfo(name = "doorStatus")
-    @SerializedName("doorStatus")
-    private Boolean mDoorStatus;
+    @ColumnInfo(name = "isDoorClosed")
+    @SerializedName("isDoorClosed")
+    private Boolean mIsDoorClosed = false;
 
     @ColumnInfo(name = "internetStatus")
     @SerializedName("internetStatus")
-    private Boolean mInternetStatus;
+    private Boolean mInternetStatus = false;
 
     @ColumnInfo(name = "batteryStatus")
     @SerializedName("batteryStatus")
@@ -55,7 +54,7 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "wifiStatus")
     @SerializedName("wifiStatus")
-    private Boolean mWifiStatus;
+    private Boolean mWifiStatus = false;
 
     @ColumnInfo(name = "wifiStrength")
     @SerializedName("wifiStrength")
@@ -67,11 +66,11 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "temperature")
     @SerializedName("temperature")
-    private Integer mTemperature;
+    private Double mTemperature;
 
     @ColumnInfo(name = "humidity")
     @SerializedName("humidity")
-    private Integer mHumidity;
+    private Double mHumidity;
 
     @ColumnInfo(name = "coLevel")
     @SerializedName("coLevel")
@@ -139,15 +138,15 @@ public class Device extends BaseModel {
             String mBleDeviceName,
             String mBleDeviceMacAddress,
             String mSerialNumber,
-            Boolean mLockStatus,
-            Boolean mDoorStatus,
+            Boolean mIsLocked,
+            Boolean mIsDoorClosed,
             Boolean mInternetStatus,
             Integer mBatteryStatus,
             Boolean mWifiStatus,
             Integer mWifiStrength,
             Integer mMeanPowerCons,
-            Integer mTemperature,
-            Integer mHumidity,
+            Double mTemperature,
+            Double mHumidity,
             Integer mCOLevel,
             Boolean mDeviceHealth,
             Integer mFWVersion,
@@ -156,8 +155,8 @@ public class Device extends BaseModel {
         this.mBleDeviceName = mBleDeviceName;
         this.mBleDeviceMacAddress = mBleDeviceMacAddress;
         this.mSerialNumber = mSerialNumber;
-        this.mLockStatus = mLockStatus;
-        this.mDoorStatus = mDoorStatus;
+        this.mIsLocked = mIsLocked;
+        this.mIsDoorClosed = mIsDoorClosed;
         this.mInternetStatus = mInternetStatus;
         this.mBatteryPercentage = mBatteryStatus;
         this.mWifiStatus = mWifiStatus;
@@ -177,15 +176,15 @@ public class Device extends BaseModel {
         this.mBleDeviceMacAddress = device.getDeviceMacAddress();
         this.mSerialNumber = device.getDeviceSerialNumber();
         this.mFavoriteStatus = device.isFavoriteLock();
-        this.mLockStatus = false;
-        this.mDoorStatus = false;
+        this.mIsLocked = false;
+        this.mIsDoorClosed = false;
         this.mInternetStatus = false;
         this.mBatteryPercentage = 0;
         this.mWifiStatus = false;
         this.mWifiStrength = 0;
         this.mMeanPowerCons = 0;
-        this.mTemperature = 0;
-        this.mHumidity = 0;
+        this.mTemperature = 0D;
+        this.mHumidity = 0D;
         this.mCOLevel = 0;
         this.mDeviceHealth = false;
         this.mFWVersion = 0;
@@ -197,15 +196,15 @@ public class Device extends BaseModel {
         this.mBleDeviceName = updatedLock.get("bleDeviceName").toString();
         this.mBleDeviceMacAddress = updatedLock.get("bleDeviceMacAddress").toString();
         this.mSerialNumber = updatedLock.get("serialNumber").toString();
-        this.mLockStatus = Boolean.valueOf(updatedLock.get("lockStatus").toString());
-        this.mDoorStatus = Boolean.valueOf(updatedLock.get("doorStatus").toString());
+        this.mIsLocked = Boolean.valueOf(updatedLock.get("isLocked").toString());
+        this.mIsDoorClosed = Boolean.valueOf(updatedLock.get("isDoorClosed").toString());
         this.mInternetStatus = Boolean.valueOf(updatedLock.get("internetStatus").toString());
         this.mBatteryPercentage = Integer.valueOf(updatedLock.get("batteryStatus").toString());
         this.mWifiStatus = Boolean.valueOf(updatedLock.get("wifiStatus").toString());
         this.mWifiStrength = Integer.valueOf(updatedLock.get("wifiStrength").toString());
         this.mMeanPowerCons = Integer.valueOf(updatedLock.get("meanPowerCons").toString());
-        this.mTemperature = Integer.valueOf(updatedLock.get("temperature").toString());
-        this.mHumidity = Integer.valueOf(updatedLock.get("humidity").toString());
+        this.mTemperature = Double.valueOf(updatedLock.get("temperature").toString());
+        this.mHumidity = Double.valueOf(updatedLock.get("humidity").toString());
         this.mCOLevel = Integer.valueOf(updatedLock.get("coLevel").toString());
         this.mDeviceHealth = Boolean.valueOf(updatedLock.get("deviceHealth").toString());
         this.mFWVersion = Integer.valueOf(updatedLock.get("fwVersion").toString());
@@ -245,20 +244,20 @@ public class Device extends BaseModel {
         this.mSerialNumber = mSerialNumber;
     }
 
-    public Boolean getLockStatus() {
-        return mLockStatus;
+    public Boolean getIsLocked() {
+        return mIsLocked;
     }
 
-    public void setLockStatus(Boolean mLockStatus) {
-        this.mLockStatus = mLockStatus;
+    public void setIsLocked(Boolean mIsLocked) {
+        this.mIsLocked = mIsLocked;
     }
 
-    public Boolean getDoorStatus() {
-        return mDoorStatus;
+    public Boolean getIsDoorClosed() {
+        return mIsDoorClosed;
     }
 
-    public void setDoorStatus(Boolean mDoorStatus) {
-        this.mDoorStatus = mDoorStatus;
+    public void setIsDoorClosed(Boolean mIsDoorClosed) {
+        this.mIsDoorClosed = mIsDoorClosed;
     }
 
     public Boolean getInternetStatus() {
@@ -301,19 +300,19 @@ public class Device extends BaseModel {
         this.mMeanPowerCons = mMeanPowerCons;
     }
 
-    public Integer getTemperature() {
+    public Double getTemperature() {
         return mTemperature;
     }
 
-    public void setTemperature(Integer mTemperature) {
+    public void setTemperature(Double mTemperature) {
         this.mTemperature = mTemperature;
     }
 
-    public Integer getHumidity() {
+    public Double getHumidity() {
         return mHumidity;
     }
 
-    public void setHumidity(Integer mHumidity) {
+    public void setHumidity(Double mHumidity) {
         this.mHumidity = mHumidity;
     }
 

@@ -3,16 +3,13 @@ package com.projects.company.homes_lock.utils.helper;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,7 +18,6 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
-import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
 import com.projects.company.homes_lock.ui.device.activity.LockActivity;
 import com.projects.company.homes_lock.ui.device.fragment.addlock.AddLockFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceAdapter;
@@ -125,13 +121,11 @@ public class DialogHelper {
             ((AddLockFragment) fragment).mTempDevice.setFavoriteStatus(chbLockFavoriteStatusDialogAddNewLock.isChecked());
             ((AddLockFragment) fragment).mTempDevice.setDeviceMacAddress(((AddLockFragment) fragment).mDevice.getMacAddress());
 
-            ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, new Observer<List<Device>>() {
-                @Override
-                public void onChanged(@Nullable final List<Device> devices) {
-                    ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
-                            new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices));
-                }
-            });
+//            ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, devices ->
+//                    ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
+//                            new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices)));
+
+            ((LockActivity) fragment.getActivity()).PERMISSION_READ_ALL_LOCAL_DEVICES = true;
             ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mTempDevice));
 
             saveLockAfterPaired = true;

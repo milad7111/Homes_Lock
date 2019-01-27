@@ -52,7 +52,9 @@
 
         </activity>
 
-        <activity android:name=".ui.device.activity.LockActivity" />
+        <activity
+            android:name=".ui.device.activity.LockActivity"
+            android:theme="@style/AppTheme.ActionBar.Transparent" />
 
         <activity android:name=".ui.aboutus.AboutUsActivity" />
         <activity android:name=".ui.login.activity.LoginActivity" />

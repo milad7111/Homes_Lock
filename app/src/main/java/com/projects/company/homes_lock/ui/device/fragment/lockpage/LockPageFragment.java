@@ -58,7 +58,7 @@ import static com.projects.company.homes_lock.utils.helper.DialogHelper.handlePr
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBatteryStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setConnectionStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setFragment;
-import static com.projects.company.homes_lock.utils.helper.ViewHelper.setLockStatusImage;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setIsLockedImage;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,7 +74,7 @@ public class LockPageFragment extends BaseFragment
     //endregion Declare Constants
 
     //region Declare Views
-    ImageView imgLockStatusLockPage;
+    ImageView imgIsLockedLockPage;
     ImageView imgBatteryStatusLockPage;
     ImageView imgConnectionStatusLockPage;
     ImageView imgBleLockPage;
@@ -157,7 +157,7 @@ public class LockPageFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
-        imgLockStatusLockPage = view.findViewById(R.id.img_lock_status_lock_page);
+        imgIsLockedLockPage = view.findViewById(R.id.img_lock_status_lock_page);
         imgBatteryStatusLockPage = view.findViewById(R.id.img_battery_status_lock_page);
         imgConnectionStatusLockPage = view.findViewById(R.id.img_connection_status_lock_page);
         imgBleLockPage = view.findViewById(R.id.img_ble_lock_page);
@@ -175,7 +175,7 @@ public class LockPageFragment extends BaseFragment
         //endregion Initialize Views
 
         //region Setup Views
-        imgLockStatusLockPage.setOnClickListener(this);
+        imgIsLockedLockPage.setOnClickListener(this);
         imgConnectionStatusLockPage.setOnClickListener(this);
         imgBleLockPage.setOnClickListener(this);
         imgManageMembersLockPage.setOnClickListener(this);
@@ -207,7 +207,7 @@ public class LockPageFragment extends BaseFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_lock_status_lock_page:
-                sendLockCommand(!mDevice.getLockStatus());
+                sendLockCommand(!mDevice.getIsLocked());
                 break;
             case R.id.img_connection_status_lock_page:
                 handleLockInternetConnection();
@@ -306,8 +306,8 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare Methods
     private void updateViewData(boolean setDefault) {
-        setLockStatusImage(imgLockStatusLockPage,
-                setDefault ? 2 : (mDevice.getLockStatus() ? 1 : 0));
+        setIsLockedImage(imgIsLockedLockPage,
+                setDefault ? 2 : (mDevice.getIsLocked() ? 1 : 0));
 
         setBatteryStatusImage(setDefault, imgBatteryStatusLockPage, mDevice.getBatteryPercentage());
         setConnectionStatusImage(
@@ -320,9 +320,9 @@ public class LockPageFragment extends BaseFragment
         txvSecurityAlarmLockPage.setText(
                 setDefault ?
                         "Data Not Synced" :
-                        getSecurityAlarmText(mDevice.getLockStatus(), mDevice.getDoorStatus()));
+                        getSecurityAlarmText(mDevice.getIsLocked(), mDevice.getIsDoorClosed()));
         txvSecurityAlarmLockPage.setTextColor(
-                setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, getSecurityAlarmColor(mDevice.getLockStatus(), mDevice.getDoorStatus())));
+                setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, getSecurityAlarmColor(mDevice.getIsLocked(), mDevice.getIsDoorClosed())));
 
         imgTemperatureCelsiusLockPage.setImageResource(
                 setDefault ? R.drawable.ic_invalid_temperature_celsius : R.drawable.ic_valid_temperature_celsius);

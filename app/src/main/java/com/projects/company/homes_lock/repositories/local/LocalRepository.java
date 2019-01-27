@@ -85,12 +85,12 @@ public class LocalRepository {
         return mDeviceDao.getDevice(mDeviceObjectId);
     }
 
-    public void updateDeviceLockStatus(String mDeviceObjectId, boolean mLockStatus) {
-        mDeviceDao.setLockStatus(mDeviceObjectId, mLockStatus);
+    public void updateDeviceIsLocked(String mDeviceObjectId, boolean mIsLocked) {
+        mDeviceDao.setIsLocked(mDeviceObjectId, mIsLocked);
     }
 
-    public void updateDeviceDoorStatus(String mDeviceObjectId, boolean mDoorStatus) {
-        mDeviceDao.setDoorStatus(mDeviceObjectId, mDoorStatus);
+    public void updateDeviceIsDoorClosed(String mDeviceObjectId, boolean mIsDoorClosed) {
+        mDeviceDao.setIsDoorClosed(mDeviceObjectId, mIsDoorClosed);
     }
 
     public void updateDeviceBatteryStatus(String mDeviceObjectId, int mBatteryStatus) {

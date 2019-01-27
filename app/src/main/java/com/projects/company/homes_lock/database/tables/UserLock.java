@@ -33,7 +33,7 @@ public class UserLock extends BaseModel {
 
     @ColumnInfo(name = "adminStatus")
     @SerializedName("adminStatus")
-    private boolean mAdminStatus;
+    private boolean mAdminStatus = false;
 
     @ColumnInfo(name = "lockName")
     @SerializedName("lockName")
@@ -41,7 +41,7 @@ public class UserLock extends BaseModel {
 
     @ColumnInfo(name = "favorite")
     @SerializedName("favorite")
-    private boolean mFavorite;
+    private boolean mFavorite = false;
     //endregion Database attributes
 
     //region Ignore server attributes

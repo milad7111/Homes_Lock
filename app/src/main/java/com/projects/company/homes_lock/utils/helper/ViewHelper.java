@@ -48,16 +48,16 @@ public class ViewHelper {
         mTransaction.commit();
     }
 
-    public static void setLockStatusImage(ImageView imageViewLock, int lockStatus) {
-        switch (lockStatus) {
+    public static void setIsLockedImage(ImageView imageViewLock, int isLocked) {
+        switch (isLocked) {
             case 0:
-                imageViewLock.setImageResource(R.drawable.ic_lock_open);
+                imageViewLock.setImageResource(R.drawable.ic_homes_lock_open);
                 break;
             case 1:
-                imageViewLock.setImageResource(R.drawable.ic_lock_close);
+                imageViewLock.setImageResource(R.drawable.ic_homes_lock_close);
                 break;
             case 2:
-                imageViewLock.setImageResource(R.drawable.ic_lock_idle);
+                imageViewLock.setImageResource(R.drawable.ic_homes_lock_idle);
                 break;
         }
     }

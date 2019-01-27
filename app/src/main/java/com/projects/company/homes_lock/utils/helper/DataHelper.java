@@ -96,8 +96,8 @@ public class DataHelper {
         }
     }
 
-    public static String getSecurityAlarmText(boolean lockStatus, boolean doorStatus) {
-        switch (getSecurityAlarmMode(lockStatus, doorStatus)) {
+    public static String getSecurityAlarmText(boolean isLocked, boolean isDoorClosed) {
+        switch (getSecurityAlarmMode(isLocked, isDoorClosed)) {
             case SECURE:
                 return "Door is Secure";
             case UNSECURE:
@@ -111,8 +111,8 @@ public class DataHelper {
         }
     }
 
-    public static int getSecurityAlarmColor(boolean lockStatus, boolean doorStatus) {
-        switch (getSecurityAlarmMode(lockStatus, doorStatus)) {
+    public static int getSecurityAlarmColor(boolean isLocked, boolean isDoorClosed) {
+        switch (getSecurityAlarmMode(isLocked, isDoorClosed)) {
             case SECURE:
                 return R.color.md_green_700;
             case UNSECURE:
@@ -126,14 +126,14 @@ public class DataHelper {
         }
     }
 
-    private static SecurityAlarm getSecurityAlarmMode(boolean lockStatus, Boolean doorStatus) {
-        if (lockStatus)
-            if (doorStatus)
+    private static SecurityAlarm getSecurityAlarmMode(boolean isLocked, Boolean isDoorClosed) {
+        if (isLocked)
+            if (isDoorClosed)
                 return SecurityAlarm.SECURE;
             else
                 return SecurityAlarm.ATTENTION;
         else {
-            if (doorStatus)
+            if (isDoorClosed)
                 return SecurityAlarm.UNSECURE;
             else
                 return SecurityAlarm.OPEN;
