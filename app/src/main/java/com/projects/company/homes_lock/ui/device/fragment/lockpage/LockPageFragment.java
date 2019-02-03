@@ -256,8 +256,8 @@ public class LockPageFragment extends BaseFragment
     public void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel) {
         addFoundNetworkToList(wifiNetworksModel);
 
-        if (mWifiNetworkList.size() == wifiNetworksCount)
-            handleDialogListOfAvailableWifiNetworksAroundDevice();
+//        if (mWifiNetworkList.size() == wifiNetworksCount)
+        handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
 
     @Override
