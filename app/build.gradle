@@ -65,12 +65,12 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
 
     //Backendless
-    implementation 'com.backendless:backendless:4.5.1'
+    implementation 'com.backendless:backendless:5.2.2'
 
     //handle requests
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     //handle MQTT
@@ -90,7 +90,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     //handle push notification
-    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
     //handle backendless
@@ -101,6 +101,9 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+
+    //handle kodein
+    implementation 'org.kodein.di:kodein-di-generic-jvm:6.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
