@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -256,7 +257,7 @@ public class LockPageFragment extends BaseFragment
     public void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel) {
         addFoundNetworkToList(wifiNetworksModel);
 
-        if (mWifiNetworkList.size() == wifiNetworksCount)
+//        if (mWifiNetworkList.size() == wifiNetworksCount)
             handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
 
@@ -301,6 +302,11 @@ public class LockPageFragment extends BaseFragment
         mDevice = response;
         updateViewData(false);
         this.mDeviceViewModel.updateDevice(response);
+    }
+
+    @Override
+    public void onSendRequestGetAvailableWifiSuccessful() {
+        Log.d(getTag(), "Get Available Wifi Networks Around Device Sent Successful! Wait ...");
     }
     //endregion BLE CallBacks
 

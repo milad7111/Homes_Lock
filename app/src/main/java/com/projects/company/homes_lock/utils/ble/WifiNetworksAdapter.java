@@ -89,8 +89,7 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
     //region Declare Methods
     public void setAvailableNetworks(List<WifiNetworksModel> mWifiNetworksModelList) {
         this.mWifiNetworksModelList = mWifiNetworksModelList;
-
-        mActivity.runOnUiThread(() -> notifyDataSetChanged());
+        mActivity.runOnUiThread(this::notifyDataSetChanged);
     }
 
     class WifiNetworksViewHolder extends RecyclerView.ViewHolder {

@@ -37,7 +37,6 @@ import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
@@ -218,11 +217,24 @@ public class DeviceViewModel extends AndroidViewModel
             case 0x01:
                 if (mILockPageFragment != null) {
                     mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            DataHelper.getNibble(responseValue[1], true) == 1);
+                            responseValue[1] == 1);
                     mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            DataHelper.getNibble(responseValue[1], false) == 1);
-                    mLocalRepository.updateDeviceBatteryStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
-                    mLocalRepository.updateDeviceConnectionStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue);
+                            responseValue[2] == 1);
+                    mLocalRepository.updateDeviceBatteryPercentage(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            responseValue[3]);
+                    mLocalRepository.updateDeviceWifiStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            responseValue[4] == 1);
+                    mLocalRepository.updateDeviceConnectedWifiStrength(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            responseValue[8]);
+                    mLocalRepository.updateDeviceInternetStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            responseValue[5] == 1);
+                    mLocalRepository.updateDeviceMQTTServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            responseValue[6] == 1);
+                    mLocalRepository.updateDeviceRestApiServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            responseValue[7] == 1);
+                    mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[9]);
+                    mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[10]);
+                    mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[11]);
                 }
                 break;
             case 0x02:
@@ -238,19 +250,19 @@ public class DeviceViewModel extends AndroidViewModel
                 Log.d("Read deviceErrorData", Arrays.toString(subArrayByte(responseValue, 1, responseValue.length)));
                 break;
             case 0x05:
-                if (mILockPageFragment != null) {
-                    mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[1]);
-                    mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[2]);
-                    mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[3]);
-                }
                 break;
             case 0x06:
-                if (responseValue[1] == 0) {
+                if (responseValue[1] == 1) {
+                    if (responseValue[2] == 0) {
+                        if (mILockPageFragment != null)
+                            mILockPageFragment.onSendRequestGetAvailableWifiSuccessful();
+                    } else if (responseValue[2] == 1)
+                        getDeviceErrorFromBleDevice();
+                } else if (responseValue[1] == 2) {
                     getAvailableWifiNetworksAroundDevice(mILockPageFragment, responseValue[2]);
                     if (mILockPageFragment != null)
                         mILockPageFragment.onGetAvailableWifiNetworksCountAroundDevice((int) responseValue[2]);
-                } else
-                    getDeviceErrorFromBleDevice();
+                }
                 break;
             case 0x07:
                 if (mILockPageFragment != null)
@@ -516,18 +528,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void getDeviceInfoFromBleDevice() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x01}, new byte[]{}));
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Log.e(this.getClass().getName(), e.getMessage());
-                }
-                mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x05}, new byte[]{}));
-            }
-        }).start();
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x01}, new byte[]{}));
     }
 
     public void getAvailableWifiNetworksCountAroundDevice(ILockPageFragment mILockPageFragment) {

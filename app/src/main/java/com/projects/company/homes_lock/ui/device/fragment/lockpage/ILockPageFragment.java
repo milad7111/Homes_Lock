@@ -28,4 +28,6 @@ public interface ILockPageFragment {
     void onSetDeviceWifiNetworkFailed();
 
     void onGetUpdatedDevice(Device response);
+
+    void onSendRequestGetAvailableWifiSuccessful();
 }

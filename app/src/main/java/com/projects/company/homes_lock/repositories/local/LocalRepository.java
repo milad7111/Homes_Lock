@@ -93,17 +93,28 @@ public class LocalRepository {
         mDeviceDao.setIsDoorClosed(mDeviceObjectId, mIsDoorClosed);
     }
 
-    public void updateDeviceBatteryStatus(String mDeviceObjectId, int mBatteryStatus) {
+    public void updateDeviceBatteryPercentage(String mDeviceObjectId, int mBatteryStatus) {
         mDeviceDao.setBatteryStatus(mDeviceObjectId, mBatteryStatus);
-        LiveData<Device> h = mDeviceDao.getDevice(mDeviceObjectId);
-        Log.e(this.getClass().getName(), "fvvrv");
     }
 
-    public void updateDeviceConnectionStatus(String mDeviceObjectId, byte[] connectionSetting) {
-        mDeviceDao.setConnectionStatus(mDeviceObjectId,
-                DataHelper.getNibble(connectionSetting[3], true) == 1,
-                DataHelper.getNibble(connectionSetting[3], false) == 1,
-                connectionSetting[4]);
+    public void updateDeviceWifiStatus(String mDeviceObjectId, boolean mWifiStatus) {
+        mDeviceDao.setWifiStatus(mDeviceObjectId, mWifiStatus);
+    }
+
+    public void updateDeviceConnectedWifiStrength(String mDeviceObjectId, int mWifiStrength) {
+        mDeviceDao.setWifiStrength(mDeviceObjectId, mWifiStrength);
+    }
+
+    public void updateDeviceInternetStatus(String mDeviceObjectId, boolean mInternetStatus) {
+        mDeviceDao.setInternetStatus(mDeviceObjectId, mInternetStatus);
+    }
+
+    public void updateDeviceMQTTServerStatus(String mDeviceObjectId, boolean mMQTTServerStatus) {
+        mDeviceDao.setMQTTServerStatus(mDeviceObjectId, mMQTTServerStatus);
+    }
+
+    public void updateDeviceRestApiServerStatus(String mDeviceObjectId, boolean mRestApiServerStatus) {
+        mDeviceDao.setRestApiServerStatus(mDeviceObjectId, mRestApiServerStatus);
     }
 
     public void updateDeviceTemperature(String mDeviceObjectId, byte temperature) {
@@ -124,8 +135,8 @@ public class LocalRepository {
     //endregion Device table
 
     //region User and UserLock table
-    public void insertUser(User user, ILocalRepository mILocalRepository) {
-        this.mILocalRepository = mILocalRepository;
+    public void insertUser(User user, ILocalRepository _mILocalRepository) {
+        mILocalRepository = _mILocalRepository;
         new clearAllDataAndInsertUserAsyncTask(mUserDao, mUserLockDao, mDeviceDao, mDeviceErrorDao, mErrorDao, user).execute();
     }
     //endregion User and UserLock table

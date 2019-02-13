@@ -41,8 +41,20 @@ public interface DeviceDao extends BaseDao<Device> {
     @Query("UPDATE device SET batteryStatus = :mBatteryStatus WHERE objectId = :mDeviceObjectId")
     void setBatteryStatus(String mDeviceObjectId, int mBatteryStatus);
 
-    @Query("UPDATE device SET wifiStatus = :mWifiStatus, internetStatus = :mInternetStatus, wifiStrength = :mWifiStrength  WHERE objectId = :mDeviceObjectId")
-    void setConnectionStatus(String mDeviceObjectId, boolean mWifiStatus, boolean mInternetStatus, int mWifiStrength);
+    @Query("UPDATE device SET wifiStatus = :mWifiStatus WHERE objectId = :mDeviceObjectId")
+    void setWifiStatus(String mDeviceObjectId, boolean mWifiStatus);
+
+    @Query("UPDATE device SET wifiStrength = :mWifiStrength WHERE objectId = :mDeviceObjectId")
+    void setWifiStrength(String mDeviceObjectId, int mWifiStrength);
+
+    @Query("UPDATE device SET internetStatus = :mInternetStatus WHERE objectId = :mDeviceObjectId")
+    void setInternetStatus(String mDeviceObjectId, boolean mInternetStatus);
+
+    @Query("UPDATE device SET mqttServerStatus = :mMQTTServerStatus WHERE objectId = :mDeviceObjectId")
+    void setMQTTServerStatus(String mDeviceObjectId, boolean mMQTTServerStatus);
+
+    @Query("UPDATE device SET restApiServerStatus = :mRestApiServerStatus WHERE objectId = :mDeviceObjectId")
+    void setRestApiServerStatus(String mDeviceObjectId, boolean mRestApiServerStatus);
 
     @Query("UPDATE device SET temperature = :mTemperature  WHERE objectId = :mDeviceObjectId")
     void setTemperature(String mDeviceObjectId, byte mTemperature);

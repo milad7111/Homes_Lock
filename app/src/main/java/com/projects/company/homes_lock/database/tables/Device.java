@@ -48,6 +48,12 @@ public class Device extends BaseModel {
     @SerializedName("internetStatus")
     private Boolean mInternetStatus = false;
 
+    @ColumnInfo(name = "mqttServerStatus")
+    private Boolean mMQTTServerStatus = false;
+
+    @ColumnInfo(name = "restApiServerStatus")
+    private Boolean mRestApiServer = false;
+
     @ColumnInfo(name = "batteryStatus")
     @SerializedName("batteryStatus")
     private Integer mBatteryPercentage;
@@ -264,10 +270,6 @@ public class Device extends BaseModel {
         return mInternetStatus;
     }
 
-    public void setInternetStatus(Boolean mInternetStatus) {
-        this.mInternetStatus = mInternetStatus;
-    }
-
     public Integer getBatteryPercentage() {
         return mBatteryPercentage;
     }
@@ -290,6 +292,26 @@ public class Device extends BaseModel {
 
     public void setWifiStrength(Integer mWifiStrength) {
         this.mWifiStrength = mWifiStrength;
+    }
+
+    public void setInternetStatus(Boolean mInternetStatus) {
+        this.mInternetStatus = mInternetStatus;
+    }
+
+    public Boolean getMQTTServerStatus() {
+        return mMQTTServerStatus;
+    }
+
+    public void setMQTTServerStatus(Boolean mMQTTServerStatus) {
+        this.mMQTTServerStatus = mMQTTServerStatus;
+    }
+
+    public Boolean getRestApiServer() {
+        return mRestApiServer;
+    }
+
+    public void setRestApiServer(Boolean mRestApiServer) {
+        this.mRestApiServer = mRestApiServer;
     }
 
     public Integer getMeanPowerCons() {
