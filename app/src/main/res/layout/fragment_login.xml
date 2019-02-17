@@ -11,21 +11,28 @@
         android:background="@color/md_black_1000"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/img_login_screen_login_fragment"
+        <com.andexert.library.RippleView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/content_description_img_login_screen_login_fragment"
-            android:focusable="false"
             app:layout_constraintBottom_toTopOf="@+id/txil_email_login_fragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_homes_lock_idle" />
+            app:rv_centered="true">
+
+            <ImageView
+                android:id="@+id/img_login_screen_login_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/content_description_img_login_screen_login_fragment"
+                android:focusable="false"
+                app:srcCompat="@drawable/ic_homes_lock_idle" />
+
+        </com.andexert.library.RippleView>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txil_email_login_fragment"
@@ -58,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:textColorHint="@color/hintColor"
-            app:layout_constraintBottom_toTopOf="@+id/btn_login_login_fragment"
+            app:layout_constraintBottom_toTopOf="@+id/rpv_login_login_fragment"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="#fff">
 
@@ -75,70 +82,98 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_login_login_fragment"
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_login_login_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@color/button_back_color"
-            android:focusable="true"
-            android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
-            android:text="@string/fragment_button_login"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_direct_connect_login_fragment" />
+            app:layout_constraintBottom_toTopOf="@+id/rpv_direct_connect_login_fragment">
 
-        <TextView
-            android:id="@+id/txv_direct_connect_login_fragment"
+            <Button
+                android:id="@+id/btn_login_login_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@color/button_back_color"
+                android:focusable="true"
+                android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
+                android:text="@string/fragment_button_login"
+                android:textSize="18sp" />
+
+        </com.andexert.library.RippleView>
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_direct_connect_login_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:focusable="true"
-            android:gravity="center"
             android:nextFocusDown="@+id/txv_sign_up_login_fragment"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:text="@string/fragment_text_view_direct_connect"
-            android:textColor="@color/hintColor"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_sign_up_login_fragment"
-            app:layout_constraintEnd_toEndOf="@+id/txv_sign_up_login_fragment"
-            app:layout_constraintStart_toStartOf="@+id/txv_sign_up_login_fragment" />
+            app:layout_constraintBottom_toTopOf="@+id/rpv_sign_up_login_fragment"
+            app:layout_constraintEnd_toEndOf="@+id/rpv_sign_up_login_fragment"
+            app:layout_constraintStart_toStartOf="@+id/rpv_sign_up_login_fragment">
 
-        <TextView
-            android:id="@+id/txv_sign_up_login_fragment"
+            <TextView
+                android:id="@+id/txv_direct_connect_login_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/fragment_text_view_direct_connect"
+                android:textColor="@color/hintColor"
+                android:textSize="18sp" />
+
+        </com.andexert.library.RippleView>
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_sign_up_login_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:focusable="true"
-            android:gravity="center"
             android:nextFocusDown="@+id/txv_forget_password_login_fragment"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:text="@string/fragment_text_view_sign_up"
-            android:textColor="@color/hintColor"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_forget_password_login_fragment"
-            app:layout_constraintEnd_toEndOf="@+id/txv_forget_password_login_fragment"
-            app:layout_constraintStart_toStartOf="@+id/txv_forget_password_login_fragment" />
+            app:layout_constraintBottom_toTopOf="@+id/rpv_forget_password_login_fragment"
+            app:layout_constraintEnd_toEndOf="@+id/rpv_forget_password_login_fragment"
+            app:layout_constraintStart_toStartOf="@+id/rpv_forget_password_login_fragment">
 
-        <TextView
-            android:id="@+id/txv_forget_password_login_fragment"
+            <TextView
+                android:id="@+id/txv_sign_up_login_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/fragment_text_view_sign_up"
+                android:textColor="@color/hintColor"
+                android:textSize="18sp" />
+
+        </com.andexert.library.RippleView>
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_forget_password_login_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:focusable="true"
-            android:gravity="center"
             android:nextFocusDown="@+id/tiet_email_login_fragment"
             android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:text="@string/fragment_text_view_forget_password"
-            android:textColor="@color/hintColor"
-            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/txv_forget_password_login_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:text="@string/fragment_text_view_forget_password"
+                android:textColor="@color/hintColor"
+                android:textSize="18sp" />
+
+        </com.andexert.library.RippleView>
 
     </android.support.constraint.ConstraintLayout>
 

@@ -139,10 +139,6 @@ public class LockPageFragment extends BaseFragment
         //region Initialize Objects
         mContext = getContext();
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
-
-//        mDevice = getArguments() != null ?
-//                (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
-//                : null;
         //endregion Initialize Objects
 
         readAllLockInfo();
@@ -246,18 +242,22 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onBonded(BluetoothDevice device) {
+        mDeviceViewModel.getDeviceInfoFromBleDevice();
     }
 
     @Override
     public void onGetAvailableWifiNetworksCountAroundDevice(int count) {
         wifiNetworksCount = count;
+        mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, 0);
     }
 
     @Override
     public void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel) {
         addFoundNetworkToList(wifiNetworksModel);
 
-//        if (mWifiNetworkList.size() == wifiNetworksCount)
+        if (wifiNetworksModel.getIndex() != wifiNetworksCount - 1)
+            mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, wifiNetworksModel.getIndex() + 1);
+
         handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
 
@@ -287,7 +287,6 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onSetDeviceWifiNetworkSuccessful() {
-        DialogHelper.handleProgressDialog(null, null, null, false);
         closeDialogHandleDeviceWifiNetwork();
     }
 
@@ -426,6 +425,10 @@ public class LockPageFragment extends BaseFragment
             this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
                 isConnectedToBleDevice = isConnected;
                 ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
+
+//                if (isConnected)
+//                    mDeviceViewModel.getDeviceInfoFromBleDevice();
+
                 initBleInfo();
             });
         } else if (getScanPermission(this))
@@ -494,7 +497,7 @@ public class LockPageFragment extends BaseFragment
 
     private void handleDialogListOfAvailableWifiNetworksAroundDevice() {
         if (deviceWifiNetworkListDialog == null) {
-            deviceWifiNetworkListDialog = new Dialog(getContext());
+            deviceWifiNetworkListDialog = new Dialog(requireContext());
             deviceWifiNetworkListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceWifiNetworkListDialog.setContentView(R.layout.dialog_available_networks);
 
@@ -526,10 +529,10 @@ public class LockPageFragment extends BaseFragment
             mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
         }
 
-        if (!deviceWifiNetworkListDialog.isShowing())
+        if (!deviceWifiNetworkListDialog.isShowing()) {
             deviceWifiNetworkListDialog.show();
-
-        deviceWifiNetworkListDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkListDialog));
+            deviceWifiNetworkListDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceWifiNetworkListDialog));
+        }
     }
 
     private void handleDialogSetDeviceWifiNetwork(WifiNetworksModel wifiNetwork) {

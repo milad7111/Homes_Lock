@@ -5,6 +5,7 @@ import com.projects.company.homes_lock.base.BaseModel;
 public class WifiNetworksModel extends BaseModel {
 
     //region Declare Objects
+    private int mIndex;
     private String mSSID;
     private String mPassword;
     private int mAuthenticateType;
@@ -12,7 +13,8 @@ public class WifiNetworksModel extends BaseModel {
     //endregion Declare Objects
 
     //region Constructor
-    public WifiNetworksModel(String mSSID, int mAuthenticateType, int mRSSI) {
+    public WifiNetworksModel(int mIndex, String mSSID, int mAuthenticateType, int mRSSI) {
+        this.mIndex = mIndex;
         this.mSSID = mSSID;
         this.mAuthenticateType = mAuthenticateType;
         this.mRSSI = mRSSI;
@@ -24,6 +26,14 @@ public class WifiNetworksModel extends BaseModel {
     //endregion Constructor
 
     //region Declare Methods
+    public int getIndex() {
+        return mIndex;
+    }
+
+    public void setIndex(int mIndex) {
+        this.mIndex = mIndex;
+    }
+
     public String getSSID() {
         return mSSID;
     }

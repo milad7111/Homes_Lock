@@ -42,6 +42,7 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
     //endregion Constructor
 
     //region Adapter CallBacks
+    @NonNull
     @Override
     public WifiNetworksViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         return new WifiNetworksViewHolder(mInflater.inflate(R.layout.item_device_wifi_networks, viewGroup, false));

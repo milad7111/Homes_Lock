@@ -18,7 +18,7 @@
         android:layout_margin="8dp"
         android:contentDescription="TODO"
         android:focusable="false"
-        android:src="@drawable/ic_lock_idle"
+        app:srcCompat="@drawable/ic_homes_lock_idle"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

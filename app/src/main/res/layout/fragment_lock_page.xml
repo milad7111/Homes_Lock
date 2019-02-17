@@ -15,7 +15,7 @@
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/content_description_img_lock_status_symbol_lock_page"
         android:focusable="false"
-        android:src="@drawable/ic_lock_idle"
+        app:srcCompat="@drawable/ic_homes_lock_idle"
         app:layout_constraintBottom_toTopOf="@+id/txv_lock_name_lock_page"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

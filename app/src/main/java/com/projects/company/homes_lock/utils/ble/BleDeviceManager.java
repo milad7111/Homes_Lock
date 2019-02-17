@@ -39,9 +39,6 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
             requests.push(Request.newWriteRequest(mRXCharacteristic, createCommand(new byte[]{0x01}, new byte[]{})));
             requests.push(Request.newReadRequest(mTXCharacteristic));
 
-            requests.push(Request.newWriteRequest(mRXCharacteristic, createCommand(new byte[]{0x05}, new byte[]{})));
-            requests.push(Request.newReadRequest(mTXCharacteristic));
-
             return requests;
         }
 

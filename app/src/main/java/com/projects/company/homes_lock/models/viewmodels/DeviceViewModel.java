@@ -37,6 +37,7 @@ import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
+import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
@@ -213,9 +214,14 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void handleReceivedResponse(byte[] responseValue) {
+        Log.d("ResponseAll: ", responseValue.toString());
+        for (byte aResponseValue : responseValue)
+            Log.e("Response: ", String.format("%d", aResponseValue & 0xff));
+
         switch (responseValue[0]) {
             case 0x01:
                 if (mILockPageFragment != null) {
+                    DialogHelper.handleProgressDialog(null, null, null, false);
                     mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                             responseValue[1] == 1);
                     mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
@@ -225,13 +231,13 @@ public class DeviceViewModel extends AndroidViewModel
                     mLocalRepository.updateDeviceWifiStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                             responseValue[4] == 1);
                     mLocalRepository.updateDeviceConnectedWifiStrength(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[8]);
+                            responseValue[5]);
                     mLocalRepository.updateDeviceInternetStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[5] == 1);
-                    mLocalRepository.updateDeviceMQTTServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                             responseValue[6] == 1);
-                    mLocalRepository.updateDeviceRestApiServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                    mLocalRepository.updateDeviceMQTTServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                             responseValue[7] == 1);
+                    mLocalRepository.updateDeviceRestApiServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                            responseValue[8] == 1);
                     mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[9]);
                     mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[10]);
                     mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[11]);
@@ -252,25 +258,37 @@ public class DeviceViewModel extends AndroidViewModel
             case 0x05:
                 break;
             case 0x06:
+                Log.d("Scenario Wifi", "2: Get response on 0x06 command");
                 if (responseValue[1] == 1) {
+                    Log.d("Scenario Wifi", "3: Get Initial response for 0x06 command");
                     if (responseValue[2] == 0) {
+                        Log.d("Scenario Wifi", "4: Get Initial OK for 0x06 command");
                         if (mILockPageFragment != null)
                             mILockPageFragment.onSendRequestGetAvailableWifiSuccessful();
-                    } else if (responseValue[2] == 1)
+                    } else if (responseValue[2] == 1) {
+                        Log.d("Scenario Wifi", "5: Get Initial Error for 0x06 command");
                         getDeviceErrorFromBleDevice();
+                    }
                 } else if (responseValue[1] == 2) {
-                    getAvailableWifiNetworksAroundDevice(mILockPageFragment, responseValue[2]);
+                    Log.d("Scenario Wifi", "6: Get Final response for 0x06 command");
                     if (mILockPageFragment != null)
                         mILockPageFragment.onGetAvailableWifiNetworksCountAroundDevice((int) responseValue[2]);
                 }
                 break;
             case 0x07:
-                if (mILockPageFragment != null)
+                Log.d("Scenario Wifi", String.format("8: Get %dth Wifi network", (int) responseValue[1]));
+                if (mILockPageFragment != null) {
+                    Log.d("Scenario Wifi",
+                            String.format("8: Send %dth Wifi network with SSID: %S to mILockPageFragment",
+                                    (int) responseValue[1],
+                                    new String(subArrayByte(responseValue, 3, responseValue.length - 2))));
                     mILockPageFragment.onFindNewNetworkAroundDevice(
                             new WifiNetworksModel(
+                                    (int) responseValue[1],
                                     new String(subArrayByte(responseValue, 3, responseValue.length - 2)),
                                     0,
                                     responseValue[2]));
+                }
                 break;
             case 0x08:
                 if (responseValue[1] == 0) {
@@ -527,20 +545,20 @@ public class DeviceViewModel extends AndroidViewModel
             mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
     }
 
-    private void getDeviceInfoFromBleDevice() {
+    public void getDeviceInfoFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x01}, new byte[]{}));
     }
 
     public void getAvailableWifiNetworksCountAroundDevice(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
+        Log.d("Scenario Wifi", "1: Send request to get wifi network list");
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x06}, new byte[]{}));
     }
 
-    private void getAvailableWifiNetworksAroundDevice(ILockPageFragment mILockPageFragment, int networksCount) {
+    public void getAvailableWifiNetworksAroundDevice(ILockPageFragment mILockPageFragment, int networkIndex) {
         this.mILockPageFragment = mILockPageFragment;
-
-        for (int i = 0; i < networksCount; i++)
-            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) i}));
+        Log.d("Scenario Wifi", String.format("7: Send Request to get %dth wifi network.", networkIndex));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) networkIndex}));
     }
 
     public void setDeviceWifiNetwork(ILockPageFragment mILockPageFragment, WifiNetworksModel wifiNetwork) {
@@ -549,7 +567,7 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x09}, wifiNetwork.getPassword().getBytes()));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0A}, new byte[]{(byte) wifiNetwork.getAuthenticateType()}));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x01}));
-        getDeviceInfoFromBleDevice();
+//        getDeviceInfoFromBleDevice();
     }
 
     private void getDeviceErrorFromBleDevice() {
@@ -559,7 +577,7 @@ public class DeviceViewModel extends AndroidViewModel
     public void disconnectDeviceWifiNetwork(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x00}));
-        getDeviceInfoFromBleDevice();
+//        getDeviceInfoFromBleDevice();
     }
 
     public void setDeviceSetting(Fragment parentFragment, byte doorInstallationOption, byte lockStagesOption) {
