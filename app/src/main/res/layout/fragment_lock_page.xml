@@ -5,21 +5,28 @@
     android:layout_height="match_parent"
     android:background="@color/md_black_1000">
 
-    <ImageView
-        android:id="@+id/img_lock_status_lock_page"
+    <com.andexert.library.RippleView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:contentDescription="@string/content_description_img_lock_status_symbol_lock_page"
-        android:focusable="false"
-        app:srcCompat="@drawable/ic_homes_lock_idle"
         app:layout_constraintBottom_toTopOf="@+id/txv_lock_name_lock_page"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:rv_centered="true">
+
+        <ImageView
+            android:id="@+id/img_lock_status_lock_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/content_description_img_lock_status_symbol_lock_page"
+            android:focusable="false"
+            app:srcCompat="@drawable/ic_homes_lock_idle" />
+
+    </com.andexert.library.RippleView>
 
     <TextView
         android:id="@+id/txv_lock_name_lock_page"
@@ -130,37 +137,69 @@
             android:focusable="false"
             app:srcCompat="@drawable/ic_valid_battery_zero" />
 
-        <ImageView
-            android:id="@+id/img_connection_status_lock_page"
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_connection_status_lock_page"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:focusable="false"
-            app:srcCompat="@drawable/ic_invalid_wifi_off" />
+            app:rv_centered="true">
 
-        <ImageView
-            android:id="@+id/img_ble_lock_page"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:focusable="false"
-            app:srcCompat="@drawable/ic_ble_disconnect" />
+            <ImageView
+                android:id="@+id/img_connection_status_lock_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                app:srcCompat="@drawable/ic_invalid_wifi_off" />
 
-        <ImageView
-            android:id="@+id/img_manage_members_lock_page"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:focusable="false"
-            app:srcCompat="@drawable/ic_manage_members_disable" />
+        </com.andexert.library.RippleView>
 
-        <ImageView
-            android:id="@+id/img_more_info_lock_page"
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_ble_lock_page"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:focusable="false"
-            app:srcCompat="@drawable/ic_more_info" />
+            app:rv_centered="true">
+
+            <ImageView
+                android:id="@+id/img_ble_lock_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                app:srcCompat="@drawable/ic_ble_disconnect" />
+
+        </com.andexert.library.RippleView>
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_manage_members_lock_page"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:rv_centered="true">
+
+            <ImageView
+                android:id="@+id/img_manage_members_lock_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                app:srcCompat="@drawable/ic_manage_members_disable" />
+
+        </com.andexert.library.RippleView>
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_more_info_lock_page"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:rv_centered="true">
+
+            <ImageView
+                android:id="@+id/img_more_info_lock_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                app:srcCompat="@drawable/ic_more_info" />
+
+        </com.andexert.library.RippleView>
 
     </LinearLayout>
 

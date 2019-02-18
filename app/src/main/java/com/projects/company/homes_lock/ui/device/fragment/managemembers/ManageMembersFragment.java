@@ -67,7 +67,7 @@ public class ManageMembersFragment extends Fragment
 
     //region Declare Views
     private RecyclerView rcvManageMembersFragment;
-    private Button btnSyncManageMembersFragment;
+    private FloatingActionButton fabSyncManageMembersFragment;
     private FloatingActionButton fabAddManageMembersFragment;
     //endregion Declare Views
 
@@ -136,12 +136,12 @@ public class ManageMembersFragment extends Fragment
 
         //region Initialize Views
         rcvManageMembersFragment = view.findViewById(R.id.rcv_manage_members_fragment);
-        btnSyncManageMembersFragment = view.findViewById(R.id.btn_sync_manage_members_fragment);
+        fabSyncManageMembersFragment = view.findViewById(R.id.fab_sync_manage_members_fragment);
         fabAddManageMembersFragment = view.findViewById(R.id.fab_add_manage_members_fragment);
         //endregion Initialize Views
 
         //region Setup Views
-        btnSyncManageMembersFragment.setOnClickListener(this);
+        fabSyncManageMembersFragment.setOnClickListener(this);
         fabAddManageMembersFragment.setOnClickListener(this);
         //endregion Setup Views
 
@@ -159,7 +159,7 @@ public class ManageMembersFragment extends Fragment
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_sync_manage_members_fragment:
+            case R.id.fab_sync_manage_members_fragment:
                 syncLockMembersWithServer();
                 break;
             case R.id.fab_add_manage_members_fragment:
@@ -203,14 +203,14 @@ public class ManageMembersFragment extends Fragment
             rcvManageMembersFragment.setAdapter(mLockUserAdapter);
         }
 
-        btnSyncManageMembersFragment.setClickable(true);
+        fabSyncManageMembersFragment.setClickable(true);
     }
 
     @Override
     public void onGetUserLockDataFailed(Object response) {
         Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
         handleProgressDialog(null, null, null, false);
-        btnSyncManageMembersFragment.setClickable(true);
+        fabSyncManageMembersFragment.setClickable(true);
     }
 
     @Override
@@ -307,7 +307,7 @@ public class ManageMembersFragment extends Fragment
     private void syncLockMembersWithServer() {
         DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Sync Lock members ...", true);
 
-        btnSyncManageMembersFragment.setClickable(false);
+        fabSyncManageMembersFragment.setClickable(false);
 
         mLockUserAdapter = new LockUserAdapter(this,
                 Collections.singletonList(new MemberModel(NOT_DEFINED_INTEGER_NUMBER, "", LOCK_MEMBERS_SYNCING_MODE, "")));

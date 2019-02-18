@@ -86,16 +86,17 @@
             android:id="@+id/rpv_login_login_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/rpv_direct_connect_login_fragment">
+            android:layout_marginBottom="8dp"
+            android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
+            app:layout_constraintBottom_toTopOf="@+id/rpv_direct_connect_login_fragment"
+            app:rv_centered="true">
 
             <Button
                 android:id="@+id/btn_login_login_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:background="@color/button_back_color"
                 android:focusable="true"
-                android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
                 android:text="@string/fragment_button_login"
                 android:textSize="18sp" />
 
@@ -111,7 +112,8 @@
             android:paddingBottom="4dp"
             app:layout_constraintBottom_toTopOf="@+id/rpv_sign_up_login_fragment"
             app:layout_constraintEnd_toEndOf="@+id/rpv_sign_up_login_fragment"
-            app:layout_constraintStart_toStartOf="@+id/rpv_sign_up_login_fragment">
+            app:layout_constraintStart_toStartOf="@+id/rpv_sign_up_login_fragment"
+            app:rv_centered="true">
 
             <TextView
                 android:id="@+id/txv_direct_connect_login_fragment"
@@ -135,7 +137,8 @@
             android:paddingBottom="4dp"
             app:layout_constraintBottom_toTopOf="@+id/rpv_forget_password_login_fragment"
             app:layout_constraintEnd_toEndOf="@+id/rpv_forget_password_login_fragment"
-            app:layout_constraintStart_toStartOf="@+id/rpv_forget_password_login_fragment">
+            app:layout_constraintStart_toStartOf="@+id/rpv_forget_password_login_fragment"
+            app:rv_centered="true">
 
             <TextView
                 android:id="@+id/txv_sign_up_login_fragment"
@@ -160,7 +163,8 @@
             android:paddingTop="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:rv_centered="true">
 
             <TextView
                 android:id="@+id/txv_forget_password_login_fragment"

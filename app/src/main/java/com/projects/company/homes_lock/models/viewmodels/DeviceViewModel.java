@@ -221,7 +221,9 @@ public class DeviceViewModel extends AndroidViewModel
         switch (responseValue[0]) {
             case 0x01:
                 if (mILockPageFragment != null) {
-                    DialogHelper.handleProgressDialog(null, null, null, false);
+                    if (responseValue[4] == 1)
+                        DialogHelper.handleProgressDialog(null, null, null, false);
+
                     mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                             responseValue[1] == 1);
                     mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),

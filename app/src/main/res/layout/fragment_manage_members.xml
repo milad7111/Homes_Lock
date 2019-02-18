@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fab_add_manage_members_fragment"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/fab_sync_manage_members_fragment"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="8dp">
 
@@ -24,24 +25,21 @@
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/btn_sync_manage_members_fragment"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_sync_manage_members_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/transparent"
         android:focusable="true"
         android:nextFocusDown="@+id/fab_add_manage_members_fragment"
-        android:text="@string/fragment_button_sync"
+        android:text="@string/fragment_button_add"
         android:textColor="@color/md_white_1000"
-        app:layout_constraintBottom_toBottomOf="@+id/fab_add_manage_members_fragment"
-        app:layout_constraintEnd_toStartOf="@+id/fab_add_manage_members_fragment"
-        app:layout_constraintTop_toTopOf="@+id/fab_add_manage_members_fragment">
-
-        <requestFocus />
-
-    </Button>
+        app:layout_constraintBottom_toTopOf="@+id/fab_add_manage_members_fragment"
+        app:layout_constraintEnd_toEndOf="@+id/fab_add_manage_members_fragment"
+        app:layout_constraintStart_toStartOf="@+id/fab_add_manage_members_fragment"
+        app:srcCompat="@drawable/ic_sync" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add_manage_members_fragment"
