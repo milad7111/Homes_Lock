@@ -666,9 +666,9 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Online Methods
 
     //region Declare Methods
-    public void initMQTT(Context context) {
+    public void initMQTT(Context context, String deviceObjectId) {
         if (BaseApplication.isUserLoggedIn())
-            MQTTHandler.setup(this, context);
+            MQTTHandler.setup(this, context, deviceObjectId);
     }
 
     public void disconnectMQTT() {

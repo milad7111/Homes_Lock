@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.utils;
+package com.projects.company.homes_lock.utils.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

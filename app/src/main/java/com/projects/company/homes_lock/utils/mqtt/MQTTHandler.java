@@ -19,40 +19,39 @@ public class MQTTHandler {
     private static MqttAndroidClient client;
     private static String TAG = "MQTTHandler Class";
 
-    public static void setup(final IMQTTListener mIMQTTListener, Context mContext) {
+    public static void setup(final IMQTTListener mIMQTTListener, Context mContext, String deviceObjectId) {
         client = new MqttAndroidClient(
                 mContext,
                 "tcp://185.208.175.56",
-                MqttClient.generateClientId());
+                deviceObjectId);
 
-        if (client != null)
-            client.setCallback(new MqttCallback() {
-                @Override
-                public void connectionLost(Throwable cause) {
-                    mIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
-                    Log.w(TAG, "Connection to broker Lost.");
-                }
+        client.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+                mIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
+                Log.w(TAG, "Connection to broker Lost.");
+            }
 
-                @Override
-                public void messageArrived(String topic, MqttMessage message) {
-                    try {
-                        mIMQTTListener.onMessageArrived(new MessageModel(topic, message));
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                    }
+            @Override
+            public void messageArrived(String topic, MqttMessage message) {
+                try {
+                    mIMQTTListener.onMessageArrived(new MessageModel(topic, message));
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
                 }
+            }
 
-                @Override
-                public void deliveryComplete(IMqttDeliveryToken token) {
-                    mIMQTTListener.onDeliveryMessageComplete(token);
-                    Log.i(TAG, "Receiving Message Completed.");
-                }
-            });
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+                mIMQTTListener.onDeliveryMessageComplete(token);
+                Log.i(TAG, "Receiving Message Completed.");
+            }
+        });
 
         connect(mIMQTTListener);
     }
 
-    public static void connect(final IMQTTListener mIMQTTListener) {
+    private static void connect(final IMQTTListener mIMQTTListener) {
         try {
             MqttConnectOptions mMqttOptions = new MqttConnectOptions();
             mMqttOptions.setAutomaticReconnect(true);

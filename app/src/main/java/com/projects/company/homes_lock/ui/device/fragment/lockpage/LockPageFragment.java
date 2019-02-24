@@ -187,7 +187,7 @@ public class LockPageFragment extends BaseFragment
 
         if (isUserLoggedIn()) {
             this.mDeviceViewModel.setListenerForDevice(this, mDevice);
-            this.mDeviceViewModel.initMQTT(getActivity());
+            this.mDeviceViewModel.initMQTT(getActivity(), mDevice.getObjectId());
         }
         //endregion init
     }
