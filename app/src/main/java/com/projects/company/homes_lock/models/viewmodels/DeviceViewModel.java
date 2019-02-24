@@ -41,6 +41,9 @@ import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -218,137 +221,180 @@ public class DeviceViewModel extends AndroidViewModel
         for (byte aResponseValue : responseValue)
             Log.e("Response: ", String.format("%d", aResponseValue & 0xff));
 
-        switch (responseValue[0]) {
-            case 0x01:
-                if (mILockPageFragment != null) {
-                    if (responseValue[4] == 1)
-                        DialogHelper.handleProgressDialog(null, null, null, false);
+        String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 2));
 
-                    mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[1] == 1);
-                    mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[2] == 1);
-                    mLocalRepository.updateDeviceBatteryPercentage(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[3]);
-                    mLocalRepository.updateDeviceWifiStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[4] == 1);
-                    mLocalRepository.updateDeviceConnectedWifiStrength(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[5]);
-                    mLocalRepository.updateDeviceInternetStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[6] == 1);
-                    mLocalRepository.updateDeviceMQTTServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[7] == 1);
-                    mLocalRepository.updateDeviceRestApiServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                            responseValue[8] == 1);
-                    mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[9]);
-                    mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[10]);
-                    mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[11]);
-                }
-                break;
-            case 0x02:
-                if (responseValue[1] == 0)
-                    getDeviceInfoFromBleDevice();
-                else
-                    getDeviceErrorFromBleDevice();
-                break;
-            case 0x03:
-                Log.d("Read deviceSerialNumber", responseValue[1] + "");
-                break;
-            case 0x04:
-                Log.d("Read deviceErrorData", Arrays.toString(subArrayByte(responseValue, 1, responseValue.length)));
-                break;
-            case 0x05:
-                break;
-            case 0x06:
-                Log.d("Scenario Wifi", "2: Get response on 0x06 command");
-                if (responseValue[1] == 1) {
-                    Log.d("Scenario Wifi", "3: Get Initial response for 0x06 command");
-                    if (responseValue[2] == 0) {
-                        Log.d("Scenario Wifi", "4: Get Initial OK for 0x06 command");
-                        if (mILockPageFragment != null)
-                            mILockPageFragment.onSendRequestGetAvailableWifiSuccessful();
-                    } else if (responseValue[2] == 1) {
-                        Log.d("Scenario Wifi", "5: Get Initial Error for 0x06 command");
-                        getDeviceErrorFromBleDevice();
+        try {
+            JSONObject keyCommandJson = new JSONObject(keyValue);
+            String keyCommand = keyCommandJson.keys().next();
+
+            switch (keyCommand) {
+                case "batt":
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateDeviceBatteryPercentage(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getInt(keyCommand));
+                    break;
+                case "islock":
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
+                    break;
+                case "isopen":
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
+                    break;
+                case "lock":
+                    if (mILockPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand) == null)
+                            mILockPageFragment.onSendLockCommandSuccessful();
+                        else
+                            mILockPageFragment.onSendLockCommandFailed();
                     }
-                } else if (responseValue[1] == 2) {
-                    Log.d("Scenario Wifi", "6: Get Final response for 0x06 command");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onGetAvailableWifiNetworksCountAroundDevice((int) responseValue[2]);
-                }
-                break;
-            case 0x07:
-                Log.d("Scenario Wifi", String.format("8: Get %dth Wifi network", (int) responseValue[1]));
-                if (mILockPageFragment != null) {
-                    Log.d("Scenario Wifi",
-                            String.format("8: Send %dth Wifi network with SSID: %S to mILockPageFragment",
-                                    (int) responseValue[1],
-                                    new String(subArrayByte(responseValue, 3, responseValue.length - 2))));
-                    mILockPageFragment.onFindNewNetworkAroundDevice(
-                            new WifiNetworksModel(
-                                    (int) responseValue[1],
-                                    new String(subArrayByte(responseValue, 3, responseValue.length - 2)),
-                                    0,
-                                    responseValue[2]));
-                }
-                break;
-            case 0x08:
-                if (responseValue[1] == 0) {
-                    Log.d("OnNotify :", "wrote SSID successful.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkSSIDSuccessful();
-                } else {
-                    Log.d("OnNotify :", "SSID did not write.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkSSIDFailed();
-                }
-                break;
-            case 0x09:
-                if (responseValue[1] == 0) {
-                    Log.d("OnNotify :", "wrote Password successful.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkPasswordSuccessful();
-                } else {
-                    Log.d("OnNotify :", "Password did not write.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkPasswordFailed();
-                }
-                break;
-            case 0x0A:
-                if (responseValue[1] == 0) {
-                    Log.d("OnNotify :", "wrote Security successful.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkAuthenticationTypeSuccessful();
-                } else {
-                    Log.d("OnNotify :", "Security did not write.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkAuthenticationTypeFailed();
-                }
-                break;
-            case 0x0B:
-                if (responseValue[1] == 0) {
-                    Log.d("OnNotify :", "Internet Connection Command successful.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkSuccessful();
-                } else {
-                    Log.d("OnNotify :", "Internet Connection Command Failed.");
-                    if (mILockPageFragment != null)
-                        mILockPageFragment.onSetDeviceWifiNetworkFailed();
-                }
-                break;
-            case 0x0C:
-                if (mISettingFragment != null)
-                    mISettingFragment.onSetDeviceSetting(responseValue[1] == 0);
-                break;
-            case 0x0D:
-                if (mISettingFragment != null)
-                    mISettingFragment.onChangeOnlinePassword(responseValue[1] == 0);
-                break;
-            case 0x0E:
-                if (mISettingFragment != null)
-                    mISettingFragment.onChangePairingPassword(responseValue[1] == 0);
-                break;
+                    break;
+                case "unlock":
+                    if (mILockPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand) == null)
+                            mILockPageFragment.onSendLockCommandSuccessful();
+                        else
+                            mILockPageFragment.onSendLockCommandFailed();
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+//        switch (responseValue[0]) {
+//            case 0x01:
+//                if (mILockPageFragment != null) {
+//                    if (responseValue[4] == 1)
+//                        DialogHelper.handleProgressDialog(null, null, null, false);
+//
+//                    mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[1] == 1);
+//                    mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[2] == 1);
+//                    mLocalRepository.updateDeviceBatteryPercentage(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[3]);
+//                    mLocalRepository.updateDeviceWifiStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[4] == 1);
+//                    mLocalRepository.updateDeviceConnectedWifiStrength(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[5]);
+//                    mLocalRepository.updateDeviceInternetStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[6] == 1);
+//                    mLocalRepository.updateDeviceMQTTServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[7] == 1);
+//                    mLocalRepository.updateDeviceRestApiServerStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+//                            responseValue[8] == 1);
+//                    mLocalRepository.updateDeviceTemperature(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[9]);
+//                    mLocalRepository.updateDeviceHumidity(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[10]);
+//                    mLocalRepository.updateDeviceCoLevel(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(), responseValue[11]);
+//                }
+//                break;
+//            case 0x02:
+//                if (responseValue[1] == 0)
+//                    getDeviceInfoFromBleDevice();
+//                else
+//                    getDeviceErrorFromBleDevice();
+//                break;
+//            case 0x03:
+//                Log.d("Read deviceSerialNumber", responseValue[1] + "");
+//                break;
+//            case 0x04:
+//                Log.d("Read deviceErrorData", Arrays.toString(subArrayByte(responseValue, 1, responseValue.length)));
+//                break;
+//            case 0x05:
+//                break;
+//            case 0x06:
+//                Log.d("Scenario Wifi", "2: Get response on 0x06 command");
+//                if (responseValue[1] == 1) {
+//                    Log.d("Scenario Wifi", "3: Get Initial response for 0x06 command");
+//                    if (responseValue[2] == 0) {
+//                        Log.d("Scenario Wifi", "4: Get Initial OK for 0x06 command");
+//                        if (mILockPageFragment != null)
+//                            mILockPageFragment.onSendRequestGetAvailableWifiSuccessful();
+//                    } else if (responseValue[2] == 1) {
+//                        Log.d("Scenario Wifi", "5: Get Initial Error for 0x06 command");
+//                        getDeviceErrorFromBleDevice();
+//                    }
+//                } else if (responseValue[1] == 2) {
+//                    Log.d("Scenario Wifi", "6: Get Final response for 0x06 command");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onGetAvailableWifiNetworksCountAroundDevice((int) responseValue[2]);
+//                }
+//                break;
+//            case 0x07:
+//                Log.d("Scenario Wifi", String.format("8: Get %dth Wifi network", (int) responseValue[1]));
+//                if (mILockPageFragment != null) {
+//                    Log.d("Scenario Wifi",
+//                            String.format("8: Send %dth Wifi network with SSID: %S to mILockPageFragment",
+//                                    (int) responseValue[1],
+//                                    new String(subArrayByte(responseValue, 3, responseValue.length - 2))));
+//                    mILockPageFragment.onFindNewNetworkAroundDevice(
+//                            new WifiNetworksModel(
+//                                    (int) responseValue[1],
+//                                    new String(subArrayByte(responseValue, 3, responseValue.length - 2)),
+//                                    0,
+//                                    responseValue[2]));
+//                }
+//                break;
+//            case 0x08:
+//                if (responseValue[1] == 0) {
+//                    Log.d("OnNotify :", "wrote SSID successful.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkSSIDSuccessful();
+//                } else {
+//                    Log.d("OnNotify :", "SSID did not write.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkSSIDFailed();
+//                }
+//                break;
+//            case 0x09:
+//                if (responseValue[1] == 0) {
+//                    Log.d("OnNotify :", "wrote Password successful.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkPasswordSuccessful();
+//                } else {
+//                    Log.d("OnNotify :", "Password did not write.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkPasswordFailed();
+//                }
+//                break;
+//            case 0x0A:
+//                if (responseValue[1] == 0) {
+//                    Log.d("OnNotify :", "wrote Security successful.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkAuthenticationTypeSuccessful();
+//                } else {
+//                    Log.d("OnNotify :", "Security did not write.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkAuthenticationTypeFailed();
+//                }
+//                break;
+//            case 0x0B:
+//                if (responseValue[1] == 0) {
+//                    Log.d("OnNotify :", "Internet Connection Command successful.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkSuccessful();
+//                } else {
+//                    Log.d("OnNotify :", "Internet Connection Command Failed.");
+//                    if (mILockPageFragment != null)
+//                        mILockPageFragment.onSetDeviceWifiNetworkFailed();
+//                }
+//                break;
+//            case 0x0C:
+//                if (mISettingFragment != null)
+//                    mISettingFragment.onSetDeviceSetting(responseValue[1] == 0);
+//                break;
+//            case 0x0D:
+//                if (mISettingFragment != null)
+//                    mISettingFragment.onChangeOnlinePassword(responseValue[1] == 0);
+//                break;
+//            case 0x0E:
+//                if (mISettingFragment != null)
+//                    mISettingFragment.onChangePairingPassword(responseValue[1] == 0);
+//                break;
+//        }
     }
 
     @Override
@@ -544,11 +590,13 @@ public class DeviceViewModel extends AndroidViewModel
         if (BaseApplication.isUserLoggedIn())
             MQTTHandler.toggle(this, "", createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
         else
-            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(lockCommand ? "lock" : "unlock", null));
     }
 
     public void getDeviceInfoFromBleDevice() {
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x01}, new byte[]{}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("batt"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("isopen"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("isopen"));
     }
 
     public void getAvailableWifiNetworksCountAroundDevice(ILockPageFragment mILockPageFragment) {

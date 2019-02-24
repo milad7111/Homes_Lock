@@ -20,6 +20,9 @@ import com.ederdoski.simpleble.models.BluetoothLE;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -171,6 +174,21 @@ public class BleHelper {
         fullCommand = mergeArrays(fullCommand, new byte[]{0x00});
 
         return fullCommand;
+    }
+
+    public static byte[] createWriteMessage(String key, Object value) {
+        JSONObject command = new JSONObject();
+        try {
+            command.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return mergeArrays(new byte[]{0x00, 0x00}, command.toString().getBytes());
+    }
+
+    public static byte[] createReadMessage(String key) {
+        return mergeArrays(new byte[]{0x00, 0x00}, ("{" + key + ":null}").getBytes());
     }
 
     public static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {

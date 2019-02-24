@@ -30,4 +30,8 @@ public interface ILockPageFragment {
     void onGetUpdatedDevice(Device response);
 
     void onSendRequestGetAvailableWifiSuccessful();
+
+    void onSendLockCommandSuccessful();
+
+    void onSendLockCommandFailed();
 }
