@@ -207,7 +207,8 @@ public class LockPageFragment extends BaseFragment
                 sendLockCommand(!mDevice.getIsLocked());
                 break;
             case R.id.img_connection_status_lock_page:
-                handleLockInternetConnection();
+                mDeviceViewModel.getDeviceInfoFromBleDevice();
+//                handleLockInternetConnection();
                 break;
             case R.id.img_ble_lock_page:
                 handleLockBleConnection();
@@ -306,6 +307,14 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onSendRequestGetAvailableWifiSuccessful() {
         Log.d(getTag(), "Get Available Wifi Networks Around Device Sent Successful! Wait ...");
+    }
+
+    @Override
+    public void onSendLockCommandSuccessful() {
+    }
+
+    @Override
+    public void onSendLockCommandFailed() {
     }
     //endregion BLE CallBacks
 

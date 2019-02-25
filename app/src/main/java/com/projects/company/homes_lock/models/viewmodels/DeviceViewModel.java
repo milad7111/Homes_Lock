@@ -37,7 +37,6 @@ import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
 import com.projects.company.homes_lock.utils.helper.BleHelper;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
@@ -399,6 +398,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onDataSent(Object response) {
+        Log.d("onDataSent", Arrays.toString(((BluetoothGattCharacteristic) response).getValue()));
     }
     //endregion BLE CallBacks
 
@@ -529,12 +529,6 @@ public class DeviceViewModel extends AndroidViewModel
     @Override
     public void onMessageArrived(Object response) {
         onDataReceived(((MessageModel) response).getMqttMessagePayload());
-//        MessageModel mMessageModel;
-//        if (response instanceof MessageModel) {
-//            mMessageModel = (MessageModel) response;
-//            String payload = new String(mMessageModel.getMqttMessagePayload());
-//            Log.d(getClass().getName(), payload);
-//        }
     }
 
     @Override
@@ -589,8 +583,16 @@ public class DeviceViewModel extends AndroidViewModel
         mILockPageFragment = fragment;
         if (BaseApplication.isUserLoggedIn())
             MQTTHandler.toggle(this, "", createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
-        else
-            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(lockCommand ? "lock" : "unlock", null));
+        else {
+            JSONObject command = new JSONObject();
+            try {
+                command = command.put(lockCommand ? "lock" : "unlock", JSONObject.NULL);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(command.toString()));
+        }
     }
 
     public void getDeviceInfoFromBleDevice() {
