@@ -6,6 +6,7 @@ package com.projects.company.homes_lock.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 

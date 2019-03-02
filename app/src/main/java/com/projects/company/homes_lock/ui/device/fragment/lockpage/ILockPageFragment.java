@@ -31,7 +31,7 @@ public interface ILockPageFragment {
 
     void onSendRequestGetAvailableWifiSuccessful();
 
-    void onSendLockCommandSuccessful();
+    void onSendLockCommandSuccessful(String command);
 
-    void onSendLockCommandFailed();
+    void onSendLockCommandFailed(String command);
 }

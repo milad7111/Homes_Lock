@@ -220,7 +220,7 @@ public class DeviceViewModel extends AndroidViewModel
         for (byte aResponseValue : responseValue)
             Log.e("Response: ", String.format("%d", aResponseValue & 0xff));
 
-        String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 2));
+        String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 1));
 
         try {
             JSONObject keyCommandJson = new JSONObject(keyValue);
@@ -242,21 +242,48 @@ public class DeviceViewModel extends AndroidViewModel
                         mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     break;
+                case "knock":
+                    Log.e(getClass().getName(), String.format("Door knocked : %s", keyCommandJson.getString(keyCommand)));
+                    break;
                 case "lock":
                     if (mILockPageFragment != null) {
-                        if (keyCommandJson.get(keyCommand) == null)
-                            mILockPageFragment.onSendLockCommandSuccessful();
+                        if (keyCommandJson.get(keyCommand).equals("ok"))
+                            mILockPageFragment.onSendLockCommandSuccessful("lock");
                         else
-                            mILockPageFragment.onSendLockCommandFailed();
+                            mILockPageFragment.onSendLockCommandFailed("lock");
                     }
                     break;
                 case "unlock":
                     if (mILockPageFragment != null) {
-                        if (keyCommandJson.get(keyCommand) == null)
-                            mILockPageFragment.onSendLockCommandSuccessful();
+                        if (keyCommandJson.get(keyCommand).equals("ok"))
+                            mILockPageFragment.onSendLockCommandSuccessful("lock");
                         else
-                            mILockPageFragment.onSendLockCommandFailed();
+                            mILockPageFragment.onSendLockCommandFailed("lock");
                     }
+                    break;
+                case "err":
+                    Log.e(getClass().getName(), String.format("Last Error in Ble Device: %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "type":
+                    Log.e(getClass().getName(), String.format("type setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "sw_ver":
+                    Log.e(getClass().getName(), String.format("sw_ver setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "hw_ver":
+                    Log.e(getClass().getName(), String.format("hw_ver setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "pr_date":
+                    Log.e(getClass().getName(), String.format("pr_date setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "sn":
+                    Log.e(getClass().getName(), String.format("sn setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "did":
+                    Log.e(getClass().getName(), String.format("did setting %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "pass":
+                    Log.e(getClass().getName(), String.format("write pass %s", keyCommandJson.getString(keyCommand)));
                     break;
             }
         } catch (JSONException e) {
@@ -292,7 +319,7 @@ public class DeviceViewModel extends AndroidViewModel
 //                break;
 //            case 0x02:
 //                if (responseValue[1] == 0)
-//                    getDeviceInfoFromBleDevice();
+//                    getDeviceDataFromBleDevice();
 //                else
 //                    getDeviceErrorFromBleDevice();
 //                break;
@@ -583,22 +610,28 @@ public class DeviceViewModel extends AndroidViewModel
         mILockPageFragment = fragment;
         if (BaseApplication.isUserLoggedIn())
             MQTTHandler.toggle(this, "", createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
-        else {
-            JSONObject command = new JSONObject();
-            try {
-                command = command.put(lockCommand ? "lock" : "unlock", JSONObject.NULL);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(command.toString()));
-        }
+        else
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage(lockCommand ? "lock" : "unlock"));
     }
 
-    public void getDeviceInfoFromBleDevice() {
+    public void getDeviceDataFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("batt"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("isopen"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("isopen"));
+    }
+
+    public void getDeviceSettingInfoFromBleDevice() {
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("type"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("sw_ver"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("hw_ver"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("pr_date"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("sn"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("did"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("pass"));
+    }
+
+    public void resetBleDevice() {
+        //TODO resetBleDevice
     }
 
     public void getAvailableWifiNetworksCountAroundDevice(ILockPageFragment mILockPageFragment) {
@@ -619,23 +652,38 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x09}, wifiNetwork.getPassword().getBytes()));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0A}, new byte[]{(byte) wifiNetwork.getAuthenticateType()}));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x01}));
-//        getDeviceInfoFromBleDevice();
+//        getDeviceDataFromBleDevice();
     }
 
     private void getDeviceErrorFromBleDevice() {
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x04}, new byte[]{}));
+//        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x04}, new byte[]{}));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("err"));
     }
 
     public void disconnectDeviceWifiNetwork(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0B}, new byte[]{0x00}));
-//        getDeviceInfoFromBleDevice();
+//        getDeviceDataFromBleDevice();
     }
 
-    public void setDeviceSetting(Fragment parentFragment, byte doorInstallationOption, byte lockStagesOption) {
+    public void setDeviceSetting(Fragment parentFragment, boolean doorInstallation, int lockStages) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0C},
-                BleHelper.mergeArrays(new byte[]{doorInstallationOption}, new byte[]{lockStagesOption})));
+
+        JSONObject commandJson = null;
+        try {
+            commandJson = new JSONObject();
+            commandJson.put("right", doorInstallation);
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(commandJson.toString()));
+
+            commandJson = new JSONObject();
+            commandJson.put("lock_step", lockStages);
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(commandJson.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+//        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0C},
+//                BleHelper.mergeArrays(new byte[]{doorInstallationOption}, new byte[]{lockStagesOption})));
     }
 
     public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {

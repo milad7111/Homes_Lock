@@ -428,18 +428,18 @@ public class SettingFragment extends Fragment
         changePairingPasswordDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(changePairingPasswordDialog));
     }
 
-    private byte findSelectedDoorInstallationOption(RadioGroup radioGroup) {
+    private boolean findSelectedDoorInstallationOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.rdb_right_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_LEFT_HANDED;
             case R.id.rdb_left_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
             default:
-                return -1;
+                return true;
         }
     }
 
-    private byte findSelectedLockStagesOption(RadioGroup radioGroup) {
+    private int findSelectedLockStagesOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.rdb_ninety_degrees_dialog_device_setting:
                 return LOCK_STAGES_NINETY_DEGREES;

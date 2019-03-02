@@ -207,7 +207,7 @@ public class LockPageFragment extends BaseFragment
                 sendLockCommand(!mDevice.getIsLocked());
                 break;
             case R.id.img_connection_status_lock_page:
-                mDeviceViewModel.getDeviceInfoFromBleDevice();
+                mDeviceViewModel.getDeviceDataFromBleDevice();
 //                handleLockInternetConnection();
                 break;
             case R.id.img_ble_lock_page:
@@ -243,7 +243,7 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onBonded(BluetoothDevice device) {
-        mDeviceViewModel.getDeviceInfoFromBleDevice();
+        mDeviceViewModel.getDeviceDataFromBleDevice();
     }
 
     @Override
@@ -310,11 +310,13 @@ public class LockPageFragment extends BaseFragment
     }
 
     @Override
-    public void onSendLockCommandSuccessful() {
+    public void onSendLockCommandSuccessful(String command) {
+        Log.d(getTag(), String.format("Command : %s , received by device successfully.", command));
     }
 
     @Override
-    public void onSendLockCommandFailed() {
+    public void onSendLockCommandFailed(String command) {
+        Log.d(getTag(), String.format("Command : %s , failed.", command));
     }
     //endregion BLE CallBacks
 
@@ -434,10 +436,6 @@ public class LockPageFragment extends BaseFragment
             this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
                 isConnectedToBleDevice = isConnected;
                 ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
-
-//                if (isConnected)
-//                    mDeviceViewModel.getDeviceInfoFromBleDevice();
-
                 initBleInfo();
             });
         } else if (getScanPermission(this))
@@ -486,8 +484,10 @@ public class LockPageFragment extends BaseFragment
             if (isSupported != null)
                 if (isSupported)
                     getDeviceInfo();
-                else
+                else {
                     updateViewData(true);
+                    mBluetoothLEHelper.disconnect();
+                }
         });
     }
 
