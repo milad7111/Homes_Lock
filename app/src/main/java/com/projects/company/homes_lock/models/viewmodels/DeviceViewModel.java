@@ -216,7 +216,6 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void handleReceivedResponse(byte[] responseValue) {
-        Log.d("ResponseAll: ", responseValue.toString());
         for (byte aResponseValue : responseValue)
             Log.e("Response: ", String.format("%d", aResponseValue & 0xff));
 
@@ -256,9 +255,9 @@ public class DeviceViewModel extends AndroidViewModel
                 case "unlock":
                     if (mILockPageFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals("ok"))
-                            mILockPageFragment.onSendLockCommandSuccessful("lock");
+                            mILockPageFragment.onSendLockCommandSuccessful("unlock");
                         else
-                            mILockPageFragment.onSendLockCommandFailed("lock");
+                            mILockPageFragment.onSendLockCommandFailed("unlock");
                     }
                     break;
                 case "err":
@@ -617,7 +616,7 @@ public class DeviceViewModel extends AndroidViewModel
     public void getDeviceDataFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("batt"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("isopen"));
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("isopen"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("islock"));
     }
 
     public void getDeviceSettingInfoFromBleDevice() {

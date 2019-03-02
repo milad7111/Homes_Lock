@@ -42,7 +42,7 @@
     <!--//region Fragment TextViews-->
     <string name="fragment_text_view_login">Login</string>
     <string name="fragment_text_view_firmware_version">Firmware Version</string>
-    <string name="fragment_text_view_default_firmware_version">1.0.3</string>
+    <string name="fragment_text_view_default_firmware_version">0.0.0</string>
     <string name="fragment_text_view__door_installation">Door Installation</string>
     <string name="fragment_text_view_door_installation_value">Right handed</string>
     <string name="fragment_text_view_lock_stages">Lock Stages</string>
@@ -159,6 +159,17 @@
     <string name="adapter_empty_syncing">Syncing ...</string>
     <string name="adapter_empty_scanning">Scanning ...</string>
     <string name="adapter_empty_try_again">Try again ...</string>
+    <string name="fragment_text_view_device_type">Device type</string>
+    <string name="fragment_text_view_default_device_type">LOCK</string>
+    <string name="fragment_text_view_hardware_version">Hardware version</string>
+    <string name="fragment_text_view_default_hardware_version">0.0.0</string>
+    <string name="fragment_text_view_production_date">Production date</string>
+    <string name="fragment_text_view_default_production_date">0000:00:00 00:00</string>
+    <string name="fragment_text_view_serial_number">Serial number</string>
+    <string name="fragment_text_view_default_serial_number_description">sfs_fs45_fs54</string>
+    <string name="fragment_text_view_dynamic_id">Dynamic id</string>
+    <string name="fragment_text_view_default_dynamic_id_description">8a8as_da85_ks_584185</string>
+    <string name="fragment_text_view_reset_lock">Reset LOCK</string>
     <!--//endregion Adapter Empty-->
 
 </resources>

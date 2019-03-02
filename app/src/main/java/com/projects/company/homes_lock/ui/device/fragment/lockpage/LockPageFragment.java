@@ -207,14 +207,13 @@ public class LockPageFragment extends BaseFragment
                 sendLockCommand(!mDevice.getIsLocked());
                 break;
             case R.id.img_connection_status_lock_page:
-                mDeviceViewModel.getDeviceDataFromBleDevice();
 //                handleLockInternetConnection();
                 break;
             case R.id.img_ble_lock_page:
                 handleLockBleConnection();
                 break;
             case R.id.img_manage_members_lock_page:
-                handleLockMembers();
+//                handleLockMembers();
                 break;
             case R.id.img_more_info_lock_page:
                 setFragment(
@@ -482,9 +481,10 @@ public class LockPageFragment extends BaseFragment
     private void initBleInfo() {
         this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
             if (isSupported != null)
-                if (isSupported)
+                if (isSupported) {
                     getDeviceInfo();
-                else {
+                    mDeviceViewModel.getDeviceDataFromBleDevice();
+                } else {
                     updateViewData(true);
                     mBluetoothLEHelper.disconnect();
                 }

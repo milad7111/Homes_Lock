@@ -88,7 +88,23 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "fwVersion")
     @SerializedName("fwVersion")
-    private Integer mFWVersion;
+    private String mFWVersion;
+
+    @ColumnInfo(name = "hwVersion")
+//    @SerializedName("hwVersion")
+    private String mHWVersion;
+
+    @ColumnInfo(name = "deviceType")
+//    @SerializedName("deviceType")
+    private String mDeviceType;
+
+    @ColumnInfo(name = "productionDate")
+//    @SerializedName("productionDate")
+    private String mProductionDate;
+
+    @ColumnInfo(name = "dynamicId")
+//    @SerializedName("dynamicId")
+    private String mDynamicId;
 
     @ColumnInfo(name = "lockPosition")
     @SerializedName("lockPosition")
@@ -155,7 +171,11 @@ public class Device extends BaseModel {
             Double mHumidity,
             Integer mCOLevel,
             Boolean mDeviceHealth,
-            Integer mFWVersion,
+            String mFWVersion,
+            String mHWVersion,
+            String mDeviceType,
+            String mProductionDate,
+            String mDynamicId,
             Integer mLockPosition) {
         this.mObjectId = mObjectId;
         this.mBleDeviceName = mBleDeviceName;
@@ -173,6 +193,10 @@ public class Device extends BaseModel {
         this.mCOLevel = mCOLevel;
         this.mDeviceHealth = mDeviceHealth;
         this.mFWVersion = mFWVersion;
+        this.mHWVersion = mHWVersion;
+        this.mDeviceType = mDeviceType;
+        this.mProductionDate = mProductionDate;
+        this.mDynamicId = mDynamicId;
         this.mLockPosition = mLockPosition;
     }
 
@@ -193,7 +217,11 @@ public class Device extends BaseModel {
         this.mHumidity = 0D;
         this.mCOLevel = 0;
         this.mDeviceHealth = false;
-        this.mFWVersion = 0;
+        this.mFWVersion = "0.0.0";
+        this.mHWVersion = "0.0.0";
+        this.mDeviceType = "UNKNOWN";
+        this.mProductionDate = "0000:00:00 00:00";
+        this.mDynamicId = "000_0000_000_0000";
         this.mLockPosition = 0;
     }
 
@@ -213,7 +241,11 @@ public class Device extends BaseModel {
         this.mHumidity = Double.valueOf(updatedLock.get("humidity").toString());
         this.mCOLevel = Integer.valueOf(updatedLock.get("coLevel").toString());
         this.mDeviceHealth = Boolean.valueOf(updatedLock.get("deviceHealth").toString());
-        this.mFWVersion = Integer.valueOf(updatedLock.get("fwVersion").toString());
+        this.mFWVersion = String.valueOf(updatedLock.get("fwVersion").toString());
+        this.mHWVersion = String.valueOf(updatedLock.get("hwVersion").toString());
+        this.mDeviceType = String.valueOf(updatedLock.get("deviceType").toString());
+        this.mProductionDate = String.valueOf(updatedLock.get("productionDate").toString());
+        this.mDynamicId = String.valueOf(updatedLock.get("dynamicId").toString());
         this.mLockPosition = Integer.valueOf(updatedLock.get("lockPosition").toString());
     }
 
@@ -354,11 +386,11 @@ public class Device extends BaseModel {
         this.mDeviceHealth = mDeviceHealth;
     }
 
-    public Integer getFWVersion() {
+    public String getFWVersion() {
         return mFWVersion;
     }
 
-    public void setFWVersion(Integer mFWVersion) {
+    public void setFWVersion(String mFWVersion) {
         this.mFWVersion = mFWVersion;
     }
 
@@ -419,5 +451,37 @@ public class Device extends BaseModel {
 
     public boolean isFavoriteStatus() {
         return mFavoriteStatus;
+    }
+
+    public String getHWVersion() {
+        return mHWVersion;
+    }
+
+    public void setHWVersion(String mHWVersion) {
+        this.mHWVersion = mHWVersion;
+    }
+
+    public String getDeviceType() {
+        return mDeviceType;
+    }
+
+    public void setDeviceType(String mDeviceType) {
+        this.mDeviceType = mDeviceType;
+    }
+
+    public String getProductionDate() {
+        return mProductionDate;
+    }
+
+    public void setProductionDate(String mProductionDate) {
+        this.mProductionDate = mProductionDate;
+    }
+
+    public String getDynamicId() {
+        return mDynamicId;
+    }
+
+    public void setDynamicId(String mDynamicId) {
+        this.mDynamicId = mDynamicId;
     }
 }

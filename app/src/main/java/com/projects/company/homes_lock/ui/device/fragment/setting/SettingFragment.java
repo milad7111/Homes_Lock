@@ -51,16 +51,25 @@ public class SettingFragment extends Fragment
     //endregion Declare Constants
 
     //region Declare Views
+    private TextView txvDeviceTypeDescriptionSettingFragment;
+    private TextView txvFirmwareVersionDescriptionSettingFragment;
+    private TextView txvHardwareVersionDescriptionSettingFragment;
+    private TextView txvProductionDateDescriptionSettingFragment;
     private TextView txvDeviceSettingSettingFragment;
     private TextView txvDeviceSettingDescriptionSettingFragment;
-    private TextView txvProServicesSettingFragment;
-    private TextView txvProServicesDescriptionSettingFragment;
-    private TextView txvChangePasswordOnlineSettingFragment;
-    private TextView txvChangePasswordOnlineDescriptionSettingFragment;
     private TextView txvChangePairingPasswordSettingFragment;
     private TextView txvChangePairingPasswordDescriptionSettingFragment;
+    private TextView txvProServicesSettingFragment;
+    private TextView txvProServicesDescriptionSettingFragment;
+    private TextView txvDynamicIdDescriptionSettingFragment;
+    private TextView txvSerialNumberDescriptionSettingFragment;
+    private TextView txvResetLockSettingFragment;
+    private TextView txvResetLockDescriptionSettingFragment;
     private TextView txvRemoveLockSettingFragment;
     private TextView txvRemoveLockDescriptionSettingFragment;
+
+//    private TextView txvChangePasswordOnlineSettingFragment;
+//    private TextView txvChangePasswordOnlineDescriptionSettingFragment;
     //endregion Declare Views
 
     //region Declare Variables
@@ -112,7 +121,7 @@ public class SettingFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_setting, container, false);
+        return inflater.inflate(R.layout.fragment_lock_setting, container, false);
     }
 
     @Override
@@ -120,29 +129,47 @@ public class SettingFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
+        txvDeviceTypeDescriptionSettingFragment = view.findViewById(R.id.txv_device_type_description_setting_fragment);
+        txvFirmwareVersionDescriptionSettingFragment = view.findViewById(R.id.txv_firmware_version_description_setting_fragment);
+        txvHardwareVersionDescriptionSettingFragment = view.findViewById(R.id.txv_hardware_version_description_setting_fragment);
+        txvProductionDateDescriptionSettingFragment = view.findViewById(R.id.txv_production_date_description_setting_fragment);
         txvDeviceSettingSettingFragment = view.findViewById(R.id.txv_device_setting_setting_fragment);
         txvDeviceSettingDescriptionSettingFragment = view.findViewById(R.id.txv_device_setting_description_setting_fragment);
-        txvProServicesSettingFragment = view.findViewById(R.id.txv_pro_services_setting_fragment);
-        txvProServicesDescriptionSettingFragment = view.findViewById(R.id.txv_pro_services_description_setting_fragment);
-        txvChangePasswordOnlineSettingFragment = view.findViewById(R.id.txv_change_password_online_setting_fragment);
-        txvChangePasswordOnlineDescriptionSettingFragment = view.findViewById(R.id.txv_change_password_online_description_setting_fragment);
         txvChangePairingPasswordSettingFragment = view.findViewById(R.id.txv_change_pairing_password_setting_fragment);
         txvChangePairingPasswordDescriptionSettingFragment = view.findViewById(R.id.txv_change_pairing_password_description_setting_fragment);
+        txvProServicesSettingFragment = view.findViewById(R.id.txv_pro_services_setting_fragment);
+        txvProServicesDescriptionSettingFragment = view.findViewById(R.id.txv_pro_services_description_setting_fragment);
+        txvDynamicIdDescriptionSettingFragment = view.findViewById(R.id.txv_dynamic_id_description_setting_fragment);
+        txvSerialNumberDescriptionSettingFragment = view.findViewById(R.id.txv_serial_number_description_setting_fragment);
+        txvResetLockSettingFragment = view.findViewById(R.id.txv_reset_lock_setting_fragment);
+        txvResetLockDescriptionSettingFragment = view.findViewById(R.id.txv_reset_lock_description_setting_fragment);
         txvRemoveLockSettingFragment = view.findViewById(R.id.txv_remove_lock_setting_fragment);
         txvRemoveLockDescriptionSettingFragment = view.findViewById(R.id.txv_remove_lock_description_setting_fragment);
+
+//        txvChangePasswordOnlineSettingFragment = view.findViewById(R.id.txv_change_password_online_setting_fragment);
+//        txvChangePasswordOnlineDescriptionSettingFragment = view.findViewById(R.id.txv_change_password_online_description_setting_fragment);
         //endregion Initialize Views
 
         //region Setup Views
+        txvDeviceTypeDescriptionSettingFragment.setOnClickListener(this);
+        txvFirmwareVersionDescriptionSettingFragment.setOnClickListener(this);
+        txvHardwareVersionDescriptionSettingFragment.setOnClickListener(this);
+        txvProductionDateDescriptionSettingFragment.setOnClickListener(this);
         txvDeviceSettingSettingFragment.setOnClickListener(this);
         txvDeviceSettingDescriptionSettingFragment.setOnClickListener(this);
-        txvProServicesSettingFragment.setOnClickListener(this);
-        txvProServicesDescriptionSettingFragment.setOnClickListener(this);
-        txvChangePasswordOnlineSettingFragment.setOnClickListener(this);
-        txvChangePasswordOnlineDescriptionSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordDescriptionSettingFragment.setOnClickListener(this);
+        txvProServicesSettingFragment.setOnClickListener(this);
+        txvProServicesDescriptionSettingFragment.setOnClickListener(this);
+        txvDynamicIdDescriptionSettingFragment.setOnClickListener(this);
+        txvSerialNumberDescriptionSettingFragment.setOnClickListener(this);
+        txvResetLockSettingFragment.setOnClickListener(this);
+        txvResetLockDescriptionSettingFragment.setOnClickListener(this);
         txvRemoveLockSettingFragment.setOnClickListener(this);
         txvRemoveLockDescriptionSettingFragment.setOnClickListener(this);
+
+//        txvChangePasswordOnlineSettingFragment.setOnClickListener(this);
+//        txvChangePasswordOnlineDescriptionSettingFragment.setOnClickListener(this);
         //endregion Setup Views
 
         initViews();
@@ -157,29 +184,20 @@ public class SettingFragment extends Fragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.txv_device_type_description_setting_fragment:
+                //TODO copy info to clipboard
+                break;
+            case R.id.txv_firmware_version_description_setting_fragment:
+                //TODO copy info to clipboard
+                break;
+            case R.id.txv_hardware_version_description_setting_fragment:
+                //TODO copy info to clipboard
+                break;
             case R.id.txv_device_setting_setting_fragment:
                 handleDeviceSetting();
                 break;
             case R.id.txv_device_setting_description_setting_fragment:
                 handleDeviceSetting();
-                break;
-            case R.id.txv_pro_services_setting_fragment:
-                handleProServices();
-                break;
-            case R.id.txv_pro_services_description_setting_fragment:
-                handleProServices();
-                break;
-            case R.id.txv_remove_lock_setting_fragment:
-                handleRemoveLock();
-                break;
-            case R.id.txv_remove_lock_description_setting_fragment:
-                handleRemoveLock();
-                break;
-            case R.id.txv_change_password_online_setting_fragment:
-                handleChangePassword(CHANGE_ONLINE_PASSWORD);
-                break;
-            case R.id.txv_change_password_online_description_setting_fragment:
-                handleChangePassword(CHANGE_ONLINE_PASSWORD);
                 break;
             case R.id.txv_change_pairing_password_setting_fragment:
                 handleChangePassword(CHANGE_PAIRING_PASSWORD);
@@ -187,6 +205,36 @@ public class SettingFragment extends Fragment
             case R.id.txv_change_pairing_password_description_setting_fragment:
                 handleChangePassword(CHANGE_PAIRING_PASSWORD);
                 break;
+            case R.id.txv_pro_services_setting_fragment:
+                handleProServices();
+                break;
+            case R.id.txv_pro_services_description_setting_fragment:
+                handleProServices();
+                break;
+            case R.id.txv_dynamic_id_description_setting_fragment:
+                //TODO copy info to clipboard
+                break;
+            case R.id.txv_serial_number_description_setting_fragment:
+                //TODO copy info to clipboard
+                break;
+            case R.id.txv_reset_lock_setting_fragment:
+                handleRemoveLock();
+                break;
+            case R.id.txv_reset_lock_description_setting_fragment:
+                handleRemoveLock();
+                break;
+            case R.id.txv_remove_lock_setting_fragment:
+                handleRemoveLock();
+                break;
+            case R.id.txv_remove_lock_description_setting_fragment:
+                handleRemoveLock();
+                break;
+//            case R.id.txv_change_password_online_setting_fragment:
+//                handleChangePassword(CHANGE_ONLINE_PASSWORD);
+//                break;
+//            case R.id.txv_change_password_online_description_setting_fragment:
+//                handleChangePassword(CHANGE_ONLINE_PASSWORD);
+//                break;
         }
     }
     //endregion Main Callbacks
@@ -262,18 +310,26 @@ public class SettingFragment extends Fragment
         if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             txvDeviceSettingSettingFragment.setVisibility(View.GONE);
             txvDeviceSettingDescriptionSettingFragment.setVisibility(View.GONE);
-            txvProServicesSettingFragment.setVisibility(View.GONE);
-            txvProServicesDescriptionSettingFragment.setVisibility(View.GONE);
-            txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
-            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
             txvChangePairingPasswordSettingFragment.setVisibility(View.GONE);
             txvChangePairingPasswordDescriptionSettingFragment.setVisibility(View.GONE);
+            txvProServicesSettingFragment.setVisibility(View.GONE);
+            txvProServicesDescriptionSettingFragment.setVisibility(View.GONE);
+
+//            txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
+//            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
         }
 
         if (!BaseApplication.isUserLoggedIn()) {
             txvRemoveLockSettingFragment.setVisibility(View.GONE);
             txvRemoveLockDescriptionSettingFragment.setVisibility(View.GONE);
         }
+
+        txvDeviceTypeDescriptionSettingFragment.setText(mDevice.getDeviceType());
+        txvFirmwareVersionDescriptionSettingFragment.setText(mDevice.getFWVersion());
+        txvHardwareVersionDescriptionSettingFragment.setText(mDevice.getHWVersion());
+        txvProductionDateDescriptionSettingFragment.setText(mDevice.getProductionDate());
+        txvDynamicIdDescriptionSettingFragment.setText(mDevice.getDynamicId());
+        txvSerialNumberDescriptionSettingFragment.setText(mDevice.getSerialNumber());
     }
 
     private void handleDeviceSetting() {
