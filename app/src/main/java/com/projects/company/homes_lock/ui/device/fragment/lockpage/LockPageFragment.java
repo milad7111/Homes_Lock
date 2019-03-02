@@ -243,6 +243,7 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onBonded(BluetoothDevice device) {
         mDeviceViewModel.getDeviceDataFromBleDevice();
+        mDeviceViewModel.getDeviceSettingInfoFromBleDevice();
     }
 
     @Override
@@ -484,6 +485,7 @@ public class LockPageFragment extends BaseFragment
                 if (isSupported) {
                     getDeviceInfo();
                     mDeviceViewModel.getDeviceDataFromBleDevice();
+                    mDeviceViewModel.getDeviceSettingInfoFromBleDevice();
                 } else {
                     updateViewData(true);
                     mBluetoothLEHelper.disconnect();

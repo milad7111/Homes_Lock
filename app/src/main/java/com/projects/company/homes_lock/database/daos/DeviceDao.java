@@ -65,6 +65,24 @@ public interface DeviceDao extends BaseDao<Device> {
     @Query("UPDATE device SET coLevel = :mCoLevel  WHERE objectId = :mDeviceObjectId")
     void setCoLevel(String mDeviceObjectId, byte mCoLevel);
 
+    @Query("UPDATE device SET deviceType = :deviceType  WHERE objectId = :mDeviceObjectId")
+    void setDeviceType(String mDeviceObjectId, String deviceType);
+
+    @Query("UPDATE device SET fwVersion = :firmwareVersion  WHERE objectId = :mDeviceObjectId")
+    void setFirmwareVersion(String mDeviceObjectId, String firmwareVersion);
+
+    @Query("UPDATE device SET hwVersion = :hardwareVersion  WHERE objectId = :mDeviceObjectId")
+    void setHardwareVersion(String mDeviceObjectId, String hardwareVersion);
+
+    @Query("UPDATE device SET productionDate = :productionDate  WHERE objectId = :mDeviceObjectId")
+    void setProductionDate(String mDeviceObjectId, String productionDate);
+
+    @Query("UPDATE device SET serialNumber = :serialNumber  WHERE objectId = :mDeviceObjectId")
+    void setSerialNumber(String mDeviceObjectId, String serialNumber);
+
+    @Query("UPDATE device SET dynamicId = :dynamicId  WHERE objectId = :mDeviceObjectId")
+    void setDynamicId(String mDeviceObjectId, String dynamicId);
+
     @Query("DELETE FROM device")
     void clearAllData();
 }

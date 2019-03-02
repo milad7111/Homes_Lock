@@ -265,21 +265,39 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case "type":
                     Log.e(getClass().getName(), String.format("type setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateDeviceType(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
                     break;
-                case "sw_ver":
+                case "sw_ver"://TODO change to fw_version MR. Ghaderan
                     Log.e(getClass().getName(), String.format("sw_ver setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateFirmwareVersion(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
                     break;
                 case "hw_ver":
                     Log.e(getClass().getName(), String.format("hw_ver setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateHardwareVersion(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
                     break;
                 case "pr_date":
                     Log.e(getClass().getName(), String.format("pr_date setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateProductionDate(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
                     break;
                 case "sn":
                     Log.e(getClass().getName(), String.format("sn setting IS: %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateSerialNumber(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
                     break;
                 case "did":
                     Log.e(getClass().getName(), String.format("did setting %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null)
+                        mLocalRepository.updateDynamicId(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
                     break;
                 case "pass":
                     Log.e(getClass().getName(), String.format("write pass %s", keyCommandJson.getString(keyCommand)));
@@ -626,7 +644,6 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("pr_date"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("sn"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("did"));
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("pass"));
     }
 
     public void resetBleDevice() {

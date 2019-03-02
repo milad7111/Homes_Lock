@@ -129,6 +129,30 @@ public class LocalRepository {
         mDeviceDao.setCoLevel(mDeviceObjectId, coLevel);
     }
 
+    public void updateDeviceType(String mDeviceObjectId, String deviceType) {
+        mDeviceDao.setDeviceType(mDeviceObjectId, deviceType);
+    }
+
+    public void updateFirmwareVersion(String mDeviceObjectId, String firmwareVersion) {
+        mDeviceDao.setFirmwareVersion(mDeviceObjectId, firmwareVersion);
+    }
+
+    public void updateHardwareVersion(String mDeviceObjectId, String hardwareVersion) {
+        mDeviceDao.setHardwareVersion(mDeviceObjectId, hardwareVersion);
+    }
+
+    public void updateProductionDate(String mDeviceObjectId, String productionDate) {
+        mDeviceDao.setProductionDate(mDeviceObjectId, productionDate);
+    }
+
+    public void updateSerialNumber(String mDeviceObjectId, String serialNumber) {
+        mDeviceDao.setSerialNumber(mDeviceObjectId, serialNumber);
+    }
+
+    public void updateDynamicId(String mDeviceObjectId, String dynamicId) {
+        mDeviceDao.setDynamicId(mDeviceObjectId, dynamicId);
+    }
+
     public void updateDevice(Device device) {
         new updateDeviceAsyncTask(mDeviceDao).execute(device);
     }
