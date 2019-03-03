@@ -216,8 +216,9 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void handleReceivedResponse(byte[] responseValue) {
-        for (byte aResponseValue : responseValue)
-            Log.e("Response: ", String.format("%d", aResponseValue & 0xff));
+//        for (byte aResponseValue : responseValue)
+//            Log.e("Response: ", String.format("%d", aResponseValue & 0xff));
+        Log.e("handleReceivedResponse", new String(responseValue));
 
         String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 1));
 
@@ -301,6 +302,24 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case "pass":
                     Log.e(getClass().getName(), String.format("write pass %s", keyCommandJson.getString(keyCommand)));
+                    break;
+                case "right":
+                    if (mISettingFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals("ok"))
+                            mISettingFragment.onSetDoorInstallationSuccessful();
+                        else
+                            mLocalRepository.updateDoorInstallation(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                    keyCommandJson.getBoolean(keyCommand));
+                    }
+                    break;
+                case "lock_step":
+                    if (mISettingFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals("ok"))
+                            mISettingFragment.onSetLockStagesSuccessful();
+                        else
+                            mLocalRepository.updateLockStages(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                    keyCommandJson.getInt(keyCommand));
+                    }
                     break;
             }
         } catch (JSONException e) {
@@ -637,13 +656,18 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("islock"));
     }
 
-    public void getDeviceSettingInfoFromBleDevice() {
+    public void getDeviceCommonSettingInfoFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("type"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("sw_ver"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("hw_ver"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("pr_date"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("sn"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("did"));
+    }
+
+    public void getLockSpecifiedSettingInfoFromBleDevice() {
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("right"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("lock_step"));
     }
 
     public void resetBleDevice() {
@@ -710,6 +734,19 @@ public class DeviceViewModel extends AndroidViewModel
     public void changePairingPasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
         mISettingFragment = (ISettingFragment) parentFragment;
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0E}, new byte[]{0x00}));
+    }
+
+    public void resetDevice(Fragment parentFragment) {
+        mISettingFragment = (ISettingFragment) parentFragment;
+
+        JSONObject commandJson = null;
+        try {
+            commandJson = new JSONObject();
+            commandJson.put("reset", JSONObject.NULL);
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(commandJson.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public LiveData<Boolean> isConnected() {

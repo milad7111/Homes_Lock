@@ -153,6 +153,14 @@ public class LocalRepository {
         mDeviceDao.setDynamicId(mDeviceObjectId, dynamicId);
     }
 
+    public void updateDoorInstallation(String mDeviceObjectId, Boolean doorInstallation) {
+        mDeviceDao.setDoorInstallation(mDeviceObjectId, doorInstallation);
+    }
+
+    public void updateLockStages(String mDeviceObjectId, Integer lockStages) {
+        mDeviceDao.setLockStages(mDeviceObjectId, lockStages);
+    }
+
     public void updateDevice(Device device) {
         new updateDeviceAsyncTask(mDeviceDao).execute(device);
     }

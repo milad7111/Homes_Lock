@@ -19,4 +19,12 @@ public interface ISettingFragment {
     void onRemoveDeviceForOneMemberFailed(ResponseBodyFailureModel response);
 
     void onRemoveAllLockMembersFailed(ResponseBodyFailureModel response);
+
+    void onSetDoorInstallationSuccessful();
+
+    void onSetDoorInstallationFailed();
+
+    void onSetLockStagesSuccessful();
+
+    void onSetLockStagesFailed();
 }

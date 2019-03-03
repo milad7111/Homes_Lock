@@ -60,6 +60,17 @@
     <string name="fragment_text_view_forget_password">Forget Password</string>
     <string name="fragment_text_view_device_setting">Device setting</string>
     <string name="fragment_text_view_device_setting_value"><![CDATA[Door installation & Lock stages]]></string>
+    <string name="fragment_text_view_device_type">Device type</string>
+    <string name="fragment_text_view_default_device_type">LOCK</string>
+    <string name="fragment_text_view_hardware_version">Hardware version</string>
+    <string name="fragment_text_view_default_hardware_version">0.0.0</string>
+    <string name="fragment_text_view_production_date">Production date</string>
+    <string name="fragment_text_view_default_production_date">0000:00:00 00:00</string>
+    <string name="fragment_text_view_serial_number">Serial number</string>
+    <string name="fragment_text_view_default_serial_number_description">sfs_fs45_fs54</string>
+    <string name="fragment_text_view_dynamic_id">Dynamic id</string>
+    <string name="fragment_text_view_default_dynamic_id_description">8a8as_da85_ks_584185</string>
+    <string name="fragment_text_view_reset_lock">Reset LOCK</string>
     <!--//endregion Fragment TextViews-->
 
     <!--//region Dialog Titles-->
@@ -76,6 +87,7 @@
     <string name="dialog_title_lock_stages_device_setting">Lock stages</string>
     <string name="dialog_title_remove_lock">Remove lock</string>
     <string name="dialog_title_remove_member">Remove member</string>
+    <string name="dialog_title_reset_lock">Reset Lock</string>
     <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->
@@ -87,6 +99,7 @@
     <string name="dialog_button_apply">APPLY</string>
     <string name="dialog_button_pair">PAIR</string>
     <string name="dialog_button_remove">REMOVE</string>
+    <string name="dialog_button_reset">RESET</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->
@@ -159,17 +172,6 @@
     <string name="adapter_empty_syncing">Syncing ...</string>
     <string name="adapter_empty_scanning">Scanning ...</string>
     <string name="adapter_empty_try_again">Try again ...</string>
-    <string name="fragment_text_view_device_type">Device type</string>
-    <string name="fragment_text_view_default_device_type">LOCK</string>
-    <string name="fragment_text_view_hardware_version">Hardware version</string>
-    <string name="fragment_text_view_default_hardware_version">0.0.0</string>
-    <string name="fragment_text_view_production_date">Production date</string>
-    <string name="fragment_text_view_default_production_date">0000:00:00 00:00</string>
-    <string name="fragment_text_view_serial_number">Serial number</string>
-    <string name="fragment_text_view_default_serial_number_description">sfs_fs45_fs54</string>
-    <string name="fragment_text_view_dynamic_id">Dynamic id</string>
-    <string name="fragment_text_view_default_dynamic_id_description">8a8as_da85_ks_584185</string>
-    <string name="fragment_text_view_reset_lock">Reset LOCK</string>
     <!--//endregion Adapter Empty-->
 
 </resources>

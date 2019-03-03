@@ -121,10 +121,6 @@ public class DialogHelper {
             ((AddLockFragment) fragment).mTempDevice.setFavoriteStatus(chbLockFavoriteStatusDialogAddNewLock.isChecked());
             ((AddLockFragment) fragment).mTempDevice.setDeviceMacAddress(((AddLockFragment) fragment).mDevice.getMacAddress());
 
-//            ((AddLockFragment) fragment).mDeviceViewModel.getAllLocalDevices().observe(fragment, devices ->
-//                    ((LockActivity) fragment.getActivity()).setViewPagerAdapter(
-//                            new CustomDeviceAdapter(fragment.getActivity().getSupportFragmentManager(), devices)));
-
             ((LockActivity) fragment.getActivity()).PERMISSION_READ_ALL_LOCAL_DEVICES = true;
             ((AddLockFragment) fragment).mDeviceViewModel.insertLocalDevice(new Device(((AddLockFragment) fragment).mTempDevice));
 

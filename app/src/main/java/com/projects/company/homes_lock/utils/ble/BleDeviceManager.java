@@ -36,8 +36,8 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
             requests.push(Request.newEnableNotificationsRequest(mTXCharacteristic));
 
-            requests.push(Request.newWriteRequest(mRXCharacteristic, createCommand(new byte[]{0x01}, new byte[]{})));
-            requests.push(Request.newReadRequest(mTXCharacteristic));
+//            requests.push(Request.newWriteRequest(mRXCharacteristic, createCommand(new byte[]{0x01}, new byte[]{})));
+//            requests.push(Request.newReadRequest(mTXCharacteristic));
 
             return requests;
         }
@@ -102,6 +102,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     }
 
     public void writeCharacteristic(UUID characteristicUUID, byte[] value) {
+        Log.e("writeCharacteristic", new String(value));
         BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
 
         if (mBluetoothGattCharacteristic != null)

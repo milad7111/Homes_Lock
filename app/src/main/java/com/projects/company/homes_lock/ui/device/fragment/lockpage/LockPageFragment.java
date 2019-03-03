@@ -201,6 +201,13 @@ public class LockPageFragment extends BaseFragment
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mDeviceViewModel.disconnect();
+        mBluetoothLEHelper.disconnect();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_lock_status_lock_page:
@@ -219,7 +226,7 @@ public class LockPageFragment extends BaseFragment
                 setFragment(
                         (AppCompatActivity) getActivity(),
                         R.id.frg_lock_activity,
-                        SettingFragment.newInstance(mDevice));
+                        SettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
                 break;
         }
     }
@@ -243,7 +250,8 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onBonded(BluetoothDevice device) {
         mDeviceViewModel.getDeviceDataFromBleDevice();
-        mDeviceViewModel.getDeviceSettingInfoFromBleDevice();
+        mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
+        mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
     }
 
     @Override
@@ -355,7 +363,7 @@ public class LockPageFragment extends BaseFragment
         handleProgressDialog(null, null, null, false);
     }
 
-    public void getDeviceInfo() {
+    private void getDeviceInfo() {
         this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
             mDevice = device;
             updateViewData(false);
@@ -485,7 +493,8 @@ public class LockPageFragment extends BaseFragment
                 if (isSupported) {
                     getDeviceInfo();
                     mDeviceViewModel.getDeviceDataFromBleDevice();
-                    mDeviceViewModel.getDeviceSettingInfoFromBleDevice();
+                    mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
+                    mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
                 } else {
                     updateViewData(true);
                     mBluetoothLEHelper.disconnect();

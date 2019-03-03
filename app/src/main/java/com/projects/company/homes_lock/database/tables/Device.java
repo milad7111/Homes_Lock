@@ -106,6 +106,14 @@ public class Device extends BaseModel {
 //    @SerializedName("dynamicId")
     private String mDynamicId;
 
+    @ColumnInfo(name = "doorInstallation")
+//    @SerializedName("doorInstallation")
+    private Boolean mDoorInstallation;
+
+    @ColumnInfo(name = "lockStages")
+//    @SerializedName("lockStages")
+    private Integer mLockStages;
+
     @ColumnInfo(name = "lockPosition")
     @SerializedName("lockPosition")
     private Integer mLockPosition;
@@ -176,6 +184,8 @@ public class Device extends BaseModel {
             String mDeviceType,
             String mProductionDate,
             String mDynamicId,
+            Boolean mDoorInstallation,
+            Integer mLockStages,
             Integer mLockPosition) {
         this.mObjectId = mObjectId;
         this.mBleDeviceName = mBleDeviceName;
@@ -197,6 +207,9 @@ public class Device extends BaseModel {
         this.mDeviceType = mDeviceType;
         this.mProductionDate = mProductionDate;
         this.mDynamicId = mDynamicId;
+        this.mDoorInstallation = mDoorInstallation;
+        this.mDoorInstallation = mDoorInstallation;
+        this.mLockStages = mLockStages;
         this.mLockPosition = mLockPosition;
     }
 
@@ -222,6 +235,8 @@ public class Device extends BaseModel {
         this.mDeviceType = "UNKNOWN";
         this.mProductionDate = "0000:00:00 00:00";
         this.mDynamicId = "000_0000_000_0000";
+        this.mDoorInstallation = true;
+        this.mLockStages = 0;
         this.mLockPosition = 0;
     }
 
@@ -246,7 +261,9 @@ public class Device extends BaseModel {
         this.mDeviceType = String.valueOf(updatedLock.get("deviceType").toString());
         this.mProductionDate = String.valueOf(updatedLock.get("productionDate").toString());
         this.mDynamicId = String.valueOf(updatedLock.get("dynamicId").toString());
-        this.mLockPosition = Integer.valueOf(updatedLock.get("lockPosition").toString());
+        this.mDoorInstallation = Boolean.valueOf(updatedLock.get("doorInstallation").toString());;
+        this.mLockStages = Integer.valueOf(updatedLock.get("dynamicId").toString());;
+        this.mLockPosition = Integer.valueOf(updatedLock.get("lockStages").toString());
     }
 
     @NonNull
@@ -483,5 +500,21 @@ public class Device extends BaseModel {
 
     public void setDynamicId(String mDynamicId) {
         this.mDynamicId = mDynamicId;
+    }
+
+    public Boolean getDoorInstallation() {
+        return mDoorInstallation;
+    }
+
+    public void setDoorInstallation(Boolean mDoorInstallation) {
+        this.mDoorInstallation = mDoorInstallation;
+    }
+
+    public Integer getLockStages() {
+        return mLockStages;
+    }
+
+    public void setLockStages(Integer mLockStages) {
+        this.mLockStages = mLockStages;
     }
 }

@@ -1,7 +1,6 @@
 package com.projects.company.homes_lock.ui.device.fragment.setting;
 
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -13,11 +12,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -27,6 +25,8 @@ import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import java.util.Objects;
+
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_LEFT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_NINETY_DEGREES;
@@ -35,7 +35,6 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_TWO_STAGE;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_ONLINE_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAIRING_PASSWORD;
-import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
@@ -73,6 +72,10 @@ public class SettingFragment extends Fragment
     //endregion Declare Views
 
     //region Declare Variables
+    private boolean mDoorInstallationDone = false;
+    private boolean mLockStagesDone = false;
+
+    private String mDeviceObjectId = "";
     //endregion Declare Variables
 
     //region Declare Objects
@@ -83,18 +86,21 @@ public class SettingFragment extends Fragment
     private Dialog changeOnlinePasswordDialog;
     private Dialog changePairingPasswordDialog;
     private Dialog removeLockDialog;
+    private Dialog resetLockDialog;
     //endregion Declare Objects
 
     //region Constructor
     public SettingFragment() {
     }
 
-    public static SettingFragment newInstance(Device device) {
+    public static SettingFragment newInstance(String mDeviceObjectId, DeviceViewModel mDeviceViewModel) {
         SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
 
-        args.putString(ARG_PARAM, new Gson().toJson(device));
+        args.putString(ARG_PARAM, mDeviceObjectId);
+
         fragment.setArguments(args);
+        fragment.mDeviceViewModel = mDeviceViewModel;
 
         return fragment;
     }
@@ -110,13 +116,17 @@ public class SettingFragment extends Fragment
 
         //region Initialize Objects
         mFragment = this;
-
-        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
-
-        mDevice = getArguments() != null ?
-                (Device) convertJsonToObject(getArguments().getString(ARG_PARAM), Device.class.getName())
-                : null;
+        mDeviceObjectId = getArguments() != null ? getArguments().getString(ARG_PARAM) : "";
         //endregion Initialize Objects
+
+        getDeviceInfo();
+    }
+
+    private void getDeviceInfo() {
+        this.mDeviceViewModel.getDeviceInfo(mDeviceObjectId).observe(this, device -> {
+            mDevice = device;
+            initViews();
+        });
     }
 
     @Override
@@ -171,8 +181,6 @@ public class SettingFragment extends Fragment
 //        txvChangePasswordOnlineSettingFragment.setOnClickListener(this);
 //        txvChangePasswordOnlineDescriptionSettingFragment.setOnClickListener(this);
         //endregion Setup Views
-
-        initViews();
     }
 
     @Override
@@ -218,10 +226,10 @@ public class SettingFragment extends Fragment
                 //TODO copy info to clipboard
                 break;
             case R.id.txv_reset_lock_setting_fragment:
-                handleRemoveLock();
+                handleResetLock();
                 break;
             case R.id.txv_reset_lock_description_setting_fragment:
-                handleRemoveLock();
+                handleResetLock();
                 break;
             case R.id.txv_remove_lock_setting_fragment:
                 handleRemoveLock();
@@ -242,16 +250,16 @@ public class SettingFragment extends Fragment
     //region ISettingFragment Callbacks
     @Override
     public void onSetDeviceSetting(boolean deviceSettingStatus) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
-
-        if (deviceSettingStatus) {
-            if (deviceSettingDialog != null) {
-                deviceSettingDialog.dismiss();
-                deviceSettingDialog = null;
-            }
-            Log.i(getTag(), "Device Setting set successfully");
-        } else
-            Toast.makeText(getContext(), "Device Setting failed.", Toast.LENGTH_LONG).show();
+//        DialogHelper.handleProgressDialog(null, null, null, false);
+//
+//        if (deviceSettingStatus) {
+//            if (deviceSettingDialog != null) {
+//                deviceSettingDialog.dismiss();
+//                deviceSettingDialog = null;
+//            }
+//            Log.i(getTag(), "Device Setting set successfully");
+//        } else
+//            Toast.makeText(getContext(), "Device Setting failed.", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -285,7 +293,32 @@ public class SettingFragment extends Fragment
 
     @Override
     public void onRemoveAllLockMembersFailed(ResponseBodyFailureModel response) {
+    }
 
+    @Override
+    public void onSetDoorInstallationSuccessful() {
+        mDoorInstallationDone = true;
+        handleSetSettingResponse();
+    }
+
+    @Override
+    public void onSetDoorInstallationFailed() {
+        mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+        handleProgressDialog(null, null, null, false);
+        Log.e("Set Door Installation", "Failed");
+    }
+
+    @Override
+    public void onSetLockStagesSuccessful() {
+        mLockStagesDone = true;
+        handleSetSettingResponse();
+    }
+
+    @Override
+    public void onSetLockStagesFailed() {
+        mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+        handleProgressDialog(null, null, null, false);
+        Log.e("Set Lock Stages", "Failed");
     }
 
     @Override
@@ -301,7 +334,6 @@ public class SettingFragment extends Fragment
 
     @Override
     public void onRemoveDeviceForOneMemberFailed(ResponseBodyFailureModel response) {
-
     }
     //endregion ISettingFragment Callbacks
 
@@ -341,6 +373,9 @@ public class SettingFragment extends Fragment
             RadioGroup rdgDoorInstallationDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.rdg_door_installation_dialog_device_setting);
             RadioGroup rdgLockStagesDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.rdg_lock_stages_dialog_device_setting);
 
+            ((RadioButton) rdgDoorInstallationDialogDeviceSetting.getChildAt(mDevice.getDoorInstallation() ? 0 : 1)).setChecked(true);
+            ((RadioButton) rdgLockStagesDialogDeviceSetting.getChildAt(mDevice.getLockStages())).setChecked(true);
+
             Button btnCancelDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.btn_cancel_dialog_device_setting);
             Button btnApplyDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.btn_apply_dialog_device_setting);
 
@@ -363,6 +398,31 @@ public class SettingFragment extends Fragment
     }
 
     private void handleProServices() {
+    }
+
+    private void handleResetLock() {
+        resetLockDialog = new Dialog(mFragment.getContext());
+        resetLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        resetLockDialog.setContentView(R.layout.dialog_reset_lock);
+
+        Button btnCancelDialogResetLock =
+                resetLockDialog.findViewById(R.id.btn_cancel_dialog_reset_lock);
+        Button btnResetDialogResetLock =
+                resetLockDialog.findViewById(R.id.btn_reset_dialog_reset_lock);
+
+        btnCancelDialogResetLock.setOnClickListener(v -> {
+            resetLockDialog.dismiss();
+            resetLockDialog = null;
+        });
+
+        btnResetDialogResetLock.setOnClickListener(v -> {
+            DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Reset Lock ...", true);
+            mDeviceViewModel.resetDevice(mFragment);
+            Objects.requireNonNull(getActivity()).finish();
+        });
+
+        resetLockDialog.show();
+        resetLockDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(resetLockDialog));
     }
 
     private void handleRemoveLock() {
@@ -487,9 +547,9 @@ public class SettingFragment extends Fragment
     private boolean findSelectedDoorInstallationOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.rdb_right_handed_dialog_device_setting:
-                return DOOR_INSTALLATION_SETTING_LEFT_HANDED;
-            case R.id.rdb_left_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
+            case R.id.rdb_left_handed_dialog_device_setting:
+                return DOOR_INSTALLATION_SETTING_LEFT_HANDED;
             default:
                 return true;
         }
@@ -512,6 +572,18 @@ public class SettingFragment extends Fragment
 
     private void logoutLocally() {
         getActivity().finish();
+    }
+
+    private void handleSetSettingResponse() {
+        if (mDoorInstallationDone && mLockStagesDone) {
+            handleProgressDialog(null, null, null, false);
+            if (deviceSettingDialog != null) {
+                deviceSettingDialog.dismiss();
+                deviceSettingDialog = null;
+            }
+            mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+            Log.i("Set Setting", "Done");
+        }
     }
     //endregion Declare Methods
 }
