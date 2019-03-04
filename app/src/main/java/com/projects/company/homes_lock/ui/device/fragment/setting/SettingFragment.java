@@ -272,15 +272,6 @@ public class SettingFragment extends Fragment
     }
 
     @Override
-    public void onChangePairingPassword(boolean value) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
-        if (changePairingPasswordDialog != null) {
-            changePairingPasswordDialog.dismiss();
-            changePairingPasswordDialog = null;
-        }
-    }
-
-    @Override
     public void onRemoveAllLockMembersSuccessful(String count) {
         DialogHelper.handleProgressDialog(null, null, null, false);
         if (removeLockDialog != null) {
@@ -319,6 +310,31 @@ public class SettingFragment extends Fragment
         mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
         handleProgressDialog(null, null, null, false);
         Log.e("Set Lock Stages", "Failed");
+    }
+
+    @Override
+    public void onCheckOldPairingPasswordSuccessful() {
+    }
+
+    @Override
+    public void onChangePairingPasswordSuccessful() {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        Log.e(getClass().getName(), "Change Pairing password successful.");
+        if (changePairingPasswordDialog != null) {
+            changePairingPasswordDialog.dismiss();
+            changePairingPasswordDialog = null;
+        }
+    }
+
+    @Override
+    public void onChangePairingPasswordFailed(String errorValue) {
+        DialogHelper.handleProgressDialog(null, null, null, false);
+        Log.e(getClass().getName(), String.format("New password hasn't minimum requirements as pairing password!: %s", errorValue));
+    }
+
+    @Override
+    public void onCheckOldPairingPasswordFailed(String errorValue) {
+        Log.e(getClass().getName(), String.format("Old password does not match pass in Device!: %s", errorValue));
     }
 
     @Override
@@ -535,8 +551,8 @@ public class SettingFragment extends Fragment
             btnApplyDialogChangePairingPassword.setOnClickListener(v -> {
                 DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change pairing password ...", true);
                 mDeviceViewModel.changePairingPasswordViaBle(mFragment,
-                        tietOldPasswordDialogChangePairingPassword.getText().toString(),
-                        tietNewPasswordDialogChangePairingPassword.getText().toString());
+                        Integer.valueOf(tietOldPasswordDialogChangePairingPassword.getText().toString()),
+                        Integer.valueOf(tietNewPasswordDialogChangePairingPassword.getText().toString()));
             });
         }
 

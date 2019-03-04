@@ -432,7 +432,7 @@ public class Device extends BaseModel {
         if (mRelatedUsers != null && mRelatedUsers.size() != 0)
             return mRelatedUsers.get(0).getAdminStatus() ? DataHelper.MEMBER_STATUS_PRIMARY_ADMIN : DataHelper.MEMBER_STATUS_NOT_ADMIN;
 
-        return -1;
+        return DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
     }
 
     public boolean isLockSavedInServerByCheckUserLocks() {

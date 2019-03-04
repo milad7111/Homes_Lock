@@ -70,6 +70,8 @@ public class DeviceViewModel extends AndroidViewModel
 
     //region Declare Variables
     private String requestType = "";
+    private Integer oldPairingPassword = 0;
+    private Integer newPairingPassword = 0;
     //endregion Declare Variables
 
     //region Declare Objects
@@ -246,23 +248,12 @@ public class DeviceViewModel extends AndroidViewModel
                     Log.e(getClass().getName(), String.format("Door knocked : %s", keyCommandJson.getString(keyCommand)));
                     break;
                 case "lock":
-                    if (mILockPageFragment != null) {
-                        if (keyCommandJson.get(keyCommand).equals("ok"))
-                            mILockPageFragment.onSendLockCommandSuccessful("lock");
-                        else
-                            mILockPageFragment.onSendLockCommandFailed("lock");
-                    }
+                    if (mILockPageFragment != null && keyCommandJson.get(keyCommand).equals("ok"))
+                        mILockPageFragment.onSendLockCommandSuccessful("lock");
                     break;
                 case "unlock":
-                    if (mILockPageFragment != null) {
-                        if (keyCommandJson.get(keyCommand).equals("ok"))
-                            mILockPageFragment.onSendLockCommandSuccessful("unlock");
-                        else
-                            mILockPageFragment.onSendLockCommandFailed("unlock");
-                    }
-                    break;
-                case "err":
-                    Log.e(getClass().getName(), String.format("Last Error in Ble Device: %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null && keyCommandJson.get(keyCommand).equals("ok"))
+                        mILockPageFragment.onSendLockCommandSuccessful("unlock");
                     break;
                 case "type":
                     Log.e(getClass().getName(), String.format("type setting IS: %s", keyCommandJson.getString(keyCommand)));
@@ -282,8 +273,8 @@ public class DeviceViewModel extends AndroidViewModel
                         mLocalRepository.updateHardwareVersion(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getString(keyCommand));
                     break;
-                case "pr_date":
-                    Log.e(getClass().getName(), String.format("pr_date setting IS: %s", keyCommandJson.getString(keyCommand)));
+                case "prd":
+                    Log.e(getClass().getName(), String.format("prd setting IS: %s", keyCommandJson.getString(keyCommand)));
                     if (mILockPageFragment != null)
                         mLocalRepository.updateProductionDate(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getString(keyCommand));
@@ -300,8 +291,17 @@ public class DeviceViewModel extends AndroidViewModel
                         mLocalRepository.updateDynamicId(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getString(keyCommand));
                     break;
-                case "pass":
-                    Log.e(getClass().getName(), String.format("write pass %s", keyCommandJson.getString(keyCommand)));
+                case "opass":
+                    Log.e(getClass().getName(), String.format("old pass %s", keyCommandJson.getString(keyCommand)));
+                    if (mISettingFragment != null && keyCommandJson.get(keyCommand).equals("ok")) {
+                        changePairingPasswordViaBleFinalStep();
+                        mISettingFragment.onCheckOldPairingPasswordSuccessful();
+                    }
+                    break;
+                case "npass":
+                    Log.e(getClass().getName(), String.format("new pass %s", keyCommandJson.getString(keyCommand)));
+                    if (mISettingFragment != null && keyCommandJson.get(keyCommand).equals("ok"))
+                        mISettingFragment.onChangePairingPasswordSuccessful();
                     break;
                 case "right":
                     if (mISettingFragment != null) {
@@ -312,13 +312,37 @@ public class DeviceViewModel extends AndroidViewModel
                                     keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
-                case "lock_step":
+                case "step":
                     if (mISettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals("ok"))
                             mISettingFragment.onSetLockStagesSuccessful();
                         else
                             mLocalRepository.updateLockStages(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                     keyCommandJson.getInt(keyCommand));
+                    }
+                    break;
+                case "err":
+                    switch (keyCommandJson.getString(keyCommand)) {
+                        case "inter":
+                            Log.e(getClass().getName(), String.format("Device faces with internal Error, try last command again!: %s",
+                                    keyCommandJson.getString(keyCommand)));
+                            break;
+                        case "per":
+                            Log.e(getClass().getName(), String.format("Don't have permission for last command!: %s",
+                                    keyCommandJson.getString(keyCommand)));
+                            break;
+                        case "key":
+                            Log.e(getClass().getName(), String.format("Key of Last command does not exist!: %s",
+                                    keyCommandJson.getString(keyCommand)));
+                            break;
+                        case "opass":
+                            if (mISettingFragment != null)
+                                mISettingFragment.onCheckOldPairingPasswordFailed(keyCommandJson.getString(keyCommand));
+                            break;
+                        case "npass":
+                            if (mISettingFragment != null)
+                                mISettingFragment.onChangePairingPasswordFailed(keyCommandJson.getString(keyCommand));
+                            break;
                     }
                     break;
             }
@@ -660,14 +684,14 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("type"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("sw_ver"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("hw_ver"));
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("pr_date"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("prd"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("sn"));
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("did"));
     }
 
     public void getLockSpecifiedSettingInfoFromBleDevice() {
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("right"));
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("lock_step"));
+        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage("step"));
     }
 
     public void resetBleDevice() {
@@ -716,24 +740,46 @@ public class DeviceViewModel extends AndroidViewModel
             mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(commandJson.toString()));
 
             commandJson = new JSONObject();
-            commandJson.put("lock_step", lockStages);
+            commandJson.put("step", lockStages);
             mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(commandJson.toString()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-//        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0C},
-//                BleHelper.mergeArrays(new byte[]{doorInstallationOption}, new byte[]{lockStagesOption})));
     }
 
     public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0D}, new byte[]{0x00}));
     }
 
-    public void changePairingPasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
+    public void changePairingPasswordViaBle(Fragment parentFragment, Integer oldPassword, Integer newPassword) {
         mISettingFragment = (ISettingFragment) parentFragment;
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x0E}, new byte[]{0x00}));
+
+        oldPairingPassword = oldPassword;
+        newPairingPassword = newPassword;
+
+        changePairingPasswordViaBleInitialStep();
+    }
+
+    private void changePairingPasswordViaBleInitialStep() {
+        JSONObject commandJson;
+        try {
+            commandJson = new JSONObject();
+            commandJson.put("opass", oldPairingPassword);
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(commandJson.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void changePairingPasswordViaBleFinalStep() {
+        JSONObject commandJson;
+        try {
+            commandJson = new JSONObject();
+            commandJson.put("npass", newPairingPassword);
+            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createWriteMessage(commandJson.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void resetDevice(Fragment parentFragment) {

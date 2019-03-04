@@ -8,8 +8,6 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 public interface ISettingFragment {
     void onChangeOnlinePassword(boolean value);
 
-    void onChangePairingPassword(boolean value);
-
     void onSetDeviceSetting(boolean value);
 
     void onRemoveAllLockMembersSuccessful(String count);
@@ -27,4 +25,12 @@ public interface ISettingFragment {
     void onSetLockStagesSuccessful();
 
     void onSetLockStagesFailed();
+
+    void onCheckOldPairingPasswordSuccessful();
+
+    void onCheckOldPairingPasswordFailed(String string);
+
+    void onChangePairingPasswordSuccessful();
+
+    void onChangePairingPasswordFailed(String string);
 }
