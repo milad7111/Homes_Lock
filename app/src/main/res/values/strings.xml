@@ -10,10 +10,11 @@
     <string name="content_description_nav_header_img_avatar" translatable="false">This is avatar</string>
     <string name="content_description_show_rssi_of_ble_device" translatable="false">RSSI of Ble device</string>
 
-    <string name="content_description_members_list_item_img_avatar" translatable="false">avatar of lock members</string>
-    <string name="content_description_members_list_item_img_action" translatable="false">action of lock members</string>
+    <string name="content_description_members_list_item_img_avatar" translatable="false">avatar of device members</string>
+    <string name="content_description_members_list_item_img_action" translatable="false">action of device members</string>
 
     <string name="content_description_img_login_screen_login_fragment" translatable="false">static image in login fragment</string>
+    <string name="content_description_img_new_device_screen_add_device_fragment">static image in add device fragment</string>
 
     <string name="content_description_img_temperature_celsius_lock_page">centigrade symbol</string>
     <string name="content_description_img_lock_status_symbol_lock_page">lock status</string>
@@ -24,7 +25,7 @@
     <!--//endregion Activity and Fragment Titles-->
 
     <!--//region Fragment Buttons-->
-    <string name="fragment_button_add_new_lock">Add new lock</string>
+    <string name="fragment_button_add_new_device">Add new device</string>
     <string name="fragment_button_sign_up">SignUp</string>
     <string name="fragment_button_login">LOGIN</string>
     <!--//endregion Fragment Buttons-->
@@ -49,12 +50,12 @@
     <string name="fragment_text_view_lock_stages_value">Two stages</string>
     <string name="fragment_text_view_pro_services">Pro Services</string>
     <string name="fragment_text_view_pro_services_description">Not yet</string>
-    <string name="fragment_text_view_remove_lock">Remove Lock</string>
-    <string name="fragment_text_view_remove_lock_description">If you remove the lock, you can just add it again by pairing bluetooth</string>
+    <string name="fragment_text_view_remove_device">Remove Device</string>
+    <string name="fragment_text_view_remove_device_description">If you remove the device, you can just add it again by pairing bluetooth</string>
     <string name="fragment_text_view_change_online_password">Change Online Password</string>
-    <string name="fragment_text_view_change_online_password_description">This is reachable when you are Connect to Lock</string>
+    <string name="fragment_text_view_change_online_password_description">This is reachable when you are Connect to Device</string>
     <string name="fragment_text_view_change_pairing_password">Change Pairing Password</string>
-    <string name="fragment_text_view_change_pairing_password_description">This is reachable when you are Connect to Lock</string>
+    <string name="fragment_text_view_change_pairing_password_description">This is reachable when you are Connect to Device</string>
     <string name="fragment_text_view_direct_connect">Direct Connect</string>
     <string name="fragment_text_view_sign_up">Sign Up</string>
     <string name="fragment_text_view_forget_password">Forget Password</string>
@@ -70,12 +71,12 @@
     <string name="fragment_text_view_default_serial_number_description">sfs_fs45_fs54</string>
     <string name="fragment_text_view_dynamic_id">Dynamic id</string>
     <string name="fragment_text_view_default_dynamic_id_description">8a8as_da85_ks_584185</string>
-    <string name="fragment_text_view_reset_lock">Reset LOCK</string>
+    <string name="fragment_text_view_reset_device">Reset DEVICE</string>
     <!--//endregion Fragment TextViews-->
 
     <!--//region Dialog Titles-->
     <string name="dialog_title_pair_with_ble_device">Pairing</string>
-    <string name="dialog_title_add_new_lock">Add new lock</string>
+    <string name="dialog_title_add_new_device">Add new device</string>
     <string name="dialog_title_forget_password">Forget password</string>
     <string name="dialog_title_change_online_password">Change online password</string>
     <string name="dialog_title_change_pairing_password">Change pairing password</string>
@@ -85,9 +86,9 @@
     <string name="dialog_title_device_wifi_network_connect">Connect Lock to network</string>
     <string name="dialog_title_door_installation_device_setting">Door installation</string>
     <string name="dialog_title_lock_stages_device_setting">Lock stages</string>
-    <string name="dialog_title_remove_lock">Remove lock</string>
+    <string name="dialog_title_remove_device">Remove device</string>
     <string name="dialog_title_remove_member">Remove member</string>
-    <string name="dialog_title_reset_lock">Reset Lock</string>
+    <string name="dialog_title_reset_device">Reset Device</string>
     <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->
@@ -119,14 +120,14 @@
     <!--//endregion Dialog RadioButtons-->
 
     <!--//region Dialog Hints-->
-    <string name="dialog_hint_lock_name">Lock name</string>
+    <string name="dialog_hint_device_name">Device name</string>
     <string name="dialog_hint_serial_number">Serial number</string>
     <string name="dialog_hint_email">Email : example@mail.com</string>
     <string name="dialog_hint_wifi_password">Wifi password</string>
     <string name="dialog_hint_security_password">Security password</string>
     <!--//endregion Dialog Hints-->
 
-    <!--//endregion Dialog TextViews-->
+    <!--//region Dialog TextViews-->
     <string name="dialog_text_view_sure">Are you sure?</string>
     <!--//endregion Dialog TextViews-->
 
@@ -169,9 +170,9 @@
     <!--//endregion BLE States-->
 
     <!--//region Adapter Empty-->
-    <string name="adapter_empty_syncing">Syncing ...</string>
-    <string name="adapter_empty_scanning">Scanning ...</string>
-    <string name="adapter_empty_try_again">Try again ...</string>
+    <string name="adapter_empty_syncing">Syncing …</string>
+    <string name="adapter_empty_scanning">Scanning …</string>
+    <string name="adapter_empty_try_again">Try again …</string>
     <!--//endregion Adapter Empty-->
 
 </resources>

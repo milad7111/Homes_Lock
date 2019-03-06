@@ -12,11 +12,11 @@
         app:layout_constraintGuide_percent="0.8" />
 
     <ImageView
-        android:id="@+id/img_add_new_lock_screen"
+        android:id="@+id/img_add_new_device_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/content_description_img_new_device_screen_add_device_fragment"
         android:focusable="false"
         app:srcCompat="@drawable/ic_homes_lock_idle"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -25,13 +25,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btn_add_new_lock"
+        android:id="@+id/btn_add_new_device"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@color/button_back_color"
         android:focusable="true"
-        android:text="@string/fragment_button_add_new_lock"
+        android:text="@string/fragment_button_add_new_device"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline">

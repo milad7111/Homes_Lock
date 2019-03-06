@@ -4,20 +4,19 @@ import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
-import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
+import com.projects.company.homes_lock.ui.device.fragment.adddevice.IAddDeviceFragment;
 
 public class AddLockViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private Application mApplication;
-    private IAddLockFragment mIAddLockFragment;
+    private IAddDeviceFragment mIAddDeviceFragment;
 
-    public AddLockViewModelFactory(Application mApplication, IAddLockFragment mIAddLockFragment) {
+    public AddLockViewModelFactory(Application mApplication, IAddDeviceFragment mIAddDeviceFragment) {
         this.mApplication = mApplication;
-        this.mIAddLockFragment = mIAddLockFragment;
+        this.mIAddDeviceFragment = mIAddDeviceFragment;
     }
 
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
-        return (T) new UserViewModel(mApplication, mIAddLockFragment);
+        return (T) new UserViewModel(mApplication, mIAddDeviceFragment);
     }
 }

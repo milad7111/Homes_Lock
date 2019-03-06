@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"
-            android:hint="@string/dialog_hint_lock_name"
+            android:hint="@string/dialog_hint_device_name"
             android:nextFocusDown="@+id/chb_member_admin_status_dialog_add_member"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />

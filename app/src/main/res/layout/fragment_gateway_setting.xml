@@ -155,7 +155,7 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:nextFocusDown="@+id/txv_remove_lock_description_setting_fragment"
-            android:text="@string/fragment_text_view_remove_lock"
+            android:text="@string/fragment_text_view_remove_device"
             android:textColor="@color/remove_lock_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_remove_lock_description_setting_fragment"
@@ -169,7 +169,7 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:nextFocusDown="@+id/txv_device_setting_setting_fragment"
-            android:text="@string/fragment_text_view_remove_lock_description"
+            android:text="@string/fragment_text_view_remove_device_description"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@+id/txv_remove_lock_setting_fragment" />

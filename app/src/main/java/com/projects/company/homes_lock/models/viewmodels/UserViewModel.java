@@ -13,7 +13,7 @@ import com.projects.company.homes_lock.repositories.local.ILocalRepository;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
-import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
+import com.projects.company.homes_lock.ui.device.fragment.adddevice.IAddDeviceFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.IManageMembersFragment;
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
 import com.projects.company.homes_lock.ui.login.fragment.register.IRegisterFragment;
@@ -45,7 +45,7 @@ public class UserViewModel extends AndroidViewModel
     //region Declare Objects
     private ILoginFragment mILoginFragment;
     private IRegisterFragment mIRegisterFragment;
-    private IAddLockFragment mIAddLockFragment;
+    private IAddDeviceFragment mIAddDeviceFragment;
     private IManageMembersFragment mIManageMembersFragment;
     private LocalRepository mLocalRepository;
     private NetworkRepository mNetworkRepository;
@@ -78,14 +78,14 @@ public class UserViewModel extends AndroidViewModel
         //endregion Initialize Objects
     }
 
-    UserViewModel(Application application, IAddLockFragment mIAddLockFragment) {
+    UserViewModel(Application application, IAddDeviceFragment mIAddDeviceFragment) {
         super(application);
 
         //region Initialize Variables
         //endregion Initialize Variables
 
         //region Initialize Objects
-        this.mIAddLockFragment = mIAddLockFragment;
+        this.mIAddDeviceFragment = mIAddDeviceFragment;
         this.mLocalRepository = new LocalRepository(application);
         this.mNetworkRepository = new NetworkRepository();
         //endregion Initialize Objects
@@ -113,8 +113,8 @@ public class UserViewModel extends AndroidViewModel
                 mILoginFragment.onLoginSuccessful((User) response);
             else if (mIRegisterFragment != null)
                 mIRegisterFragment.onRegisterSuccessful(response);
-            else if (mIAddLockFragment != null)
-                mIAddLockFragment.onGetUserSuccessful((User) response);
+            else if (mIAddDeviceFragment != null)
+                mIAddDeviceFragment.onGetUserSuccessful((User) response);
         } else if (response instanceof ResponseBody) {
             switch (getRequestType()) {
                 case "removeLockMember":
@@ -155,7 +155,7 @@ public class UserViewModel extends AndroidViewModel
         else if (getRequestType().equals("register") && mIRegisterFragment != null)
             mIRegisterFragment.onRegisterFailed((FailureModel) response);
         else if (getRequestType().equals("getUserWithObjectId") && mIManageMembersFragment != null)
-            mIAddLockFragment.onGetUserFailed((FailureModel) response);
+            mIAddDeviceFragment.onGetUserFailed((FailureModel) response);
         else if (getRequestType().equals("removeLockMember") && mIManageMembersFragment != null)
             mIManageMembersFragment.onRemoveMemberFailed((ResponseBodyFailureModel) response);
     }
@@ -178,8 +178,8 @@ public class UserViewModel extends AndroidViewModel
 
         if (mILoginFragment != null)
             mILoginFragment.onDataInsert(id);
-        else if (mIAddLockFragment != null)
-            mIAddLockFragment.onDataInsert(id);
+        else if (mIAddDeviceFragment != null)
+            mIAddDeviceFragment.onDataInsert(id);
     }
 
     @Override

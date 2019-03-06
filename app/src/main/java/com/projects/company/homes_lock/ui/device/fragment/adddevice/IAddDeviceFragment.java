@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.device.fragment.addlock;
+package com.projects.company.homes_lock.ui.device.fragment.adddevice;
 
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
@@ -6,9 +6,9 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
 /**
- * This is AddLockFragment Interface
+ * This is AddDeviceFragment Interface
  */
-public interface IAddLockFragment {
+public interface IAddDeviceFragment {
     void onFindLockInOnlineDataBaseSuccessful(String response);
 
     void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response);

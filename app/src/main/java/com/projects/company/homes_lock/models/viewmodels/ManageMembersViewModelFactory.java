@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.projects.company.homes_lock.ui.device.fragment.addlock.IAddLockFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.IManageMembersFragment;
 
 public class ManageMembersViewModelFactory extends ViewModelProvider.NewInstanceFactory {
