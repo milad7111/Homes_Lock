@@ -31,7 +31,6 @@ import com.projects.company.homes_lock.ui.notification.NotificationActivity;
 import com.projects.company.homes_lock.ui.proservices.activity.ProServicesActivity;
 import com.projects.company.homes_lock.ui.setting.SettingActivity;
 import com.projects.company.homes_lock.ui.support.SupportActivity;
-import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
@@ -59,7 +58,6 @@ public class LockActivity extends BaseActivity
     //region Declare Objects
     private DeviceViewModel mDeviceViewModel;
     private CustomDeviceAdapter mAdapter;
-    public static CustomBluetoothLEHelper mBluetoothLEHelper;
     //endregion Declare Objects
 
     //region Main CallBacks

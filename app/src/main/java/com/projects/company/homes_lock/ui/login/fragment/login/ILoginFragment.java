@@ -13,7 +13,7 @@ public interface ILoginFragment<T> {
 
     void onLoginFailed(FailureModel response);
 
-    void onDataInsert(Long id);
+    void onDataInsert(Object id);
 
     void onFindLockInOnlineDataBaseSuccessful(String response);
 

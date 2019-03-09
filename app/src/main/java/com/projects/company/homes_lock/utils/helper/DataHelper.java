@@ -3,6 +3,7 @@ package com.projects.company.homes_lock.utils.helper;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.ble.InternetStatusMode;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm;
 
@@ -10,6 +11,14 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static com.projects.company.homes_lock.models.datamodels.ble.InternetStatusMode.CONNECTED;
+import static com.projects.company.homes_lock.models.datamodels.ble.InternetStatusMode.JUST_WIFI;
+import static com.projects.company.homes_lock.models.datamodels.ble.InternetStatusMode.NOT_CONNECTED;
+import static com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm.ATTENTION;
+import static com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm.OPEN;
+import static com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm.SECURE;
+import static com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm.UNSECURE;
 
 public class DataHelper {
 
@@ -96,7 +105,7 @@ public class DataHelper {
         }
     }
 
-    public static String getSecurityAlarmText(boolean isLocked, boolean isDoorClosed) {
+    public static String getLockBriefStatusText(boolean isLocked, boolean isDoorClosed) {
         switch (getSecurityAlarmMode(isLocked, isDoorClosed)) {
             case SECURE:
                 return "Door is Secure";
@@ -111,7 +120,44 @@ public class DataHelper {
         }
     }
 
-    public static int getSecurityAlarmColor(boolean isLocked, boolean isDoorClosed) {
+    public static String getGatewayBriefStatusText(boolean internetStatus, boolean wifiStatus) {
+        switch (getInternetStatusMode(internetStatus, wifiStatus)) {
+            case CONNECTED:
+                return "Connected to server";
+            case JUST_WIFI:
+                return "No internet";
+            case NOT_CONNECTED:
+                return "No network";
+            default:
+                return null;
+        }
+    }
+
+    public static int getGatewayBriefStatusColor(boolean internetStatus, boolean wifiStatus) {
+        switch (getInternetStatusMode(internetStatus, wifiStatus)) {
+            case CONNECTED:
+                return R.color.md_green_700;
+            case JUST_WIFI:
+                return R.color.md_yellow_400;
+            case NOT_CONNECTED:
+                return R.color.md_red_500;
+            default:
+                return R.color.md_black_1000;
+        }
+    }
+
+    private static InternetStatusMode getInternetStatusMode(boolean internetStatus, boolean wifiStatus) {
+        if (internetStatus)
+            return CONNECTED;
+        else {
+            if (wifiStatus)
+                return JUST_WIFI;
+            else
+                return NOT_CONNECTED;
+        }
+    }
+
+    public static int getLockBriefStatusColor(boolean isLocked, boolean isDoorClosed) {
         switch (getSecurityAlarmMode(isLocked, isDoorClosed)) {
             case SECURE:
                 return R.color.md_green_700;
@@ -126,17 +172,17 @@ public class DataHelper {
         }
     }
 
-    private static SecurityAlarm getSecurityAlarmMode(boolean isLocked, Boolean isDoorClosed) {
+    private static SecurityAlarm getSecurityAlarmMode(boolean isLocked, boolean isDoorClosed) {
         if (isLocked)
             if (isDoorClosed)
-                return SecurityAlarm.SECURE;
+                return SECURE;
             else
-                return SecurityAlarm.ATTENTION;
+                return ATTENTION;
         else {
             if (isDoorClosed)
-                return SecurityAlarm.UNSECURE;
+                return UNSECURE;
             else
-                return SecurityAlarm.OPEN;
+                return OPEN;
         }
     }
 

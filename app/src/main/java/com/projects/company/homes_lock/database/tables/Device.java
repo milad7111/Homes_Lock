@@ -517,4 +517,12 @@ public class Device extends BaseModel {
     public void setLockStages(Integer mLockStages) {
         this.mLockStages = mLockStages;
     }
+
+    public int getConnectedDevicesCount() {
+        return 0;//TODO gateway
+    }
+
+    public boolean getGatewayStatus() {
+        return false;//TODO gateway
+    }
 }

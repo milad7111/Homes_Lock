@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.device.fragment.lockpage;
+package com.projects.company.homes_lock.ui.device.fragment.gatewaypage;
 
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
@@ -6,7 +6,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 /**
  * This is GatewayPageFragment Interface
  */
-public interface ILockPageFragment {
+public interface IGatewayPageFragment {
     void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel);
 
     void onGetAvailableWifiNetworksCountAroundDevice(int count);
@@ -30,10 +30,4 @@ public interface ILockPageFragment {
     void onGetUpdatedDevice(Device response);
 
     void onSendRequestGetAvailableWifiSuccessful();
-
-    void onSendLockCommandSuccessful(String command);
-
-    void onSendLockCommandFailed(String command);
-
-    void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress);
 }

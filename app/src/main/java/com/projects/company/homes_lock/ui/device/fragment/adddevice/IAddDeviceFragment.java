@@ -1,5 +1,6 @@
 package com.projects.company.homes_lock.ui.device.fragment.adddevice;
 
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
@@ -29,7 +30,7 @@ public interface IAddDeviceFragment {
 
     void onGetUserFailed(FailureModel response);
 
-    void onDataInsert(Long id);
+    void onDataInsert(Object object);
 
     void onDeviceRegistrationPushNotificationSuccessful(String registrationId);
 

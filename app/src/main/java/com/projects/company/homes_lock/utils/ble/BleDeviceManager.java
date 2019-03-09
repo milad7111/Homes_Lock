@@ -17,7 +17,6 @@ import no.nordicsemi.android.ble.Request;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_SERIAL;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.createCommand;
 
 public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 

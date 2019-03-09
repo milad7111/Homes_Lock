@@ -1,4 +1,5 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,24 +13,24 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/txv_device_name_lock_page"
+        app:layout_constraintBottom_toTopOf="@+id/txv_device_name_gateway_page"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:rv_centered="true">
 
         <ImageView
-            android:id="@+id/img_lock_status_lock_page"
+            android:id="@+id/img_connected_devices_gateway_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_img_lock_status_symbol_lock_page"
+            android:contentDescription="@string/content_description_img_connected_devices_gateway_page"
             android:focusable="false"
             app:srcCompat="@drawable/ic_homes_lock_idle" />
 
     </com.andexert.library.RippleView>
 
     <TextView
-        android:id="@+id/txv_device_name_lock_page"
+        android:id="@+id/txv_device_name_gateway_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -38,12 +39,12 @@
         android:textColor="@color/md_grey_500"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/txv_brief_status_lock_page"
+        app:layout_constraintBottom_toTopOf="@+id/txv_brief_status_gateway_page"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/fragment_text_view_device_name" />
+        tools:text="@string/fragment_text_view_device_name" />
 
     <TextView
-        android:id="@+id/txv_new_update_lock_page"
+        android:id="@+id/txv_new_update_gateway_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -51,12 +52,12 @@
         android:focusable="false"
         android:textColor="@color/md_yellow_500"
         android:textSize="8sp"
-        app:layout_constraintBottom_toTopOf="@+id/txv_brief_status_lock_page"
-        app:layout_constraintStart_toEndOf="@+id/txv_device_name_lock_page"
+        app:layout_constraintBottom_toTopOf="@+id/txv_brief_status_gateway_page"
+        app:layout_constraintStart_toEndOf="@+id/txv_device_name_gateway_page"
         tools:text="new update" />
 
     <TextView
-        android:id="@+id/txv_brief_status_lock_page"
+        android:id="@+id/txv_brief_status_gateway_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -64,23 +65,23 @@
         android:focusable="false"
         android:text="@string/fragment_text_view_data_not_synced"
         android:textColor="@color/md_grey_500"
-        app:layout_constraintBottom_toTopOf="@+id/lnr_action_images_lock_page"
+        app:layout_constraintBottom_toTopOf="@+id/lnr_action_images_gateway_page"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/txv_device_type_lock_page"
+        android:id="@+id/txv_device_type_gateway_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
         android:focusable="false"
-        android:text="@string/fragment_text_view_device_type_lock_page"
+        android:text="@string/fragment_text_view_device_type_gateway_page"
         android:textColor="@color/md_grey_500"
-        app:layout_constraintBottom_toTopOf="@+id/lnr_action_images_lock_page"
+        app:layout_constraintBottom_toTopOf="@+id/lnr_action_images_gateway_page"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
-        android:id="@+id/lnr_action_images_lock_page"
+        android:id="@+id/lnr_action_images_gateway_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -88,42 +89,34 @@
         android:layout_marginBottom="8dp"
         android:focusable="false"
         android:orientation="horizontal"
-        android:weightSum="5"
+        android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/img_battery_status_lock_page"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:focusable="false"
-            app:srcCompat="@drawable/ic_valid_battery_zero" />
-
         <com.andexert.library.RippleView
-            android:id="@+id/rpv_gateway_connection_status_lock_page"
+            android:id="@+id/rpv_connection_status_gateway_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:rv_centered="true">
 
             <ImageView
-                android:id="@+id/img_gateway_connection_status_lock_page"
+                android:id="@+id/img_connection_status_gateway_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                app:srcCompat="@drawable/ic_invalid_gateway_off" />
+                app:srcCompat="@drawable/ic_invalid_wifi_off" />
 
         </com.andexert.library.RippleView>
 
         <com.andexert.library.RippleView
-            android:id="@+id/rpv_ble_lock_page"
+            android:id="@+id/rpv_ble_gateway_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:rv_centered="true">
 
             <ImageView
-                android:id="@+id/img_ble_lock_page"
+                android:id="@+id/img_ble_gateway_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
@@ -132,30 +125,30 @@
         </com.andexert.library.RippleView>
 
         <com.andexert.library.RippleView
-            android:id="@+id/rpv_manage_members_lock_page"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:rv_centered="true">
-
-            <ImageView
-                android:id="@+id/img_manage_members_lock_page"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusable="false"
-                app:srcCompat="@drawable/ic_manage_members_disable" />
-
-        </com.andexert.library.RippleView>
-
-        <com.andexert.library.RippleView
-            android:id="@+id/rpv_more_info_lock_page"
+            android:id="@+id/rpv_manage_members_gateway_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:rv_centered="true">
 
             <ImageView
-                android:id="@+id/img_more_info_lock_page"
+                android:id="@+id/img_manage_members_gateway_page"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                app:srcCompat="@drawable/ic_manage_members_disable" />
+
+        </com.andexert.library.RippleView>
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_more_info_gateway_page"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:rv_centered="true">
+
+            <ImageView
+                android:id="@+id/img_more_info_gateway_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"

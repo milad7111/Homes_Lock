@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,7 +47,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
-import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices;
@@ -81,6 +79,7 @@ public class AddDeviceFragment extends BaseFragment
     //endregion Declare Variables
 
     //region Declare Objects
+//    private Context context = null;
     private DeviceViewModel mDeviceViewModel;
     private UserViewModel mUserViewModel;
 
@@ -92,6 +91,7 @@ public class AddDeviceFragment extends BaseFragment
     private TempDeviceModel mTempDevice;
 
     private BleDeviceAdapter mBleDeviceAdapter;
+    private CustomBluetoothLEHelper mBluetoothLEHelper;
     //endregion Declare Objects
 
     //region Constructor
@@ -131,6 +131,10 @@ public class AddDeviceFragment extends BaseFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //region Initialize Objects
+//        context = getContext();
+        //endregion Initialize Objects
+
         //region Initialize Views
         Button btnAddNewLock = view.findViewById(R.id.btn_add_new_device);
         //endregion Initialize Views
@@ -166,7 +170,7 @@ public class AddDeviceFragment extends BaseFragment
                 true);
 
         this.lockObjectId = lockObjectId;
-        handleDialogAddLockOnline(this, true);
+        handleDialogAddLockOnline(true);
     }
 
     @Override
@@ -250,14 +254,14 @@ public class AddDeviceFragment extends BaseFragment
     }
 
     @Override
-    public void onDataInsert(Long id) {
-        DialogHelper.handleProgressDialog(
-                getActivity(),
-                null,
-                String.format("Adding Lock ... %d %%", getRandomPercentNumber(7, 8)),
-                true);
+    public void onDataInsert(Object object) {
+        if (object instanceof User) {
+            DialogHelper.handleProgressDialog(
+                    getActivity(),
+                    null,
+                    String.format("Adding Lock ... %d %%", getRandomPercentNumber(7, 8)),
+                    true);
 
-        if (id != -1)
             mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
                 DialogHelper.handleProgressDialog(
                         getContext(),
@@ -267,12 +271,13 @@ public class AddDeviceFragment extends BaseFragment
 
                 ((LockActivity) getActivity()).setViewPagerAdapter(
                         new CustomDeviceAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), devices));
-
-                if (dialogAddLockOffline != null){
-                    dialogAddLockOffline.dismiss();
-                    dialogAddLockOffline = null;
-                }
             });
+        } else if (object instanceof Device) {
+            if (dialogAddLockOffline != null) {
+                dialogAddLockOffline.dismiss();
+                dialogAddLockOffline = null;
+            }
+        }
     }
 
     @Override
@@ -289,61 +294,57 @@ public class AddDeviceFragment extends BaseFragment
     //region Ble Callbacks
     @Override
     public void onFindBleSuccess(List devices) {
-        handleDialogListOfAvailableBleDevices(this, devices);
+        handleDialogListOfAvailableBleDevices(devices);
     }
 
     @Override
     public void onFindBleFault() {
-        handleDialogListOfAvailableBleDevices(this, Collections.singletonList(new ScannedDeviceModel(SEARCHING_TIMEOUT_MODE)));
+        handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_TIMEOUT_MODE)));
     }
 
     @Override
     public void onAdapterItemClick(BaseModel device) {
         mDevice = (ScannedDeviceModel) device;
-
-        if (dialogAddLockOffline != null)
-            dialogAddLockOffline.dismiss();
-
         mDeviceViewModel.connect(this, mDevice);
     }
 
     @Override
     public void onBonded(BluetoothDevice device) {
-        if (dialogListOfAvailableBleDevices != null){
+        if (dialogListOfAvailableBleDevices != null) {
             dialogListOfAvailableBleDevices.dismiss();
             dialogListOfAvailableBleDevices = null;
         }
 
-        handleDialogAddLockOffline(this);
+        getActivity().runOnUiThread(this::handleDialogAddLockOffline);
     }
     //endregion Ble Callbacks
 
     //region Declare Methods
     private void addNewLock() {
         if (isUserLoggedIn())
-            handleDialogAddLockOnline(this, false); // Means user Wrote username and password then clicked Login
+            handleDialogAddLockOnline(false); // Means user Wrote username and password then clicked Login
         else {
             mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
             mTempDevice = new TempDeviceModel();
             if (getScanPermission(this))
-                handleDialogListOfAvailableBleDevices(this, Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
+                handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
         }
     }
 
-    private void handleDialogListOfAvailableBleDevices(Fragment fragment, List<ScannedDeviceModel> devices) {
+    private void handleDialogListOfAvailableBleDevices(List<ScannedDeviceModel> devices) {
         if (dialogListOfAvailableBleDevices == null) {
             dialogListOfAvailableBleDevices = new Dialog(getContext());
             dialogListOfAvailableBleDevices.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialogListOfAvailableBleDevices.setContentView(R.layout.dialog_available_devices);
 
             if (mBleDeviceAdapter == null)
-                mBleDeviceAdapter = new BleDeviceAdapter(fragment, devices);
+                mBleDeviceAdapter = new BleDeviceAdapter(this, devices);
 
             RecyclerView rcvDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.rcv_dialog_available_devices);
             Button btnCancelDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_cancel_dialog_available_devices);
             Button btnScanDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_scan_dialog_available_devices);
 
-            rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+            rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(getContext()));
             rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
             rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
 
@@ -355,10 +356,10 @@ public class AddDeviceFragment extends BaseFragment
 
             btnScanDialogAvailableDevices.setOnClickListener(v -> {
                 mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
-                findDevices(fragment);
+                findDevices(this, mBluetoothLEHelper);
             });
 
-            findDevices(fragment);
+            findDevices(this, mBluetoothLEHelper);
         } else
             mBleDeviceAdapter.setBleDevices(devices);
 
@@ -368,7 +369,7 @@ public class AddDeviceFragment extends BaseFragment
         Objects.requireNonNull(dialogListOfAvailableBleDevices.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(dialogListOfAvailableBleDevices));
     }
 
-    private void handleDialogAddLockOffline(Fragment fragment) {
+    private void handleDialogAddLockOffline() {
         saveLockAfterPaired = false;
 
         dialogAddLockOffline = new Dialog(getContext());
@@ -392,7 +393,7 @@ public class AddDeviceFragment extends BaseFragment
         btnCancelDialogAddNewLock.setOnClickListener(v -> dialogAddLockOffline.dismiss());
 
         btnAddDialogAddNewLock.setOnClickListener(v -> {
-            DialogHelper.handleProgressDialog(fragment.getContext(), null, "Saving ...", true);
+            DialogHelper.handleProgressDialog(getContext(), null, "Saving ...", true);
 
             mTempDevice.setDeviceName(tietLockNameDialogAddNewLock.getText().toString());
             mTempDevice.setDeviceSerialNumber(tietLockSerialNumberDialogAddNewLock.getText().toString());
@@ -409,7 +410,7 @@ public class AddDeviceFragment extends BaseFragment
         Objects.requireNonNull(dialogAddLockOffline.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(dialogAddLockOffline));
     }
 
-    private void handleDialogAddLockOnline(Fragment fragment, boolean lockExistenceStatus) {
+    private void handleDialogAddLockOnline(boolean lockExistenceStatus) {
         if (dialogAddLockOnline == null) {
             dialogAddLockOnline = new Dialog(getContext());
 
@@ -429,12 +430,12 @@ public class AddDeviceFragment extends BaseFragment
 
             btnAddDialogAddNewLock.setOnClickListener(v -> {
                 DialogHelper.handleProgressDialog(
-                        fragment.getContext(),
+                        getContext(),
                         null,
                         String.format("Adding Lock ... %d %%", getRandomPercentNumber(1, 8)),
                         true);
 
-                mDeviceViewModel.validateLockInOnlineDatabase(fragment, tietLockSerialNumberDialogAddNewLock.getText().toString());
+                mDeviceViewModel.validateLockInOnlineDatabase(this, tietLockSerialNumberDialogAddNewLock.getText().toString());
             });
         } else {
             if (lockExistenceStatus)

@@ -30,7 +30,7 @@
             android:layout_marginTop="2dp"
             android:focusable="false"
             android:gravity="center_vertical"
-            android:text="@string/fragment_text_view_default_device_type"
+            android:text="@string/fragment_text_view_device_type_lock_page"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@+id/txv_device_type_setting_fragment" />

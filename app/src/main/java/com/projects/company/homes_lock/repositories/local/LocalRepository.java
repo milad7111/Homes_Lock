@@ -73,7 +73,8 @@ public class LocalRepository {
         return mLockUserViewDao.getAllUserLocks();
     }
 
-    public void insertDevice(Device device) {
+    public void insertDevice(ILocalRepository iLocalRepository, Device device) {
+        mILocalRepository = iLocalRepository;
         new insertDeviceAsyncTask(mDeviceDao).execute(device);
     }
 
@@ -167,14 +168,14 @@ public class LocalRepository {
     //endregion Device table
 
     //region User and UserLock table
-    public void insertUser(User user, ILocalRepository _mILocalRepository) {
-        mILocalRepository = _mILocalRepository;
+    public void insertUser(ILocalRepository iLocalRepository, User user) {
+        mILocalRepository = iLocalRepository;
         new clearAllDataAndInsertUserAsyncTask(mUserDao, mUserLockDao, mDeviceDao, mDeviceErrorDao, mErrorDao, user).execute();
     }
     //endregion User and UserLock table
 
     //region Declare Classes & Interfaces
-    private static class insertDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
+    private static class insertDeviceAsyncTask extends AsyncTask<Device, Void, Device> {
 
         private DeviceDao mDeviceDao;
 
@@ -183,9 +184,16 @@ public class LocalRepository {
         }
 
         @Override
-        protected final Void doInBackground(Device... device) {
-            this.mDeviceDao.insert(device);
-            return null;
+        protected final Device doInBackground(Device... device) {
+            this.mDeviceDao.insert(device[0]);
+            return device[0];
+        }
+
+        @Override
+        protected void onPostExecute(Device device) {
+            super.onPostExecute(device);
+            if (mILocalRepository != null)
+                mILocalRepository.onDataInsert(device);
         }
     }
 
@@ -219,7 +227,7 @@ public class LocalRepository {
         }
     }
 
-    private static class insertUserAsyncTask extends AsyncTask<User, Void, Long> {
+    private static class insertUserAsyncTask extends AsyncTask<User, Void, User> {
 
         private UserDao mUserDao;
 
@@ -228,15 +236,17 @@ public class LocalRepository {
         }
 
         @Override
-        protected Long doInBackground(User... users) {
-            return this.mUserDao.insert(users[0]);
+        protected User doInBackground(User... users) {
+            this.mUserDao.insert(users[0]);
+
+            return users[0];
         }
 
         @Override
-        protected void onPostExecute(Long id) {
-            super.onPostExecute(id);
+        protected void onPostExecute(User user) {
+            super.onPostExecute(user);
             if (mILocalRepository != null)
-                mILocalRepository.onDataInsert(id);
+                mILocalRepository.onDataInsert(user);
         }
     }
 

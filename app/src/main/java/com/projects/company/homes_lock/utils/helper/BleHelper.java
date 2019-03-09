@@ -18,13 +18,13 @@ import android.support.v4.content.ContextCompat;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
 
 public class BleHelper {
@@ -36,7 +36,6 @@ public class BleHelper {
 
     public static final String LOCK_STATUS_LOCK = "lock";
     public static final String LOCK_STATUS_UNLOCK = "unlock";
-    public static final String LOCK_STATUS_IDLE = "idle";
 
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
@@ -148,17 +147,17 @@ public class BleHelper {
         context.startActivity(intent);
     }
 
-    public static void enableBluetooth(Activity activity) {
+    private static void enableBluetooth(Activity activity) {
         final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         activity.startActivity(enableIntent);
     }
 
-    public static void grantLocationPermission(Activity context) {
+    private static void grantLocationPermission(Activity context) {
         BleHelper.markLocationPermissionRequested(context);
         ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ACCESS_COARSE_LOCATION);
     }
 
-    public static void handlePermissionSettings(Activity context) {
+    private static void handlePermissionSettings(Activity context) {
         final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.fromParts("package", context.getPackageName(), null));
         context.startActivity(intent);
@@ -178,10 +177,10 @@ public class BleHelper {
     }
 
     public static byte[] createReadMessage(String key) {
-        return mergeArrays(new byte[]{0x00, 0x00}, mergeArrays((("{\"" + key + "\":null}")).getBytes(), new byte[]{0x00}));
+        return mergeArrays(new byte[]{0x00, 0x40}, mergeArrays((("{\"" + key + "\":null}")).getBytes(), new byte[]{0x00}));
     }
 
-    public static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
+    private static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
         byte[] finalArray = new byte[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, finalArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, finalArray, firstArray.length, secondArray.length);
@@ -205,14 +204,14 @@ public class BleHelper {
         return 0x00;
     }
 
-    public static void findDevices(Fragment fragment) {
+    public static void findDevices(Fragment fragment, CustomBluetoothLEHelper mBluetoothLEHelper) {
         if (mBluetoothLEHelper != null && !mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
             mBluetoothLEHelper.scanLeDevice(true);
 
             Handler mHandler = new Handler();
             mHandler.postDelayed(() -> {
-                List<ScannedDeviceModel> tempList = getListOfScannedDevices();
+                List<ScannedDeviceModel> tempList = getListOfScannedDevices(mBluetoothLEHelper);
                 if (tempList.size() == 0)
                     ((IBleScanListener<Object>) fragment).onFindBleFault();
                 else
@@ -221,7 +220,7 @@ public class BleHelper {
         }
     }
 
-    private static List<ScannedDeviceModel> getListOfScannedDevices() {
+    private static List<ScannedDeviceModel> getListOfScannedDevices(CustomBluetoothLEHelper mBluetoothLEHelper) {
         List<ScannedDeviceModel> mScannedDeviceModelList = new ArrayList<>();
 
         for (BluetoothLE device : mBluetoothLEHelper.getListDevices())

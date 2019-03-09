@@ -333,6 +333,17 @@ public class SettingFragment extends Fragment
     }
 
     @Override
+    public void onResetBleDeviceSuccessful() {
+        if (resetLockDialog != null) {
+            resetLockDialog.dismiss();
+            resetLockDialog = null;
+        }
+
+        mDeviceViewModel.disconnect();
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
     public void onCheckOldPairingPasswordFailed(String errorValue) {
         Log.e(getClass().getName(), String.format("Old password does not match pass in Device!: %s", errorValue));
     }
@@ -382,7 +393,7 @@ public class SettingFragment extends Fragment
 
     private void handleDeviceSetting() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            deviceSettingDialog = new Dialog(mFragment.getContext());
+            deviceSettingDialog = new Dialog(getContext());
             deviceSettingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceSettingDialog.setContentView(R.layout.dialog_device_setting);
 
@@ -417,7 +428,7 @@ public class SettingFragment extends Fragment
     }
 
     private void handleResetLock() {
-        resetLockDialog = new Dialog(mFragment.getContext());
+        resetLockDialog = new Dialog(getContext());
         resetLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resetLockDialog.setContentView(R.layout.dialog_reset_lock);
 
@@ -432,18 +443,18 @@ public class SettingFragment extends Fragment
         });
 
         btnResetDialogResetLock.setOnClickListener(v -> {
-            DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Reset Lock ...", true);
-            mDeviceViewModel.resetDevice(mFragment);
-            Objects.requireNonNull(getActivity()).finish();
+            DialogHelper.handleProgressDialog(getContext(), null, "Reset Lock ...", true);
+            mDeviceViewModel.resetBleDevice(mFragment);
         });
 
         resetLockDialog.show();
-        resetLockDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(resetLockDialog));
+        Objects.requireNonNull(resetLockDialog.getWindow())
+                .setAttributes(ViewHelper.getDialogLayoutParams(resetLockDialog));
     }
 
     private void handleRemoveLock() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            removeLockDialog = new Dialog(mFragment.getContext());
+            removeLockDialog = new Dialog(getContext());
             removeLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             removeLockDialog.setContentView(R.layout.dialog_remove_lock);
 
@@ -471,7 +482,7 @@ public class SettingFragment extends Fragment
             });
 
             btnRemoveDialogRemoveLock.setOnClickListener(v -> {
-                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Remove lock ...", true);
+                DialogHelper.handleProgressDialog(getContext(), null, "Remove lock ...", true);
                 mDeviceViewModel.removeDevice(
                         mFragment,
                         chbRemoveAllMembersDialogRemoveLock.isChecked(),
@@ -480,7 +491,8 @@ public class SettingFragment extends Fragment
         }
 
         removeLockDialog.show();
-        removeLockDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(removeLockDialog));
+        Objects.requireNonNull(removeLockDialog.getWindow())
+                .setAttributes(ViewHelper.getDialogLayoutParams(removeLockDialog));
     }
 
     private void handleChangePassword(int changeStatus) {
@@ -496,7 +508,7 @@ public class SettingFragment extends Fragment
 
     private void handleDialogChangeOnlinePassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changeOnlinePasswordDialog = new Dialog(mFragment.getContext());
+            changeOnlinePasswordDialog = new Dialog(getContext());
             changeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
 
@@ -518,18 +530,19 @@ public class SettingFragment extends Fragment
             btnApplyDialogChangeOnlinePassword.setOnClickListener(v -> {
                 DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change online password ...", true);
                 mDeviceViewModel.changeOnlinePasswordViaBle(mFragment,
-                        tietOldPasswordDialogChangeOnlinePassword.getText().toString(),
-                        tietNewPasswordDialogChangeOnlinePassword.getText().toString());
+                        Objects.requireNonNull(tietOldPasswordDialogChangeOnlinePassword.getText()).toString(),
+                        Objects.requireNonNull(tietNewPasswordDialogChangeOnlinePassword.getText()).toString());
             });
         }
 
         changeOnlinePasswordDialog.show();
-        changeOnlinePasswordDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(changeOnlinePasswordDialog));
+        Objects.requireNonNull(changeOnlinePasswordDialog.getWindow())
+                .setAttributes(ViewHelper.getDialogLayoutParams(changeOnlinePasswordDialog));
     }
 
     private void handleDialogChangePairingPassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changePairingPasswordDialog = new Dialog(mFragment.getContext());
+            changePairingPasswordDialog = new Dialog(getContext());
             changePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
 
@@ -551,13 +564,14 @@ public class SettingFragment extends Fragment
             btnApplyDialogChangePairingPassword.setOnClickListener(v -> {
                 DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change pairing password ...", true);
                 mDeviceViewModel.changePairingPasswordViaBle(mFragment,
-                        Integer.valueOf(tietOldPasswordDialogChangePairingPassword.getText().toString()),
-                        Integer.valueOf(tietNewPasswordDialogChangePairingPassword.getText().toString()));
+                        Integer.valueOf(Objects.requireNonNull(tietOldPasswordDialogChangePairingPassword.getText()).toString()),
+                        Integer.valueOf(Objects.requireNonNull(tietNewPasswordDialogChangePairingPassword.getText()).toString()));
             });
         }
 
         changePairingPasswordDialog.show();
-        changePairingPasswordDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(changePairingPasswordDialog));
+        Objects.requireNonNull(changePairingPasswordDialog.getWindow())
+                .setAttributes(ViewHelper.getDialogLayoutParams(changePairingPasswordDialog));
     }
 
     private boolean findSelectedDoorInstallationOption(RadioGroup radioGroup) {
@@ -587,7 +601,7 @@ public class SettingFragment extends Fragment
     }
 
     private void logoutLocally() {
-        getActivity().finish();
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     private void handleSetSettingResponse() {

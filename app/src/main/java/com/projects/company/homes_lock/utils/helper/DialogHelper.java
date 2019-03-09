@@ -9,17 +9,9 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
-import com.projects.company.homes_lock.ui.device.activity.LockActivity;
-import com.projects.company.homes_lock.ui.device.fragment.adddevice.AddDeviceFragment;
-
-import static com.projects.company.homes_lock.ui.device.activity.LockActivity.mBluetoothLEHelper;
-import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomPercentNumber;
 
 public class DialogHelper {
 

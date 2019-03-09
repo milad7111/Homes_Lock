@@ -11,6 +11,8 @@ import android.widget.ImageView;
 
 import com.projects.company.homes_lock.R;
 
+import java.util.Objects;
+
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 
@@ -44,21 +46,35 @@ public class ViewHelper {
 
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         mTransaction.add(containerId, fragment, fragment.getClass().getName());
-        mTransaction.addToBackStack(null);
+        mTransaction.addToBackStack(fragment.getClass().getName());
         mTransaction.commit();
     }
 
-    public static void setIsLockedImage(ImageView imageViewLock, int isLocked) {
+    public static void setIsLockedImage(ImageView imageViewIsLocked, int isLocked) {
         switch (isLocked) {
             case 0:
-                imageViewLock.setImageResource(R.drawable.ic_homes_lock_open);
+                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_open);
                 break;
             case 1:
-                imageViewLock.setImageResource(R.drawable.ic_homes_lock_close);
+                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_close);
                 break;
             case 2:
-                imageViewLock.setImageResource(R.drawable.ic_homes_lock_idle);
+                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_idle);
                 break;
+        }
+    }
+
+    public static void setConnectedDevicesStatusImage(ImageView imageViewConnectedDevices, int connectedDevicesCount, boolean setDefault) {
+        if (setDefault) {
+            if (connectedDevicesCount == 0)
+                imageViewConnectedDevices.setImageResource(R.drawable.ic_invalid_connected_devices);
+            else
+                imageViewConnectedDevices.setImageResource(R.drawable.ic_invalid_connected_devices);
+        } else {
+            if (connectedDevicesCount == 0)
+                imageViewConnectedDevices.setImageResource(R.drawable.ic_valid_no_connected_devices);
+            else
+                imageViewConnectedDevices.setImageResource(R.drawable.ic_valid_connected_devices);
         }
     }
 
@@ -81,29 +97,59 @@ public class ViewHelper {
             imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_full : R.drawable.ic_valid_battery_full);
     }
 
-    public static void setConnectionStatusImage(ImageView imgConnectionStatusLockPage, boolean setDefault, boolean wifiStatus, Boolean internetStatus, Integer wifiStrength) {
+    public static void setGatewayInternetConnectionStatusImage(
+            ImageView imgConnectionStatusLockPage, boolean setDefault, boolean wifiStatus, boolean internetStatus, Integer wifiStrength) {
         if (!wifiStatus)
             imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_off : R.drawable.ic_valid_wifi_off);
         else {
             if (!internetStatus) {
                 if (wifiStrength > -60)
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_no_internet_full : R.drawable.ic_valid_wifi_no_internet_full);
-                else if (wifiStrength <= -60 && wifiStrength > -71)
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_no_internet_middle : R.drawable.ic_valid_wifi_no_internet_middle);
-                else if (wifiStrength <= -71 && wifiStrength > -85)
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_no_internet_low : R.drawable.ic_valid_wifi_no_internet_low);
-                else // wifiStrength <= -85
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_no_internet_zero : R.drawable.ic_valid_wifi_no_internet_zero);
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_no_internet_full : R.drawable.ic_valid_wifi_no_internet_full);
+                else if (wifiStrength > -71)
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_no_internet_middle : R.drawable.ic_valid_wifi_no_internet_middle);
+                else if (wifiStrength > -85)
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_no_internet_low : R.drawable.ic_valid_wifi_no_internet_low);
+                else
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_no_internet_zero : R.drawable.ic_valid_wifi_no_internet_zero);
             } else {
                 if (wifiStrength > -60)
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_internet_full : R.drawable.ic_valid_wifi_internet_full);
-                else if (wifiStrength <= -60 && wifiStrength > -71)
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_internet_middle : R.drawable.ic_valid_wifi_internet_middle);
-                else if (wifiStrength <= -71 && wifiStrength > -85)
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_internet_low : R.drawable.ic_valid_wifi_internet_low);
-                else // wifiStrength <= -85
-                    imgConnectionStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_wifi_internet_zero : R.drawable.ic_valid_wifi_internet_zero);
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_internet_full : R.drawable.ic_valid_wifi_internet_full);
+                else if (wifiStrength > -71)
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_internet_middle : R.drawable.ic_valid_wifi_internet_middle);
+                else if (wifiStrength > -85)
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_internet_low : R.drawable.ic_valid_wifi_internet_low);
+                else
+                    imgConnectionStatusLockPage.setImageResource(setDefault ?
+                            R.drawable.ic_invalid_wifi_internet_zero : R.drawable.ic_valid_wifi_internet_zero);
             }
+        }
+    }
+
+    public static void setLockConnectionStatusToGatewayImage(
+            ImageView imgConnectionStatusLockPage, boolean setDefault, boolean gatewayConnectionStatus, int wifiStrength) {
+        if (!gatewayConnectionStatus) {
+            imgConnectionStatusLockPage.setImageResource(setDefault ?
+                    R.drawable.ic_invalid_gateway_off : R.drawable.ic_valid_gateway_off);
+        } else {
+            if (wifiStrength > -60)
+                imgConnectionStatusLockPage.setImageResource(setDefault ?
+                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
+            else if (wifiStrength > -71)
+                imgConnectionStatusLockPage.setImageResource(setDefault ?
+                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
+            else if (wifiStrength > -85)
+                imgConnectionStatusLockPage.setImageResource(setDefault ?
+                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
+            else
+                imgConnectionStatusLockPage.setImageResource(setDefault ?
+                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
         }
     }
 
@@ -125,7 +171,7 @@ public class ViewHelper {
     public static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog) {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
 
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
 
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;

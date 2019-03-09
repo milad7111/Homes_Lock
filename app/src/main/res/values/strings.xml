@@ -19,6 +19,8 @@
     <string name="content_description_img_temperature_celsius_lock_page">centigrade symbol</string>
     <string name="content_description_img_lock_status_symbol_lock_page">lock status</string>
     <string name="content_description_img_water_percent_lock_page">water percent</string>
+    <string name="content_description_img_connected_devices_gateway_page">Show if any device connect to gateway</string>
+    <string name="content_description_img_connected_devices_other_devices_page">Show connection status of connected client to device</string>
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->
@@ -42,6 +44,8 @@
 
     <!--//region Fragment TextViews-->
     <string name="fragment_text_view_login">Login</string>
+    <string name="fragment_text_view_device_type_lock_page">LOCK</string>
+    <string name="fragment_text_view_data_not_synced">Data Not Synced</string>
     <string name="fragment_text_view_firmware_version">Firmware Version</string>
     <string name="fragment_text_view_default_firmware_version">0.0.0</string>
     <string name="fragment_text_view__door_installation">Door Installation</string>
@@ -62,7 +66,6 @@
     <string name="fragment_text_view_device_setting">Device setting</string>
     <string name="fragment_text_view_device_setting_value"><![CDATA[Door installation & Lock stages]]></string>
     <string name="fragment_text_view_device_type">Device type</string>
-    <string name="fragment_text_view_default_device_type">LOCK</string>
     <string name="fragment_text_view_hardware_version">Hardware version</string>
     <string name="fragment_text_view_default_hardware_version">0.0.0</string>
     <string name="fragment_text_view_production_date">Production date</string>
@@ -72,6 +75,8 @@
     <string name="fragment_text_view_dynamic_id">Dynamic id</string>
     <string name="fragment_text_view_default_dynamic_id_description">8a8as_da85_ks_584185</string>
     <string name="fragment_text_view_reset_device">Reset DEVICE</string>
+    <string name="fragment_text_view_device_name">Device Name</string>
+    <string name="fragment_text_view_device_type_gateway_page">GATEWAY</string>
     <!--//endregion Fragment TextViews-->
 
     <!--//region Dialog Titles-->
@@ -89,6 +94,7 @@
     <string name="dialog_title_remove_device">Remove device</string>
     <string name="dialog_title_remove_member">Remove member</string>
     <string name="dialog_title_reset_device">Reset Device</string>
+    <string name="dialog_title_connected_clients">Connected Clients</string>
     <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->

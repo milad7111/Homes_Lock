@@ -33,4 +33,6 @@ public interface ISettingFragment {
     void onChangePairingPasswordSuccessful();
 
     void onChangePairingPasswordFailed(String string);
+
+    void onResetBleDeviceSuccessful();
 }

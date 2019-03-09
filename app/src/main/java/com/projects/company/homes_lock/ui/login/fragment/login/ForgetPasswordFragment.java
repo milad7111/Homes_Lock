@@ -76,7 +76,7 @@ public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
     }
 
     @Override
-    public void onDataInsert(Long id) {
+    public void onDataInsert(Object id) {
 
     }
 

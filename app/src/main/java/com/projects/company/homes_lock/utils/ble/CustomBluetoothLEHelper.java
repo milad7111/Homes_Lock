@@ -55,12 +55,9 @@ public class CustomBluetoothLEHelper {
         if (enable) {
             mScanning = true;
 
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                }
+            mHandler.postDelayed(() -> {
+                mScanning = false;
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
             }, SCAN_PERIOD);
 
             if (!FILTER_SERVICE.equals("")) {
@@ -123,7 +120,6 @@ public class CustomBluetoothLEHelper {
     }
 
     public boolean isReadyForScan() {
-
         return Permissions.checkPermisionStatus(act, Manifest.permission.BLUETOOTH)
                 && Permissions.checkPermisionStatus(act, Manifest.permission.BLUETOOTH_ADMIN)
                 && Permissions.checkPermisionStatus(act, Manifest.permission.ACCESS_COARSE_LOCATION) && Functions.getStatusGps(act);

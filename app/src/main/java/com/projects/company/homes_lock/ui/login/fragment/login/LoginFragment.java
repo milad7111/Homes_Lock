@@ -172,7 +172,7 @@ public class LoginFragment extends Fragment
 //        if (notSavedDevices.size() != 0)
 //            saveLocalDevicesToServer();
 //        else
-            mUserViewModel.insertUser(user);
+        mUserViewModel.insertUser(user);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class LoginFragment extends Fragment
 //        if (++savedDevicesIndex < notSavedDevices.size())
 //            saveLocalDevicesToServer();
 //        else
-            mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
+        mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
     }
 
     @Override
@@ -246,8 +246,8 @@ public class LoginFragment extends Fragment
     }
 
     @Override
-    public void onDataInsert(Long id) {
-        if (id != -1) {
+    public void onDataInsert(Object object) {
+        if (object instanceof User) {
             clearViews();
             startActivity(new Intent(getActivity(), LockActivity.class));
             setUserLoginMode(true);

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.util.Log;
 
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
@@ -173,13 +174,15 @@ public class UserViewModel extends AndroidViewModel
 
     //region ILocalRepository Callbacks
     @Override
-    public void onDataInsert(Long id) {
-        Log.d(getClass().getName(), "Data inserted with Id : " + id);
+    public void onDataInsert(Object object) {
+        Log.d(getClass().getName(), "Data inserted");
 
-        if (mILoginFragment != null)
-            mILoginFragment.onDataInsert(id);
-        else if (mIAddDeviceFragment != null)
-            mIAddDeviceFragment.onDataInsert(id);
+        if (object instanceof User) {
+            if (mILoginFragment != null)
+                mILoginFragment.onDataInsert(object);
+            else if (mIAddDeviceFragment != null)
+                mIAddDeviceFragment.onDataInsert(object);
+        }
     }
 
     @Override
@@ -224,7 +227,7 @@ public class UserViewModel extends AndroidViewModel
 
     //region Declare Local Methods
     public void insertUser(User user) {
-        mLocalRepository.insertUser(user, this);
+        mLocalRepository.insertUser(this, user);
     }
     //endregion Declare Local Methods
 
