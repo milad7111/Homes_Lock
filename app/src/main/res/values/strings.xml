@@ -95,6 +95,7 @@
     <string name="dialog_title_remove_member">Remove member</string>
     <string name="dialog_title_reset_device">Reset Device</string>
     <string name="dialog_title_connected_clients">Connected Clients</string>
+    <string name="dialog_title_disconnect_device">Disconnect Device</string>
     <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->
@@ -107,6 +108,7 @@
     <string name="dialog_button_pair">PAIR</string>
     <string name="dialog_button_remove">REMOVE</string>
     <string name="dialog_button_reset">RESET</string>
+    <string name="dialog_button_disconnect">DISCONNECT</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->

@@ -130,9 +130,38 @@ public class LockPageFragment extends BaseFragment
         //region Initialize Objects
         mContext = getContext();
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
-        //endregion Initialize Objects
+        this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
+            if (isConnected != null) {
+                isConnectedToBleDevice = isConnected;
+                ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
 
-        readAllLockInfo();
+                if (!isConnected) {
+                    updateViewData(true);
+
+                    if (mBluetoothLEHelper != null)
+                        mBluetoothLEHelper.disconnect();
+                }
+            }
+        });
+        this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
+            if (isSupported != null)
+                if (isSupported) {
+                    this.mDeviceViewModel.getDeviceDataFromBleDevice();
+                    this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
+                    this.mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+                    updateViewData(false);
+                } else {
+                    updateViewData(true);
+
+                    if (mBluetoothLEHelper != null)
+                        mBluetoothLEHelper.disconnect();
+                }
+        });
+        this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
+            mDevice = device;
+            updateViewData(!isConnectedToBleDevice);
+        });
+        //endregion Initialize Objects
     }
 
     @Override
@@ -212,10 +241,11 @@ public class LockPageFragment extends BaseFragment
                 handleDeviceMembers();
                 break;
             case R.id.img_more_info_lock_page:
-                setFragment(
-                        (AppCompatActivity) getActivity(),
-                        R.id.frg_lock_activity,
-                        SettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
+                if (isConnectedToBleDevice)
+                    setFragment(
+                            (AppCompatActivity) Objects.requireNonNull(getActivity()),
+                            R.id.frg_lock_activity,
+                            SettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
                 break;
         }
     }
@@ -327,93 +357,29 @@ public class LockPageFragment extends BaseFragment
     public void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress) {
         mConnectedClientsAdapter.addConnectedDevice(
                 new ConnectedClientsModel(mConnectedClients.size(), connectedClientMacAddress, true));
-//        handleDialogListOfConnectedClientsToDevice();
+    }
+
+    @Override
+    public void onDeviceDisconnectedSuccessfully() {
+        handleProgressDialog(null, null, null, false);
+
+        if (disconnectClientDialog != null) {
+            disconnectClientDialog.dismiss();
+            disconnectClientDialog = null;
+        }
+
+        if (connectedClientsToDeviceListDialog != null) {
+            if (!connectedClientsToDeviceListDialog.isShowing())
+                connectedClientsToDeviceListDialog.show();
+
+            mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
+            this.mDeviceViewModel.getConnectedClientsToDevice(this);
+        } else
+            handleConnectedDevices();
     }
     //endregion BLE CallBacks
 
-    //region Declare Methods
-    private void updateViewData(boolean setDefault) {
-        txvDeviceTypeLockPage.setText(mDevice.getDeviceType());
-
-        setIsLockedImage(imgIsLockedLockPage,
-                setDefault ? 2 : (mDevice.getIsLocked() ? 1 : 0));
-
-        setBatteryStatusImage(setDefault, imgBatteryStatusLockPage, mDevice.getBatteryPercentage());
-        setLockConnectionStatusToGatewayImage(
-                imgGatewayConnectionStatusLockPage, setDefault, mDevice.getGatewayStatus(), mDevice.getWifiStrength());
-
-        imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
-        txvDeviceNameLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
-        txvDeviceNameLockPage.setText(mDevice.getBleDeviceName());
-
-        txvBriefStatusLockPage.setText(
-                setDefault ?
-                        getString(R.string.fragment_text_view_data_not_synced) :
-                        getLockBriefStatusText(mDevice.getIsLocked(), mDevice.getIsDoorClosed()));
-        txvBriefStatusLockPage.setTextColor(
-                setDefault ? getColor(mContext, R.color.md_grey_500) :
-                        getColor(mContext, getLockBriefStatusColor(mDevice.getIsLocked(), mDevice.getIsDoorClosed())));
-
-        txvNewUpdateLockPage.setText(null);
-
-        handleProgressDialog(null, null, null, false);
-    }
-
-    private void getDeviceInfo() {
-        this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
-            mDevice = device;
-            updateViewData(false);
-        });
-    }
-
-    private void addFoundNetworkToList(WifiNetworksModel wifiNetworksModel) {
-//        if (!findNetworkInList(wifiNetworksModel.getSSID()))//TODO gateway
-//            this.mWifiNetworkList.add(wifiNetworksModel);
-    }
-
-    private boolean findNetworkInList(String mSSID) {
-//        for (WifiNetworksModel network : mWifiNetworkList)//TODO gateway
-//            if (network.getSSID().equals(mSSID))
-//                return true;
-
-        return false;
-    }
-
-    private void closeDialogHandleDeviceWifiNetwork() {
-//        if (confirmDisconnectClientDialog != null) {//TODO gateway
-//            confirmDisconnectClientDialog.dismiss();
-//            confirmDisconnectClientDialog = null;
-//            connectedClientsToDeviceListDialog.dismiss();
-//            connectedClientsToDeviceListDialog = null;
-//        }
-    }
-
-    private void handleDeviceMembers() {
-        if (isUserLoggedIn())
-            setFragment((AppCompatActivity) getActivity(), R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
-        else
-            Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
-    }
-
-    private void readAllLockInfo() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                mDevice = LockPageFragment.this.mDeviceViewModel.getUserLockInfo(mDevice.getObjectId());
-            }
-        }.start();
-    }
-    //endregion Declare Methods
-
     //region Declare BLE Methods
-    private void waitForBleResponse() {
-//        Handler mHandler = new Handler();
-//        mHandler.postDelayed(() -> {
-//            mDeviceViewModel.freeBleBuffer();
-//        }, 2000);
-    }
-
     private void handleLockBleConnection() {
         if (isUserLoggedIn())
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
@@ -426,18 +392,12 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void handleConnectedDevices() {
-        if (isConnectedToBleDevice) {
+        if (isConnectedToBleDevice)
             handleDialogListOfConnectedClientsToDevice();
+        else if (connectedClientsToDeviceListDialog != null) {
+            connectedClientsToDeviceListDialog.dismiss();
+            connectedClientsToDeviceListDialog = null;
         }
-//        if (mDevice.getWifiStatus()) {
-//            DialogHelper.handleProgressDialog(getContext(), null, "Disconnect Internet Connection ...", true);
-//            disconnectLockFromGateway(this);//TODO gateway
-//        }
-//            else//TODO gateway
-//                handleDialogListOfConnectedClientsToDevice();
-    }
-
-    private void disconnectLockFromGateway(LockPageFragment fragment) {
     }
 
     private void connectToDevice() {
@@ -446,13 +406,7 @@ public class LockPageFragment extends BaseFragment
 
         if (tempDevice != null) {
             handleProgressDialog(getActivity(), null, "Pairing ...", true);
-
             this.mDeviceViewModel.connect(this, new ScannedDeviceModel(tempDevice));
-            this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
-                isConnectedToBleDevice = isConnected;
-                ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
-                initBleInfo();
-            });
         } else if (getScanPermission(this))
             scanDevices();
     }
@@ -477,12 +431,6 @@ public class LockPageFragment extends BaseFragment
         for (ScannedDeviceModel device : listOfScannedDevices) {
             if (device.getMacAddress().equals(mDevice.getBleDeviceMacAddress())) {
                 this.mDeviceViewModel.connect(this, device);
-                this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
-                    isConnectedToBleDevice = isConnected;
-                    ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
-                    updateViewData(!isConnected);
-                    initBleInfo();
-                });
                 return true;
             }
         }
@@ -491,29 +439,8 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
-        this.mDeviceViewModel.sendLockCommand(this, lockCommand);
-    }
-
-    private void initBleInfo() {
-        this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
-            if (isSupported != null)
-                if (isSupported) {
-                    getDeviceInfo();
-                    mDeviceViewModel.getDeviceDataFromBleDevice();
-                    mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
-                    mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
-                } else {
-                    updateViewData(true);
-
-                    if (mBluetoothLEHelper != null)
-                        mBluetoothLEHelper.disconnect();
-                }
-        });
-
-//        this.mDeviceViewModel.isBleBufferFree().observe(this, bleBufferStatus -> {
-//            if (!bleBufferStatus)
-//                waitForBleResponse();
-//        });
+        if (isConnectedToBleDevice)
+            this.mDeviceViewModel.sendLockCommand(this, lockCommand);
     }
 
     private List<ScannedDeviceModel> getListOfScannedDevices() {
@@ -593,7 +520,7 @@ public class LockPageFragment extends BaseFragment
         disconnectClientDialog.setContentView(R.layout.dialog_disconnect_device);
 
         Button btnCancelDialogDisconnectClient =
-                disconnectClientDialog.findViewById(R.id.btn_no_dialog_disconnect_device);
+                disconnectClientDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
         Button btnDisconnectDialogDisconnectClient =
                 disconnectClientDialog.findViewById(R.id.btn_disconnect_dialog_disconnect_device);
 
@@ -603,7 +530,7 @@ public class LockPageFragment extends BaseFragment
         });
 
         btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
-//            DialogHelper.handleProgressDialog(getContext(), null, "Reset Lock ...", true);
+            DialogHelper.handleProgressDialog(getContext(), null, "Disconnect device ...", true);
             mDeviceViewModel.disconnectClientFromDevice(this, mConnectedClientsModel);
         });
 
@@ -620,5 +547,81 @@ public class LockPageFragment extends BaseFragment
     //endregion Declare Classes & Interfaces
 
     //region Declare Methods
+    private void updateViewData(boolean setDefault) {
+        ViewHelper.setBleMoreInfoImage(imgMoreInfoLockPage, setDefault);
+
+        txvDeviceTypeLockPage.setText(mDevice.getDeviceType());
+
+        setIsLockedImage(imgIsLockedLockPage,
+                setDefault ? 2 : (mDevice.getIsLocked() ? 1 : 0));
+
+        setBatteryStatusImage(setDefault, imgBatteryStatusLockPage, mDevice.getBatteryPercentage());
+        setLockConnectionStatusToGatewayImage(
+                imgGatewayConnectionStatusLockPage, setDefault, mDevice.getGatewayStatus(), mDevice.getWifiStrength());
+
+        imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
+        txvDeviceNameLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
+        txvDeviceNameLockPage.setText(mDevice.getBleDeviceName());
+
+        txvBriefStatusLockPage.setText(
+                setDefault ?
+                        getString(R.string.fragment_text_view_data_not_synced) :
+                        getLockBriefStatusText(mDevice.getIsLocked(), mDevice.getIsDoorClosed()));
+        txvBriefStatusLockPage.setTextColor(
+                setDefault ? getColor(mContext, R.color.md_grey_500) :
+                        getColor(mContext, getLockBriefStatusColor(mDevice.getIsLocked(), mDevice.getIsDoorClosed())));
+
+        txvNewUpdateLockPage.setText(null);
+
+        handleProgressDialog(null, null, null, false);
+    }
+
+    private void getDeviceInfo() {
+//        this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
+//            mDevice = device;
+//            updateViewData(false);
+//        });
+    }
+
+    private void addFoundNetworkToList(WifiNetworksModel wifiNetworksModel) {
+//        if (!findNetworkInList(wifiNetworksModel.getSSID()))//TODO gateway
+//            this.mWifiNetworkList.add(wifiNetworksModel);
+    }
+
+    private boolean findNetworkInList(String mSSID) {
+//        for (WifiNetworksModel network : mWifiNetworkList)//TODO gateway
+//            if (network.getSSID().equals(mSSID))
+//                return true;
+
+        return false;
+    }
+
+    private void closeDialogHandleDeviceWifiNetwork() {
+//        if (confirmDisconnectClientDialog != null) {//TODO gateway
+//            confirmDisconnectClientDialog.dismiss();
+//            confirmDisconnectClientDialog = null;
+//            connectedClientsToDeviceListDialog.dismiss();
+//            connectedClientsToDeviceListDialog = null;
+//        }
+    }
+
+    private void handleDeviceMembers() {
+        if (isConnectedToBleDevice)
+            if (isUserLoggedIn())
+                setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
+                        R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
+            else
+                Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
+    }
+
+    private void readAllLockInfo() {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                mDevice = LockPageFragment.this.mDeviceViewModel.getUserLockInfo(mDevice.getObjectId());
+            }
+        }.start();
+    }
     //endregion Declare Methods
 }

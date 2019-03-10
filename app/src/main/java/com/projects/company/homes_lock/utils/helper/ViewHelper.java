@@ -82,6 +82,10 @@ public class ViewHelper {
         imageViewBle.setImageResource(bleConnectionStatus ? R.drawable.ic_ble_connect : R.drawable.ic_ble_disconnect);
     }
 
+    public static void setBleMoreInfoImage(ImageView imgMoreInfoLockPage, boolean setDefault) {
+        imgMoreInfoLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_more_info : R.drawable.ic_valid_more_info);
+    }
+
     public static void setBatteryStatusImage(boolean setDefault, ImageView imgBatteryStatusLockPage, Integer batteryPercentage) {
         if (batteryPercentage >= 0 && batteryPercentage < 15)
             imgBatteryStatusLockPage.setImageResource(setDefault ? R.drawable.ic_invalid_battery_zero : R.drawable.ic_valid_battery_zero);

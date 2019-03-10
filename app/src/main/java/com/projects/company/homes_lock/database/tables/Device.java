@@ -14,6 +14,7 @@ import com.projects.company.homes_lock.utils.helper.DataHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Entity(tableName = "device")
 public class Device extends BaseModel {
@@ -241,29 +242,29 @@ public class Device extends BaseModel {
     }
 
     public Device(Map updatedLock) {
-        this.mObjectId = updatedLock.get("objectId").toString();
-        this.mBleDeviceName = updatedLock.get("bleDeviceName").toString();
-        this.mBleDeviceMacAddress = updatedLock.get("bleDeviceMacAddress").toString();
-        this.mSerialNumber = updatedLock.get("serialNumber").toString();
-        this.mIsLocked = Boolean.valueOf(updatedLock.get("isLocked").toString());
-        this.mIsDoorClosed = Boolean.valueOf(updatedLock.get("isDoorClosed").toString());
-        this.mInternetStatus = Boolean.valueOf(updatedLock.get("internetStatus").toString());
-        this.mBatteryPercentage = Integer.valueOf(updatedLock.get("batteryStatus").toString());
-        this.mWifiStatus = Boolean.valueOf(updatedLock.get("wifiStatus").toString());
-        this.mWifiStrength = Integer.valueOf(updatedLock.get("wifiStrength").toString());
-        this.mMeanPowerCons = Integer.valueOf(updatedLock.get("meanPowerCons").toString());
-        this.mTemperature = Double.valueOf(updatedLock.get("temperature").toString());
-        this.mHumidity = Double.valueOf(updatedLock.get("humidity").toString());
-        this.mCOLevel = Integer.valueOf(updatedLock.get("coLevel").toString());
-        this.mDeviceHealth = Boolean.valueOf(updatedLock.get("deviceHealth").toString());
-        this.mFWVersion = String.valueOf(updatedLock.get("fwVersion").toString());
-        this.mHWVersion = String.valueOf(updatedLock.get("hwVersion").toString());
-        this.mDeviceType = String.valueOf(updatedLock.get("deviceType").toString());
-        this.mProductionDate = String.valueOf(updatedLock.get("productionDate").toString());
-        this.mDynamicId = String.valueOf(updatedLock.get("dynamicId").toString());
-        this.mDoorInstallation = Boolean.valueOf(updatedLock.get("doorInstallation").toString());;
-        this.mLockStages = Integer.valueOf(updatedLock.get("dynamicId").toString());;
-        this.mLockPosition = Integer.valueOf(updatedLock.get("lockStages").toString());
+        this.mObjectId = Objects.requireNonNull(updatedLock.get("objectId")).toString();
+        this.mBleDeviceName = Objects.requireNonNull(updatedLock.get("bleDeviceName")).toString();
+        this.mBleDeviceMacAddress = Objects.requireNonNull(updatedLock.get("bleDeviceMacAddress")).toString();
+        this.mSerialNumber = Objects.requireNonNull(updatedLock.get("serialNumber")).toString();
+        this.mIsLocked = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("isLocked")).toString());
+        this.mIsDoorClosed = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("isDoorClosed")).toString());
+        this.mInternetStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("internetStatus")).toString());
+        this.mBatteryPercentage = Integer.valueOf(Objects.requireNonNull(updatedLock.get("batteryStatus")).toString());
+        this.mWifiStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("wifiStatus")).toString());
+        this.mWifiStrength = Integer.valueOf(Objects.requireNonNull(updatedLock.get("wifiStrength")).toString());
+        this.mMeanPowerCons = Integer.valueOf(Objects.requireNonNull(updatedLock.get("meanPowerCons")).toString());
+        this.mTemperature = Double.valueOf(Objects.requireNonNull(updatedLock.get("temperature")).toString());
+        this.mHumidity = Double.valueOf(Objects.requireNonNull(updatedLock.get("humidity")).toString());
+        this.mCOLevel = Integer.valueOf(Objects.requireNonNull(updatedLock.get("coLevel")).toString());
+        this.mDeviceHealth = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("deviceHealth")).toString());
+        this.mFWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get("fwVersion")).toString());
+        this.mHWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get("hwVersion")).toString());
+        this.mDeviceType = String.valueOf(Objects.requireNonNull(updatedLock.get("deviceType")).toString());
+        this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get("productionDate")).toString());
+        this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get("dynamicId")).toString());
+        this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("doorInstallation")).toString());;
+        this.mLockStages = Integer.valueOf(Objects.requireNonNull(updatedLock.get("dynamicId")).toString());;
+        this.mLockPosition = Integer.valueOf(Objects.requireNonNull(updatedLock.get("lockStages")).toString());
     }
 
     @NonNull

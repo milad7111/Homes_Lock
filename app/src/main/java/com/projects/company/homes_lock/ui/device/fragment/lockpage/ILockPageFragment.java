@@ -36,4 +36,6 @@ public interface ILockPageFragment {
     void onSendLockCommandFailed(String command);
 
     void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress);
+
+    void onDeviceDisconnectedSuccessfully();
 }

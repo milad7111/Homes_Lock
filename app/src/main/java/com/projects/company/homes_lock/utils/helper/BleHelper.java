@@ -173,7 +173,7 @@ public class BleHelper {
     }
 
     public static byte[] createWriteMessage(String command) {
-        return mergeArrays(new byte[]{0x00, 0x00}, mergeArrays(command.getBytes(), new byte[]{0x00}));
+        return mergeArrays(new byte[]{0x00, 0x40}, mergeArrays(command.getBytes(), new byte[]{0x00}));
     }
 
     public static byte[] createReadMessage(String key) {
