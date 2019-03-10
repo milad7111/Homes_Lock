@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,13 +25,11 @@ import android.widget.Toast;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ConnectedClientsModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.ui.device.fragment.setting.SettingFragment;
@@ -61,7 +58,7 @@ import static com.projects.company.homes_lock.utils.helper.ViewHelper.setIsLocke
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setLockConnectionStatusToGatewayImage;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
 public class LockPageFragment extends BaseFragment
         implements
@@ -70,7 +67,6 @@ public class LockPageFragment extends BaseFragment
         View.OnClickListener {
 
     //region Declare Constants
-    private static final String ARG_PARAM = "param";
     //endregion Declare Constants
 
     //region Declare Views
@@ -89,11 +85,9 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare Variables
     private boolean isConnectedToBleDevice;
-//    private int wifiNetworksCount = 0; //TODO gateway
     //endregion Declare Variables
 
     //region Declare Arrays & Lists
-    private List<ConnectedClientsModel> mConnectedClients = new ArrayList<>();
     //endregion Declare Arrays & Lists
 
     //region Declare Objects
@@ -212,14 +206,17 @@ public class LockPageFragment extends BaseFragment
     public void onPause() {
         super.onPause();
 
-        if (BaseApplication.isUserLoggedIn())
-            this.mDeviceViewModel.disconnectMQTT();
+        this.mDeviceViewModel.disconnectMQTT();
+        this.mDeviceViewModel.removeListenerForDevice(mDevice);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mDeviceViewModel.disconnect();
+
+        this.mDeviceViewModel.disconnect();
+        this.mDeviceViewModel.disconnectMQTT();
+        this.mDeviceViewModel.removeListenerForDevice(mDevice);
 
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
@@ -263,72 +260,10 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onAdapterItemClick(BaseModel client) {
         handleDialogDisconnectClientFromDevice((ConnectedClientsModel) client);
-//        WifiNetworksModel tempNetwork = (WifiNetworksModel) network;//TODO gateway
-//        handleDialogSetDeviceWifiNetwork(tempNetwork);//TODO gateway
     }
 
     @Override
     public void onBonded(BluetoothDevice device) {
-//        mDeviceViewModel.getDeviceDataFromBleDevice();
-//        mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
-//        mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
-    }
-
-    @Override
-    public void onGetAvailableWifiNetworksCountAroundDevice(int count) {
-//        wifiNetworksCount = count;//TODO gateway
-//        mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, 0);//TODO gateway
-    }
-
-    @Override
-    public void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel) {
-//        addFoundNetworkToList(wifiNetworksModel);//TODO gateway
-//
-//        if (wifiNetworksModel.getIndex() != wifiNetworksCount - 1)
-//            mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, wifiNetworksModel.getIndex() + 1);
-//
-//        handleDialogListOfConnectedClientsToDevice();
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkSSIDSuccessful() {
-        //TODO gateway
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkSSIDFailed() {
-        //TODO gateway
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkPasswordSuccessful() {
-        //TODO gateway
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkPasswordFailed() {
-        //TODO gateway
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkAuthenticationTypeSuccessful() {
-        //TODO gateway
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkAuthenticationTypeFailed() {
-        //TODO gateway
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkSuccessful() {
-//        closeDialogHandleDeviceWifiNetwork();//TODO gateway
-    }
-
-    @Override
-    public void onSetDeviceWifiNetworkFailed() {
-//        DialogHelper.handleProgressDialog(null, null, null, false);//TODO gateway
-//        closeDialogHandleDeviceWifiNetwork();
     }
 
     @Override
@@ -336,11 +271,6 @@ public class LockPageFragment extends BaseFragment
         mDevice = response;
         updateViewData(false);
         this.mDeviceViewModel.updateDevice(response);
-    }
-
-    @Override
-    public void onSendRequestGetAvailableWifiSuccessful() {
-//        Log.d(getTag(), "Get Available Wifi Networks Around Device Sent Successful! Wait ...");//TODO gateway
     }
 
     @Override
@@ -356,7 +286,7 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress) {
         mConnectedClientsAdapter.addConnectedDevice(
-                new ConnectedClientsModel(mConnectedClients.size(), connectedClientMacAddress, true));
+                new ConnectedClientsModel(mConnectedClientsAdapter.getItemCount(), connectedClientMacAddress, true));
     }
 
     @Override
@@ -576,35 +506,6 @@ public class LockPageFragment extends BaseFragment
         handleProgressDialog(null, null, null, false);
     }
 
-    private void getDeviceInfo() {
-//        this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
-//            mDevice = device;
-//            updateViewData(false);
-//        });
-    }
-
-    private void addFoundNetworkToList(WifiNetworksModel wifiNetworksModel) {
-//        if (!findNetworkInList(wifiNetworksModel.getSSID()))//TODO gateway
-//            this.mWifiNetworkList.add(wifiNetworksModel);
-    }
-
-    private boolean findNetworkInList(String mSSID) {
-//        for (WifiNetworksModel network : mWifiNetworkList)//TODO gateway
-//            if (network.getSSID().equals(mSSID))
-//                return true;
-
-        return false;
-    }
-
-    private void closeDialogHandleDeviceWifiNetwork() {
-//        if (confirmDisconnectClientDialog != null) {//TODO gateway
-//            confirmDisconnectClientDialog.dismiss();
-//            confirmDisconnectClientDialog = null;
-//            connectedClientsToDeviceListDialog.dismiss();
-//            connectedClientsToDeviceListDialog = null;
-//        }
-    }
-
     private void handleDeviceMembers() {
         if (isConnectedToBleDevice)
             if (isUserLoggedIn())
@@ -612,16 +513,6 @@ public class LockPageFragment extends BaseFragment
                         R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
             else
                 Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
-    }
-
-    private void readAllLockInfo() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                mDevice = LockPageFragment.this.mDeviceViewModel.getUserLockInfo(mDevice.getObjectId());
-            }
-        }.start();
     }
     //endregion Declare Methods
 }

@@ -23,6 +23,7 @@ import android.widget.CheckBox;
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
+import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
@@ -51,9 +52,9 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomP
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
-public class ManageMembersFragment extends Fragment
+public class ManageMembersFragment extends BaseFragment
         implements
         IManageMembersFragment,
         View.OnClickListener {

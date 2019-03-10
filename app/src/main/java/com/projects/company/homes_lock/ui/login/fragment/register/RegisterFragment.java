@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.RegisterViewModelFactory;
@@ -26,9 +27,9 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
-public class RegisterFragment extends Fragment
+public class RegisterFragment extends BaseFragment
         implements
         IRegisterFragment,
         View.OnClickListener {

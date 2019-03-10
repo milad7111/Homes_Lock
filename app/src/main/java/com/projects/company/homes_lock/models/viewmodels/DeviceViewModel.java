@@ -399,7 +399,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onConnectionSuccessful(Object response) {
-        MQTTHandler.subscribe(this);
+        (new MQTTHandler()).subscribe(this);
     }
 
     @Override
@@ -606,7 +606,7 @@ public class DeviceViewModel extends AndroidViewModel
     public void sendLockCommand(LockPageFragment fragment, boolean lockCommand) {
         mILockPageFragment = fragment;
         if (BaseApplication.isUserLoggedIn())
-            MQTTHandler.toggle(this, "", createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
+            (new MQTTHandler()).toggle(this, "", createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
         else
             mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage(lockCommand ? "lock" : "unlock"));
     }
@@ -793,6 +793,10 @@ public class DeviceViewModel extends AndroidViewModel
         mNetworkRepository.setListenerForDevice(this, mDevice);
     }
 
+    public void removeListenerForDevice(Device mDevice) {
+        mNetworkRepository.removeListenerForDevice(this, mDevice);
+    }
+
     public void enablePushNotification(String lockObjectId) {
         setRequestType("enablePushNotification");
         mNetworkRepository.enablePushNotification(this, Collections.singletonList(lockObjectId));
@@ -816,11 +820,11 @@ public class DeviceViewModel extends AndroidViewModel
     //region Declare Methods
     public void initMQTT(Context context, String deviceObjectId) {
         if (BaseApplication.isUserLoggedIn())
-            MQTTHandler.setup(this, context, deviceObjectId);
+            (new MQTTHandler()).setup(this, context, deviceObjectId);
     }
 
     public void disconnectMQTT() {
-        MQTTHandler.disconnect(this);
+        (new MQTTHandler()).disconnect();
     }
 
     public void updateDevice(Device device) {

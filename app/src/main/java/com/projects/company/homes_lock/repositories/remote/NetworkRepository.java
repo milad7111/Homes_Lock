@@ -234,8 +234,23 @@ public class NetworkRepository {
             }
 
             @Override
-            public void handleFault(BackendlessFault t) {
-                listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
+            public void handleFault(BackendlessFault fault) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(fault.getMessage()));
+            }
+        });
+    }
+
+    public void removeListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
+        final EventHandler<Map> lockObject = Backendless.Data.of("Device").rt();
+        lockObject.removeUpdateListener(new AsyncCallback<Map>() {
+            @Override
+            public void handleResponse(Map response) {
+                //TODO
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(fault.getMessage()));
             }
         });
     }

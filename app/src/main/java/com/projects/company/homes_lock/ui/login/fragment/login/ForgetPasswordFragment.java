@@ -8,15 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
-public class ForgetPasswordFragment extends Fragment implements ILoginFragment {
+public class ForgetPasswordFragment extends BaseFragment implements ILoginFragment {
 
     //region Declare Constants
     //endregion Declare Constants

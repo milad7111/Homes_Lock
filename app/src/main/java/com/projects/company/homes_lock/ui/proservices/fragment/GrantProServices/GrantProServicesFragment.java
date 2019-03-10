@@ -9,11 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.base.BaseFragment;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
-public class GrantProServicesFragment extends Fragment implements IGrantProServicesFragment {
+public class GrantProServicesFragment extends BaseFragment implements IGrantProServicesFragment {
 
     //region Declare Constants
     //endregion Declare Constants

@@ -60,7 +60,7 @@ import static com.projects.company.homes_lock.utils.helper.ViewHelper.setFragmen
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setGatewayInternetConnectionStatusImage;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
 public class GatewayPageFragment extends BaseFragment
         implements

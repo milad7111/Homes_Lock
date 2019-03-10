@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
+import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
@@ -37,9 +38,9 @@ import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginM
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
-public class LoginFragment extends Fragment
+public class LoginFragment extends BaseFragment
         implements
         ILoginFragment,
         View.OnClickListener {

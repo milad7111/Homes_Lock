@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
+import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
@@ -38,9 +39,9 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAI
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  */
-public class SettingFragment extends Fragment
+public class SettingFragment extends BaseFragment
         implements
         ISettingFragment,
         View.OnClickListener {

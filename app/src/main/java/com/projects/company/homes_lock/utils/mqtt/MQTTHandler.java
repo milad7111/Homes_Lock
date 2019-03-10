@@ -11,15 +11,15 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTTHandler {
-    private static MqttAndroidClient client;
+    private MqttAndroidClient client;
     private static String TAG = "MQTTHandler Class";
 
-    public static void setup(final IMQTTListener mIMQTTListener, Context mContext, String deviceObjectId) {
+    public void setup(final IMQTTListener mIMQTTListener, Context mContext, String deviceObjectId) {
         client = new MqttAndroidClient(
                 mContext,
                 "tcp://185.208.175.56",
@@ -51,7 +51,7 @@ public class MQTTHandler {
         connect(mIMQTTListener);
     }
 
-    private static void connect(final IMQTTListener mIMQTTListener) {
+    private void connect(final IMQTTListener mIMQTTListener) {
         try {
             MqttConnectOptions mMqttOptions = new MqttConnectOptions();
             mMqttOptions.setAutomaticReconnect(true);
@@ -79,7 +79,7 @@ public class MQTTHandler {
         }
     }
 
-    public static void subscribe(final IMQTTListener mIMQTTListener) {
+    public void subscribe(final IMQTTListener mIMQTTListener) {
         try {
             if (client != null) {
                 IMqttToken subToken = client.subscribe("response", 0);
@@ -105,7 +105,7 @@ public class MQTTHandler {
         }
     }
 
-    public static void toggle(final IMQTTListener mIMQTTListener, String mLockSerialNumber, byte[] command) {
+    public void toggle(final IMQTTListener mIMQTTListener, String mLockSerialNumber, byte[] command) {
         IMqttDeliveryToken publishToken = null;
 
         try {
@@ -135,8 +135,15 @@ public class MQTTHandler {
             Log.e(TAG, "publishToken is null.");
     }
 
-    public static void disconnect(final IMQTTListener mIMQTTListener) {
-        if (client != null)
-            client.close();
+    public void disconnect() {
+        if (client != null) {
+            try {
+                client.disconnectForcibly();
+                client.close();
+                client = null;
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
