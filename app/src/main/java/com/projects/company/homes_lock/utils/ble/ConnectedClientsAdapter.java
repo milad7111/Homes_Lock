@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +101,6 @@ public class ConnectedClientsAdapter extends RecyclerView.Adapter<ConnectedClien
                 if (mClient.getMacAddress().equals(mConnectedClientsModel.getMacAddress()))
                     return;
 
-//            for (ConnectedClientsModel mClient : this.mConnectedClients)
             if (this.mConnectedClients.get(0).isInvalidData() && mConnectedClientsModel.isValidData())
                 this.mConnectedClients = new ArrayList<>();
         }

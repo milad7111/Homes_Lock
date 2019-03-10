@@ -132,7 +132,6 @@ public class AddDeviceFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Objects
-//        context = getContext();
         //endregion Initialize Objects
 
         //region Initialize Views
@@ -315,7 +314,7 @@ public class AddDeviceFragment extends BaseFragment
             dialogListOfAvailableBleDevices = null;
         }
 
-        getActivity().runOnUiThread(this::handleDialogAddLockOffline);
+        Objects.requireNonNull(getActivity()).runOnUiThread(this::handleDialogAddLockOffline);
     }
     //endregion Ble Callbacks
 
@@ -333,7 +332,7 @@ public class AddDeviceFragment extends BaseFragment
 
     private void handleDialogListOfAvailableBleDevices(List<ScannedDeviceModel> devices) {
         if (dialogListOfAvailableBleDevices == null) {
-            dialogListOfAvailableBleDevices = new Dialog(getContext());
+            dialogListOfAvailableBleDevices = new Dialog(Objects.requireNonNull(getContext()));
             dialogListOfAvailableBleDevices.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialogListOfAvailableBleDevices.setContentView(R.layout.dialog_available_devices);
 
@@ -372,7 +371,7 @@ public class AddDeviceFragment extends BaseFragment
     private void handleDialogAddLockOffline() {
         saveLockAfterPaired = false;
 
-        dialogAddLockOffline = new Dialog(getContext());
+        dialogAddLockOffline = new Dialog(Objects.requireNonNull(getContext()));
 
         dialogAddLockOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogAddLockOffline.setContentView(R.layout.dialog_add_new_lock);
@@ -395,8 +394,8 @@ public class AddDeviceFragment extends BaseFragment
         btnAddDialogAddNewLock.setOnClickListener(v -> {
             DialogHelper.handleProgressDialog(getContext(), null, "Saving ...", true);
 
-            mTempDevice.setDeviceName(tietLockNameDialogAddNewLock.getText().toString());
-            mTempDevice.setDeviceSerialNumber(tietLockSerialNumberDialogAddNewLock.getText().toString());
+            mTempDevice.setDeviceName(Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString());
+            mTempDevice.setDeviceSerialNumber(Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
             mTempDevice.setFavoriteStatus(chbLockFavoriteStatusDialogAddNewLock.isChecked());
             mTempDevice.setDeviceMacAddress(mDevice.getMacAddress());
 
@@ -412,7 +411,7 @@ public class AddDeviceFragment extends BaseFragment
 
     private void handleDialogAddLockOnline(boolean lockExistenceStatus) {
         if (dialogAddLockOnline == null) {
-            dialogAddLockOnline = new Dialog(getContext());
+            dialogAddLockOnline = new Dialog(Objects.requireNonNull(getContext()));
 
             dialogAddLockOnline.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialogAddLockOnline.setContentView(R.layout.dialog_add_new_lock);
@@ -435,13 +434,14 @@ public class AddDeviceFragment extends BaseFragment
                         String.format("Adding Lock ... %d %%", getRandomPercentNumber(1, 8)),
                         true);
 
-                mDeviceViewModel.validateLockInOnlineDatabase(this, tietLockSerialNumberDialogAddNewLock.getText().toString());
+                mDeviceViewModel.validateLockInOnlineDatabase(this,
+                        Objects.requireNonNull(tietLockSerialNumberDialogAddNewLock.getText()).toString());
             });
         } else {
             if (lockExistenceStatus)
                 mDeviceViewModel.insertOnlineUserLock(
                         new UserLockModel(
-                                tietLockNameDialogAddNewLock.getText().toString(),
+                                Objects.requireNonNull(tietLockNameDialogAddNewLock.getText()).toString(),
                                 true,
                                 chbLockFavoriteStatusDialogAddNewLock.isChecked()
                         ));

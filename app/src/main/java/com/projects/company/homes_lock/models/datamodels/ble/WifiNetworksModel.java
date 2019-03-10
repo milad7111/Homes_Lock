@@ -2,6 +2,9 @@ package com.projects.company.homes_lock.models.datamodels.ble;
 
 import com.projects.company.homes_lock.base.BaseModel;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
+
 public class WifiNetworksModel extends BaseModel {
 
     //region Declare Objects
@@ -17,6 +20,11 @@ public class WifiNetworksModel extends BaseModel {
         this.mIndex = mIndex;
         this.mSSID = mSSID;
         this.mAuthenticateType = mAuthenticateType;
+        this.mRSSI = mRSSI;
+    }
+
+    public WifiNetworksModel(String mSSID, int mRSSI) {
+        this.mSSID = mSSID;
         this.mRSSI = mRSSI;
     }
 
@@ -64,6 +72,14 @@ public class WifiNetworksModel extends BaseModel {
 
     public void setPassword(String mPassword) {
         this.mPassword = mPassword;
+    }
+
+    public boolean isValidData() {
+        return mIndex != SEARCHING_SCAN_MODE && mIndex != SEARCHING_TIMEOUT_MODE;
+    }
+
+    public boolean isInvalidData() {
+        return mIndex == SEARCHING_SCAN_MODE || mIndex == SEARCHING_TIMEOUT_MODE;
     }
     //endregion Declare Methods
 }

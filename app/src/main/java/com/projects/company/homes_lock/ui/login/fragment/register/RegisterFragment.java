@@ -2,9 +2,9 @@ package com.projects.company.homes_lock.ui.login.fragment.register;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +23,8 @@ import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
+
+import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
 
@@ -71,18 +73,18 @@ public class RegisterFragment extends BaseFragment
         //region Initialize Objects
         this.mUserViewModel = ViewModelProviders.of(
                 this,
-                new RegisterViewModelFactory(getActivity().getApplication(), this))
+                new RegisterViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this))
                 .get(UserViewModel.class);
         //endregion Initialize Objects
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
@@ -114,14 +116,15 @@ public class RegisterFragment extends BaseFragment
                 DialogHelper.handleProgressDialog(getContext(), null, "Register process ...", true);
                 mUserViewModel.register(
                         new RegisterModel(
-                                tietEmail.getText().toString(),
-                                tietUserName.getText().toString(),
-                                tietMobileNumber.getText().toString(),
-                                tietPassword.getText().toString()), tietConfirmPassword.getText().toString()
+                                Objects.requireNonNull(tietEmail.getText()).toString(),
+                                Objects.requireNonNull(tietUserName.getText()).toString(),
+                                Objects.requireNonNull(tietMobileNumber.getText()).toString(),
+                                Objects.requireNonNull(tietPassword.getText()).toString()),
+                        Objects.requireNonNull(tietConfirmPassword.getText()).toString()
                 );
                 break;
             case R.id.txv_login_register_fragment:
-                ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_login_activity, new LoginFragment());
+                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new LoginFragment());
                 break;
         }
     }

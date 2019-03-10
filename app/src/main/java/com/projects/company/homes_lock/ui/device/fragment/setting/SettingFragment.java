@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.ui.device.fragment.setting;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
@@ -15,9 +16,9 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -28,6 +29,7 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.Objects;
 
+import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_LEFT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_NINETY_DEGREES;
@@ -75,6 +77,7 @@ public class SettingFragment extends BaseFragment
     //region Declare Variables
     private boolean mDoorInstallationDone = false;
     private boolean mLockStagesDone = false;
+    private boolean isConnectedToBleDevice = false;
 
     private String mDeviceObjectId = "";
     //endregion Declare Variables
@@ -118,25 +121,24 @@ public class SettingFragment extends BaseFragment
         //region Initialize Objects
         mFragment = this;
         mDeviceObjectId = getArguments() != null ? getArguments().getString(ARG_PARAM) : "";
-        //endregion Initialize Objects
-
-        getDeviceInfo();
-    }
-
-    private void getDeviceInfo() {
         this.mDeviceViewModel.getDeviceInfo(mDeviceObjectId).observe(this, device -> {
             mDevice = device;
             initViews();
         });
+        this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
+            if (isConnected != null)
+                isConnectedToBleDevice = isConnected;
+        });
+        //endregion Initialize Objects
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_lock_setting, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
@@ -203,14 +205,10 @@ public class SettingFragment extends BaseFragment
                 //TODO copy info to clipboard
                 break;
             case R.id.txv_device_setting_setting_fragment:
-                handleDeviceSetting();
-                break;
             case R.id.txv_device_setting_description_setting_fragment:
                 handleDeviceSetting();
                 break;
             case R.id.txv_change_pairing_password_setting_fragment:
-                handleChangePassword(CHANGE_PAIRING_PASSWORD);
-                break;
             case R.id.txv_change_pairing_password_description_setting_fragment:
                 handleChangePassword(CHANGE_PAIRING_PASSWORD);
                 break;
@@ -227,20 +225,20 @@ public class SettingFragment extends BaseFragment
                 //TODO copy info to clipboard
                 break;
             case R.id.txv_reset_lock_setting_fragment:
-                handleResetLock();
-                break;
             case R.id.txv_reset_lock_description_setting_fragment:
-                handleResetLock();
+                if (isConnectedToBleDevice)
+                    handleResetLock();
+                else
+                    Toast.makeText(getContext(), "This is not available in BLE disconnect mode!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.txv_remove_lock_setting_fragment:
-                handleRemoveLock();
-                break;
             case R.id.txv_remove_lock_description_setting_fragment:
-                handleRemoveLock();
+                if (isUserLoggedIn())
+                    handleRemoveLock();
+                else
+                    Toast.makeText(getContext(), "This is not available in Local mode!", Toast.LENGTH_SHORT).show();
                 break;
 //            case R.id.txv_change_password_online_setting_fragment:
-//                handleChangePassword(CHANGE_ONLINE_PASSWORD);
-//                break;
 //            case R.id.txv_change_password_online_description_setting_fragment:
 //                handleChangePassword(CHANGE_ONLINE_PASSWORD);
 //                break;
@@ -340,7 +338,7 @@ public class SettingFragment extends BaseFragment
             resetLockDialog = null;
         }
 
-        mDeviceViewModel.disconnect();
+        this.mDeviceViewModel.disconnect();
         Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
     }
 
@@ -379,7 +377,7 @@ public class SettingFragment extends BaseFragment
 //            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
         }
 
-        if (!BaseApplication.isUserLoggedIn()) {
+        if (!isUserLoggedIn()) {
             txvRemoveLockSettingFragment.setVisibility(View.GONE);
             txvRemoveLockDescriptionSettingFragment.setVisibility(View.GONE);
         }
@@ -413,16 +411,20 @@ public class SettingFragment extends BaseFragment
             });
 
             btnApplyDialogDeviceSetting.setOnClickListener(v -> {
-                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Device setting setup ...", true);
-                mDeviceViewModel.setDeviceSetting(
-                        mFragment,
-                        findSelectedDoorInstallationOption(rdgDoorInstallationDialogDeviceSetting),
-                        findSelectedLockStagesOption(rdgLockStagesDialogDeviceSetting));
+                if (isConnectedToBleDevice) {
+                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Device setting setup ...", true);
+                    mDeviceViewModel.setDeviceSetting(
+                            mFragment,
+                            findSelectedDoorInstallationOption(rdgDoorInstallationDialogDeviceSetting),
+                            findSelectedLockStagesOption(rdgLockStagesDialogDeviceSetting));
+                } else
+                    Toast.makeText(getContext(), "This is not available in BLE disconnect mode!", Toast.LENGTH_SHORT).show();
             });
         }
 
         deviceSettingDialog.show();
-        deviceSettingDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(deviceSettingDialog));
+        Objects.requireNonNull(deviceSettingDialog.getWindow())
+                .setAttributes(ViewHelper.getDialogLayoutParams(deviceSettingDialog));
     }
 
     private void handleProServices() {

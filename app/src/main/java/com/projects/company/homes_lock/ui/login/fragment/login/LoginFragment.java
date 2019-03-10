@@ -4,9 +4,9 @@ package com.projects.company.homes_lock.ui.login.fragment.login;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +33,7 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
@@ -92,12 +93,12 @@ public class LoginFragment extends BaseFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
@@ -119,7 +120,7 @@ public class LoginFragment extends BaseFragment
         //region Initialize Objects
         this.mUserViewModel = ViewModelProviders.of(
                 this,
-                new LoginViewModelFactory(getActivity().getApplication(), this))
+                new LoginViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this))
                 .get(UserViewModel.class);
 
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
@@ -137,7 +138,9 @@ public class LoginFragment extends BaseFragment
         switch (v.getId()) {
             case R.id.btn_login_login_fragment:
                 handleProgressDialog(getContext(), null, "Login process ...", true);
-                mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
+                mUserViewModel.login(
+                        Objects.requireNonNull(tietEmail.getText()).toString(),
+                        Objects.requireNonNull(tietPassword.getText()).toString());
 //                this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
 //                    notSavedDevices = new ArrayList<>();
 //
@@ -154,10 +157,10 @@ public class LoginFragment extends BaseFragment
                 startActivity(new Intent(getActivity(), LockActivity.class));
                 break;
             case R.id.txv_sign_up_login_fragment:
-                ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_login_activity, new RegisterFragment());
+                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new RegisterFragment());
                 break;
             case R.id.txv_forget_password_login_fragment:
-                ViewHelper.setFragment((AppCompatActivity) getActivity(), R.id.frg_login_activity, new ForgetPasswordFragment());
+                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new ForgetPasswordFragment());
                 break;
         }
     }

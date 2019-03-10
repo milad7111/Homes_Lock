@@ -12,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
+import com.projects.company.homes_lock.models.datamodels.ble.ConnectedClientsModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
@@ -88,6 +90,20 @@ public class WifiNetworksAdapter extends RecyclerView.Adapter<WifiNetworksAdapte
     //endregion Adapter CallBacks
 
     //region Declare Methods
+    public void addWifiNetwork(WifiNetworksModel mWifiNetworksModel) {
+        if (!this.mWifiNetworksModelList.isEmpty()) {
+            for (WifiNetworksModel network : this.mWifiNetworksModelList)
+                if (network.getSSID().equals(mWifiNetworksModel.getSSID()))
+                    return;
+
+            if (this.mWifiNetworksModelList.get(0).isInvalidData() && mWifiNetworksModel.isValidData())
+                this.mWifiNetworksModelList = new ArrayList<>();
+        }
+
+        this.mWifiNetworksModelList.add(mWifiNetworksModel);
+        mActivity.runOnUiThread(this::notifyDataSetChanged);
+    }
+
     public void setAvailableNetworks(List<WifiNetworksModel> mWifiNetworksModelList) {
         this.mWifiNetworksModelList = mWifiNetworksModelList;
         mActivity.runOnUiThread(this::notifyDataSetChanged);

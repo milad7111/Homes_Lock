@@ -52,7 +52,10 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPerm
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusText;
 import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.getDialogLayoutParams;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBatteryStatusImage;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleConnectionStatusImage;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleMoreInfoImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setFragment;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setIsLockedImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setLockConnectionStatusToGatewayImage;
@@ -84,7 +87,7 @@ public class LockPageFragment extends BaseFragment
     //endregion Declare Views
 
     //region Declare Variables
-    private boolean isConnectedToBleDevice;
+    private boolean isConnectedToBleDevice = false;
     //endregion Declare Variables
 
     //region Declare Arrays & Lists
@@ -127,7 +130,7 @@ public class LockPageFragment extends BaseFragment
         this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
             if (isConnected != null) {
                 isConnectedToBleDevice = isConnected;
-                ViewHelper.setBleConnectionStatusImage(imgBleLockPage, isConnected);
+                setBleConnectionStatusImage(imgBleLockPage, isConnected);
 
                 if (!isConnected) {
                     updateViewData(true);
@@ -238,7 +241,7 @@ public class LockPageFragment extends BaseFragment
                 handleDeviceMembers();
                 break;
             case R.id.img_more_info_lock_page:
-                if (isConnectedToBleDevice)
+                if (isUserLoggedIn() || isConnectedToBleDevice)
                     setFragment(
                             (AppCompatActivity) Objects.requireNonNull(getActivity()),
                             R.id.frg_lock_activity,
@@ -435,7 +438,7 @@ public class LockPageFragment extends BaseFragment
         if (!connectedClientsToDeviceListDialog.isShowing()) {
             connectedClientsToDeviceListDialog.show();
             Objects.requireNonNull(connectedClientsToDeviceListDialog.getWindow())
-                    .setAttributes(ViewHelper.getDialogLayoutParams(connectedClientsToDeviceListDialog));
+                    .setAttributes(getDialogLayoutParams(connectedClientsToDeviceListDialog));
         }
     }
 
@@ -466,7 +469,7 @@ public class LockPageFragment extends BaseFragment
 
         disconnectClientDialog.show();
         Objects.requireNonNull(disconnectClientDialog.getWindow())
-                .setAttributes(ViewHelper.getDialogLayoutParams(disconnectClientDialog));
+                .setAttributes(getDialogLayoutParams(disconnectClientDialog));
     }
     //endregion Declare BLE Methods
 
@@ -478,7 +481,7 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare Methods
     private void updateViewData(boolean setDefault) {
-        ViewHelper.setBleMoreInfoImage(imgMoreInfoLockPage, setDefault);
+        setBleMoreInfoImage(imgMoreInfoLockPage, setDefault);
 
         txvDeviceTypeLockPage.setText(mDevice.getDeviceType());
 
@@ -507,12 +510,11 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void handleDeviceMembers() {
-        if (isConnectedToBleDevice)
-            if (isUserLoggedIn())
-                setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
-                        R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
-            else
-                Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
+        if (isUserLoggedIn())
+            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
+                    R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
+        else
+            Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
     }
     //endregion Declare Methods
 }
