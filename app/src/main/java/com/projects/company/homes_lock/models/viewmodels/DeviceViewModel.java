@@ -30,11 +30,12 @@ import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.device.fragment.adddevice.AddDeviceFragment;
 import com.projects.company.homes_lock.ui.device.fragment.adddevice.IAddDeviceFragment;
+import com.projects.company.homes_lock.ui.device.fragment.devicesetting.IDeviceSettingFragment;
+import com.projects.company.homes_lock.ui.device.fragment.gatewaypage.GatewayPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.gatewaypage.IGatewayPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.IManageMembersFragment;
-import com.projects.company.homes_lock.ui.device.fragment.setting.ISettingFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
@@ -94,7 +95,7 @@ public class DeviceViewModel extends AndroidViewModel
     private IGatewayPageFragment mIGatewayPageFragment;
     private IAddDeviceFragment mIAddDeviceFragment;
     private IManageMembersFragment mIManageMembersFragment;
-    private ISettingFragment mISettingFragment;
+    private IDeviceSettingFragment mISettingFragment;
 
     private final BleDeviceManager mBleDeviceManager;
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
@@ -440,14 +441,11 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void handleReceivedResponse(byte[] responseValue) {
-//        for (byte aResponseValue : responseValue)
-//            Log.e("Response: ", String.format("%d", aResponseValue & 0xff));
         Log.e("handleReceivedResponse", new String(responseValue));
 
         if (responseValue[1] == 0x40) {
             Log.e(getClass().getName(), "Buffer is free");
             bleBufferStatus = true;
-//            mBleBufferIsClean.postValue(true);
             sendNextCommandFromBlePool();
         }
 
@@ -550,6 +548,30 @@ public class DeviceViewModel extends AndroidViewModel
                                     keyCommandJson.getInt(keyCommand));
                     }
                     break;
+                case "iswifi":
+                    if (mIGatewayPageFragment != null) {
+                        mLocalRepository.updateDeviceWifiStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
+                    }
+                    break;
+                case "isinternet":
+                    if (mIGatewayPageFragment != null) {
+                        mLocalRepository.updateDeviceInternetStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
+                    }
+                    break;
+                case "ismqtt":
+                    if (mIGatewayPageFragment != null) {
+                        mLocalRepository.updateDeviceMQTTServerStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
+                    }
+                    break;
+                case "isrest":
+                    if (mIGatewayPageFragment != null) {
+                        mLocalRepository.updateDeviceRestApiServerStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
+                    }
+                    break;
                 case "reset":
                     if (mISettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals("ok"))
@@ -586,6 +608,11 @@ public class DeviceViewModel extends AndroidViewModel
                             Log.i(getClass().getName(), "Get connected clients FINISHED.");
                         else
                             mILockPageFragment.onGetReceiveNewConnectedClientToDevice(keyCommandJson.getString(keyCommand));
+                    } else if (mIGatewayPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals("end"))
+                            Log.i(getClass().getName(), "Get connected clients FINISHED.");
+                        else
+                            mIGatewayPageFragment.onGetReceiveNewConnectedClientToDevice(keyCommandJson.getString(keyCommand));
                     }
                     break;
                 case "dis":
@@ -594,19 +621,22 @@ public class DeviceViewModel extends AndroidViewModel
                             Log.i(getClass().getName(), "Device disconnects successfully.");
                             mILockPageFragment.onDeviceDisconnectedSuccessfully();
                         }
+                    } else if (mIGatewayPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals("ok")) {
+                            Log.i(getClass().getName(), "Device disconnects successfully.");
+                            mIGatewayPageFragment.onDeviceDisconnectedSuccessfully();
+                        }
                     }
                     break;
-                case "wifi":
+                case "wf":
                     if (mIGatewayPageFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals("wait")) {
                             Log.i(getClass().getName(), "Start getting wifi networks ...");
                         } else if (keyCommandJson.get(keyCommand).equals(JSONObject.NULL)) {
                             Log.i(getClass().getName(), "Finish getting wifi networks ...");
                         } else {
-                            String[] info = keyCommandJson.getString(keyCommand).split(",");
                             mIGatewayPageFragment.onFindNewNetworkAroundDevice(new WifiNetworksModel(
-                                    info[0],
-                                    Integer.valueOf(info[1])));
+                                    keyCommandJson.getString(keyCommand), -67));
                         }
                     }
                     break;
@@ -644,6 +674,13 @@ public class DeviceViewModel extends AndroidViewModel
         addNewCommandToBlePool(BleHelper.createReadMessage("step"));
     }
 
+    public void getGatewaySpecifiedInfoFromBleDevice() {
+        addNewCommandToBlePool(BleHelper.createReadMessage("iswifi"));
+        addNewCommandToBlePool(BleHelper.createReadMessage("isinternet"));
+        addNewCommandToBlePool(BleHelper.createReadMessage("ismqtt"));
+        addNewCommandToBlePool(BleHelper.createReadMessage("isrest"));
+    }
+
     private void addNewCommandToBlePool(byte[] command) {
         if (mBleCommandsPool == null)
             mBleCommandsPool = new ArrayList<>();
@@ -664,11 +701,17 @@ public class DeviceViewModel extends AndroidViewModel
     public void getAvailableWifiNetworksAroundDevice(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
-        addNewCommandToBlePool(BleHelper.createReadMessage("wifi"));
+        addNewCommandToBlePool(BleHelper.createReadMessage("wf"));
     }
 
     public void getConnectedClientsToDevice(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
+        Log.d("Scenario Wifi", "1: Send request to get wifi network list");
+        addNewCommandToBlePool(BleHelper.createReadMessage("clt"));
+    }
+
+    public void getConnectedClientsToDevice(IGatewayPageFragment mIGatewayPageFragment) {
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
         addNewCommandToBlePool(BleHelper.createReadMessage("clt"));
     }
@@ -679,7 +722,7 @@ public class DeviceViewModel extends AndroidViewModel
         mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) networkIndex}));
     }
 
-    public void setDeviceWifiNetwork(IGatewayPageFragment mIGatewayPageFragment, WifiNetworksModel wifiNetwork) {
+    public void setGatewayWifiNetwork(IGatewayPageFragment mIGatewayPageFragment, WifiNetworksModel wifiNetwork) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
 
         JSONObject commandJson;
@@ -698,6 +741,11 @@ public class DeviceViewModel extends AndroidViewModel
             commandJson.put("sec", wifiNetwork.getAuthenticateType());
 
             addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+
+            commandJson = new JSONObject();
+            commandJson.put("auto", true);
+
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -709,7 +757,7 @@ public class DeviceViewModel extends AndroidViewModel
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("dis", "");//TODO
+            commandJson.put("auto", false);
 
             addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
         } catch (JSONException e) {
@@ -718,7 +766,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void setDeviceSetting(Fragment parentFragment, boolean doorInstallation, int lockStages) {
-        mISettingFragment = (ISettingFragment) parentFragment;
+        mISettingFragment = (IDeviceSettingFragment) parentFragment;
 
         JSONObject commandJson;
         try {
@@ -737,11 +785,11 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
-        mISettingFragment = (ISettingFragment) parentFragment;
+        mISettingFragment = (IDeviceSettingFragment) parentFragment;
     }
 
     public void changePairingPasswordViaBle(Fragment parentFragment, Integer oldPassword, Integer newPassword) {
-        mISettingFragment = (ISettingFragment) parentFragment;
+        mISettingFragment = (IDeviceSettingFragment) parentFragment;
 
         oldPairingPassword = oldPassword;
         newPairingPassword = newPassword;
@@ -774,7 +822,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void resetBleDevice(Fragment parentFragment) {
-        mISettingFragment = (ISettingFragment) parentFragment;
+        mISettingFragment = (IDeviceSettingFragment) parentFragment;
 
         JSONObject commandJson;
         try {
@@ -844,7 +892,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
-        mISettingFragment = (ISettingFragment) parentFragment;
+        mISettingFragment = (IDeviceSettingFragment) parentFragment;
         if (mDevice.isLockSavedInServerByCheckUserLocks()) {
             if (removeAllMembers) {
                 setRequestType("removeDeviceForAllMembers");
@@ -882,6 +930,20 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void disconnectClientFromDevice(ILockPageFragment mILockPageFragment, ConnectedClientsModel mConnectedClientsModel) {
         this.mILockPageFragment = mILockPageFragment;
+
+        JSONObject commandJson;
+        try {
+            commandJson = new JSONObject();
+            commandJson.put("dis", mConnectedClientsModel.getMacAddress());
+
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnectClientFromDevice(IGatewayPageFragment mIGatewayPageFragment, ConnectedClientsModel mConnectedClientsModel) {
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
 
         JSONObject commandJson;
         try {

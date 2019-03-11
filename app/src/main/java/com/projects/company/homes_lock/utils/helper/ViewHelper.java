@@ -140,20 +140,20 @@ public class ViewHelper {
             ImageView imgConnectionStatusLockPage, boolean setDefault, boolean gatewayConnectionStatus, int wifiStrength) {
         if (!gatewayConnectionStatus) {
             imgConnectionStatusLockPage.setImageResource(setDefault ?
-                    R.drawable.ic_invalid_gateway_off : R.drawable.ic_valid_gateway_off);
+                    R.drawable.ic_invalid_connected_devices_exist : R.drawable.ic_valid_connected_devices_not_exist);
         } else {
             if (wifiStrength > -60)
                 imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
+                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
             else if (wifiStrength > -71)
                 imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
+                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
             else if (wifiStrength > -85)
                 imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
+                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
             else
                 imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_gateway_on : R.drawable.ic_valid_gateway_on);
+                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
         }
     }
 

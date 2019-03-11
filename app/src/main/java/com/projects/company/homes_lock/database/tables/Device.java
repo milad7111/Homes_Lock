@@ -233,7 +233,7 @@ public class Device extends BaseModel {
         this.mDeviceHealth = false;
         this.mFWVersion = "0.0.0";
         this.mHWVersion = "0.0.0";
-        this.mDeviceType = "UNKNOWN";
+        this.mDeviceType = generateDeviceType();
         this.mProductionDate = "0000:00:00 00:00";
         this.mDynamicId = "000_0000_000_0000";
         this.mDoorInstallation = true;
@@ -262,8 +262,10 @@ public class Device extends BaseModel {
         this.mDeviceType = String.valueOf(Objects.requireNonNull(updatedLock.get("deviceType")).toString());
         this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get("productionDate")).toString());
         this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get("dynamicId")).toString());
-        this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("doorInstallation")).toString());;
-        this.mLockStages = Integer.valueOf(Objects.requireNonNull(updatedLock.get("dynamicId")).toString());;
+        this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("doorInstallation")).toString());
+        ;
+        this.mLockStages = Integer.valueOf(Objects.requireNonNull(updatedLock.get("dynamicId")).toString());
+        ;
         this.mLockPosition = Integer.valueOf(Objects.requireNonNull(updatedLock.get("lockStages")).toString());
     }
 
@@ -459,7 +461,7 @@ public class Device extends BaseModel {
         return null;
     }
 
-    public boolean isLockSavedInServer(){
+    public boolean isLockSavedInServer() {
         return !this.getObjectId().equals(this.getSerialNumber());
     }
 
@@ -525,5 +527,16 @@ public class Device extends BaseModel {
 
     public boolean getGatewayStatus() {
         return false;//TODO gateway
+    }
+
+    private String generateDeviceType() {
+        switch (mBleDeviceMacAddress.split(":")[1]) {
+            case "6E":
+                return "LOCK";
+            case "6F":
+                return "GATEWAY";
+            default:
+                return "UNKNOWN";
+        }
     }
 }

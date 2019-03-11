@@ -43,7 +43,7 @@ public class WifiNetworksModel extends BaseModel {
     }
 
     public String getSSID() {
-        return mSSID;
+        return mSSID != null ? mSSID : "";
     }
 
     public void setSSID(String mSSID) {
@@ -75,11 +75,11 @@ public class WifiNetworksModel extends BaseModel {
     }
 
     public boolean isValidData() {
-        return mIndex != SEARCHING_SCAN_MODE && mIndex != SEARCHING_TIMEOUT_MODE;
+        return mRSSI != SEARCHING_SCAN_MODE && mRSSI != SEARCHING_TIMEOUT_MODE;
     }
 
     public boolean isInvalidData() {
-        return mIndex == SEARCHING_SCAN_MODE || mIndex == SEARCHING_TIMEOUT_MODE;
+        return mRSSI == SEARCHING_SCAN_MODE || mRSSI == SEARCHING_TIMEOUT_MODE;
     }
     //endregion Declare Methods
 }

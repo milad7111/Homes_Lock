@@ -1,4 +1,4 @@
-package com.projects.company.homes_lock.ui.device.fragment.setting;
+package com.projects.company.homes_lock.ui.device.fragment.devicesetting;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -43,9 +43,9 @@ import static com.projects.company.homes_lock.utils.helper.DialogHelper.handlePr
 /**
  * A simple {@link BaseFragment} subclass.
  */
-public class SettingFragment extends BaseFragment
+public class DeviceSettingFragment extends BaseFragment
         implements
-        ISettingFragment,
+        IDeviceSettingFragment,
         View.OnClickListener {
 
     //region Declare Constants
@@ -61,8 +61,6 @@ public class SettingFragment extends BaseFragment
     private TextView txvDeviceSettingDescriptionSettingFragment;
     private TextView txvChangePairingPasswordSettingFragment;
     private TextView txvChangePairingPasswordDescriptionSettingFragment;
-    private TextView txvProServicesSettingFragment;
-    private TextView txvProServicesDescriptionSettingFragment;
     private TextView txvDynamicIdDescriptionSettingFragment;
     private TextView txvSerialNumberDescriptionSettingFragment;
     private TextView txvResetLockSettingFragment;
@@ -94,11 +92,11 @@ public class SettingFragment extends BaseFragment
     //endregion Declare Objects
 
     //region Constructor
-    public SettingFragment() {
+    public DeviceSettingFragment() {
     }
 
-    public static SettingFragment newInstance(String mDeviceObjectId, DeviceViewModel mDeviceViewModel) {
-        SettingFragment fragment = new SettingFragment();
+    public static DeviceSettingFragment newInstance(String mDeviceObjectId, DeviceViewModel mDeviceViewModel) {
+        DeviceSettingFragment fragment = new DeviceSettingFragment();
         Bundle args = new Bundle();
 
         args.putString(ARG_PARAM, mDeviceObjectId);
@@ -150,8 +148,6 @@ public class SettingFragment extends BaseFragment
         txvDeviceSettingDescriptionSettingFragment = view.findViewById(R.id.txv_device_setting_description_setting_fragment);
         txvChangePairingPasswordSettingFragment = view.findViewById(R.id.txv_change_pairing_password_setting_fragment);
         txvChangePairingPasswordDescriptionSettingFragment = view.findViewById(R.id.txv_change_pairing_password_description_setting_fragment);
-        txvProServicesSettingFragment = view.findViewById(R.id.txv_pro_services_setting_fragment);
-        txvProServicesDescriptionSettingFragment = view.findViewById(R.id.txv_pro_services_description_setting_fragment);
         txvDynamicIdDescriptionSettingFragment = view.findViewById(R.id.txv_dynamic_id_description_setting_fragment);
         txvSerialNumberDescriptionSettingFragment = view.findViewById(R.id.txv_serial_number_description_setting_fragment);
         txvResetLockSettingFragment = view.findViewById(R.id.txv_reset_lock_setting_fragment);
@@ -172,8 +168,6 @@ public class SettingFragment extends BaseFragment
         txvDeviceSettingDescriptionSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordDescriptionSettingFragment.setOnClickListener(this);
-        txvProServicesSettingFragment.setOnClickListener(this);
-        txvProServicesDescriptionSettingFragment.setOnClickListener(this);
         txvDynamicIdDescriptionSettingFragment.setOnClickListener(this);
         txvSerialNumberDescriptionSettingFragment.setOnClickListener(this);
         txvResetLockSettingFragment.setOnClickListener(this);
@@ -212,12 +206,6 @@ public class SettingFragment extends BaseFragment
             case R.id.txv_change_pairing_password_description_setting_fragment:
                 handleChangePassword(CHANGE_PAIRING_PASSWORD);
                 break;
-            case R.id.txv_pro_services_setting_fragment:
-                handleProServices();
-                break;
-            case R.id.txv_pro_services_description_setting_fragment:
-                handleProServices();
-                break;
             case R.id.txv_dynamic_id_description_setting_fragment:
                 //TODO copy info to clipboard
                 break;
@@ -246,7 +234,7 @@ public class SettingFragment extends BaseFragment
     }
     //endregion Main Callbacks
 
-    //region ISettingFragment Callbacks
+    //region IDeviceSettingFragment Callbacks
     @Override
     public void onSetDeviceSetting(boolean deviceSettingStatus) {
 //        DialogHelper.handleProgressDialog(null, null, null, false);
@@ -361,17 +349,17 @@ public class SettingFragment extends BaseFragment
     @Override
     public void onRemoveDeviceForOneMemberFailed(ResponseBodyFailureModel response) {
     }
-    //endregion ISettingFragment Callbacks
+    //endregion IDeviceSettingFragment Callbacks
 
     //region Declare Methods
     private void initViews() {
+        handleViewsBasedOnDeviceType();
+
         if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             txvDeviceSettingSettingFragment.setVisibility(View.GONE);
             txvDeviceSettingDescriptionSettingFragment.setVisibility(View.GONE);
             txvChangePairingPasswordSettingFragment.setVisibility(View.GONE);
             txvChangePairingPasswordDescriptionSettingFragment.setVisibility(View.GONE);
-            txvProServicesSettingFragment.setVisibility(View.GONE);
-            txvProServicesDescriptionSettingFragment.setVisibility(View.GONE);
 
 //            txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
 //            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
@@ -427,11 +415,8 @@ public class SettingFragment extends BaseFragment
                 .setAttributes(ViewHelper.getDialogLayoutParams(deviceSettingDialog));
     }
 
-    private void handleProServices() {
-    }
-
     private void handleResetLock() {
-        resetLockDialog = new Dialog(getContext());
+        resetLockDialog = new Dialog(Objects.requireNonNull(getContext()));
         resetLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resetLockDialog.setContentView(R.layout.dialog_reset_lock);
 
@@ -446,7 +431,7 @@ public class SettingFragment extends BaseFragment
         });
 
         btnResetDialogResetLock.setOnClickListener(v -> {
-            DialogHelper.handleProgressDialog(getContext(), null, "Reset Lock ...", true);
+            DialogHelper.handleProgressDialog(getContext(), null, "Reset Device ...", true);
             mDeviceViewModel.resetBleDevice(mFragment);
         });
 
@@ -457,7 +442,7 @@ public class SettingFragment extends BaseFragment
 
     private void handleRemoveLock() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            removeLockDialog = new Dialog(getContext());
+            removeLockDialog = new Dialog(Objects.requireNonNull(getContext()));
             removeLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             removeLockDialog.setContentView(R.layout.dialog_remove_lock);
 
@@ -511,7 +496,7 @@ public class SettingFragment extends BaseFragment
 
     private void handleDialogChangeOnlinePassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changeOnlinePasswordDialog = new Dialog(getContext());
+            changeOnlinePasswordDialog = new Dialog(Objects.requireNonNull(getContext()));
             changeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
 
@@ -545,7 +530,7 @@ public class SettingFragment extends BaseFragment
 
     private void handleDialogChangePairingPassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            changePairingPasswordDialog = new Dialog(getContext());
+            changePairingPasswordDialog = new Dialog(Objects.requireNonNull(getContext()));
             changePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             changePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
 
@@ -616,6 +601,17 @@ public class SettingFragment extends BaseFragment
             }
             mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
             Log.i("Set Setting", "Done");
+        }
+    }
+
+    private void handleViewsBasedOnDeviceType(){
+        switch (mDevice.getDeviceType()){
+            case "LOCK":
+                break;
+            case "GATEWAY":
+                txvDeviceSettingSettingFragment.setVisibility(View.GONE);
+                txvDeviceSettingDescriptionSettingFragment.setVisibility(View.GONE);
+                break;
         }
     }
     //endregion Declare Methods

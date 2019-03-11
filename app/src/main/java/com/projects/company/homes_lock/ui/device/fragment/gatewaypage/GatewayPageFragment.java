@@ -35,7 +35,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
-import com.projects.company.homes_lock.ui.device.fragment.setting.SettingFragment;
+import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.utils.ble.ConnectedClientsAdapter;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
@@ -132,8 +132,8 @@ public class GatewayPageFragment extends BaseFragment
 
         //region Initialize Objects
         mContext = getContext();
-        this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
-        this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
+        GatewayPageFragment.this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
+        GatewayPageFragment.this.mDeviceViewModel.isConnected().observe(this, isConnected -> {
             if (isConnected != null) {
                 isConnectedToBleDevice = isConnected;
                 setBleConnectionStatusImage(imgBleGatewayPage, isConnected);
@@ -146,12 +146,11 @@ public class GatewayPageFragment extends BaseFragment
                 }
             }
         });
-        this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
+        GatewayPageFragment.this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
             if (isSupported != null)
                 if (isSupported) {
-                    this.mDeviceViewModel.getDeviceDataFromBleDevice();
-                    this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
-                    this.mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+                    GatewayPageFragment.this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
+                    GatewayPageFragment.this.mDeviceViewModel.getGatewaySpecifiedInfoFromBleDevice();
                     updateViewData(false);
                 } else {
                     updateViewData(true);
@@ -160,7 +159,7 @@ public class GatewayPageFragment extends BaseFragment
                         mBluetoothLEHelper.disconnect();
                 }
         });
-        this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
+        GatewayPageFragment.this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
             mDevice = device;
             updateViewData(!isConnectedToBleDevice);
         });
@@ -221,7 +220,7 @@ public class GatewayPageFragment extends BaseFragment
     public void onDestroy() {
         super.onDestroy();
 
-        mDeviceViewModel.disconnect();
+        GatewayPageFragment.this.mDeviceViewModel.disconnect();
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
     }
@@ -231,7 +230,7 @@ public class GatewayPageFragment extends BaseFragment
         switch (v.getId()) {
             case R.id.img_connected_devices_gateway_page:
                 if (isConnectedToBleDevice)
-                    handleConnectGatewayToAroundDevices();
+                    handleConnectedDevices();
                 break;
             case R.id.img_connection_status_gateway_page:
                 if (isConnectedToBleDevice)
@@ -248,7 +247,7 @@ public class GatewayPageFragment extends BaseFragment
                     setFragment(
                             (AppCompatActivity) Objects.requireNonNull(getActivity()),
                             R.id.frg_lock_activity,
-                            SettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
+                            DeviceSettingFragment.newInstance(mDevice.getObjectId(), GatewayPageFragment.this.mDeviceViewModel));
                 break;
         }
     }
@@ -264,9 +263,11 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     @Override
-    public void onAdapterItemClick(BaseModel network) {
-        WifiNetworksModel tempNetwork = (WifiNetworksModel) network;
-        handleDialogSetDeviceWifiNetwork(tempNetwork);
+    public void onAdapterItemClick(BaseModel object) {
+        if (object instanceof WifiNetworksModel) {
+            handleDialogSetDeviceWifiNetwork((WifiNetworksModel) object);
+        } else if (object instanceof ConnectedClientsModel)
+            handleDialogDisconnectClientFromDevice((ConnectedClientsModel) object);
     }
 
     @Override
@@ -276,7 +277,7 @@ public class GatewayPageFragment extends BaseFragment
     @Override
     public void onGetAvailableWifiNetworksCountAroundDevice(int count) {
         wifiNetworksCount = count;
-        mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, 0);
+        GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, 0);
     }
 
     @Override
@@ -329,12 +330,37 @@ public class GatewayPageFragment extends BaseFragment
     public void onGetUpdatedDevice(Device response) {
         mDevice = response;
         updateViewData(false);
-        this.mDeviceViewModel.updateDevice(response);
+        GatewayPageFragment.this.mDeviceViewModel.updateDevice(response);
     }
 
     @Override
     public void onSendRequestGetAvailableWifiSuccessful() {
         Log.d(getTag(), "Get Available Wifi Networks Around Device Sent Successful! Wait ...");
+    }
+
+    @Override
+    public void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress) {
+        mConnectedClientsAdapter.addConnectedDevice(
+                new ConnectedClientsModel(mConnectedClientsAdapter.getItemCount(), connectedClientMacAddress, true));
+    }
+
+    @Override
+    public void onDeviceDisconnectedSuccessfully() {
+        handleProgressDialog(null, null, null, false);
+
+        if (disconnectClientDialog != null) {
+            disconnectClientDialog.dismiss();
+            disconnectClientDialog = null;
+        }
+
+        if (connectedClientsToDeviceListDialog != null) {
+            if (!connectedClientsToDeviceListDialog.isShowing())
+                connectedClientsToDeviceListDialog.show();
+
+            mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
+            GatewayPageFragment.this.mDeviceViewModel.getConnectedClientsToDevice(this);
+        } else
+            handleConnectedDevices();
     }
     //endregion BLE CallBacks
 
@@ -369,22 +395,9 @@ public class GatewayPageFragment extends BaseFragment
         else if (isConnectedToBleDevice)
             if (mDevice.getWifiStatus()) {
                 DialogHelper.handleProgressDialog(getContext(), null, "Disconnect Internet Connection ...", true);
-                this.mDeviceViewModel.disconnectGatewayWifiNetwork(this);
+                GatewayPageFragment.this.mDeviceViewModel.disconnectGatewayWifiNetwork(this);
             } else
                 handleDialogListOfAvailableWifiNetworksAroundDevice();
-    }
-
-    private void addFoundNetworkToList(WifiNetworksModel wifiNetworksModel) {
-        if (!findNetworkInList(wifiNetworksModel.getSSID()))
-            this.mWifiNetworkList.add(wifiNetworksModel);
-    }
-
-    private boolean findNetworkInList(String mSSID) {
-        for (WifiNetworksModel network : mWifiNetworkList)
-            if (network.getSSID().equals(mSSID))
-                return true;
-
-        return false;
     }
 
     private void closeDialogHandleDeviceWifiNetwork() {
@@ -410,7 +423,7 @@ public class GatewayPageFragment extends BaseFragment
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
         else {
             if (isConnectedToBleDevice)
-                this.mDeviceViewModel.disconnect();
+                GatewayPageFragment.this.mDeviceViewModel.disconnect();
             else
                 connectToDevice();
         }
@@ -458,7 +471,7 @@ public class GatewayPageFragment extends BaseFragment
 
         btnScanDialogConnectedClients.setOnClickListener(v -> {
             mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
-//            mDeviceViewModel.getConnectedClientsToDevice(this);//TODO
+            GatewayPageFragment.this.mDeviceViewModel.getConnectedClientsToDevice(this);
         });
 
         connectedClientsToDeviceListDialog.setOnDismissListener(dialog -> {
@@ -469,7 +482,7 @@ public class GatewayPageFragment extends BaseFragment
         });
 
         mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
-//        mDeviceViewModel.getConnectedClientsToDevice(this);//TODO
+        GatewayPageFragment.this.mDeviceViewModel.getConnectedClientsToDevice(this);
 
         if (!connectedClientsToDeviceListDialog.isShowing()) {
             connectedClientsToDeviceListDialog.show();
@@ -478,7 +491,33 @@ public class GatewayPageFragment extends BaseFragment
         }
     }
 
-    private void handleConnectGatewayToAroundDevices() {
+    private void handleDialogDisconnectClientFromDevice(ConnectedClientsModel mConnectedClientsModel) {
+        if (disconnectClientDialog != null) {
+            disconnectClientDialog.dismiss();
+            disconnectClientDialog = null;
+        }
+
+        disconnectClientDialog = new Dialog(requireContext());
+        disconnectClientDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        disconnectClientDialog.setContentView(R.layout.dialog_disconnect_device);
+
+        Button btnCancelDialogDisconnectClient =
+                disconnectClientDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
+        Button btnDisconnectDialogDisconnectClient =
+                disconnectClientDialog.findViewById(R.id.btn_disconnect_dialog_disconnect_device);
+
+        btnCancelDialogDisconnectClient.setOnClickListener(v -> {
+            disconnectClientDialog.dismiss();
+            disconnectClientDialog = null;
+        });
+
+        btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
+            DialogHelper.handleProgressDialog(getContext(), null, "Disconnect device ...", true);
+            GatewayPageFragment.this.mDeviceViewModel.disconnectClientFromDevice(this, mConnectedClientsModel);
+        });
+
+        disconnectClientDialog.show();
+        Objects.requireNonNull(disconnectClientDialog.getWindow()).setAttributes(getDialogLayoutParams(disconnectClientDialog));
     }
 
     private void connectToDevice() {
@@ -487,7 +526,7 @@ public class GatewayPageFragment extends BaseFragment
 
         if (tempDevice != null) {
             handleProgressDialog(getActivity(), null, "Pairing ...", true);
-            this.mDeviceViewModel.connect(this, new ScannedDeviceModel(tempDevice));
+            GatewayPageFragment.this.mDeviceViewModel.connect(this, new ScannedDeviceModel(tempDevice));
         } else if (getScanPermission(this))
             scanDevices();
     }
@@ -511,7 +550,7 @@ public class GatewayPageFragment extends BaseFragment
     private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices) {
         for (ScannedDeviceModel device : listOfScannedDevices) {
             if (device.getMacAddress().equals(mDevice.getBleDeviceMacAddress())) {
-                this.mDeviceViewModel.connect(this, device);
+                GatewayPageFragment.this.mDeviceViewModel.connect(this, device);
                 return true;
             }
         }
@@ -578,9 +617,6 @@ public class GatewayPageFragment extends BaseFragment
             deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceWifiNetworkDialog.setContentView(R.layout.dialog_device_wifi_network_connect);
 
-            if (mWifiNetworksAdapter == null)
-                mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-
             Spinner spnWifiTypeDialogDeviceWifiNetworkConnect =
                     deviceWifiNetworkDialog.findViewById(R.id.spn_wifi_type_dialog_device_wifi_network_connect);
             TextInputEditText tietWifiPasswordDialogDeviceWifiNetworkConnect =
@@ -600,7 +636,7 @@ public class GatewayPageFragment extends BaseFragment
                 wifiNetwork.setPassword(Objects.requireNonNull(tietWifiPasswordDialogDeviceWifiNetworkConnect.getText()).toString());
                 wifiNetwork.setAuthenticateType(spnWifiTypeDialogDeviceWifiNetworkConnect.getSelectedItemPosition());
                 handleProgressDialog(getContext(), null, "Set Internet Connection ...", true);
-                GatewayPageFragment.this.mDeviceViewModel.setDeviceWifiNetwork(this, wifiNetwork);
+                GatewayPageFragment.this.mDeviceViewModel.setGatewayWifiNetwork(this, wifiNetwork);
             });
 
             GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this);

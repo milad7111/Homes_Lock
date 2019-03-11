@@ -26,7 +26,7 @@ import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.aboutus.AboutUsActivity;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
-import com.projects.company.homes_lock.ui.device.fragment.setting.SettingFragment;
+import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.ui.notification.NotificationActivity;
 import com.projects.company.homes_lock.ui.proservices.activity.ProServicesActivity;
 import com.projects.company.homes_lock.ui.setting.SettingActivity;
@@ -139,7 +139,7 @@ public class LockActivity extends BaseActivity
 
             if (mFragment instanceof ManageMembersFragment)
                 getSupportFragmentManager().popBackStackImmediate();
-            else if (mFragment instanceof SettingFragment)
+            else if (mFragment instanceof DeviceSettingFragment)
                 getSupportFragmentManager().popBackStackImmediate();
             else if (mViewPager.getChildCount() == 0)
                 finish();

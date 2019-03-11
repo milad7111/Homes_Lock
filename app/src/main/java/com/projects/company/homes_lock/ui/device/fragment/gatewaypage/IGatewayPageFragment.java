@@ -30,4 +30,8 @@ public interface IGatewayPageFragment {
     void onGetUpdatedDevice(Device response);
 
     void onSendRequestGetAvailableWifiSuccessful();
+
+    void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress);
+
+    void onDeviceDisconnectedSuccessfully();
 }

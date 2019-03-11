@@ -135,32 +135,6 @@
             app:layout_constraintTop_toBottomOf="@+id/txv_device_setting_setting_fragment" />
 
         <TextView
-            android:id="@+id/txv_pro_services_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_pro_services_description_setting_fragment"
-            android:text="@string/fragment_text_view_pro_services"
-            android:textColor="@color/list_item_text_color"
-            android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/txv_change_pairing_password_description_setting_fragment" />
-
-        <TextView
-            android:id="@+id/txv_pro_services_description_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_change_password_online_setting_fragment"
-            android:text="@string/fragment_text_view_pro_services_description"
-            android:textColor="@color/description_text_color"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@+id/txv_pro_services_setting_fragment" />
-
-        <TextView
             android:id="@+id/txv_change_pairing_password_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -223,7 +197,7 @@
             android:text="@string/fragment_text_view_dynamic_id"
             android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/txv_pro_services_description_setting_fragment" />
+            app:layout_constraintTop_toBottomOf="@+id/txv_change_pairing_password_description_setting_fragment" />
 
         <TextView
             android:id="@+id/txv_dynamic_id_description_setting_fragment"

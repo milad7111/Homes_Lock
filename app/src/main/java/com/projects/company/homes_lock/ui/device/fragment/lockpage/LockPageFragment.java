@@ -32,7 +32,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.ConnectedClientsMod
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
-import com.projects.company.homes_lock.ui.device.fragment.setting.SettingFragment;
+import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.utils.ble.ConnectedClientsAdapter;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
@@ -245,7 +245,7 @@ public class LockPageFragment extends BaseFragment
                     setFragment(
                             (AppCompatActivity) Objects.requireNonNull(getActivity()),
                             R.id.frg_lock_activity,
-                            SettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
+                            DeviceSettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
                 break;
         }
     }

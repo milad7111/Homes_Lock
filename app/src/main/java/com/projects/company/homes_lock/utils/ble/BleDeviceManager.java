@@ -68,14 +68,17 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         public void onCharacteristicNotified(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            mCallbacks.onDataReceived(characteristic);
+//            mCallbacks.onDataReceived(characteristic);
+            readCharacteristic(CHARACTERISTIC_UUID_TX);
         }
     };
     //endregion Declare Objects
 
+    //region Constructor
     public BleDeviceManager(final Context context) {
         super(context);
     }
+    //endregion Constructor
 
     //region BleManager CallBacks
     @NonNull

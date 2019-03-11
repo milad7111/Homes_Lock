@@ -65,7 +65,7 @@ public class ConnectedClientsAdapter extends RecyclerView.Adapter<ConnectedClien
             } else {
                 macAddress = mConnectedClientModel.getMacAddress();
                 connectionStatusDrawable = ContextCompat.getDrawable(mActivity,
-                        mConnectedClientModel.getConnectionStatus() ? R.drawable.ic_valid_gateway_on : R.drawable.ic_valid_gateway_off);
+                        mConnectedClientModel.getConnectionStatus() ? R.drawable.ic_valid_connected_devices_exist : R.drawable.ic_valid_connected_devices_not_exist);
 
                 connectedDevicesViewHolder.txvItemClientMacAddress.setTypeface(null, Typeface.NORMAL);
 

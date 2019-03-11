@@ -1,11 +1,11 @@
-package com.projects.company.homes_lock.ui.device.fragment.setting;
+package com.projects.company.homes_lock.ui.device.fragment.devicesetting;
 
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
 /**
- * This is SettingFragment Interface
+ * This is DeviceSettingFragment Interface
  */
-public interface ISettingFragment {
+public interface IDeviceSettingFragment {
     void onChangeOnlinePassword(boolean value);
 
     void onSetDeviceSetting(boolean value);
