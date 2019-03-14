@@ -274,11 +274,11 @@ public class GatewayPageFragment extends BaseFragment
     public void onBonded(BluetoothDevice device) {
     }
 
-    @Override
-    public void onGetAvailableWifiNetworksCountAroundDevice(int count) {
-        wifiNetworksCount = count;
-        GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, 0);
-    }
+//    @Override
+//    public void onGetAvailableWifiNetworksCountAroundDevice(int count) {
+//        wifiNetworksCount = count;
+//        GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, 0);
+//    }
 
     @Override
     public void onFindNewNetworkAroundDevice(WifiNetworksModel mWifiNetworksModel) {

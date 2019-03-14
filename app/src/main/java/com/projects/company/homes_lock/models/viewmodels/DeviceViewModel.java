@@ -40,7 +40,6 @@ import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.ble.SingleLiveEvent;
-import com.projects.company.homes_lock.utils.helper.BleHelper;
 import com.projects.company.homes_lock.utils.mqtt.IMQTTListener;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
@@ -59,7 +58,7 @@ import okhttp3.ResponseBody;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.createCommand;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.createBleReadMessage;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createWriteMessage;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.isInstanceOfList;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.subArrayByte;
@@ -456,45 +455,45 @@ public class DeviceViewModel extends AndroidViewModel
             String keyCommand = keyCommandJson.keys().next();
 
             switch (keyCommand) {
-                case "batt":
+                case "bat":
                     if (mILockPageFragment != null)
                         mLocalRepository.updateDeviceBatteryPercentage(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getInt(keyCommand));
                     break;
-                case "islock":
+                case "isk":
                     if (mILockPageFragment != null)
                         mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     break;
-                case "isopen":
+                case "iso":
                     if (mILockPageFragment != null)
                         mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     break;
-                case "knock":
+                case "knk":
                     Log.e(getClass().getName(), String.format("Door knocked : %s", keyCommandJson.getString(keyCommand)));
                     break;
-                case "lock":
+                case "loc":
                     if (mILockPageFragment != null && keyCommandJson.get(keyCommand).equals("ok"))
                         mILockPageFragment.onSendLockCommandSuccessful("lock");
                     break;
-                case "unlock":
+                case "ulc":
                     if (mILockPageFragment != null && keyCommandJson.get(keyCommand).equals("ok"))
                         mILockPageFragment.onSendLockCommandSuccessful("unlock");
                     break;
-                case "type":
+                case "typ":
                     Log.e(getClass().getName(), String.format("type setting IS: %s", keyCommandJson.getString(keyCommand)));
                     if (mILockPageFragment != null)
                         mLocalRepository.updateDeviceType(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getString(keyCommand));
                     break;
-                case "fw_ver"://TODO change to fw_version MR. Ghaderan
+                case "fw":
                     Log.e(getClass().getName(), String.format("fw_ver setting IS: %s", keyCommandJson.getString(keyCommand)));
                     if (mILockPageFragment != null)
                         mLocalRepository.updateFirmwareVersion(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getString(keyCommand));
                     break;
-                case "hw_ver":
+                case "hw":
                     Log.e(getClass().getName(), String.format("hw_ver setting IS: %s", keyCommandJson.getString(keyCommand)));
                     if (mILockPageFragment != null)
                         mLocalRepository.updateHardwareVersion(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
@@ -518,14 +517,14 @@ public class DeviceViewModel extends AndroidViewModel
                         mLocalRepository.updateDynamicId(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getString(keyCommand));
                     break;
-                case "opass":
+                case "ops":
                     Log.e(getClass().getName(), String.format("old pass %s", keyCommandJson.getString(keyCommand)));
                     if (mISettingFragment != null && keyCommandJson.get(keyCommand).equals("ok")) {
                         changePairingPasswordViaBleFinalStep();
                         mISettingFragment.onCheckOldPairingPasswordSuccessful();
                     }
                     break;
-                case "npass":
+                case "nps":
                     Log.e(getClass().getName(), String.format("new pass %s", keyCommandJson.getString(keyCommand)));
                     if (mISettingFragment != null && keyCommandJson.get(keyCommand).equals("ok"))
                         mISettingFragment.onChangePairingPasswordSuccessful();
@@ -548,31 +547,31 @@ public class DeviceViewModel extends AndroidViewModel
                                     keyCommandJson.getInt(keyCommand));
                     }
                     break;
-                case "iswifi":
+                case "isw":
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateDeviceWifiStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
-                case "isinternet":
+                case "isi":
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateDeviceInternetStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
-                case "ismqtt":
+                case "isq":
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateDeviceMQTTServerStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
-                case "isrest":
+                case "isr":
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateDeviceRestApiServerStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
-                case "reset":
+                case "rst":
                     if (mISettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals("ok"))
                             mISettingFragment.onResetBleDeviceSuccessful();
@@ -628,15 +627,16 @@ public class DeviceViewModel extends AndroidViewModel
                         }
                     }
                     break;
-                case "wf":
+                case "wfl":
                     if (mIGatewayPageFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals("wait")) {
                             Log.i(getClass().getName(), "Start getting wifi networks ...");
-                        } else if (keyCommandJson.get(keyCommand).equals(JSONObject.NULL)) {
+                        } else if (keyCommandJson.get(keyCommand).equals("end")) {
                             Log.i(getClass().getName(), "Finish getting wifi networks ...");
                         } else {
                             mIGatewayPageFragment.onFindNewNetworkAroundDevice(new WifiNetworksModel(
-                                    keyCommandJson.getString(keyCommand), -67));
+                                    keyCommandJson.getString(keyCommand).split(",")[0],
+                                    Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1])));
                         }
                     }
                     break;
@@ -649,36 +649,36 @@ public class DeviceViewModel extends AndroidViewModel
     public void sendLockCommand(LockPageFragment fragment, boolean lockCommand) {
         mILockPageFragment = fragment;
         if (BaseApplication.isUserLoggedIn())
-            (new MQTTHandler()).toggle(this, "", createCommand(new byte[]{0x02}, new byte[]{(byte) (lockCommand ? 0x01 : 0x02)}));
+            (new MQTTHandler()).toggle(this, "", createBleReadMessage(lockCommand ? "loc" : "ulc", 0));
         else
-            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, BleHelper.createReadMessage(lockCommand ? "lock" : "unlock"));
+            addNewCommandToBlePool(createBleReadMessage(lockCommand ? "loc" : "ulc", 0));
     }
 
     public void getDeviceDataFromBleDevice() {
-        addNewCommandToBlePool(BleHelper.createReadMessage("batt"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("isopen"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("islock"));
+        addNewCommandToBlePool(createBleReadMessage("bat", 0));
+        addNewCommandToBlePool(createBleReadMessage("iso", 0));
+        addNewCommandToBlePool(createBleReadMessage("isk", 0));
     }
 
     public void getDeviceCommonSettingInfoFromBleDevice() {
-        addNewCommandToBlePool(BleHelper.createReadMessage("type"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("fw_ver"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("hw_ver"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("prd"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("sn"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("did"));
+        addNewCommandToBlePool(createBleReadMessage("typ", 0));
+        addNewCommandToBlePool(createBleReadMessage("fw", 0));
+        addNewCommandToBlePool(createBleReadMessage("hw", 0));
+        addNewCommandToBlePool(createBleReadMessage("prd", 0));
+        addNewCommandToBlePool(createBleReadMessage("sn", 0));
+        addNewCommandToBlePool(createBleReadMessage("did", 0));
     }
 
     public void getLockSpecifiedSettingInfoFromBleDevice() {
-        addNewCommandToBlePool(BleHelper.createReadMessage("right"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("step"));
+        addNewCommandToBlePool(createBleReadMessage("right", 0));
+        addNewCommandToBlePool(createBleReadMessage("step", 0));
     }
 
     public void getGatewaySpecifiedInfoFromBleDevice() {
-        addNewCommandToBlePool(BleHelper.createReadMessage("iswifi"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("isinternet"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("ismqtt"));
-        addNewCommandToBlePool(BleHelper.createReadMessage("isrest"));
+        addNewCommandToBlePool(createBleReadMessage("isw", 0));
+        addNewCommandToBlePool(createBleReadMessage("isi", 0));
+        addNewCommandToBlePool(createBleReadMessage("isq", 0));
+        addNewCommandToBlePool(createBleReadMessage("isr", 0));
     }
 
     private void addNewCommandToBlePool(byte[] command) {
@@ -693,7 +693,7 @@ public class DeviceViewModel extends AndroidViewModel
         if (mBleCommandsPool.size() > 0 && bleBufferStatus) {
             Log.e(getClass().getName(), "Buffer is full");
             bleBufferStatus = false;
-            mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, mBleCommandsPool.get(0));
+            mBleDeviceManager.customWriteCharacteristic(CHARACTERISTIC_UUID_RX, mBleCommandsPool.get(0));
             mBleCommandsPool.remove(0);
         }
     }
@@ -701,25 +701,19 @@ public class DeviceViewModel extends AndroidViewModel
     public void getAvailableWifiNetworksAroundDevice(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
-        addNewCommandToBlePool(BleHelper.createReadMessage("wf"));
+        addNewCommandToBlePool(createBleReadMessage("wfl", 0));
     }
 
     public void getConnectedClientsToDevice(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
-        addNewCommandToBlePool(BleHelper.createReadMessage("clt"));
+        addNewCommandToBlePool(createBleReadMessage("clt", 0));
     }
 
     public void getConnectedClientsToDevice(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
-        addNewCommandToBlePool(BleHelper.createReadMessage("clt"));
-    }
-
-    public void getAvailableWifiNetworksAroundDevice(IGatewayPageFragment mIGatewayPageFragment, int networkIndex) {
-        this.mIGatewayPageFragment = mIGatewayPageFragment;
-        Log.d("Scenario Wifi", String.format("7: Send Request to get %dth wifi network.", networkIndex));
-        mBleDeviceManager.writeCharacteristic(CHARACTERISTIC_UUID_RX, createCommand(new byte[]{0x07}, new byte[]{(byte) networkIndex}));
+        addNewCommandToBlePool(createBleReadMessage("clt", 0));
     }
 
     public void setGatewayWifiNetwork(IGatewayPageFragment mIGatewayPageFragment, WifiNetworksModel wifiNetwork) {
@@ -728,24 +722,24 @@ public class DeviceViewModel extends AndroidViewModel
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("ssid", wifiNetwork.getSSID());
+            commandJson.put("ssd", wifiNetwork.getSSID());
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
 
             commandJson = new JSONObject();
             commandJson.put("psk", wifiNetwork.getPassword());
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
 
             commandJson = new JSONObject();
             commandJson.put("sec", wifiNetwork.getAuthenticateType());
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
 
             commandJson = new JSONObject();
-            commandJson.put("auto", true);
+            commandJson.put("con", true);
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -757,9 +751,9 @@ public class DeviceViewModel extends AndroidViewModel
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("auto", false);
+            commandJson.put("con", false);
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -773,12 +767,12 @@ public class DeviceViewModel extends AndroidViewModel
             commandJson = new JSONObject();
             commandJson.put("right", doorInstallation);
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
 
             commandJson = new JSONObject();
             commandJson.put("step", lockStages);
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -801,9 +795,9 @@ public class DeviceViewModel extends AndroidViewModel
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("opass", oldPairingPassword);
+            commandJson.put("ops", oldPairingPassword);
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -813,9 +807,9 @@ public class DeviceViewModel extends AndroidViewModel
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("npass", newPairingPassword);
+            commandJson.put("nps", newPairingPassword);
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -827,9 +821,9 @@ public class DeviceViewModel extends AndroidViewModel
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("reset", JSONObject.NULL);
+            commandJson.put("rst", JSONObject.NULL);
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -936,7 +930,7 @@ public class DeviceViewModel extends AndroidViewModel
             commandJson = new JSONObject();
             commandJson.put("dis", mConnectedClientsModel.getMacAddress());
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -950,7 +944,7 @@ public class DeviceViewModel extends AndroidViewModel
             commandJson = new JSONObject();
             commandJson.put("dis", mConnectedClientsModel.getMacAddress());
 
-            addNewCommandToBlePool(createWriteMessage(commandJson.toString()));
+            addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
             e.printStackTrace();
         }

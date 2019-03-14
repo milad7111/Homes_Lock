@@ -190,7 +190,7 @@ public class DataHelper {
         byte[] temp = new byte[end - start + 1]; //contains data[start] and data[end]
 
         int i = 0;
-        for (int j = start; j <= end; j++)
+        for (int j = start; j <= Math.min(end, data.length - 1); j++)
             temp[i++] = data[j];
 
         return temp;

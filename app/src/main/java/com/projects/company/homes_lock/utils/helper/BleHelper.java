@@ -23,9 +23,11 @@ import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.REQUEST_CODE_ACCESS_COARSE_LOCATION;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.subArrayByte;
 
 public class BleHelper {
 
@@ -64,7 +66,7 @@ public class BleHelper {
      *
      * @return true if Bluetooth is enabled, false otherwise.
      */
-    public static boolean isBleEnabled() {
+    private static boolean isBleEnabled() {
         final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         return adapter != null && adapter.isEnabled();
     }
@@ -74,7 +76,7 @@ public class BleHelper {
      *
      * @return true if permissions are already granted, false otherwise.
      */
-    public static boolean isLocationPermissionsGranted(final Context context) {
+    private static boolean isLocationPermissionsGranted(final Context context) {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -85,7 +87,7 @@ public class BleHelper {
      * @param activity the activity
      * @return true if permission has been denied and the popup will not come up any more, false otherwise
      */
-    public static boolean isLocationPermissionDeniedForever(final Activity activity) {
+    private static boolean isLocationPermissionDeniedForever(final Activity activity) {
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         return !isLocationPermissionsGranted(activity) // Location permission must be denied
@@ -120,7 +122,7 @@ public class BleHelper {
      * @param context the context
      * @return false if it is known that location is not required, true otherwise
      */
-    public static boolean isLocationRequired(final Context context) {
+    private static boolean isLocationRequired(final Context context) {
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getBoolean(PREFS_LOCATION_NOT_REQUIRED, isMarshmallowOrAbove());
     }
@@ -163,21 +165,23 @@ public class BleHelper {
         context.startActivity(intent);
     }
 
-    public static byte[] createCommand(byte[] functionId, byte[] data) {
-        byte[] fullCommand = new byte[data.length + 2];
-
-        fullCommand = mergeArrays(functionId, data);
-        fullCommand = mergeArrays(fullCommand, new byte[]{0x00});
-
-        return fullCommand;
+    public static byte[] createWriteMessage(String command, byte remain) {
+        return mergeArrays(new byte[]{0x00, Byte.valueOf(String.valueOf(0x40 | remain))}, mergeArrays(command.getBytes(), new byte[]{0x00}));
     }
 
-    public static byte[] createWriteMessage(String command) {
-        return mergeArrays(new byte[]{0x00, 0x40}, mergeArrays(command.getBytes(), new byte[]{0x00}));
+    public static byte[] createBleReadMessage(String key, int remain) {
+        return mergeArrays(new byte[]{0x00, Byte.valueOf(String.valueOf(0x40 | remain))}, mergeArrays((("{\"" + key + "\":null}")).getBytes(), new byte[]{0x00}));
     }
 
-    public static byte[] createReadMessage(String key) {
-        return mergeArrays(new byte[]{0x00, 0x40}, mergeArrays((("{\"" + key + "\":null}")).getBytes(), new byte[]{0x00}));
+    public static byte[] getBleCommandPart(byte[] command, int part, int remain) {
+        return mergeArrays(
+                mergeArrays(mergeArrays(new byte[]{command[0]},
+                        new byte[]{Byte.valueOf(String.valueOf(0x40 | remain))}
+                ), subArrayByte(
+                        subArrayByte(command, 2, command.length - 2),
+                        part * 17,
+                        part * 17 + 16)),
+                new byte[]{command[command.length - 1]});//every 20bytes data is a frame, 3 bytes is out of data
     }
 
     private static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
@@ -234,19 +238,19 @@ public class BleHelper {
             if (isLocationPermissionsGranted(fragment.getContext())) {
                 if (isBleEnabled())
                     return true;
-                else enableBluetooth(fragment.getActivity());
+                else enableBluetooth(Objects.requireNonNull(fragment.getActivity()));
             } else {
                 final boolean deniedForever = isLocationPermissionDeniedForever(fragment.getActivity());
                 if (!deniedForever)
                     grantLocationPermission(fragment.getActivity());
 
                 if (deniedForever)
-                    handlePermissionSettings(fragment.getActivity());
+                    handlePermissionSettings(Objects.requireNonNull(fragment.getActivity()));
             }
         } else {
             if (isBleEnabled())
                 return true;
-            else enableBluetooth(fragment.getActivity());
+            else enableBluetooth(Objects.requireNonNull(fragment.getActivity()));
         }
 
         return false;
