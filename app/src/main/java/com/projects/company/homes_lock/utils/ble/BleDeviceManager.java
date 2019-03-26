@@ -148,8 +148,12 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         if (mBluetoothGattCharacteristic != null) {
             int parts = ((value.length - 3) / 17) + 1;
-            for (int i = 0; i < parts; i++)
-                addNewCommandToBlePool(getBleCommandPart(value, i, parts - (i + 1)));
+
+            if (parts == 1)
+                addNewCommandToBlePool(value);
+            else
+                for (int i = 0; i < parts; i++)
+                    addNewCommandToBlePool(getBleCommandPart(value, i, parts - (i + 1)));
         }
     }
 

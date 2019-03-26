@@ -36,8 +36,46 @@ public class BleHelper {
     public static final UUID CHARACTERISTIC_UUID_TX = UUID.fromString("927c9cb2-cd09-11e8-b568-0800200c9a66");
     public static final UUID CHARACTERISTIC_UUID_RX = UUID.fromString("927c9cb3-cd09-11e8-b568-0800200c9a66");
 
-    public static final String LOCK_STATUS_LOCK = "lock";
-    public static final String LOCK_STATUS_UNLOCK = "unlock";
+    public static final String BLE_COMMAND_BAT = "bat";
+    public static final String BLE_COMMAND_ISK = "isk";
+    public static final String BLE_COMMAND_ISO = "iso";
+    public static final String BLE_COMMAND_KNK = "knk";
+    public static final String BLE_COMMAND_LOC = "loc";
+    public static final String BLE_COMMAND_ULC = "ulc";
+    public static final String BLE_COMMAND_TYP = "typ";
+    public static final String BLE_COMMAND_FW = "fw";
+    public static final String BLE_COMMAND_HW = "hw";
+    public static final String BLE_COMMAND_PRD = "prd";
+    public static final String BLE_COMMAND_SN = "sn";
+    public static final String BLE_COMMAND_DID = "did";
+    public static final String BLE_COMMAND_OPS = "ops";
+    public static final String BLE_COMMAND_NPS = "nps";
+    public static final String BLE_COMMAND_RIGHT = "right";
+    public static final String BLE_COMMAND_STEP = "step";
+    public static final String BLE_COMMAND_ISW = "isw";
+    public static final String BLE_COMMAND_ISI = "isi";
+    public static final String BLE_COMMAND_ISQ = "isq";
+    public static final String BLE_COMMAND_ISR = "isr";
+    public static final String BLE_COMMAND_RST = "rst";
+    public static final String BLE_COMMAND_ERR = "err";
+    public static final String BLE_COMMAND_CLT = "clt";
+    public static final String BLE_COMMAND_DIS = "dis";
+    public static final String BLE_COMMAND_WFL = "wfl";
+    public static final String BLE_COMMAND_SSD = "ssd";
+    public static final String BLE_COMMAND_PSK = "psk";
+    public static final String BLE_COMMAND_SEC = "sec";
+    public static final String BLE_COMMAND_CON = "con";
+
+    public static final String BLE_RESPONSE_PUBLIC_OK = "ok";
+
+    public static final String BLE_RESPONSE_WFL_WAIT = "wait";
+    public static final String BLE_RESPONSE_WFL_END = "end";
+
+    public static final String BLE_RESPONSE_ERR_INTER = "inter";
+    public static final String BLE_RESPONSE_ERR_PER = "per";
+    public static final String BLE_RESPONSE_ERR_KEY = "key";
+    public static final String BLE_RESPONSE_ERR_OPASS = "opass";
+    public static final String BLE_RESPONSE_ERR_NPASS = "npass";
 
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
@@ -170,7 +208,8 @@ public class BleHelper {
     }
 
     public static byte[] createBleReadMessage(String key, int remain) {
-        return mergeArrays(new byte[]{0x00, Byte.valueOf(String.valueOf(0x40 | remain))}, mergeArrays((("{\"" + key + "\":null}")).getBytes(), new byte[]{0x00}));
+        return mergeArrays(new byte[]{0x00, Byte.valueOf(String.valueOf(0x40 | remain))},
+                mergeArrays((("{\"" + key + "\":null}")).getBytes(), new byte[]{0x00}));
     }
 
     public static byte[] getBleCommandPart(byte[] command, int part, int remain) {

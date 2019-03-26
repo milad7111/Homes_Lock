@@ -96,7 +96,7 @@ public class Device extends BaseModel {
     private String mHWVersion;
 
     @ColumnInfo(name = "deviceType")
-//    @SerializedName("deviceType")
+    @SerializedName("deviceType")
     private String mDeviceType;
 
     @ColumnInfo(name = "productionDate")
