@@ -5,22 +5,24 @@ import com.projects.company.homes_lock.base.BaseModel;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 
-public class ConnectedClientsModel extends BaseModel {
+public class ConnectedDeviceModel extends BaseModel {
 
     //region Declare Objects
     private int mIndex;
     private String mMacAddress;
     private boolean mConnectionStatus;
+    private boolean mRole;//0: Server     1: Client
     //endregion Declare Objects
 
     //region Constructor
-    public ConnectedClientsModel(int mIndex, String mMacAddress, boolean mConnectionStatus) {
+    public ConnectedDeviceModel(int mIndex, String mMacAddress, boolean mConnectionStatus, boolean mRole) {
         this.mIndex = mIndex;
         this.mMacAddress = mMacAddress;
         this.mConnectionStatus = mConnectionStatus;
+        this.mRole = mRole;
     }
 
-    public ConnectedClientsModel(int mIndex) {
+    public ConnectedDeviceModel(int mIndex) {
         this.mIndex = mIndex;
         this.mMacAddress = null;
         this.mConnectionStatus = false;
@@ -58,6 +60,10 @@ public class ConnectedClientsModel extends BaseModel {
 
     public boolean isInvalidData() {
         return mIndex == SEARCHING_SCAN_MODE || mIndex == SEARCHING_TIMEOUT_MODE;
+    }
+
+    public boolean isClient() {
+        return mRole;
     }
     //endregion Declare Methods
 }

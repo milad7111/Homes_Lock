@@ -83,6 +83,9 @@ public interface DeviceDao extends BaseDao<Device> {
     @Query("UPDATE device SET dynamicId = :dynamicId  WHERE objectId = :mDeviceObjectId")
     void setDynamicId(String mDeviceObjectId, String dynamicId);
 
+    @Query("UPDATE device SET connectedDevicesCount = :connectedDevicesCount  WHERE objectId = :mDeviceObjectId")
+    void setConnectedDevicesCount(String mDeviceObjectId, String connectedDevicesCount);
+
     @Query("UPDATE device SET doorInstallation = :doorInstallation  WHERE objectId = :mDeviceObjectId")
     void setDoorInstallation(String mDeviceObjectId, Boolean doorInstallation);
 

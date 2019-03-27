@@ -1,6 +1,8 @@
 package com.projects.company.homes_lock.ui.device.fragment.gatewaypage;
 
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.models.datamodels.ble.AvailableBleDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 
 /**
@@ -8,8 +10,6 @@ import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
  */
 public interface IGatewayPageFragment {
     void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel);
-
-//    void onGetAvailableWifiNetworksCountAroundDevice(int count);
 
     void onSetDeviceWifiNetworkSSIDSuccessful();
 
@@ -31,7 +31,9 @@ public interface IGatewayPageFragment {
 
     void onSendRequestGetAvailableWifiSuccessful();
 
-    void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress);
+    void onGetReceiveNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
 
     void onDeviceDisconnectedSuccessfully();
+
+    void onGetNewAvailableBleDevice(AvailableBleDeviceModel availableBleDeviceModel);
 }

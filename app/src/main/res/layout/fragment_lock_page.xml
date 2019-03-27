@@ -100,14 +100,14 @@
             app:srcCompat="@drawable/ic_valid_battery_zero" />
 
         <com.andexert.library.RippleView
-            android:id="@+id/rpv_gateway_connection_status_lock_page"
+            android:id="@+id/rpv_connected_devices_lock_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:rv_centered="true">
 
             <ImageView
-                android:id="@+id/img_gateway_connection_status_lock_page"
+                android:id="@+id/img_connected_devices_lock_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"

@@ -42,6 +42,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BleD
     //endregion Constructor
 
     //region Adapter CallBacks
+    @NonNull
     @Override
     public BleDeviceViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         return new BleDeviceViewHolder(mInflater.inflate(R.layout.item_ble_devices, viewGroup, false));

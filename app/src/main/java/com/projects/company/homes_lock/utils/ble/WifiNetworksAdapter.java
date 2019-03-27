@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.models.datamodels.ble.ConnectedClientsModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 

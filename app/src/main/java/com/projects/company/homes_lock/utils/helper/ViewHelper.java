@@ -64,7 +64,7 @@ public class ViewHelper {
         }
     }
 
-    public static void setConnectedDevicesStatusImage(ImageView imageViewConnectedDevices, int connectedDevicesCount, boolean setDefault) {
+    public static void setAvailableBleDevicesStatusImage(ImageView imageViewConnectedDevices, int connectedDevicesCount, boolean setDefault) {
         if (setDefault) {
             if (connectedDevicesCount == 0)
                 imageViewConnectedDevices.setImageResource(R.drawable.ic_invalid_connected_devices);
@@ -136,25 +136,14 @@ public class ViewHelper {
         }
     }
 
-    public static void setLockConnectionStatusToGatewayImage(
-            ImageView imgConnectionStatusLockPage, boolean setDefault, boolean gatewayConnectionStatus, int wifiStrength) {
-        if (!gatewayConnectionStatus) {
+    public static void setConnectedDevicesStatusImage(
+            ImageView imgConnectionStatusLockPage, boolean setDefault, int connectedDevicesCount) {
+        if (connectedDevicesCount - 1 <= 0) // -1 added to connectedDevicesCount because my phone always is one of connected devices
             imgConnectionStatusLockPage.setImageResource(setDefault ?
-                    R.drawable.ic_invalid_connected_devices_exist : R.drawable.ic_valid_connected_devices_not_exist);
-        } else {
-            if (wifiStrength > -60)
-                imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
-            else if (wifiStrength > -71)
-                imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
-            else if (wifiStrength > -85)
-                imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
-            else
-                imgConnectionStatusLockPage.setImageResource(setDefault ?
-                        R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_exist);
-        }
+                    R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_not_exist);
+        else
+            imgConnectionStatusLockPage.setImageResource(setDefault ?
+                    R.drawable.ic_invalid_connected_devices_exist : R.drawable.ic_valid_connected_devices_exist);
     }
 
     public static void setRSSIImage(ImageView imgBleDeviceRSSI, Integer RSSIPercentage) {

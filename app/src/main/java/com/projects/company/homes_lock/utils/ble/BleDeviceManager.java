@@ -19,6 +19,7 @@ import java.util.UUID;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.Request;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_PRT;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_SERIAL;
@@ -76,7 +77,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            Log.e("pureReceivedResponse", new String((byte[]) characteristic.getValue()));
+            Log.e("pureReceivedResponse", new String(characteristic.getValue()));
 
             if (getNibble(characteristic.getValue()[1], true) == 4) {
                 Log.e(getClass().getName(), "Buffer partition is free");
@@ -100,7 +101,22 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         public void onCharacteristicNotified(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
+            try {
+                String keyValue = new String(subArrayByte(characteristic.getValue(), 2, characteristic.getValue().length - 1));
+                new JSONObject(keyValue);//Just do this line to check if frame is valid
+
+                Log.e("pureReceivedResponse", new String(characteristic.getValue()));
+
+                if (getNibble(characteristic.getValue()[1], true) == 4) {
+                    Log.e(getClass().getName(), "Buffer partition is free");
+                    bleBufferStatus = true;
+                    sendNextCommandFromBlePool();
+                }
+
+                mCallbacks.onDataReceived(characteristic);
+            } catch (JSONException e) {
+                readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
+            }
         }
     };
     //endregion Declare Objects
@@ -147,7 +163,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
 
         if (mBluetoothGattCharacteristic != null) {
-            int parts = ((value.length - 3) / 17) + 1;
+            int parts = ((value.length - 3) / 17) + (((value.length - 3) % 17 == 0) ? 0 : 1);
 
             if (parts == 1)
                 addNewCommandToBlePool(value);
@@ -183,7 +199,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
             String keyCommand = keyCommandJson.keys().next();
 
             switch (keyCommand) {
-                case "prt":
+                case BLE_RESPONSE_PUBLIC_PRT:
                     Log.e("prt received", new String(responseValue));
                     break;
                 default:

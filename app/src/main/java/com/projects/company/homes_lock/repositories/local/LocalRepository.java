@@ -154,6 +154,10 @@ public class LocalRepository {
         mDeviceDao.setDynamicId(mDeviceObjectId, dynamicId);
     }
 
+    public void updateConnectedDevicesCount(String mDeviceObjectId, String connectedDevicesCount) {
+        mDeviceDao.setConnectedDevicesCount(mDeviceObjectId, connectedDevicesCount);
+    }
+
     public void updateDoorInstallation(String mDeviceObjectId, Boolean doorInstallation) {
         mDeviceDao.setDoorInstallation(mDeviceObjectId, doorInstallation);
     }

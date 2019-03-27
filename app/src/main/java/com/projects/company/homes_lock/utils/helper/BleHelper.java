@@ -58,7 +58,9 @@ public class BleHelper {
     public static final String BLE_COMMAND_ISR = "isr";
     public static final String BLE_COMMAND_RST = "rst";
     public static final String BLE_COMMAND_ERR = "err";
-    public static final String BLE_COMMAND_CLT = "clt";
+    public static final String BLE_COMMAND_BCL = "bcl";
+    public static final String BLE_COMMAND_BCQ = "bcq";
+    public static final String BLE_COMMAND_BLL = "bll";
     public static final String BLE_COMMAND_DIS = "dis";
     public static final String BLE_COMMAND_WFL = "wfl";
     public static final String BLE_COMMAND_SSD = "ssd";
@@ -67,9 +69,9 @@ public class BleHelper {
     public static final String BLE_COMMAND_CON = "con";
 
     public static final String BLE_RESPONSE_PUBLIC_OK = "ok";
-
-    public static final String BLE_RESPONSE_WFL_WAIT = "wait";
-    public static final String BLE_RESPONSE_WFL_END = "end";
+    public static final String BLE_RESPONSE_PUBLIC_END = "end";
+    public static final String BLE_RESPONSE_PUBLIC_WAIT = "wait";
+    public static final String BLE_RESPONSE_PUBLIC_PRT = "prt";
 
     public static final String BLE_RESPONSE_ERR_INTER = "inter";
     public static final String BLE_RESPONSE_ERR_PER = "per";

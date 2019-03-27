@@ -1,7 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
+import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 
 /**
  * This is GatewayPageFragment Interface
@@ -13,7 +13,7 @@ public interface ILockPageFragment {
 
     void onSendLockCommandFailed(String command);
 
-    void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress);
+    void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
 
     void onDeviceDisconnectedSuccessfully();
 }

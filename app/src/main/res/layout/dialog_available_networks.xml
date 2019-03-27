@@ -38,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_available_networks"
-            tools:listitem="@layout/item_ble_devices">
+            tools:listitem="@layout/item_connected_devices">
 
             <requestFocus />
 

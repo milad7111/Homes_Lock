@@ -15,7 +15,8 @@ import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
-import com.projects.company.homes_lock.models.datamodels.ble.ConnectedClientsModel;
+import com.projects.company.homes_lock.models.datamodels.ble.AvailableBleDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
@@ -57,7 +58,9 @@ import no.nordicsemi.android.log.Logger;
 import okhttp3.ResponseBody;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BAT;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_CLT;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCL;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCQ;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BLL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_CON;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DID;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DIS;
@@ -91,8 +94,8 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONS
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_OPASS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_PER;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_OK;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_WFL_END;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_WFL_WAIT;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_END;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_WAIT;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createBleReadMessage;
@@ -558,6 +561,16 @@ public class DeviceViewModel extends AndroidViewModel
                         mLocalRepository.updateDynamicId(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getString(keyCommand));
                     break;
+                case BLE_COMMAND_BCQ:
+                    Log.e(getClass().getName(), String.format("bcq setting %s", keyCommandJson.getString(keyCommand)));
+                    if (mILockPageFragment != null) {
+                        mLocalRepository.updateConnectedDevicesCount(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
+                    } else if (mIGatewayPageFragment != null) {
+                        mLocalRepository.updateConnectedDevicesCount(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getString(keyCommand));
+                    }
+                    break;
                 case BLE_COMMAND_OPS:
                     Log.e(getClass().getName(), String.format("old pass %s", keyCommandJson.getString(keyCommand)));
                     if (mISettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
@@ -642,17 +655,44 @@ public class DeviceViewModel extends AndroidViewModel
                             break;
                     }
                     break;
-                case BLE_COMMAND_CLT:
+                case BLE_COMMAND_BCL:
                     if (mILockPageFragment != null) {
-                        if (keyCommandJson.get(keyCommand).equals("end"))
-                            Log.i(getClass().getName(), "Get connected clients FINISHED.");
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT))
+                            Log.i(getClass().getName(), "Start getting connected devices ...");
+                        else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END))
+                            Log.i(getClass().getName(), "Get connected devices FINISHED.");
                         else
-                            mILockPageFragment.onGetReceiveNewConnectedClientToDevice(keyCommandJson.getString(keyCommand));
+                            mILockPageFragment.onGetNewConnectedDevice(
+                                    new ConnectedDeviceModel(
+                                            0,
+                                            keyCommandJson.getString(keyCommand).split(",")[0],
+                                            true,
+                                            !keyCommandJson.getString(keyCommand).split(",")[1].equals("s")));//s: 0, c:1
                     } else if (mIGatewayPageFragment != null) {
-                        if (keyCommandJson.get(keyCommand).equals("end"))
-                            Log.i(getClass().getName(), "Get connected clients FINISHED.");
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT))
+                            Log.i(getClass().getName(), "Start getting connected devices ...");
+                        else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END))
+                            Log.i(getClass().getName(), "Get connected devices FINISHED.");
                         else
-                            mIGatewayPageFragment.onGetReceiveNewConnectedClientToDevice(keyCommandJson.getString(keyCommand));
+                            mIGatewayPageFragment.onGetReceiveNewConnectedDevice(new ConnectedDeviceModel(
+                                    0,
+                                    keyCommandJson.getString(keyCommand).split(",")[0],
+                                    true,
+                                    !keyCommandJson.getString(keyCommand).split(",")[1].equals("s")));//s: 0, c:1
+                    }
+                    break;
+                case BLE_COMMAND_BLL:
+                    if (mIGatewayPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT))
+                            Log.i(getClass().getName(), "Start getting available devices ...");
+                        else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END))
+                            Log.i(getClass().getName(), "Get available devices FINISHED.");
+                        else
+                            mIGatewayPageFragment.onGetNewAvailableBleDevice(new AvailableBleDeviceModel(
+                                    0,
+                                    keyCommandJson.getString(keyCommand).split(",")[0],
+                                    Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1]),
+                                    Boolean.valueOf(keyCommandJson.getString(keyCommand).split(",")[2])));
                     }
                     break;
                 case BLE_COMMAND_DIS:
@@ -670,14 +710,22 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case BLE_COMMAND_WFL:
                     if (mIGatewayPageFragment != null) {
-                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_WFL_WAIT)) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT)) {
                             Log.i(getClass().getName(), "Start getting wifi networks ...");
-                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_WFL_END)) {
+                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END)) {
                             Log.i(getClass().getName(), "Finish getting wifi networks ...");
                         } else {
                             mIGatewayPageFragment.onFindNewNetworkAroundDevice(new WifiNetworksModel(
                                     keyCommandJson.getString(keyCommand).split(",")[0],
                                     Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1])));
+                        }
+                    }
+                    break;
+                case BLE_COMMAND_CON:
+                    if (mIGatewayPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Connecting to wifi network initializing ...");
+                            mIGatewayPageFragment.onSetDeviceWifiNetworkSuccessful();
                         }
                     }
                     break;
@@ -709,6 +757,7 @@ public class DeviceViewModel extends AndroidViewModel
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_PRD, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_SN, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_DID, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ, 0));
     }
 
     public void getLockSpecifiedSettingInfoFromBleDevice() {
@@ -743,19 +792,25 @@ public class DeviceViewModel extends AndroidViewModel
     public void getAvailableWifiNetworksAroundDevice(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
-        addNewCommandToBlePool(createBleReadMessage("wfl", 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_WFL, 0));
     }
 
-    public void getConnectedClientsToDevice(ILockPageFragment mILockPageFragment) {
+    public void getConnectedDevices(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
-        addNewCommandToBlePool(createBleReadMessage("clt", 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL, 0));
     }
 
-    public void getConnectedClientsToDevice(IGatewayPageFragment mIGatewayPageFragment) {
+    public void getConnectedDevices(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
-        Log.d("Scenario Wifi", "1: Send request to get wifi network list");
-        addNewCommandToBlePool(createBleReadMessage("clt", 0));
+        Log.d("Scenario Wifi", "1: Send request to get connected devices list");
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL, 0));
+    }
+
+    public void getAvailableBleDevices(IGatewayPageFragment mIGatewayPageFragment) {
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
+        Log.d("Scenario Wifi", "1: Send request to get available devices list");
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BLL, 0));
     }
 
     public void setGatewayWifiNetwork(IGatewayPageFragment mIGatewayPageFragment, WifiNetworksModel wifiNetwork) {
@@ -964,13 +1019,13 @@ public class DeviceViewModel extends AndroidViewModel
         return requestType;
     }
 
-    public void disconnectClientFromDevice(ILockPageFragment mILockPageFragment, ConnectedClientsModel mConnectedClientsModel) {
+    public void disconnectClientFromDevice(ILockPageFragment mILockPageFragment, ConnectedDeviceModel mConnectedDeviceModel) {
         this.mILockPageFragment = mILockPageFragment;
 
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("dis", mConnectedClientsModel.getMacAddress());
+            commandJson.put("dis", mConnectedDeviceModel.getMacAddress());
 
             addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {
@@ -978,13 +1033,13 @@ public class DeviceViewModel extends AndroidViewModel
         }
     }
 
-    public void disconnectClientFromDevice(IGatewayPageFragment mIGatewayPageFragment, ConnectedClientsModel mConnectedClientsModel) {
+    public void disconnectClientFromDevice(IGatewayPageFragment mIGatewayPageFragment, ConnectedDeviceModel mConnectedDeviceModel) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
 
         JSONObject commandJson;
         try {
             commandJson = new JSONObject();
-            commandJson.put("dis", mConnectedClientsModel.getMacAddress());
+            commandJson.put("dis", mConnectedDeviceModel.getMacAddress());
 
             addNewCommandToBlePool(createWriteMessage(commandJson.toString(), (byte) 0));
         } catch (JSONException e) {

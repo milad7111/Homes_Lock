@@ -28,12 +28,12 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.models.datamodels.ble.ConnectedClientsModel;
+import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
-import com.projects.company.homes_lock.utils.ble.ConnectedClientsAdapter;
+import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
+import com.projects.company.homes_lock.utils.ble.ConnectedDevicesAdapter;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.DialogHelper;
@@ -56,9 +56,9 @@ import static com.projects.company.homes_lock.utils.helper.ViewHelper.getDialogL
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBatteryStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleConnectionStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleMoreInfoImage;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setConnectedDevicesStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setFragment;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setIsLockedImage;
-import static com.projects.company.homes_lock.utils.helper.ViewHelper.setLockConnectionStatusToGatewayImage;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -75,7 +75,7 @@ public class LockPageFragment extends BaseFragment
     //region Declare Views
     ImageView imgIsLockedLockPage;
     ImageView imgBatteryStatusLockPage;
-    ImageView imgGatewayConnectionStatusLockPage;
+    ImageView imgConnectedDevicesLockPage;
     ImageView imgBleLockPage;
     ImageView imgManageMembersLockPage;
     ImageView imgMoreInfoLockPage;
@@ -98,9 +98,9 @@ public class LockPageFragment extends BaseFragment
     private DeviceViewModel mDeviceViewModel;
     private CustomBluetoothLEHelper mBluetoothLEHelper;
     private Device mDevice;
-    private ConnectedClientsAdapter mConnectedClientsAdapter;
+    private ConnectedDevicesAdapter mConnectedDevicesAdapter;
 
-    private Dialog connectedClientsToDeviceListDialog;
+    private Dialog connectedDevicesListDialog;
     private Dialog disconnectClientDialog;
     //endregion Declare Objects
 
@@ -134,6 +134,7 @@ public class LockPageFragment extends BaseFragment
 
                 if (!isConnected) {
                     updateViewData(true);
+                    closeAllDialogs();
 
                     if (mBluetoothLEHelper != null)
                         mBluetoothLEHelper.disconnect();
@@ -173,7 +174,7 @@ public class LockPageFragment extends BaseFragment
         //region Initialize Views
         imgIsLockedLockPage = view.findViewById(R.id.img_lock_status_lock_page);
         imgBatteryStatusLockPage = view.findViewById(R.id.img_battery_status_lock_page);
-        imgGatewayConnectionStatusLockPage = view.findViewById(R.id.img_gateway_connection_status_lock_page);
+        imgConnectedDevicesLockPage = view.findViewById(R.id.img_connected_devices_lock_page);
         imgBleLockPage = view.findViewById(R.id.img_ble_lock_page);
         imgManageMembersLockPage = view.findViewById(R.id.img_manage_members_lock_page);
         imgMoreInfoLockPage = view.findViewById(R.id.img_more_info_lock_page);
@@ -186,7 +187,7 @@ public class LockPageFragment extends BaseFragment
 
         //region Setup Views
         imgIsLockedLockPage.setOnClickListener(this);
-        imgGatewayConnectionStatusLockPage.setOnClickListener(this);
+        imgConnectedDevicesLockPage.setOnClickListener(this);
         imgBleLockPage.setOnClickListener(this);
         imgManageMembersLockPage.setOnClickListener(this);
         imgMoreInfoLockPage.setOnClickListener(this);
@@ -231,7 +232,7 @@ public class LockPageFragment extends BaseFragment
             case R.id.img_lock_status_lock_page:
                 sendLockCommand(!mDevice.getIsLocked());
                 break;
-            case R.id.img_gateway_connection_status_lock_page:
+            case R.id.img_connected_devices_lock_page:
                 handleConnectedDevices();
                 break;
             case R.id.img_ble_lock_page:
@@ -262,7 +263,7 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onAdapterItemClick(BaseModel client) {
-        handleDialogDisconnectClientFromDevice((ConnectedClientsModel) client);
+        handleDialogDisconnectClientFromDevice((ConnectedDeviceModel) client);
     }
 
     @Override
@@ -287,9 +288,11 @@ public class LockPageFragment extends BaseFragment
     }
 
     @Override
-    public void onGetReceiveNewConnectedClientToDevice(String connectedClientMacAddress) {
-        mConnectedClientsAdapter.addConnectedDevice(
-                new ConnectedClientsModel(mConnectedClientsAdapter.getItemCount(), connectedClientMacAddress, true));
+    public void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel) {
+        if (connectedDeviceModel.isClient()) {
+            connectedDeviceModel.setIndex(mConnectedDevicesAdapter.getItemCount());
+            mConnectedDevicesAdapter.addConnectedDevice(connectedDeviceModel);
+        }
     }
 
     @Override
@@ -301,12 +304,12 @@ public class LockPageFragment extends BaseFragment
             disconnectClientDialog = null;
         }
 
-        if (connectedClientsToDeviceListDialog != null) {
-            if (!connectedClientsToDeviceListDialog.isShowing())
-                connectedClientsToDeviceListDialog.show();
+        if (connectedDevicesListDialog != null) {
+            if (!connectedDevicesListDialog.isShowing())
+                connectedDevicesListDialog.show();
 
-            mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
-            this.mDeviceViewModel.getConnectedClientsToDevice(this);
+            mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            this.mDeviceViewModel.getConnectedDevices(this);
         } else
             handleConnectedDevices();
     }
@@ -327,9 +330,9 @@ public class LockPageFragment extends BaseFragment
     private void handleConnectedDevices() {
         if (isConnectedToBleDevice)
             handleDialogListOfConnectedClientsToDevice();
-        else if (connectedClientsToDeviceListDialog != null) {
-            connectedClientsToDeviceListDialog.dismiss();
-            connectedClientsToDeviceListDialog = null;
+        else if (connectedDevicesListDialog != null) {
+            connectedDevicesListDialog.dismiss();
+            connectedDevicesListDialog = null;
         }
     }
 
@@ -390,59 +393,59 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void handleDialogListOfConnectedClientsToDevice() {
-        if (connectedClientsToDeviceListDialog != null) {
-            connectedClientsToDeviceListDialog.dismiss();
-            connectedClientsToDeviceListDialog = null;
+        if (connectedDevicesListDialog != null) {
+            connectedDevicesListDialog.dismiss();
+            connectedDevicesListDialog = null;
         }
 
-        connectedClientsToDeviceListDialog = new Dialog(requireContext());
-        connectedClientsToDeviceListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        connectedClientsToDeviceListDialog.setContentView(R.layout.dialog_connected_clients);
+        connectedDevicesListDialog = new Dialog(requireContext());
+        connectedDevicesListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        connectedDevicesListDialog.setContentView(R.layout.dialog_connected_devices);
 
-        if (mConnectedClientsAdapter == null) {
-            mConnectedClientsAdapter = new ConnectedClientsAdapter(this,
-                    Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
+        if (mConnectedDevicesAdapter == null) {
+            mConnectedDevicesAdapter = new ConnectedDevicesAdapter(this,
+                    Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
         }
 
-        mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
+        mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
 
-        RecyclerView rcvDialogConnectedClients = connectedClientsToDeviceListDialog.findViewById(R.id.rcv_dialog_connected_clients);
-        Button btnCancelDialogConnectedClients = connectedClientsToDeviceListDialog.findViewById(R.id.btn_cancel_dialog_connected_clients);
-        Button btnScanDialogConnectedClients = connectedClientsToDeviceListDialog.findViewById(R.id.btn_scan_dialog_connected_clients);
+        RecyclerView rcvDialogConnectedClients = connectedDevicesListDialog.findViewById(R.id.rcv_dialog_connected_devices);
+        Button btnCancelDialogConnectedClients = connectedDevicesListDialog.findViewById(R.id.btn_cancel_dialog_connected_devices);
+        Button btnScanDialogConnectedClients = connectedDevicesListDialog.findViewById(R.id.btn_scan_dialog_connected_devices);
 
         rcvDialogConnectedClients.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvDialogConnectedClients.setItemAnimator(new DefaultItemAnimator());
-        rcvDialogConnectedClients.setAdapter(mConnectedClientsAdapter);
+        rcvDialogConnectedClients.setAdapter(mConnectedDevicesAdapter);
 
         btnCancelDialogConnectedClients.setOnClickListener(v -> {
-            mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
-            connectedClientsToDeviceListDialog.dismiss();
-            connectedClientsToDeviceListDialog = null;
+            mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            connectedDevicesListDialog.dismiss();
+            connectedDevicesListDialog = null;
         });
 
         btnScanDialogConnectedClients.setOnClickListener(v -> {
-            mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
-            mDeviceViewModel.getConnectedClientsToDevice(this);
+            mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            mDeviceViewModel.getConnectedDevices(this);
         });
 
-        connectedClientsToDeviceListDialog.setOnDismissListener(dialog -> {
-            if (connectedClientsToDeviceListDialog != null) {
-                connectedClientsToDeviceListDialog.dismiss();
-                connectedClientsToDeviceListDialog = null;
+        connectedDevicesListDialog.setOnDismissListener(dialog -> {
+            if (connectedDevicesListDialog != null) {
+                connectedDevicesListDialog.dismiss();
+                connectedDevicesListDialog = null;
             }
         });
 
-        mConnectedClientsAdapter.setConnectedDevices(Collections.singletonList(new ConnectedClientsModel(SEARCHING_SCAN_MODE)));
-        mDeviceViewModel.getConnectedClientsToDevice(this);
+        mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+        mDeviceViewModel.getConnectedDevices(this);
 
-        if (!connectedClientsToDeviceListDialog.isShowing()) {
-            connectedClientsToDeviceListDialog.show();
-            Objects.requireNonNull(connectedClientsToDeviceListDialog.getWindow())
-                    .setAttributes(getDialogLayoutParams(connectedClientsToDeviceListDialog));
+        if (!connectedDevicesListDialog.isShowing()) {
+            connectedDevicesListDialog.show();
+            Objects.requireNonNull(connectedDevicesListDialog.getWindow())
+                    .setAttributes(getDialogLayoutParams(connectedDevicesListDialog));
         }
     }
 
-    private void handleDialogDisconnectClientFromDevice(ConnectedClientsModel mConnectedClientsModel) {
+    private void handleDialogDisconnectClientFromDevice(ConnectedDeviceModel mConnectedDeviceModel) {
         if (disconnectClientDialog != null) {
             disconnectClientDialog.dismiss();
             disconnectClientDialog = null;
@@ -464,7 +467,7 @@ public class LockPageFragment extends BaseFragment
 
         btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
             DialogHelper.handleProgressDialog(getContext(), null, "Disconnect device ...", true);
-            mDeviceViewModel.disconnectClientFromDevice(this, mConnectedClientsModel);
+            mDeviceViewModel.disconnectClientFromDevice(this, mConnectedDeviceModel);
         });
 
         disconnectClientDialog.show();
@@ -489,8 +492,8 @@ public class LockPageFragment extends BaseFragment
                 setDefault ? 2 : (mDevice.getIsLocked() ? 1 : 0));
 
         setBatteryStatusImage(setDefault, imgBatteryStatusLockPage, mDevice.getBatteryPercentage());
-        setLockConnectionStatusToGatewayImage(
-                imgGatewayConnectionStatusLockPage, setDefault, mDevice.getGatewayStatus(), mDevice.getWifiStrength());
+        setConnectedDevicesStatusImage(
+                imgConnectedDevicesLockPage, setDefault, mDevice.getConnectedDevicesCount());
 
         imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
         txvDeviceNameLockPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
@@ -515,6 +518,21 @@ public class LockPageFragment extends BaseFragment
                     R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
         else
             Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
+    }
+
+    private void closeAllDialogs() {
+        if (connectedDevicesListDialog != null) {
+            connectedDevicesListDialog.dismiss();
+            connectedDevicesListDialog = null;
+        }
+
+        if (disconnectClientDialog != null) {
+            disconnectClientDialog.dismiss();
+            disconnectClientDialog = null;
+        }
+
+        if (!isUserLoggedIn())
+            handleProgressDialog(null, null, null, false);
     }
     //endregion Declare Methods
 }

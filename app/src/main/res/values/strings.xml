@@ -20,7 +20,9 @@
     <string name="content_description_img_lock_status_symbol_lock_page">lock status</string>
     <string name="content_description_img_water_percent_lock_page">water percent</string>
     <string name="content_description_img_connected_devices_gateway_page">Show if any device connect to gateway</string>
-    <string name="content_description_img_connected_devices_other_devices_page">Show connection status of connected client to device</string>
+
+    <string name="content_description_img_item_action_disconnect_device">This is action to disconnect device</string>
+    <string name="content_description_img_item_connection_status_of_ble_device">Show connection status of available ble device</string>
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->
@@ -94,7 +96,7 @@
     <string name="dialog_title_remove_device">Remove device</string>
     <string name="dialog_title_remove_member">Remove member</string>
     <string name="dialog_title_reset_device">Reset Device</string>
-    <string name="dialog_title_connected_clients">Connected Clients</string>
+    <string name="dialog_title_connected_devices">Connected Devices</string>
     <string name="dialog_title_disconnect_device">Disconnect Device</string>
     <!--//endregion Dialog Titles-->
 

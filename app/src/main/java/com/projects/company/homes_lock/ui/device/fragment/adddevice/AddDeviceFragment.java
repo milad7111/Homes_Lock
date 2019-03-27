@@ -334,14 +334,14 @@ public class AddDeviceFragment extends BaseFragment
         if (dialogListOfAvailableBleDevices == null) {
             dialogListOfAvailableBleDevices = new Dialog(Objects.requireNonNull(getContext()));
             dialogListOfAvailableBleDevices.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialogListOfAvailableBleDevices.setContentView(R.layout.dialog_available_devices);
+            dialogListOfAvailableBleDevices.setContentView(R.layout.dialog_available_ble_devices);
 
             if (mBleDeviceAdapter == null)
                 mBleDeviceAdapter = new BleDeviceAdapter(this, devices);
 
-            RecyclerView rcvDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.rcv_dialog_available_devices);
-            Button btnCancelDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_cancel_dialog_available_devices);
-            Button btnScanDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_scan_dialog_available_devices);
+            RecyclerView rcvDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.rcv_dialog_available_ble_devices);
+            Button btnCancelDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_cancel_dialog_available_ble_devices);
+            Button btnScanDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_scan_dialog_available_ble_devices);
 
             rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(getContext()));
             rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
