@@ -40,7 +40,7 @@ public class ViewHelper {
         ViewHelper.mContext = mContext;
     }
 
-    public static void setFragment(AppCompatActivity parent, int containerId, Fragment fragment) {
+    public static void addFragment(AppCompatActivity parent, int containerId, Fragment fragment) {
         FragmentManager mFragmentManager = parent.getSupportFragmentManager();
         FragmentTransaction mTransaction = mFragmentManager.beginTransaction();
 

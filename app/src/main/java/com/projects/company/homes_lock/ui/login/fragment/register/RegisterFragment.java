@@ -21,12 +21,12 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.RegisterViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.Objects;
 
-import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -106,14 +106,14 @@ public class RegisterFragment extends BaseFragment
     @Override
     public void onPause() {
         super.onPause();
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_sign_up_register_fragment:
-                DialogHelper.handleProgressDialog(getContext(), null, "Register process ...", true);
+                openProgressDialog(getContext(), null, "Register process ...");
                 mUserViewModel.register(
                         new RegisterModel(
                                 Objects.requireNonNull(tietEmail.getText()).toString(),
@@ -124,7 +124,7 @@ public class RegisterFragment extends BaseFragment
                 );
                 break;
             case R.id.txv_login_register_fragment:
-                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new LoginFragment());
+                ViewHelper.addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new LoginFragment());
                 break;
         }
     }
@@ -133,14 +133,14 @@ public class RegisterFragment extends BaseFragment
     //region Register Callbacks
     @Override
     public void onRegisterSuccessful(Object response) {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         Toast.makeText(getContext(), "Register user Successful", Toast.LENGTH_SHORT).show();
         txvLogin.performClick();
     }
 
     @Override
     public void onRegisterFailed(FailureModel response) {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
         Toast.makeText(getContext(), response.getFailureMessage(), Toast.LENGTH_SHORT).show();
     }

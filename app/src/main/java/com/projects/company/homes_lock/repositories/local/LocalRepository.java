@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.projects.company.homes_lock.database.base.LockDatabase;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
@@ -15,7 +14,6 @@ import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.List;
 

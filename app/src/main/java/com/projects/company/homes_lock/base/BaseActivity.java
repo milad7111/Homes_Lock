@@ -6,12 +6,12 @@ package com.projects.company.homes_lock.base;
 
 import android.support.v7.app.AppCompatActivity;
 
-import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 
 public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
 }

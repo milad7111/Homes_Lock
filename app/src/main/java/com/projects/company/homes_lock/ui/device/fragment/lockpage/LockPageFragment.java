@@ -36,7 +36,6 @@ import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMe
 import com.projects.company.homes_lock.utils.ble.ConnectedDevicesAdapter;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
@@ -51,13 +50,14 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SC
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusText;
-import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.getDialogLayoutParams;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBatteryStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleConnectionStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleMoreInfoImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setConnectedDevicesStatusImage;
-import static com.projects.company.homes_lock.utils.helper.ViewHelper.setFragment;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setIsLockedImage;
 
 /**
@@ -195,7 +195,7 @@ public class LockPageFragment extends BaseFragment
 
         //region init
         ViewHelper.setContext(getContext());
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
 
         updateViewData(!isUserLoggedIn());
 
@@ -230,10 +230,12 @@ public class LockPageFragment extends BaseFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_lock_status_lock_page:
-                sendLockCommand(!mDevice.getIsLocked());
+                if (isUserLoggedIn() || isConnectedToBleDevice)
+                    sendLockCommand(!mDevice.getIsLocked());
                 break;
             case R.id.img_connected_devices_lock_page:
-                handleConnectedDevices();
+                if (isConnectedToBleDevice)
+                    handleConnectedDevices();
                 break;
             case R.id.img_ble_lock_page:
                 handleLockBleConnection();
@@ -242,11 +244,16 @@ public class LockPageFragment extends BaseFragment
                 handleDeviceMembers();
                 break;
             case R.id.img_more_info_lock_page:
-                if (isUserLoggedIn() || isConnectedToBleDevice)
-                    setFragment(
-                            (AppCompatActivity) Objects.requireNonNull(getActivity()),
-                            R.id.frg_lock_activity,
-                            DeviceSettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
+                if (isUserLoggedIn() || isConnectedToBleDevice) {
+                    DeviceSettingFragment mDeviceSettingFragment = DeviceSettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel);
+                    mDeviceSettingFragment.haveUnPairPermission().observe(this, unPairPermission -> {
+                        if (this.mBluetoothLEHelper != null)
+                            this.mBluetoothLEHelper.unPairDevice(mDevice.getBleDeviceMacAddress());
+                    });
+
+                    addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
+                            R.id.frg_lock_activity, mDeviceSettingFragment);
+                }
                 break;
         }
     }
@@ -297,7 +304,7 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onDeviceDisconnectedSuccessfully() {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
 
         if (disconnectClientDialog != null) {
             disconnectClientDialog.dismiss();
@@ -317,14 +324,10 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare BLE Methods
     private void handleLockBleConnection() {
-        if (isUserLoggedIn())
-            Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
-        else {
-            if (isConnectedToBleDevice)
-                this.mDeviceViewModel.disconnect();
-            else
-                connectToDevice();
-        }
+        if (isConnectedToBleDevice)
+            this.mDeviceViewModel.disconnect();
+        else
+            connectToDevice();
     }
 
     private void handleConnectedDevices() {
@@ -341,14 +344,14 @@ public class LockPageFragment extends BaseFragment
         BluetoothDevice tempDevice = mBluetoothLEHelper.checkBondedDevices(mDevice.getBleDeviceMacAddress());
 
         if (tempDevice != null) {
-            handleProgressDialog(getActivity(), null, "Pairing ...", true);
-            this.mDeviceViewModel.connect(this, new ScannedDeviceModel(tempDevice));
+            openProgressDialog(getActivity(), null, "Pairing ...");
+            LockPageFragment.this.mDeviceViewModel.connect(this, new ScannedDeviceModel(tempDevice));
         } else if (getScanPermission(this))
             scanDevices();
     }
 
     private void scanDevices() {
-        handleProgressDialog(getActivity(), null, "Pairing ...", true);
+        openProgressDialog(getActivity(), null, "Pairing ...");
 
         if (!mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
@@ -375,8 +378,7 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
-        if (isConnectedToBleDevice)
-            this.mDeviceViewModel.sendLockCommand(this, lockCommand);
+        this.mDeviceViewModel.sendLockCommand(this, lockCommand);
     }
 
     private List<ScannedDeviceModel> getListOfScannedDevices() {
@@ -466,8 +468,8 @@ public class LockPageFragment extends BaseFragment
         });
 
         btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
-            DialogHelper.handleProgressDialog(getContext(), null, "Disconnect device ...", true);
-            mDeviceViewModel.disconnectClientFromDevice(this, mConnectedDeviceModel);
+            openProgressDialog(getContext(), null, "Disconnect device ...");
+            mDeviceViewModel.disconnectFromBleDevice(this, mConnectedDeviceModel);
         });
 
         disconnectClientDialog.show();
@@ -509,12 +511,12 @@ public class LockPageFragment extends BaseFragment
 
         txvNewUpdateLockPage.setText(null);
 
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
 
     private void handleDeviceMembers() {
         if (isUserLoggedIn())
-            setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
+            addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
                     R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
         else
             Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
@@ -532,7 +534,7 @@ public class LockPageFragment extends BaseFragment
         }
 
         if (!isUserLoggedIn())
-            handleProgressDialog(null, null, null, false);
+            closeProgressDialog();
     }
     //endregion Declare Methods
 }

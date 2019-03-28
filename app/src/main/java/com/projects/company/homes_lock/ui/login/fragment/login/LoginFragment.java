@@ -27,7 +27,7 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.LoginViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
-import com.projects.company.homes_lock.ui.device.activity.LockActivity;
+import com.projects.company.homes_lock.ui.device.activity.DeviceActivity;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
@@ -36,7 +36,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
-import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -130,14 +131,14 @@ public class LoginFragment extends BaseFragment
     @Override
     public void onPause() {
         super.onPause();
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login_login_fragment:
-                handleProgressDialog(getContext(), null, "Login process ...", true);
+                openProgressDialog(getContext(), null, "Login process ...");
                 mUserViewModel.login(
                         Objects.requireNonNull(tietEmail.getText()).toString(),
                         Objects.requireNonNull(tietPassword.getText()).toString());
@@ -154,13 +155,13 @@ public class LoginFragment extends BaseFragment
                 break;
             case R.id.txv_direct_connect_login_fragment:
                 setUserLoginMode(false);
-                startActivity(new Intent(getActivity(), LockActivity.class));
+                startActivity(new Intent(getActivity(), DeviceActivity.class));
                 break;
             case R.id.txv_sign_up_login_fragment:
-                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new RegisterFragment());
+                ViewHelper.addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new RegisterFragment());
                 break;
             case R.id.txv_forget_password_login_fragment:
-                ViewHelper.setFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new ForgetPasswordFragment());
+                ViewHelper.addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new ForgetPasswordFragment());
                 break;
         }
     }
@@ -181,9 +182,8 @@ public class LoginFragment extends BaseFragment
 
     @Override
     public void onLoginFailed(FailureModel response) {
-//        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
         Toast.makeText(getActivity(), response.getFailureMessage(), Toast.LENGTH_LONG).show();
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
 
     @Override
@@ -253,7 +253,7 @@ public class LoginFragment extends BaseFragment
     public void onDataInsert(Object object) {
         if (object instanceof User) {
             clearViews();
-            startActivity(new Intent(getActivity(), LockActivity.class));
+            startActivity(new Intent(getActivity(), DeviceActivity.class));
             setUserLoginMode(true);
         }
     }

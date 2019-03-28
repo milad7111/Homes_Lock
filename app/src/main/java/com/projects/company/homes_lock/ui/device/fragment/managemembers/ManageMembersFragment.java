@@ -35,12 +35,12 @@ import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.ManageMembersViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.DataHelper.LOCK_MEMBERS_SYNCING_MODE;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_NOT_ADMIN;
@@ -49,7 +49,8 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STA
 import static com.projects.company.homes_lock.utils.helper.DataHelper.NOT_DEFINED_INTEGER_NUMBER;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJsonToObject;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomPercentNumber;
-import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -154,7 +155,7 @@ public class ManageMembersFragment extends BaseFragment
     @Override
     public void onPause() {
         super.onPause();
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
 
     @Override
@@ -175,7 +176,7 @@ public class ManageMembersFragment extends BaseFragment
     //region IManageMembersFragment Callbacks
     @Override
     public void onGetUserLockDataSuccessful(List<User> response) {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
 
         ArrayList<MemberModel> mMemberList = new ArrayList<>();
         boolean findPrimaryAdmin = false;
@@ -210,7 +211,7 @@ public class ManageMembersFragment extends BaseFragment
     @Override
     public void onGetUserLockDataFailed(Object response) {
         Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         fabSyncManageMembersFragment.setClickable(true);
     }
 
@@ -221,7 +222,7 @@ public class ManageMembersFragment extends BaseFragment
 
     @Override
     public void onRemoveMemberSuccessful(Long deletionTime) {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         if (mRemoveLockMemberDialog != null) {
             mRemoveLockMemberDialog.dismiss();
             mRemoveLockMemberDialog = null;
@@ -231,7 +232,7 @@ public class ManageMembersFragment extends BaseFragment
 
     @Override
     public void onRemoveMemberFailed(ResponseBodyFailureModel response) {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
 
         if (mRemoveLockMemberDialog != null) {
             mRemoveLockMemberDialog.dismiss();
@@ -269,11 +270,10 @@ public class ManageMembersFragment extends BaseFragment
     @Override
     public void onAddLockToUserLockSuccessful(boolean addLockToUserLockSuccessful) {
         if (addLockToUserLockSuccessful) {
-            DialogHelper.handleProgressDialog(
+            openProgressDialog(
                     getContext(),
                     null,
-                    String.format("Adding Lock ... %d %%", getRandomPercentNumber(4, 4)),
-                    true);
+                    String.format("Adding Lock ... %d %%", getRandomPercentNumber(4, 4)));
             mDeviceViewModel.addUserLockToUser(mUser.getObjectId(), mUserLock.getObjectId());
         } else
             onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
@@ -285,7 +285,7 @@ public class ManageMembersFragment extends BaseFragment
 
     @Override
     public void onAddUserLockToUserSuccessful(boolean addUserLockToUserSuccessful) {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
 
         if (addUserLockToUserSuccessful) {
             if (mAddLockMemberDialog != null) {
@@ -300,13 +300,13 @@ public class ManageMembersFragment extends BaseFragment
 
     @Override
     public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
     //endregion IManageMembersFragment Callbacks
 
     //region Declare Methods
     private void syncLockMembersWithServer() {
-        DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Sync Lock members ...", true);
+        openProgressDialog(mFragment.getContext(), null, "Sync Lock members ...");
 
         fabSyncManageMembersFragment.setClickable(false);
 
@@ -325,7 +325,7 @@ public class ManageMembersFragment extends BaseFragment
         CheckBox chbLockFavoriteStatusDialogAddMember;
 
         if (status == CHECK_EXIST_USER_WITH_EMAIL) {
-            mAddLockMemberDialog = new Dialog(mFragment.getContext());
+            mAddLockMemberDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             mAddLockMemberDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mAddLockMemberDialog.setContentView(R.layout.dialog_add_member);
 
@@ -350,11 +350,10 @@ public class ManageMembersFragment extends BaseFragment
             });
 
             btnAddDialogAddMember.setOnClickListener(v -> {
-                DialogHelper.handleProgressDialog(
+                openProgressDialog(
                         getContext(),
                         null,
-                        String.format("Add Lock Member ... %d %%", getRandomPercentNumber(1, 4)),
-                        true);
+                        String.format("Add Lock Member ... %d %%", getRandomPercentNumber(1, 4)));
 
                 this.mUserLockModel = new UserLockModel(
                         tietLockNameDialogAddMember.getText().toString(),
@@ -367,30 +366,28 @@ public class ManageMembersFragment extends BaseFragment
                     mUserViewModel.getUserListWithEmailAddress(tietEmailDialogAddMember.getText().toString());
             });
         } else if (mAddLockMemberDialog != null && status == INSERT_LOCK_MEMBER) {
-            DialogHelper.handleProgressDialog(
+            openProgressDialog(
                     getContext(),
                     null,
-                    String.format("Add Lock Member ... %d %%", getRandomPercentNumber(2, 4)),
-                    true);
+                    String.format("Add Lock Member ... %d %%", getRandomPercentNumber(2, 4)));
             mDeviceViewModel.insertOnlineUserLock(this, this.mUserLockModel);
         } else if (mAddLockMemberDialog != null && status == ADD_RELATED_DEVICE_RELATION) {
-            DialogHelper.handleProgressDialog(
+            openProgressDialog(
                     getContext(),
                     null,
-                    String.format("Add Lock Member ... %d %%", getRandomPercentNumber(3, 4)),
-                    true);
+                    String.format("Add Lock Member ... %d %%", getRandomPercentNumber(3, 4)));
             mDeviceViewModel.addLockToUserLock(mUserLock.getObjectId(), mDevice.getObjectId());
         }
 
-        if (!mAddLockMemberDialog.isShowing())
+        if (mAddLockMemberDialog != null && !mAddLockMemberDialog.isShowing()) {
             mAddLockMemberDialog.show();
-
-        mAddLockMemberDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(mAddLockMemberDialog));
+            Objects.requireNonNull(mAddLockMemberDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mAddLockMemberDialog));
+        }
     }
 
     private void handleDeleteLockMember(MemberModel member) {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mRemoveLockMemberDialog = new Dialog(mFragment.getContext());
+            mRemoveLockMemberDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             mRemoveLockMemberDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mRemoveLockMemberDialog.setContentView(R.layout.dialog_remove_member);
 
@@ -409,14 +406,16 @@ public class ManageMembersFragment extends BaseFragment
 
             btnRemoveDialogRemoveMember.setOnClickListener(v -> {
                 if (chbConfirmRemoveMemberDialogRemoveMember.isChecked()) {
-                    handleProgressDialog(mFragment.getContext(), null, "Remove Member ...", true);
+                    openProgressDialog(mFragment.getContext(), null, "Remove Member ...");
                     mUserViewModel.removeLockMember(member.getMemberUserLockObjectId());
                 }
             });
         }
 
-        mRemoveLockMemberDialog.show();
-        mRemoveLockMemberDialog.getWindow().setAttributes(ViewHelper.getDialogLayoutParams(mRemoveLockMemberDialog));
+        if (mRemoveLockMemberDialog != null) {
+            mRemoveLockMemberDialog.show();
+            Objects.requireNonNull(mRemoveLockMemberDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mRemoveLockMemberDialog));
+        }
     }
     //endregion Declare Methods
 }

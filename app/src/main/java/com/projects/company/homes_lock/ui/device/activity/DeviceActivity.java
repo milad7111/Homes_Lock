@@ -24,9 +24,9 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.aboutus.AboutUsActivity;
+import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
-import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.ui.notification.NotificationActivity;
 import com.projects.company.homes_lock.ui.proservices.activity.ProServicesActivity;
 import com.projects.company.homes_lock.ui.setting.SettingActivity;
@@ -36,7 +36,7 @@ import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
 
-public class LockActivity extends BaseActivity
+public class DeviceActivity extends BaseActivity
         implements
         ILockActivity,
         NavigationView.OnNavigationItemSelectedListener,
@@ -65,7 +65,6 @@ public class LockActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        requestWindowFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_lock);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -127,7 +126,7 @@ public class LockActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        ViewHelper.setContext(LockActivity.this);
+        ViewHelper.setContext(DeviceActivity.this);
     }
 
     @Override
@@ -201,28 +200,28 @@ public class LockActivity extends BaseActivity
     private void handleNavigationItemSelected(int itemId) {
         switch (itemId) {
             case R.id.nav_locks:
-                if (!getTopActivityClassName().equals(LockActivity.class.getName()))
-                    startActivity(new Intent(LockActivity.this, LockActivity.class));
+                if (!getTopActivityClassName().equals(DeviceActivity.class.getName()))
+                    startActivity(new Intent(DeviceActivity.this, DeviceActivity.class));
                 break;
             case R.id.nav_notifications:
                 if (!getTopActivityClassName().equals(NotificationActivity.class.getName()))
-                    startActivity(new Intent(LockActivity.this, NotificationActivity.class));
+                    startActivity(new Intent(DeviceActivity.this, NotificationActivity.class));
                 break;
             case R.id.nav_store:
                 if (!getTopActivityClassName().equals(ProServicesActivity.class.getName()))
-                    startActivity(new Intent(LockActivity.this, ProServicesActivity.class));
+                    startActivity(new Intent(DeviceActivity.this, ProServicesActivity.class));
                 break;
             case R.id.nav_support:
                 if (!getTopActivityClassName().equals(SupportActivity.class.getName()))
-                    startActivity(new Intent(LockActivity.this, SupportActivity.class));
+                    startActivity(new Intent(DeviceActivity.this, SupportActivity.class));
                 break;
             case R.id.nav_settings:
                 if (!getTopActivityClassName().equals(SettingActivity.class.getName()))
-                    startActivity(new Intent(LockActivity.this, SettingActivity.class));
+                    startActivity(new Intent(DeviceActivity.this, SettingActivity.class));
                 break;
             case R.id.nav_about_us:
                 if (!getTopActivityClassName().equals(AboutUsActivity.class.getName()))
-                    startActivity(new Intent(LockActivity.this, AboutUsActivity.class));
+                    startActivity(new Intent(DeviceActivity.this, AboutUsActivity.class));
                 break;
         }
     }
@@ -243,7 +242,7 @@ public class LockActivity extends BaseActivity
         try {
             mViewPager.setAdapter(adapter);
         } catch (Exception e) {
-            Log.e(LockActivity.class.getName(), "Set ViewPager Adapter failed.");
+            Log.e(DeviceActivity.class.getName(), "Set ViewPager Adapter failed.");
         }
     }
 

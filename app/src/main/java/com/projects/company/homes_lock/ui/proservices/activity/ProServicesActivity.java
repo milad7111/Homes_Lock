@@ -5,8 +5,6 @@ import android.os.Bundle;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 
-import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
-
 public class ProServicesActivity extends BaseActivity implements IProServicesActivity {
 
     //region Declare Constants

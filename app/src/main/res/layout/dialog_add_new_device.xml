@@ -6,7 +6,7 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/txv_title_dialog_add_new_lock"
+        android:id="@+id/txv_title_dialog_add_new_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -20,23 +20,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txil_lock_name_dialog_add_new_lock"
+        android:id="@+id/txil_device_name_dialog_add_new_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_add_new_lock">
+        app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_add_new_device">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_lock_name_dialog_add_new_lock"
+            android:id="@+id/tiet_device_name_dialog_add_new_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"
             android:hint="@string/dialog_hint_device_name"
             android:inputType="textEmailAddress"
-            android:nextFocusDown="@+id/tiet_lock_serial_number_dialog_add_new_lock"
+            android:nextFocusDown="@+id/tiet_device_serial_number_dialog_add_new_device"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor">
 
@@ -47,60 +47,60 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/txil_lock_serial_number_dialog_add_new_lock"
+        android:id="@+id/txil_device_serial_number_dialog_add_new_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txil_lock_name_dialog_add_new_lock"
+        app:layout_constraintTop_toBottomOf="@+id/txil_device_name_dialog_add_new_device"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/password_eye_color">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_lock_serial_number_dialog_add_new_lock"
+            android:id="@+id/tiet_device_serial_number_dialog_add_new_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"
             android:hint="@string/dialog_hint_serial_number"
             android:inputType="textPassword"
-            android:nextFocusDown="@+id/chb_lock_favorite_status_dialog_add_new_lock"
+            android:nextFocusDown="@+id/chb_device_favorite_status_dialog_add_new_device"
             android:textColor="@color/hintColor"
             android:textColorHint="@color/hintColor" />
 
     </android.support.design.widget.TextInputLayout>
 
     <CheckBox
-        android:id="@+id/chb_lock_favorite_status_dialog_add_new_lock"
+        android:id="@+id/chb_device_favorite_status_dialog_add_new_device"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:drawableTint="@color/check_box_tint_color"
         android:focusable="true"
-        android:nextFocusDown="@+id/btn_add_dialog_add_new_lock"
+        android:nextFocusDown="@+id/btn_add_dialog_add_new_device"
         android:text="@string/dialog_check_box_favorite"
         android:textColor="@color/check_box_text_color"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txil_lock_serial_number_dialog_add_new_lock" />
+        app:layout_constraintTop_toBottomOf="@+id/txil_device_serial_number_dialog_add_new_device" />
 
     <Button
-        android:id="@+id/btn_add_dialog_add_new_lock"
+        android:id="@+id/btn_add_dialog_add_new_device"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/transparent"
         android:focusable="true"
-        android:nextFocusDown="@+id/btn_cancel_dialog_add_new_lock"
+        android:nextFocusDown="@+id/btn_cancel_dialog_add_new_device"
         android:text="@string/dialog_button_add"
         android:textColor="@color/md_white_1000"
-        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_add_new_lock"
-        app:layout_constraintTop_toBottomOf="@+id/chb_lock_favorite_status_dialog_add_new_lock" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_add_new_device"
+        app:layout_constraintTop_toBottomOf="@+id/chb_device_favorite_status_dialog_add_new_device" />
 
     <Button
-        android:id="@+id/btn_cancel_dialog_add_new_lock"
+        android:id="@+id/btn_cancel_dialog_add_new_device"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -108,11 +108,11 @@
         android:layout_marginEnd="8dp"
         android:background="@color/transparent"
         android:focusable="true"
-        android:nextFocusDown="@+id/tiet_lock_name_dialog_add_new_lock"
+        android:nextFocusDown="@+id/tiet_device_name_dialog_add_new_device"
         android:text="@string/dialog_button_cancel"
         android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chb_lock_favorite_status_dialog_add_new_lock" />
+        app:layout_constraintTop_toBottomOf="@+id/chb_device_favorite_status_dialog_add_new_device" />
 
 </android.support.constraint.ConstraintLayout>
 

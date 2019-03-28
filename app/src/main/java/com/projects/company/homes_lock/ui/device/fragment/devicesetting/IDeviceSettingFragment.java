@@ -22,10 +22,6 @@ public interface IDeviceSettingFragment {
 
     void onSetDoorInstallationFailed();
 
-    void onSetLockStagesSuccessful();
-
-    void onSetLockStagesFailed();
-
     void onCheckOldPairingPasswordSuccessful();
 
     void onCheckOldPairingPasswordFailed(String string);

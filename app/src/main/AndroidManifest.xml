@@ -53,7 +53,7 @@
         </activity>
 
         <activity
-            android:name=".ui.device.activity.LockActivity"
+            android:name=".ui.device.activity.DeviceActivity"
             android:theme="@style/AppTheme.ActionBar.Transparent" />
 
         <activity android:name=".ui.aboutus.AboutUsActivity" />

@@ -7,7 +7,7 @@
     android:layout_margin="16dp"
     android:background="@color/md_black_1000"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.projects.company.homes_lock.ui.device.activity.LockActivity"
+    tools:context="com.projects.company.homes_lock.ui.device.activity.DeviceActivity"
     tools:showIn="@layout/app_bar_lock">
 
     <android.support.constraint.Guideline

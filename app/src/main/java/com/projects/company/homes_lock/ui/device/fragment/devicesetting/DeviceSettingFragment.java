@@ -24,7 +24,6 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
-import com.projects.company.homes_lock.utils.helper.DialogHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.Objects;
@@ -32,13 +31,10 @@ import java.util.Objects;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_LEFT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_NINETY_DEGREES;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_ONE_STAGE;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_THREE_STAGE;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.LOCK_STAGES_TWO_STAGE;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_ONLINE_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAIRING_PASSWORD;
-import static com.projects.company.homes_lock.utils.helper.DialogHelper.handleProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -68,13 +64,12 @@ public class DeviceSettingFragment extends BaseFragment
     private TextView txvRemoveLockSettingFragment;
     private TextView txvRemoveLockDescriptionSettingFragment;
 
-//    private TextView txvChangePasswordOnlineSettingFragment;
-//    private TextView txvChangePasswordOnlineDescriptionSettingFragment;
+    private TextView txvChangePasswordOnlineSettingFragment;
+    private TextView txvChangePasswordOnlineDescriptionSettingFragment;
     //endregion Declare Views
 
     //region Declare Variables
-    private boolean mDoorInstallationDone = false;
-    private boolean mLockStagesDone = false;
+    private boolean doorInstallationDone = false;
     private boolean isConnectedToBleDevice = false;
 
     private String mDeviceObjectId = "";
@@ -84,6 +79,7 @@ public class DeviceSettingFragment extends BaseFragment
     private Fragment mFragment;
     private DeviceViewModel mDeviceViewModel;
     private Device mDevice;
+
     private Dialog deviceSettingDialog;
     private Dialog changeOnlinePasswordDialog;
     private Dialog changePairingPasswordDialog;
@@ -154,9 +150,8 @@ public class DeviceSettingFragment extends BaseFragment
         txvResetLockDescriptionSettingFragment = view.findViewById(R.id.txv_reset_lock_description_setting_fragment);
         txvRemoveLockSettingFragment = view.findViewById(R.id.txv_remove_lock_setting_fragment);
         txvRemoveLockDescriptionSettingFragment = view.findViewById(R.id.txv_remove_lock_description_setting_fragment);
-
-//        txvChangePasswordOnlineSettingFragment = view.findViewById(R.id.txv_change_password_online_setting_fragment);
-//        txvChangePasswordOnlineDescriptionSettingFragment = view.findViewById(R.id.txv_change_password_online_description_setting_fragment);
+        txvChangePasswordOnlineSettingFragment = view.findViewById(R.id.txv_change_password_online_setting_fragment);
+        txvChangePasswordOnlineDescriptionSettingFragment = view.findViewById(R.id.txv_change_password_online_description_setting_fragment);
         //endregion Initialize Views
 
         //region Setup Views
@@ -174,16 +169,15 @@ public class DeviceSettingFragment extends BaseFragment
         txvResetLockDescriptionSettingFragment.setOnClickListener(this);
         txvRemoveLockSettingFragment.setOnClickListener(this);
         txvRemoveLockDescriptionSettingFragment.setOnClickListener(this);
-
-//        txvChangePasswordOnlineSettingFragment.setOnClickListener(this);
-//        txvChangePasswordOnlineDescriptionSettingFragment.setOnClickListener(this);
+        txvChangePasswordOnlineSettingFragment.setOnClickListener(this);
+        txvChangePasswordOnlineDescriptionSettingFragment.setOnClickListener(this);
         //endregion Setup Views
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
     }
 
     @Override
@@ -226,10 +220,10 @@ public class DeviceSettingFragment extends BaseFragment
                 else
                     Toast.makeText(getContext(), "This is not available in Local mode!", Toast.LENGTH_SHORT).show();
                 break;
-//            case R.id.txv_change_password_online_setting_fragment:
-//            case R.id.txv_change_password_online_description_setting_fragment:
-//                handleChangePassword(CHANGE_ONLINE_PASSWORD);
-//                break;
+            case R.id.txv_change_password_online_setting_fragment:
+            case R.id.txv_change_password_online_description_setting_fragment:
+                handleChangePassword(CHANGE_ONLINE_PASSWORD);
+                break;
         }
     }
     //endregion Main Callbacks
@@ -237,7 +231,7 @@ public class DeviceSettingFragment extends BaseFragment
     //region IDeviceSettingFragment Callbacks
     @Override
     public void onSetDeviceSetting(boolean deviceSettingStatus) {
-//        DialogHelper.handleProgressDialog(null, null, null, false);
+//        ProgressDialogHelper.openProgressDialog(null, null, null, false);
 //
 //        if (deviceSettingStatus) {
 //            if (deviceSettingDialog != null) {
@@ -251,7 +245,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     @Override
     public void onChangeOnlinePassword(boolean value) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         if (changeOnlinePasswordDialog != null) {
             changeOnlinePasswordDialog.dismiss();
             changeOnlinePasswordDialog = null;
@@ -260,7 +254,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     @Override
     public void onRemoveAllLockMembersSuccessful(String count) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         if (removeLockDialog != null) {
             removeLockDialog.dismiss();
             removeLockDialog = null;
@@ -275,38 +269,28 @@ public class DeviceSettingFragment extends BaseFragment
 
     @Override
     public void onSetDoorInstallationSuccessful() {
-        mDoorInstallationDone = true;
+        doorInstallationDone = true;
         handleSetSettingResponse();
     }
 
     @Override
     public void onSetDoorInstallationFailed() {
         mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
-        handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         Log.e("Set Door Installation", "Failed");
     }
 
     @Override
-    public void onSetLockStagesSuccessful() {
-        mLockStagesDone = true;
-        handleSetSettingResponse();
-    }
-
-    @Override
-    public void onSetLockStagesFailed() {
-        mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
-        handleProgressDialog(null, null, null, false);
-        Log.e("Set Lock Stages", "Failed");
-    }
-
-    @Override
     public void onCheckOldPairingPasswordSuccessful() {
+        closeProgressDialog();
+        Log.e(getClass().getName(), "Old password doesn't match real one!");
     }
 
     @Override
     public void onChangePairingPasswordSuccessful() {
-        DialogHelper.handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         Log.e(getClass().getName(), "Change Pairing password successful.");
+
         if (changePairingPasswordDialog != null) {
             changePairingPasswordDialog.dismiss();
             changePairingPasswordDialog = null;
@@ -315,7 +299,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     @Override
     public void onChangePairingPasswordFailed(String errorValue) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         Log.e(getClass().getName(), String.format("New password hasn't minimum requirements as pairing password!: %s", errorValue));
     }
 
@@ -333,11 +317,12 @@ public class DeviceSettingFragment extends BaseFragment
     @Override
     public void onCheckOldPairingPasswordFailed(String errorValue) {
         Log.e(getClass().getName(), String.format("Old password does not match pass in Device!: %s", errorValue));
+        closeProgressDialog();
     }
 
     @Override
     public void onRemoveDeviceForOneMemberSuccessful(String count) {
-        DialogHelper.handleProgressDialog(null, null, null, false);
+        closeProgressDialog();
         if (removeLockDialog != null) {
             removeLockDialog.dismiss();
             removeLockDialog = null;
@@ -380,15 +365,13 @@ public class DeviceSettingFragment extends BaseFragment
 
     private void handleDeviceSetting() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            deviceSettingDialog = new Dialog(getContext());
+            deviceSettingDialog = new Dialog(Objects.requireNonNull(getContext()));
             deviceSettingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceSettingDialog.setContentView(R.layout.dialog_device_setting);
 
             RadioGroup rdgDoorInstallationDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.rdg_door_installation_dialog_device_setting);
-            RadioGroup rdgLockStagesDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.rdg_lock_stages_dialog_device_setting);
 
             ((RadioButton) rdgDoorInstallationDialogDeviceSetting.getChildAt(mDevice.getDoorInstallation() ? 0 : 1)).setChecked(true);
-            ((RadioButton) rdgLockStagesDialogDeviceSetting.getChildAt(mDevice.getLockStages())).setChecked(true);
 
             Button btnCancelDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.btn_cancel_dialog_device_setting);
             Button btnApplyDialogDeviceSetting = deviceSettingDialog.findViewById(R.id.btn_apply_dialog_device_setting);
@@ -400,11 +383,10 @@ public class DeviceSettingFragment extends BaseFragment
 
             btnApplyDialogDeviceSetting.setOnClickListener(v -> {
                 if (isConnectedToBleDevice) {
-                    DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Device setting setup ...", true);
+                    openProgressDialog(mFragment.getContext(), null, "Device setting setup ...");
                     mDeviceViewModel.setDeviceSetting(
                             mFragment,
-                            findSelectedDoorInstallationOption(rdgDoorInstallationDialogDeviceSetting),
-                            findSelectedLockStagesOption(rdgLockStagesDialogDeviceSetting));
+                            findSelectedDoorInstallationOption(rdgDoorInstallationDialogDeviceSetting));
                 } else
                     Toast.makeText(getContext(), "This is not available in BLE disconnect mode!", Toast.LENGTH_SHORT).show();
             });
@@ -431,7 +413,7 @@ public class DeviceSettingFragment extends BaseFragment
         });
 
         btnResetDialogResetLock.setOnClickListener(v -> {
-            DialogHelper.handleProgressDialog(getContext(), null, "Reset Device ...", true);
+            openProgressDialog(getContext(), null, "Reset Device ...");
             mDeviceViewModel.resetBleDevice(mFragment);
         });
 
@@ -470,7 +452,7 @@ public class DeviceSettingFragment extends BaseFragment
             });
 
             btnRemoveDialogRemoveLock.setOnClickListener(v -> {
-                DialogHelper.handleProgressDialog(getContext(), null, "Remove lock ...", true);
+                openProgressDialog(getContext(), null, "Remove lock ...");
                 mDeviceViewModel.removeDevice(
                         mFragment,
                         chbRemoveAllMembersDialogRemoveLock.isChecked(),
@@ -516,7 +498,7 @@ public class DeviceSettingFragment extends BaseFragment
             });
 
             btnApplyDialogChangeOnlinePassword.setOnClickListener(v -> {
-                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change online password ...", true);
+                openProgressDialog(mFragment.getContext(), null, "Change online password ...");
                 mDeviceViewModel.changeOnlinePasswordViaBle(mFragment,
                         Objects.requireNonNull(tietOldPasswordDialogChangeOnlinePassword.getText()).toString(),
                         Objects.requireNonNull(tietNewPasswordDialogChangeOnlinePassword.getText()).toString());
@@ -550,7 +532,7 @@ public class DeviceSettingFragment extends BaseFragment
             });
 
             btnApplyDialogChangePairingPassword.setOnClickListener(v -> {
-                DialogHelper.handleProgressDialog(mFragment.getContext(), null, "Change pairing password ...", true);
+                openProgressDialog(mFragment.getContext(), null, "Change pairing password ...");
                 mDeviceViewModel.changePairingPasswordViaBle(mFragment,
                         Integer.valueOf(Objects.requireNonNull(tietOldPasswordDialogChangePairingPassword.getText()).toString()),
                         Integer.valueOf(Objects.requireNonNull(tietNewPasswordDialogChangePairingPassword.getText()).toString()));
@@ -573,28 +555,13 @@ public class DeviceSettingFragment extends BaseFragment
         }
     }
 
-    private int findSelectedLockStagesOption(RadioGroup radioGroup) {
-        switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.rdb_ninety_degrees_dialog_device_setting:
-                return LOCK_STAGES_NINETY_DEGREES;
-            case R.id.rdb_one_stage_dialog_device_setting:
-                return LOCK_STAGES_ONE_STAGE;
-            case R.id.rdb_two_stages_dialog_device_setting:
-                return LOCK_STAGES_TWO_STAGE;
-            case R.id.rdb_three_stages_dialog_device_setting:
-                return LOCK_STAGES_THREE_STAGE;
-            default:
-                return -1;
-        }
-    }
-
     private void logoutLocally() {
         Objects.requireNonNull(getActivity()).finish();
     }
 
     private void handleSetSettingResponse() {
-        if (mDoorInstallationDone && mLockStagesDone) {
-            handleProgressDialog(null, null, null, false);
+        if (doorInstallationDone) {
+            closeProgressDialog();
             if (deviceSettingDialog != null) {
                 deviceSettingDialog.dismiss();
                 deviceSettingDialog = null;
@@ -604,8 +571,8 @@ public class DeviceSettingFragment extends BaseFragment
         }
     }
 
-    private void handleViewsBasedOnDeviceType(){
-        switch (mDevice.getDeviceType()){
+    private void handleViewsBasedOnDeviceType() {
+        switch (mDevice.getDeviceType()) {
             case "LOCK":
                 break;
             case "GATEWAY":

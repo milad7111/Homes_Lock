@@ -50,8 +50,10 @@ public class BleHelper {
     public static final String BLE_COMMAND_DID = "did";
     public static final String BLE_COMMAND_OPS = "ops";
     public static final String BLE_COMMAND_NPS = "nps";
-    public static final String BLE_COMMAND_RIGHT = "right";
-    public static final String BLE_COMMAND_STEP = "step";
+    public static final String BLE_COMMAND_RGH = "rgh";
+    public static final String BLE_COMMAND_POP = "pop";
+    public static final String BLE_COMMAND_PLK = "plk";
+    public static final String BLE_COMMAND_PLT = "plt";
     public static final String BLE_COMMAND_ISW = "isw";
     public static final String BLE_COMMAND_ISI = "isi";
     public static final String BLE_COMMAND_ISQ = "isq";
@@ -76,8 +78,8 @@ public class BleHelper {
     public static final String BLE_RESPONSE_ERR_INTER = "inter";
     public static final String BLE_RESPONSE_ERR_PER = "per";
     public static final String BLE_RESPONSE_ERR_KEY = "key";
-    public static final String BLE_RESPONSE_ERR_OPASS = "opass";
-    public static final String BLE_RESPONSE_ERR_NPASS = "npass";
+    public static final String BLE_RESPONSE_ERR_OPS = "ops";
+    public static final String BLE_RESPONSE_ERR_NPS = "nps";
 
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
