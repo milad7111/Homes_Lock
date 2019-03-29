@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:contentDescription="@string/content_description_img_new_device_screen_add_device_fragment"
+        android:contentDescription="@string/content_description_new_device_screen_add_device_fragment"
         android:focusable="false"
         app:srcCompat="@drawable/ic_homes_lock_idle"
         app:layout_constraintBottom_toTopOf="@+id/guideline"

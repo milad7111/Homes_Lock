@@ -259,7 +259,7 @@ public class GatewayPageFragment extends BaseFragment
                     addFragment(
                             (AppCompatActivity) Objects.requireNonNull(getActivity()),
                             R.id.frg_lock_activity,
-                            DeviceSettingFragment.newInstance(mDevice.getObjectId(), GatewayPageFragment.this.mDeviceViewModel));
+                            DeviceSettingFragment.newInstance(mDevice, "GATEWAY", GatewayPageFragment.this.mDeviceViewModel));
                 break;
         }
     }

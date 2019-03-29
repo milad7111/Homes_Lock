@@ -2,177 +2,240 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_black_1000">
+    android:background="@color/md_black_1000"
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp">
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp">
 
         <TextView
-            android:id="@+id/txv_firmware_version_setting_fragment"
+            android:id="@+id/txv_device_type_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
             android:focusable="false"
             android:gravity="center_vertical"
-            android:text="@string/fragment_text_view_firmware_version"
+            android:text="@string/fragment_text_view_device_type"
             android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txv_firmware_version_description_setting_fragment"
+            android:id="@+id/txv_device_type_description_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_device_type_gateway_page"
+            android:textColor="@color/description_text_color"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_device_type_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_firmware_version_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:focusable="false"
             android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_firmware_version"
+            android:textColor="@color/list_item_text_color"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_device_type_description_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_firmware_version_description_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:focusable="false"
+            android:gravity="center_vertical"
             android:text="@string/fragment_text_view_default_firmware_version"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_door_installation_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_firmware_version_setting_fragment" />
 
         <TextView
-            android:id="@+id/txv_door_installation_setting_fragment"
+            android:id="@+id/txv_hardware_version_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_hardware_version"
+            android:textColor="@color/list_item_text_color"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_firmware_version_description_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_hardware_version_description_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_default_hardware_version"
+            android:textColor="@color/description_text_color"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_hardware_version_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_production_date_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_production_date"
+            android:textColor="@color/list_item_text_color"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_hardware_version_description_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_production_date_description_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_text_view_default_production_date"
+            android:textColor="@color/description_text_color"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_production_date_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_calibration_lock_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:focusable="true"
             android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_door_installation_description_setting_fragment"
-            android:text="@string/fragment_text_view_door_installation"
+            android:nextFocusDown="@+id/txv_calibration_description_lock_setting_fragment"
+            android:text="@string/fragment_text_view_calibration"
             android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_door_installation_description_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_firmware_version_description_setting_fragment" />
-
-        <TextView
-            android:id="@+id/txv_door_installation_description_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_pro_services_setting_fragment"
-            android:text="@string/fragment_text_view_door_installation_description"
-            android:textColor="@color/description_text_color"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_pro_services_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_door_installation_setting_fragment" />
-
-        <TextView
-            android:id="@+id/txv_pro_services_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_pro_services_description_setting_fragment"
-            android:text="@string/fragment_text_view_pro_services"
-            android:textColor="@color/list_item_text_color"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_pro_services_description_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_door_installation_description_setting_fragment" />
-
-        <TextView
-            android:id="@+id/txv_pro_services_description_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_change_password_online_setting_fragment"
-            android:text="@string/fragment_text_view_pro_services_description"
-            android:textColor="@color/description_text_color"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_change_password_online_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_pro_services_setting_fragment" />
-
-        <TextView
-            android:id="@+id/txv_change_password_online_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_change_password_online_description_setting_fragment"
-            android:text="@string/fragment_text_view_change_online_password"
-            android:textColor="@color/list_item_text_color"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_change_password_online_description_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_pro_services_description_setting_fragment" />
-
-        <TextView
-            android:id="@+id/txv_change_password_online_description_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_change_pairing_password_setting_fragment"
-            android:text="@string/fragment_text_view_change_online_password_description"
-            android:textColor="@color/description_text_color"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_change_pairing_password_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_change_password_online_setting_fragment" />
-
-        <TextView
-            android:id="@+id/txv_change_pairing_password_setting_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_change_pairing_password_description_setting_fragment"
-            android:text="@string/fragment_text_view_change_pairing_password"
-            android:textColor="@color/list_item_text_color"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_change_pairing_password_description_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_change_password_online_description_setting_fragment" />
+            app:layout_constraintTop_toBottomOf="@+id/txv_production_date_description_setting_fragment" />
 
         <TextView
             android:id="@+id/txv_change_pairing_password_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="2dp"
             android:focusable="true"
             android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_remove_lock_setting_fragment"
+            android:nextFocusDown="@+id/txv_remove_gateway_setting_fragment"
             android:text="@string/fragment_text_view_change_pairing_password_description"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@+id/txv_change_pairing_password_setting_fragment" />
+            app:layout_constraintTop_toBottomOf="@+id/txv_calibration_lock_setting_fragment" />
 
         <TextView
-            android:id="@+id/txv_remove_lock_setting_fragment"
+            android:id="@+id/txv_serial_number_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:layout_marginTop="8dp"
             android:focusable="true"
             android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_remove_lock_description_setting_fragment"
-            android:text="@string/fragment_text_view_remove_device"
-            android:textColor="@color/remove_lock_color"
+            android:nextFocusDown="@+id/txv_change_pairing_password_description_setting_fragment"
+            android:text="@string/fragment_text_view_serial_number"
+            android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_remove_lock_description_setting_fragment"
+            app:layout_constraintTop_toBottomOf="@+id/txv_dynamic_id_description_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_serial_number_description_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:nextFocusDown="@+id/txv_remove_gateway_setting_fragment"
+            android:text="@string/fragment_text_view_default_serial_number_description"
+            android:textColor="@color/description_text_color"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_serial_number_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_dynamic_id_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:nextFocusDown="@+id/txv_change_pairing_password_description_setting_fragment"
+            android:text="@string/fragment_text_view_dynamic_id"
+            android:textColor="@color/list_item_text_color"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/txv_change_pairing_password_description_setting_fragment" />
 
         <TextView
-            android:id="@+id/txv_remove_lock_description_setting_fragment"
+            android:id="@+id/txv_dynamic_id_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="2dp"
             android:focusable="true"
             android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_door_installation_setting_fragment"
+            android:nextFocusDown="@+id/txv_remove_gateway_setting_fragment"
+            android:text="@string/fragment_text_view_default_dynamic_id_description"
+            android:textColor="@color/description_text_color"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_dynamic_id_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_reset_device_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:nextFocusDown="@+id/txv_remove_device_description_setting_fragment"
+            android:text="@string/fragment_text_view_reset_device"
+            android:textColor="@color/remove_device_color"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_serial_number_description_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_reset_gateway_description_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:nextFocusDown="@+id/txv_door_installation_lock_setting_fragment"
             android:text="@string/fragment_text_view_remove_device_description"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@+id/txv_remove_lock_setting_fragment" />
+            app:layout_constraintTop_toBottomOf="@+id/txv_reset_device_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_remove_device_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:nextFocusDown="@+id/txv_remove_gateway_description_setting_fragment"
+            android:text="@string/fragment_text_view_remove_device"
+            android:textColor="@color/remove_device_color"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_reset_gateway_description_setting_fragment" />
+
+        <TextView
+            android:id="@+id/txv_remove_gateway_description_setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:nextFocusDown="@+id/txv_door_installation_lock_setting_fragment"
+            android:text="@string/fragment_text_view_remove_device_description"
+            android:textColor="@color/description_text_color"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/txv_remove_device_setting_fragment" />
 
     </android.support.constraint.ConstraintLayout>
 

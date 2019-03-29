@@ -1,11 +1,14 @@
 package com.projects.company.homes_lock.utils.ble;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.projects.company.homes_lock.utils.helper.BleHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,6 +127,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     //region Constructor
     public BleDeviceManager(final Context context) {
         super(context);
+        BleHelper.myPhoneBleMacAddress = android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
     }
     //endregion Constructor
 

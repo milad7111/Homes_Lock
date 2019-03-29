@@ -31,4 +31,12 @@ public interface IDeviceSettingFragment {
     void onChangePairingPasswordFailed(String string);
 
     void onResetBleDeviceSuccessful();
+
+    void onInitializeCalibrationLockSuccessful();
+
+    void onSetIdlePositionSuccessful();
+
+    void onSetLatchPositionSuccessful();
+
+    void onSetLockPositionSuccessful();
 }

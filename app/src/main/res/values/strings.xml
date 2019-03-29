@@ -13,16 +13,20 @@
     <string name="content_description_members_list_item_img_avatar" translatable="false">avatar of device members</string>
     <string name="content_description_members_list_item_img_action" translatable="false">action of device members</string>
 
-    <string name="content_description_img_login_screen_login_fragment" translatable="false">static image in login fragment</string>
-    <string name="content_description_img_new_device_screen_add_device_fragment">static image in add device fragment</string>
+    <string name="content_description_login_screen_login_fragment" translatable="false">static image in login fragment</string>
+    <string name="content_description_new_device_screen_add_device_fragment">static image in add device fragment</string>
 
-    <string name="content_description_img_temperature_celsius_lock_page">centigrade symbol</string>
-    <string name="content_description_img_lock_status_symbol_lock_page">lock status</string>
-    <string name="content_description_img_water_percent_lock_page">water percent</string>
-    <string name="content_description_img_connected_devices_gateway_page">Show if any device connect to gateway</string>
+    <string name="content_description_temperature_celsius_lock_page">centigrade symbol</string>
+    <string name="content_description_lock_status_symbol_lock_page">lock status</string>
+    <string name="content_description_water_percent_lock_page">water percent</string>
+    <string name="content_description_connected_devices_gateway_page">Show if any device connect to gateway</string>
 
-    <string name="content_description_img_item_action_disconnect_device">This is action to disconnect device</string>
-    <string name="content_description_img_item_connection_status_of_ble_device">Show connection status of available ble device</string>
+    <string name="content_description_item_action_disconnect_device">This is action to disconnect device</string>
+    <string name="content_description_item_connection_status_of_ble_device">Show connection status of available ble device</string>
+
+    <string name="content_description_calibration_lock_idle_position_status">green if idle position set and gray if not set</string>
+    <string name="content_description_calibration_lock_latch_position_status">green if latch position set and gray if not set</string>
+    <string name="content_description_calibration_lock_lock_position_status">green if lock position set and gray if not set</string>
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->
@@ -93,13 +97,16 @@
     <string name="dialog_title_available_devices">Available devices</string>
     <string name="dialog_title_available_networks">Available networks</string>
     <string name="dialog_title_device_wifi_network_connect">Connect Lock to network</string>
-    <string name="dialog_title_door_installation_device_setting">Door installation</string>
+    <string name="dialog_title_door_installation_door_installation">Door installation</string>
     <string name="dialog_title_lock_stages_device_setting">Lock stages</string>
     <string name="dialog_title_remove_device">Remove device</string>
     <string name="dialog_title_remove_member">Remove member</string>
     <string name="dialog_title_reset_device">Reset Device</string>
     <string name="dialog_title_connected_devices">Connected Devices</string>
     <string name="dialog_title_disconnect_device">Disconnect Device</string>
+    <string name="dialog_title_calibration_lock">Calibration lock</string>
+    <string name="dialog_title_initialize_calibration_lock_confirmation">Initialize calibration lock</string>
+    <string name="dialog_title_confirmation_lock_position">Confirmation lock position</string>
     <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->
@@ -113,6 +120,7 @@
     <string name="dialog_button_reset">RESET</string>
     <string name="dialog_button_connect">CONNECT</string>
     <string name="dialog_button_disconnect">DISCONNECT</string>
+    <string name="dialog_button_start">START</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->
@@ -141,6 +149,16 @@
 
     <!--//region Dialog TextViews-->
     <string name="dialog_text_view_sure">Are you sure?</string>
+
+    <string name="dialog_text_view_confirm_initialize_calibration_lock_sure">Are you sure, you want to calibrate lock?</string>
+
+    <string name="dialog_text_view_idle_position">1. Idle position</string>
+    <string name="dialog_text_view_latch_position">2. Latch position</string>
+    <string name="dialog_text_view_lock_position">3. Lock position</string>
+
+    <string name="dialog_text_view_message_confirmation_lock_position_idle">Manually set lock in idle position then click APPLY.</string>
+    <string name="dialog_text_view_message_confirmation_lock_position_latch">Manually set lock in latch position then click APPLY.</string>
+    <string name="dialog_text_view_message_confirmation_lock_position_lock">Manually set lock in lock position then click APPLY.</string>
     <!--//endregion Dialog TextViews-->
 
     <!--//region Dialog Spinner-->

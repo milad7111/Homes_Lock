@@ -77,11 +77,15 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_LOC;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_NPS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_OPS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PLK;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PLT;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PIL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PRD;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PSK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RGH;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RST;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SEC;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SET;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SN;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SSD;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_TYP;
@@ -98,6 +102,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONS
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createBleReadMessage;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.createJSONObjectWithKeyValue;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createWriteMessage;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.isInstanceOfList;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.subArrayByte;
@@ -133,7 +138,7 @@ public class DeviceViewModel extends AndroidViewModel
     private IGatewayPageFragment mIGatewayPageFragment;
     private IAddDeviceFragment mIAddDeviceFragment;
     private IManageMembersFragment mIManageMembersFragment;
-    private IDeviceSettingFragment mISettingFragment;
+    private IDeviceSettingFragment mIDeviceSettingFragment;
 
     private final BleDeviceManager mBleDeviceManager;
     private final MutableLiveData<String> mConnectionState = new MutableLiveData<>(); // Connecting, Connected, Disconnecting, Disconnected
@@ -313,16 +318,16 @@ public class DeviceViewModel extends AndroidViewModel
                         mIManageMembersFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
                     break;
                 case "removeDeviceForAllMembers":
-                    if (mISettingFragment != null)
-                        mISettingFragment.onRemoveAllLockMembersSuccessful(
+                    if (mIDeviceSettingFragment != null)
+                        mIDeviceSettingFragment.onRemoveAllLockMembersSuccessful(
                                 ((ResponseBody) response).source().toString()
                                         .replace("[text=", "")
                                         .replace("]", "")
                                         .replace("\"", ""));
                     break;
                 case "removeDeviceForOneMember":
-                    if (mISettingFragment != null)
-                        mISettingFragment.onRemoveDeviceForOneMemberSuccessful(
+                    if (mIDeviceSettingFragment != null)
+                        mIDeviceSettingFragment.onRemoveDeviceForOneMemberSuccessful(
                                 ((ResponseBody) response).source().toString()
                                         .replace("[text=", "")
                                         .replace("]", "")
@@ -370,12 +375,12 @@ public class DeviceViewModel extends AndroidViewModel
                         mIManageMembersFragment.onAddUserLockToUserFailed((ResponseBodyFailureModel) response);
                     break;
                 case "removeDeviceForAllMembers":
-                    if (mISettingFragment != null)
-                        mISettingFragment.onRemoveAllLockMembersFailed((ResponseBodyFailureModel) response);
+                    if (mIDeviceSettingFragment != null)
+                        mIDeviceSettingFragment.onRemoveAllLockMembersFailed((ResponseBodyFailureModel) response);
                     break;
                 case "removeDeviceForOneMember":
-                    if (mISettingFragment != null)
-                        mISettingFragment.onRemoveDeviceForOneMemberFailed((ResponseBodyFailureModel) response);
+                    if (mIDeviceSettingFragment != null)
+                        mIDeviceSettingFragment.onRemoveDeviceForOneMemberFailed((ResponseBodyFailureModel) response);
                     break;
                 case "enablePushNotification":
                     if (mIAddDeviceFragment != null)
@@ -594,20 +599,20 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case BLE_COMMAND_OPS:
                     Log.e(getClass().getName(), String.format("old pass %s", keyCommandJson.getString(keyCommand)));
-                    if (mISettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                    if (mIDeviceSettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
                         changePairingPasswordViaBleFinalStep();
-                        mISettingFragment.onCheckOldPairingPasswordSuccessful();
+                        mIDeviceSettingFragment.onCheckOldPairingPasswordSuccessful();
                     }
                     break;
                 case BLE_COMMAND_NPS:
                     Log.e(getClass().getName(), String.format("new pass %s", keyCommandJson.getString(keyCommand)));
-                    if (mISettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
-                        mISettingFragment.onChangePairingPasswordSuccessful();
+                    if (mIDeviceSettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
+                        mIDeviceSettingFragment.onChangePairingPasswordSuccessful();
                     break;
                 case BLE_COMMAND_RGH:
-                    if (mISettingFragment != null) {
+                    if (mIDeviceSettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
-                            mISettingFragment.onSetDoorInstallationSuccessful();
+                            mIDeviceSettingFragment.onSetDoorInstallationSuccessful();
                         else
                             mLocalRepository.updateDoorInstallation(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                     keyCommandJson.getBoolean(keyCommand));
@@ -638,33 +643,9 @@ public class DeviceViewModel extends AndroidViewModel
                     }
                     break;
                 case BLE_COMMAND_RST:
-                    if (mISettingFragment != null) {
+                    if (mIDeviceSettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
-                            mISettingFragment.onResetBleDeviceSuccessful();
-                    }
-                    break;
-                case BLE_COMMAND_ERR:
-                    switch (keyCommandJson.getString(keyCommand)) {
-                        case BLE_RESPONSE_ERR_INTER:
-                            Log.e(getClass().getName(), String.format("Device faces with internal Error, try last command again!: %s",
-                                    keyCommandJson.getString(keyCommand)));
-                            break;
-                        case BLE_RESPONSE_ERR_PER:
-                            Log.e(getClass().getName(), String.format("Don't have permission for last command!: %s",
-                                    keyCommandJson.getString(keyCommand)));
-                            break;
-                        case BLE_RESPONSE_ERR_KEY:
-                            Log.e(getClass().getName(), String.format("Key of Last command does not exist!: %s",
-                                    keyCommandJson.getString(keyCommand)));
-                            break;
-                        case BLE_RESPONSE_ERR_OPS:
-                            if (mISettingFragment != null)
-                                mISettingFragment.onCheckOldPairingPasswordFailed(keyCommandJson.getString(keyCommand));
-                            break;
-                        case BLE_RESPONSE_ERR_NPS:
-                            if (mISettingFragment != null)
-                                mISettingFragment.onChangePairingPasswordFailed(keyCommandJson.getString(keyCommand));
-                            break;
+                            mIDeviceSettingFragment.onResetBleDeviceSuccessful();
                     }
                     break;
                 case BLE_COMMAND_BCL:
@@ -740,6 +721,62 @@ public class DeviceViewModel extends AndroidViewModel
                             Log.i(getClass().getName(), "Connecting to wifi network initializing ...");
                             mIGatewayPageFragment.onSetDeviceWifiNetworkSuccessful();
                         }
+                    }
+                    break;
+                case BLE_COMMAND_SET:
+                    if (mIDeviceSettingFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Initialize calibration lock ...");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onInitializeCalibrationLockSuccessful();
+                        }
+                    }
+                    break;
+                case "pil":
+                    if (mIDeviceSettingFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Set Idle position done.");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onSetIdlePositionSuccessful();
+                        }
+                    }
+                    break;
+                case BLE_COMMAND_PLK:
+                    if (mIDeviceSettingFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Set Latch position done.");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onSetLatchPositionSuccessful();
+                        }
+                    }
+                    break;
+                case BLE_COMMAND_PLT:
+                    if (mIDeviceSettingFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Set Lock position done.");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onSetLockPositionSuccessful();
+                        }
+                    }
+                    break;
+                case BLE_COMMAND_ERR:
+                    switch (keyCommandJson.getString(keyCommand)) {
+                        case BLE_RESPONSE_ERR_INTER:
+                            Log.e(getClass().getName(), String.format("Device faces with internal Error, try last command again!: %s",
+                                    keyCommandJson.getString(keyCommand)));
+                            break;
+                        case BLE_RESPONSE_ERR_PER:
+                            Log.e(getClass().getName(), String.format("Don't have permission for last command!: %s",
+                                    keyCommandJson.getString(keyCommand)));
+                            break;
+                        case BLE_RESPONSE_ERR_KEY:
+                            Log.e(getClass().getName(), String.format("Key of Last command does not exist!: %s",
+                                    keyCommandJson.getString(keyCommand)));
+                            break;
+                        case BLE_RESPONSE_ERR_OPS:
+                            if (mIDeviceSettingFragment != null)
+                                mIDeviceSettingFragment.onCheckOldPairingPasswordFailed(keyCommandJson.getString(keyCommand));
+                            break;
+                        case BLE_RESPONSE_ERR_NPS:
+                            if (mIDeviceSettingFragment != null)
+                                mIDeviceSettingFragment.onChangePairingPasswordFailed(keyCommandJson.getString(keyCommand));
+                            break;
                     }
                     break;
             }
@@ -838,17 +875,17 @@ public class DeviceViewModel extends AndroidViewModel
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_CON, false).toString(), (byte) 0));
     }
 
-    public void setDeviceSetting(Fragment parentFragment, boolean doorInstallation) {
-        mISettingFragment = (IDeviceSettingFragment) parentFragment;
+    public void setDoorInstallation(Fragment parentFragment, boolean doorInstallation) {
+        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_RGH, doorInstallation).toString(), (byte) 0));
     }
 
     public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
-        mISettingFragment = (IDeviceSettingFragment) parentFragment;
+        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
     }
 
     public void changePairingPasswordViaBle(Fragment parentFragment, Integer oldPassword, Integer newPassword) {
-        mISettingFragment = (IDeviceSettingFragment) parentFragment;
+        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
 
         oldPairingPassword = oldPassword;
         newPairingPassword = newPassword;
@@ -865,7 +902,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void resetBleDevice(Fragment parentFragment) {
-        mISettingFragment = (IDeviceSettingFragment) parentFragment;
+        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_RST, JSONObject.NULL).toString(), (byte) 0));
     }
 
@@ -883,6 +920,26 @@ public class DeviceViewModel extends AndroidViewModel
 
     private void disconnectFromBleDevice(String macAddress) {
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DIS, macAddress).toString(), (byte) 0));
+    }
+
+    public void initializeCalibrationLock(Fragment parentFragment) {
+        this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_SET, JSONObject.NULL).toString(), (byte) 0));
+    }
+
+    public void applyCalibrationIdlePosition(Fragment parentFragment) {
+        this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PIL, JSONObject.NULL).toString(), (byte) 0));
+    }
+
+    public void applyCalibrationLatchPosition(Fragment parentFragment) {
+        this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLK, JSONObject.NULL).toString(), (byte) 0));
+    }
+
+    public void applyCalibrationLockPosition(Fragment parentFragment) {
+        this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLT, JSONObject.NULL).toString(), (byte) 0));
     }
     //endregion BLE Methods
 
@@ -934,7 +991,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
-        mISettingFragment = (IDeviceSettingFragment) parentFragment;
+        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
         if (mDevice.isLockSavedInServerByCheckUserLocks()) {
             if (removeAllMembers) {
                 setRequestType("removeDeviceForAllMembers");
@@ -995,22 +1052,6 @@ public class DeviceViewModel extends AndroidViewModel
             disconnectFromBleDevice(mIGatewayPageFragment, availableBleDeviceModel);
         else
             connectToBleDevice(mIGatewayPageFragment, availableBleDeviceModel);
-    }
-
-    private JSONObject createJSONObjectWithKeyValue(String key, Object value) {
-        JSONObject tempJSONObject = null;
-        try {
-            tempJSONObject = new JSONObject();
-            tempJSONObject.put(key, value);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return tempJSONObject;
-    }
-
-    public void setConnectedStatus() {
-        this.mIsConnected.postValue(true);
     }
     //endregion Declare Methods
 

@@ -161,6 +161,10 @@ public class ViewHelper {
             imgBleDeviceRSSI.setImageResource(R.drawable.ic_valid_rssi_zero);
     }
 
+    public static void setLockPositionStatusImage(ImageView lockPositionStatusImage, boolean status) {
+        lockPositionStatusImage.setImageResource(status ? R.drawable.ic_checked_status_true : R.drawable.ic_checked_status_false);
+    }
+
     public static WindowManager.LayoutParams getDialogLayoutParams(Dialog dialog) {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
 

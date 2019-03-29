@@ -22,7 +22,7 @@
             android:id="@+id/img_lock_status_lock_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_img_lock_status_symbol_lock_page"
+            android:contentDescription="@string/content_description_lock_status_symbol_lock_page"
             android:focusable="false"
             app:srcCompat="@drawable/ic_homes_lock_idle" />
 

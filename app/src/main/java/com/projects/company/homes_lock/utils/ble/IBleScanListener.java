@@ -7,7 +7,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 
 import java.util.List;
 
-public interface IBleScanListener<T> {
+public interface IBleScanListener {
     void onFindBleSuccess(List<ScannedDeviceModel> response);
 
     void onFindBleFault();

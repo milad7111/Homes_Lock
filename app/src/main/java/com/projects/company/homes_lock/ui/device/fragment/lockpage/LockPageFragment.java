@@ -48,6 +48,7 @@ import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedI
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.myPhoneBleMacAddress;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusText;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
@@ -100,7 +101,7 @@ public class LockPageFragment extends BaseFragment
     private Device mDevice;
     private ConnectedDevicesAdapter mConnectedDevicesAdapter;
 
-    private Dialog connectedDevicesListDialog;
+    private Dialog mConnectedDevicesListDialog;
     private Dialog disconnectClientDialog;
     //endregion Declare Objects
 
@@ -247,7 +248,7 @@ public class LockPageFragment extends BaseFragment
                 if (isUserLoggedIn() || isConnectedToBleDevice) {
                     addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
                             R.id.frg_lock_activity,
-                            DeviceSettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
+                            DeviceSettingFragment.newInstance(mDevice, "LOCK", mDeviceViewModel));
                 }
                 break;
         }
@@ -291,7 +292,7 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel) {
-        if (connectedDeviceModel.isClient()) {
+        if (connectedDeviceModel.isClient() && !isMyPhone(connectedDeviceModel.getMacAddress())) {
             connectedDeviceModel.setIndex(mConnectedDevicesAdapter.getItemCount());
             mConnectedDevicesAdapter.addConnectedDevice(connectedDeviceModel);
         }
@@ -306,9 +307,9 @@ public class LockPageFragment extends BaseFragment
             disconnectClientDialog = null;
         }
 
-        if (connectedDevicesListDialog != null) {
-            if (!connectedDevicesListDialog.isShowing())
-                connectedDevicesListDialog.show();
+        if (mConnectedDevicesListDialog != null) {
+            if (!mConnectedDevicesListDialog.isShowing())
+                mConnectedDevicesListDialog.show();
 
             mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
             this.mDeviceViewModel.getConnectedDevices(this);
@@ -328,9 +329,9 @@ public class LockPageFragment extends BaseFragment
     private void handleConnectedDevices() {
         if (isConnectedToBleDevice)
             handleDialogListOfConnectedClientsToDevice();
-        else if (connectedDevicesListDialog != null) {
-            connectedDevicesListDialog.dismiss();
-            connectedDevicesListDialog = null;
+        else if (mConnectedDevicesListDialog != null) {
+            mConnectedDevicesListDialog.dismiss();
+            mConnectedDevicesListDialog = null;
         }
     }
 
@@ -390,14 +391,14 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void handleDialogListOfConnectedClientsToDevice() {
-        if (connectedDevicesListDialog != null) {
-            connectedDevicesListDialog.dismiss();
-            connectedDevicesListDialog = null;
+        if (mConnectedDevicesListDialog != null) {
+            mConnectedDevicesListDialog.dismiss();
+            mConnectedDevicesListDialog = null;
         }
 
-        connectedDevicesListDialog = new Dialog(requireContext());
-        connectedDevicesListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        connectedDevicesListDialog.setContentView(R.layout.dialog_connected_devices);
+        mConnectedDevicesListDialog = new Dialog(requireContext());
+        mConnectedDevicesListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mConnectedDevicesListDialog.setContentView(R.layout.dialog_connected_devices);
 
         if (mConnectedDevicesAdapter == null) {
             mConnectedDevicesAdapter = new ConnectedDevicesAdapter(this,
@@ -406,9 +407,9 @@ public class LockPageFragment extends BaseFragment
 
         mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
 
-        RecyclerView rcvDialogConnectedClients = connectedDevicesListDialog.findViewById(R.id.rcv_dialog_connected_devices);
-        Button btnCancelDialogConnectedClients = connectedDevicesListDialog.findViewById(R.id.btn_cancel_dialog_connected_devices);
-        Button btnScanDialogConnectedClients = connectedDevicesListDialog.findViewById(R.id.btn_scan_dialog_connected_devices);
+        RecyclerView rcvDialogConnectedClients = mConnectedDevicesListDialog.findViewById(R.id.rcv_dialog_connected_devices);
+        Button btnCancelDialogConnectedClients = mConnectedDevicesListDialog.findViewById(R.id.btn_cancel_dialog_connected_devices);
+        Button btnScanDialogConnectedClients = mConnectedDevicesListDialog.findViewById(R.id.btn_scan_dialog_connected_devices);
 
         rcvDialogConnectedClients.setLayoutManager(new LinearLayoutManager(getContext()));
         rcvDialogConnectedClients.setItemAnimator(new DefaultItemAnimator());
@@ -416,8 +417,8 @@ public class LockPageFragment extends BaseFragment
 
         btnCancelDialogConnectedClients.setOnClickListener(v -> {
             mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
-            connectedDevicesListDialog.dismiss();
-            connectedDevicesListDialog = null;
+            mConnectedDevicesListDialog.dismiss();
+            mConnectedDevicesListDialog = null;
         });
 
         btnScanDialogConnectedClients.setOnClickListener(v -> {
@@ -425,20 +426,20 @@ public class LockPageFragment extends BaseFragment
             mDeviceViewModel.getConnectedDevices(this);
         });
 
-        connectedDevicesListDialog.setOnDismissListener(dialog -> {
-            if (connectedDevicesListDialog != null) {
-                connectedDevicesListDialog.dismiss();
-                connectedDevicesListDialog = null;
+        mConnectedDevicesListDialog.setOnDismissListener(dialog -> {
+            if (mConnectedDevicesListDialog != null) {
+                mConnectedDevicesListDialog.dismiss();
+                mConnectedDevicesListDialog = null;
             }
         });
 
         mConnectedDevicesAdapter.setConnectedDevices(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
-        mDeviceViewModel.getConnectedDevices(this);
+        LockPageFragment.this.mDeviceViewModel.getConnectedDevices(this);
 
-        if (!connectedDevicesListDialog.isShowing()) {
-            connectedDevicesListDialog.show();
-            Objects.requireNonNull(connectedDevicesListDialog.getWindow())
-                    .setAttributes(getDialogLayoutParams(connectedDevicesListDialog));
+        if (!mConnectedDevicesListDialog.isShowing()) {
+            mConnectedDevicesListDialog.show();
+            Objects.requireNonNull(mConnectedDevicesListDialog.getWindow())
+                    .setAttributes(getDialogLayoutParams(mConnectedDevicesListDialog));
         }
     }
 
@@ -518,9 +519,9 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void closeAllDialogs() {
-        if (connectedDevicesListDialog != null) {
-            connectedDevicesListDialog.dismiss();
-            connectedDevicesListDialog = null;
+        if (mConnectedDevicesListDialog != null) {
+            mConnectedDevicesListDialog.dismiss();
+            mConnectedDevicesListDialog = null;
         }
 
         if (disconnectClientDialog != null) {
@@ -530,6 +531,10 @@ public class LockPageFragment extends BaseFragment
 
         if (!isUserLoggedIn())
             closeProgressDialog();
+    }
+
+    private boolean isMyPhone(String macAddress) {
+        return macAddress.equals(myPhoneBleMacAddress);
     }
     //endregion Declare Methods
 }

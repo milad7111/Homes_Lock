@@ -23,7 +23,7 @@
             android:id="@+id/img_available_ble_devices_gateway_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_img_connected_devices_gateway_page"
+            android:contentDescription="@string/content_description_connected_devices_gateway_page"
             android:focusable="false"
             app:srcCompat="@drawable/ic_homes_lock_idle" />
 

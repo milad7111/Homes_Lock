@@ -21,6 +21,9 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +38,8 @@ public class BleHelper {
     public static final UUID SERVICE_UUID_SERIAL = UUID.fromString("927c9cb0-cd09-11e8-b568-0800200c9a66");
     public static final UUID CHARACTERISTIC_UUID_TX = UUID.fromString("927c9cb2-cd09-11e8-b568-0800200c9a66");
     public static final UUID CHARACTERISTIC_UUID_RX = UUID.fromString("927c9cb3-cd09-11e8-b568-0800200c9a66");
+
+    public static String myPhoneBleMacAddress = "";
 
     public static final String BLE_COMMAND_BAT = "bat";
     public static final String BLE_COMMAND_ISK = "isk";
@@ -51,7 +56,8 @@ public class BleHelper {
     public static final String BLE_COMMAND_OPS = "ops";
     public static final String BLE_COMMAND_NPS = "nps";
     public static final String BLE_COMMAND_RGH = "rgh";
-    public static final String BLE_COMMAND_POP = "pop";
+    public static final String BLE_COMMAND_SET = "set";
+    public static final String BLE_COMMAND_PIL = "pul";
     public static final String BLE_COMMAND_PLK = "plk";
     public static final String BLE_COMMAND_PLT = "plt";
     public static final String BLE_COMMAND_ISW = "isw";
@@ -260,9 +266,9 @@ public class BleHelper {
             mHandler.postDelayed(() -> {
                 List<ScannedDeviceModel> tempList = getListOfScannedDevices(mBluetoothLEHelper);
                 if (tempList.size() == 0)
-                    ((IBleScanListener<Object>) fragment).onFindBleFault();
+                    ((IBleScanListener) fragment).onFindBleFault();
                 else
-                    ((IBleScanListener<Object>) fragment).onFindBleSuccess(tempList);
+                    ((IBleScanListener) fragment).onFindBleSuccess((List<ScannedDeviceModel>) tempList);
             }, mBluetoothLEHelper.getScanPeriod());
         }
     }
@@ -297,6 +303,18 @@ public class BleHelper {
         }
 
         return false;
+    }
+
+    public static JSONObject createJSONObjectWithKeyValue(String key, Object value) {
+        JSONObject tempJSONObject = null;
+        try {
+            tempJSONObject = new JSONObject();
+            tempJSONObject.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return tempJSONObject;
     }
     //endregion Declare Methods
 }

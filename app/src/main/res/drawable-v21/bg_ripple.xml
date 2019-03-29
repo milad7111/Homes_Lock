@@ -14,7 +14,7 @@
             <gradient
                 android:angle="90"
                 android:endColor="@color/colorPrimary"
-                android:startColor="@color/remove_lock_color"
+                android:startColor="@color/remove_device_color"
                 android:type="linear" />
             <corners android:radius="5dp" />
         </shape>

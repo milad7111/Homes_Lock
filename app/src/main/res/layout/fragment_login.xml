@@ -28,7 +28,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:contentDescription="@string/content_description_img_login_screen_login_fragment"
+                android:contentDescription="@string/content_description_login_screen_login_fragment"
                 android:focusable="false"
                 app:srcCompat="@drawable/ic_homes_lock_idle" />
 

@@ -3,10 +3,10 @@ package com.projects.company.homes_lock.ui.login.fragment.login;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseFragment;
@@ -15,15 +15,18 @@ import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 
+import java.util.Objects;
+
 /**
  * A simple {@link BaseFragment} subclass.
  */
-public class ForgetPasswordFragment extends BaseFragment implements ILoginFragment {
+public class ForgetPasswordFragment extends BaseFragment implements ILoginFragment, View.OnClickListener {
 
     //region Declare Constants
     //endregion Declare Constants
 
     //region Declare Views
+    private Button btnCancelDialogForgetPassword;
     //endregion Declare Views
 
     //region Declare Variables
@@ -59,10 +62,21 @@ public class ForgetPasswordFragment extends BaseFragment implements ILoginFragme
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
+        btnCancelDialogForgetPassword = view.findViewById(R.id.btn_cancel_dialog_forget_password);
         //endregion Initialize Views
 
         //region Setup Views
+        btnCancelDialogForgetPassword.setOnClickListener(this);
         //endregion Setup Views
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_cancel_dialog_forget_password:
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+                break;
+        }
     }
     //endregion Main Callbacks
 

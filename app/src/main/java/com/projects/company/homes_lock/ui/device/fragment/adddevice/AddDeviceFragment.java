@@ -41,6 +41,7 @@ import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -78,14 +79,17 @@ public class AddDeviceFragment extends BaseFragment
     private boolean saveDeviceAfterPaired;
     //endregion Declare Variables
 
+    //region Declare Arrays & Lists
+    private List<Device> mAllDevices;
+    //endregion Declare Arrays & Lists
+
     //region Declare Objects
-//    private Context context = null;
     private DeviceViewModel mDeviceViewModel;
     private UserViewModel mUserViewModel;
 
-    private Dialog dialogAddDeviceOffline;
-    private Dialog dialogListOfAvailableBleDevices;
-    private Dialog dialogAddDeviceOnline;
+    private Dialog mAddDeviceOfflineDialog;
+    private Dialog mListOfAvailableBleDevicesDialog;
+    private Dialog mAddDeviceOnlineDialog;
 
     private ScannedDeviceModel mDevice;
     private TempDeviceModel mTempDevice;
@@ -117,8 +121,9 @@ public class AddDeviceFragment extends BaseFragment
                 this,
                 new AddLockViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this))
                 .get(UserViewModel.class);
-
         this.mTempDevice = new TempDeviceModel();
+        this.mAllDevices = null;
+        this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> AddDeviceFragment.this.mAllDevices = devices);
         //endregion Initialize Objects
     }
 
@@ -214,9 +219,9 @@ public class AddDeviceFragment extends BaseFragment
                     null,
                     String.format("Adding Lock ... %d %%", getRandomPercentNumber(5, 8)));
 
-            if (dialogAddDeviceOnline != null) {
-                dialogAddDeviceOnline.dismiss();
-                dialogAddDeviceOnline = null;
+            if (mAddDeviceOnlineDialog != null) {
+                mAddDeviceOnlineDialog.dismiss();
+                mAddDeviceOnlineDialog = null;
             }
 
             mDeviceViewModel.enablePushNotification(this.lockObjectId);
@@ -265,9 +270,9 @@ public class AddDeviceFragment extends BaseFragment
                         new CustomDeviceAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), devices));
             });
         } else if (object instanceof Device) {
-            if (dialogAddDeviceOffline != null) {
-                dialogAddDeviceOffline.dismiss();
-                dialogAddDeviceOffline = null;
+            if (mAddDeviceOfflineDialog != null) {
+                mAddDeviceOfflineDialog.dismiss();
+                mAddDeviceOfflineDialog = null;
             }
         }
     }
@@ -285,8 +290,8 @@ public class AddDeviceFragment extends BaseFragment
 
     //region Ble Callbacks
     @Override
-    public void onFindBleSuccess(List devices) {
-        handleDialogListOfAvailableBleDevices(devices);
+    public void onFindBleSuccess(List<ScannedDeviceModel> devices) {
+        handleDialogListOfAvailableBleDevices(removeSavedDevicesFromDevicesList(devices));
     }
 
     @Override
@@ -302,9 +307,9 @@ public class AddDeviceFragment extends BaseFragment
 
     @Override
     public void onBonded(BluetoothDevice device) {
-        if (dialogListOfAvailableBleDevices != null) {
-            dialogListOfAvailableBleDevices.dismiss();
-            dialogListOfAvailableBleDevices = null;
+        if (mListOfAvailableBleDevicesDialog != null) {
+            mListOfAvailableBleDevicesDialog.dismiss();
+            mListOfAvailableBleDevicesDialog = null;
         }
 
         Objects.requireNonNull(getActivity()).runOnUiThread(this::handleDialogAddDeviceOffline);
@@ -324,17 +329,17 @@ public class AddDeviceFragment extends BaseFragment
     }
 
     private void handleDialogListOfAvailableBleDevices(List<ScannedDeviceModel> devices) {
-        if (dialogListOfAvailableBleDevices == null) {
-            dialogListOfAvailableBleDevices = new Dialog(Objects.requireNonNull(getContext()));
-            dialogListOfAvailableBleDevices.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialogListOfAvailableBleDevices.setContentView(R.layout.dialog_available_ble_devices);
+        if (mListOfAvailableBleDevicesDialog == null) {
+            mListOfAvailableBleDevicesDialog = new Dialog(Objects.requireNonNull(getContext()));
+            mListOfAvailableBleDevicesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            mListOfAvailableBleDevicesDialog.setContentView(R.layout.dialog_available_ble_devices);
 
             if (mBleDeviceAdapter == null)
                 mBleDeviceAdapter = new BleDeviceAdapter(this, devices);
 
-            RecyclerView rcvDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.rcv_dialog_available_ble_devices);
-            Button btnCancelDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_cancel_dialog_available_ble_devices);
-            Button btnScanDialogAvailableDevices = dialogListOfAvailableBleDevices.findViewById(R.id.btn_scan_dialog_available_ble_devices);
+            RecyclerView rcvDialogAvailableDevices = mListOfAvailableBleDevicesDialog.findViewById(R.id.rcv_dialog_available_ble_devices);
+            Button btnCancelDialogAvailableDevices = mListOfAvailableBleDevicesDialog.findViewById(R.id.btn_cancel_dialog_available_ble_devices);
+            Button btnScanDialogAvailableDevices = mListOfAvailableBleDevicesDialog.findViewById(R.id.btn_scan_dialog_available_ble_devices);
 
             rcvDialogAvailableDevices.setLayoutManager(new LinearLayoutManager(getContext()));
             rcvDialogAvailableDevices.setItemAnimator(new DefaultItemAnimator());
@@ -342,8 +347,8 @@ public class AddDeviceFragment extends BaseFragment
 
             btnCancelDialogAvailableDevices.setOnClickListener(v -> {
                 mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
-                dialogListOfAvailableBleDevices.dismiss();
-                dialogListOfAvailableBleDevices = null;
+                mListOfAvailableBleDevicesDialog.dismiss();
+                mListOfAvailableBleDevicesDialog = null;
             });
 
             btnScanDialogAvailableDevices.setOnClickListener(v -> {
@@ -355,34 +360,34 @@ public class AddDeviceFragment extends BaseFragment
         } else
             mBleDeviceAdapter.setBleDevices(devices);
 
-        if (!dialogListOfAvailableBleDevices.isShowing())
-            dialogListOfAvailableBleDevices.show();
+        if (!mListOfAvailableBleDevicesDialog.isShowing())
+            mListOfAvailableBleDevicesDialog.show();
 
-        Objects.requireNonNull(dialogListOfAvailableBleDevices.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(dialogListOfAvailableBleDevices));
+        Objects.requireNonNull(mListOfAvailableBleDevicesDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mListOfAvailableBleDevicesDialog));
     }
 
     private void handleDialogAddDeviceOffline() {
         saveDeviceAfterPaired = false;
 
-        dialogAddDeviceOffline = new Dialog(Objects.requireNonNull(getContext()));
+        mAddDeviceOfflineDialog = new Dialog(Objects.requireNonNull(getContext()));
 
-        dialogAddDeviceOffline.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogAddDeviceOffline.setContentView(R.layout.dialog_add_new_device);
+        mAddDeviceOfflineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mAddDeviceOfflineDialog.setContentView(R.layout.dialog_add_new_device);
 
-        dialogAddDeviceOffline.setOnDismissListener(mDialog -> {
+        mAddDeviceOfflineDialog.setOnDismissListener(mDialog -> {
             if (!saveDeviceAfterPaired)
                 mBluetoothLEHelper.unPairDevice(mDevice.getDevice().getAddress());
         });
 
-        Button btnCancelDialogAddNewDevice = dialogAddDeviceOffline.findViewById(R.id.btn_cancel_dialog_add_new_device);
-        Button btnAddDialogAddNewDevice = dialogAddDeviceOffline.findViewById(R.id.btn_add_dialog_add_new_device);
+        Button btnCancelDialogAddNewDevice = mAddDeviceOfflineDialog.findViewById(R.id.btn_cancel_dialog_add_new_device);
+        Button btnAddDialogAddNewDevice = mAddDeviceOfflineDialog.findViewById(R.id.btn_add_dialog_add_new_device);
 
-        TextInputEditText tietDeviceNameDialogAddNewDevice = dialogAddDeviceOffline.findViewById(R.id.tiet_device_name_dialog_add_new_device);
-        TextInputEditText tietDeviceSerialNumberDialogAddNewDevice = dialogAddDeviceOffline.findViewById(R.id.tiet_device_serial_number_dialog_add_new_device);
+        TextInputEditText tietDeviceNameDialogAddNewDevice = mAddDeviceOfflineDialog.findViewById(R.id.tiet_device_name_dialog_add_new_device);
+        TextInputEditText tietDeviceSerialNumberDialogAddNewDevice = mAddDeviceOfflineDialog.findViewById(R.id.tiet_device_serial_number_dialog_add_new_device);
 
-        CheckBox chbDeviceFavoriteStatusDialogAddNewDevice = dialogAddDeviceOffline.findViewById(R.id.chb_device_favorite_status_dialog_add_new_device);
+        CheckBox chbDeviceFavoriteStatusDialogAddNewDevice = mAddDeviceOfflineDialog.findViewById(R.id.chb_device_favorite_status_dialog_add_new_device);
 
-        btnCancelDialogAddNewDevice.setOnClickListener(v -> dialogAddDeviceOffline.dismiss());
+        btnCancelDialogAddNewDevice.setOnClickListener(v -> mAddDeviceOfflineDialog.dismiss());
 
         btnAddDialogAddNewDevice.setOnClickListener(v -> {
             if (tietDeviceNameDialogAddNewDevice.getText() == null || tietDeviceNameDialogAddNewDevice.getText().toString().equals(""))
@@ -411,27 +416,27 @@ public class AddDeviceFragment extends BaseFragment
             }
         });
 
-        dialogAddDeviceOffline.show();
-        Objects.requireNonNull(dialogAddDeviceOffline.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(dialogAddDeviceOffline));
+        mAddDeviceOfflineDialog.show();
+        Objects.requireNonNull(mAddDeviceOfflineDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mAddDeviceOfflineDialog));
     }
 
     private void handleDialogAddDeviceOnline(boolean deviceExistenceStatus) {
-        if (dialogAddDeviceOnline == null) {
-            dialogAddDeviceOnline = new Dialog(Objects.requireNonNull(getContext()));
+        if (mAddDeviceOnlineDialog == null) {
+            mAddDeviceOnlineDialog = new Dialog(Objects.requireNonNull(getContext()));
 
-            dialogAddDeviceOnline.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialogAddDeviceOnline.setContentView(R.layout.dialog_add_new_device);
+            mAddDeviceOnlineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            mAddDeviceOnlineDialog.setContentView(R.layout.dialog_add_new_device);
 
-            dialogAddDeviceOnline.setOnDismissListener(dialog -> dialogAddDeviceOnline = null);
+            mAddDeviceOnlineDialog.setOnDismissListener(dialog -> mAddDeviceOnlineDialog = null);
 
-            Button btnCancelDialogAddNewDevice = dialogAddDeviceOnline.findViewById(R.id.btn_cancel_dialog_add_new_device);
-            Button btnAddDialogAddNewDevice = dialogAddDeviceOnline.findViewById(R.id.btn_add_dialog_add_new_device);
+            Button btnCancelDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.btn_cancel_dialog_add_new_device);
+            Button btnAddDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.btn_add_dialog_add_new_device);
 
-            tietDeviceNameDialogAddNewDevice = dialogAddDeviceOnline.findViewById(R.id.tiet_device_name_dialog_add_new_device);
-            tietDeviceSerialNumberDialogAddNewDevice = dialogAddDeviceOnline.findViewById(R.id.tiet_device_serial_number_dialog_add_new_device);
-            chbDeviceFavoriteStatusDialogAddNewDevice = dialogAddDeviceOnline.findViewById(R.id.chb_device_favorite_status_dialog_add_new_device);
+            tietDeviceNameDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.tiet_device_name_dialog_add_new_device);
+            tietDeviceSerialNumberDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.tiet_device_serial_number_dialog_add_new_device);
+            chbDeviceFavoriteStatusDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.chb_device_favorite_status_dialog_add_new_device);
 
-            btnCancelDialogAddNewDevice.setOnClickListener(v -> dialogAddDeviceOnline.dismiss());
+            btnCancelDialogAddNewDevice.setOnClickListener(v -> mAddDeviceOnlineDialog.dismiss());
 
             btnAddDialogAddNewDevice.setOnClickListener(v -> {
                 openProgressDialog(
@@ -453,11 +458,11 @@ public class AddDeviceFragment extends BaseFragment
         }
 
 
-        if (!dialogAddDeviceOnline.isShowing())
-            dialogAddDeviceOnline.show();
+        if (!mAddDeviceOnlineDialog.isShowing())
+            mAddDeviceOnlineDialog.show();
 
-        dialogAddDeviceOnline.show();
-        Objects.requireNonNull(dialogAddDeviceOnline.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(dialogAddDeviceOnline));
+        mAddDeviceOnlineDialog.show();
+        Objects.requireNonNull(mAddDeviceOnlineDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mAddDeviceOnlineDialog));
     }
 
     private void connectToDevice(ScannedDeviceModel device) {
@@ -469,6 +474,22 @@ public class AddDeviceFragment extends BaseFragment
             onBonded(tempDevice);
         } else if (getScanPermission(this))
             this.mDeviceViewModel.connect(this, mDevice);
+    }
+
+    private List<ScannedDeviceModel> removeSavedDevicesFromDevicesList(List<ScannedDeviceModel> devices) {
+        List<ScannedDeviceModel> tempDevices = new ArrayList<>();
+
+        for (ScannedDeviceModel device : devices) {
+            tempDevices.add(device);
+            for (Device savedDevice : mAllDevices) {
+                if (device.getMacAddress().equals(savedDevice.getBleDeviceMacAddress())) {
+                    tempDevices.remove(device);
+                    break;
+                }
+            }
+        }
+
+        return tempDevices;
     }
     //endregion Declare Methods
 }
