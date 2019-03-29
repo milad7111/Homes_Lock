@@ -140,8 +140,8 @@ public class DeviceSettingFragment extends BaseFragment
         txvFirmwareVersionDescriptionSettingFragment = view.findViewById(R.id.txv_firmware_version_description_setting_fragment);
         txvHardwareVersionDescriptionSettingFragment = view.findViewById(R.id.txv_hardware_version_description_setting_fragment);
         txvProductionDateDescriptionSettingFragment = view.findViewById(R.id.txv_production_date_description_setting_fragment);
-        txvDeviceSettingSettingFragment = view.findViewById(R.id.txv_device_setting_setting_fragment);
-        txvDeviceSettingDescriptionSettingFragment = view.findViewById(R.id.txv_device_setting_description_setting_fragment);
+        txvDeviceSettingSettingFragment = view.findViewById(R.id.txv_door_installation_setting_fragment);
+        txvDeviceSettingDescriptionSettingFragment = view.findViewById(R.id.txv_door_installation_description_setting_fragment);
         txvChangePairingPasswordSettingFragment = view.findViewById(R.id.txv_change_pairing_password_setting_fragment);
         txvChangePairingPasswordDescriptionSettingFragment = view.findViewById(R.id.txv_change_pairing_password_description_setting_fragment);
         txvDynamicIdDescriptionSettingFragment = view.findViewById(R.id.txv_dynamic_id_description_setting_fragment);
@@ -192,8 +192,8 @@ public class DeviceSettingFragment extends BaseFragment
             case R.id.txv_hardware_version_description_setting_fragment:
                 //TODO copy info to clipboard
                 break;
-            case R.id.txv_device_setting_setting_fragment:
-            case R.id.txv_device_setting_description_setting_fragment:
+            case R.id.txv_door_installation_setting_fragment:
+            case R.id.txv_door_installation_description_setting_fragment:
                 handleDeviceSetting();
                 break;
             case R.id.txv_change_pairing_password_setting_fragment:

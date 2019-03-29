@@ -33,36 +33,36 @@
             android:text="@string/fragment_text_view_default_firmware_version"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_device_setting_setting_fragment"
+            app:layout_constraintBottom_toTopOf="@+id/txv_door_installation_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_firmware_version_setting_fragment" />
 
         <TextView
-            android:id="@+id/txv_device_setting_setting_fragment"
+            android:id="@+id/txv_door_installation_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:focusable="true"
             android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_device_setting_description_setting_fragment"
-            android:text="@string/fragment_text_view_device_setting"
+            android:nextFocusDown="@+id/txv_door_installation_description_setting_fragment"
+            android:text="@string/fragment_text_view_door_installation"
             android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/txv_device_setting_description_setting_fragment"
+            app:layout_constraintBottom_toTopOf="@+id/txv_door_installation_description_setting_fragment"
             app:layout_constraintTop_toBottomOf="@+id/txv_firmware_version_description_setting_fragment" />
 
         <TextView
-            android:id="@+id/txv_device_setting_description_setting_fragment"
+            android:id="@+id/txv_door_installation_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:focusable="true"
             android:gravity="center_vertical"
             android:nextFocusDown="@+id/txv_pro_services_setting_fragment"
-            android:text="@string/fragment_text_view_device_setting_value"
+            android:text="@string/fragment_text_view_door_installation_description"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_pro_services_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_device_setting_setting_fragment" />
+            app:layout_constraintTop_toBottomOf="@+id/txv_door_installation_setting_fragment" />
 
         <TextView
             android:id="@+id/txv_pro_services_setting_fragment"
@@ -76,7 +76,7 @@
             android:textColor="@color/list_item_text_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/txv_pro_services_description_setting_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/txv_device_setting_description_setting_fragment" />
+            app:layout_constraintTop_toBottomOf="@+id/txv_door_installation_description_setting_fragment" />
 
         <TextView
             android:id="@+id/txv_pro_services_description_setting_fragment"
@@ -168,7 +168,7 @@
             android:layout_marginBottom="8dp"
             android:focusable="true"
             android:gravity="center_vertical"
-            android:nextFocusDown="@+id/txv_device_setting_setting_fragment"
+            android:nextFocusDown="@+id/txv_door_installation_setting_fragment"
             android:text="@string/fragment_text_view_remove_device_description"
             android:textColor="@color/description_text_color"
             android:textSize="14sp"

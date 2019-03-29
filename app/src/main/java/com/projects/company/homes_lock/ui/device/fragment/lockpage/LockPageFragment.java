@@ -245,14 +245,9 @@ public class LockPageFragment extends BaseFragment
                 break;
             case R.id.img_more_info_lock_page:
                 if (isUserLoggedIn() || isConnectedToBleDevice) {
-                    DeviceSettingFragment mDeviceSettingFragment = DeviceSettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel);
-                    mDeviceSettingFragment.haveUnPairPermission().observe(this, unPairPermission -> {
-                        if (this.mBluetoothLEHelper != null)
-                            this.mBluetoothLEHelper.unPairDevice(mDevice.getBleDeviceMacAddress());
-                    });
-
                     addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
-                            R.id.frg_lock_activity, mDeviceSettingFragment);
+                            R.id.frg_lock_activity,
+                            DeviceSettingFragment.newInstance(mDevice.getObjectId(), mDeviceViewModel));
                 }
                 break;
         }

@@ -65,8 +65,8 @@
     <string name="fragment_text_view_direct_connect">Direct Connect</string>
     <string name="fragment_text_view_sign_up">Sign Up</string>
     <string name="fragment_text_view_forget_password">Forget Password</string>
-    <string name="fragment_text_view_device_setting">Device setting</string>
-    <string name="fragment_text_view_device_setting_value"><![CDATA[Door installation & Lock stages]]></string>
+    <string name="fragment_text_view_door_installation">Door installation</string>
+    <string name="fragment_text_view_door_installation_description">Door installation</string>
     <string name="fragment_text_view_device_type">Device type</string>
     <string name="fragment_text_view_hardware_version">Hardware version</string>
     <string name="fragment_text_view_default_hardware_version">0.0.0</string>
@@ -79,6 +79,8 @@
     <string name="fragment_text_view_reset_device">Reset DEVICE</string>
     <string name="fragment_text_view_device_name">Device Name</string>
     <string name="fragment_text_view_device_type_gateway_page">GATEWAY</string>
+    <string name="fragment_text_view_calibration_description">Calibration</string>
+    <string name="fragment_text_view_calibration">Calibration</string>
     <!--//endregion Fragment TextViews-->
 
     <!--//region Dialog Titles-->
