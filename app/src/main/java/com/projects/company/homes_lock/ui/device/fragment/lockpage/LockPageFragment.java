@@ -240,7 +240,7 @@ public class LockPageFragment extends BaseFragment
                 break;
             case R.id.img_battery_status_lock_page:
                 if (isUserLoggedIn() || isConnectedToBleDevice)
-                    sendLockCommand(!mDevice.getIsLocked());
+                    showToast(String.format("Battery percentage is %s%%", mDevice.getBatteryPercentage().toString()));
                 break;
             case R.id.img_connected_devices_lock_page:
                 if (isConnectedToBleDevice)
