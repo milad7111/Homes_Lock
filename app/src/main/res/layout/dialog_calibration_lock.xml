@@ -151,6 +151,20 @@
     </android.support.constraint.ConstraintLayout>
 
     <Button
+        android:id="@+id/btn_done_dialog_calibration_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:focusable="true"
+        android:text="@string/dialog_button_done"
+        android:textColor="@color/md_white_1000"
+        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_calibration_lock"
+        app:layout_constraintTop_toBottomOf="@+id/ctl_set_lock_position_dialog_calibration_lock" />
+
+    <Button
         android:id="@+id/btn_cancel_dialog_calibration_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

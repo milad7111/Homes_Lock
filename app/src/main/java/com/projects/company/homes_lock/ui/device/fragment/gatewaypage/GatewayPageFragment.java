@@ -54,6 +54,7 @@ import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedI
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.isMyPhone;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getGatewayBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getGatewayBriefStatusText;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
@@ -355,10 +356,10 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     @Override
-    public void onGetReceiveNewConnectedDevice(ConnectedDeviceModel mConnectedDeviceModel) {
-        if (mConnectedDeviceModel.isClient()) {
-            mConnectedDeviceModel.setIndex(mConnectedDevicesAdapter.getItemCount());
-            mConnectedDevicesAdapter.addConnectedDevice(mConnectedDeviceModel);
+    public void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel) {
+        if (connectedDeviceModel.isClient() && !isMyPhone(connectedDeviceModel.getMacAddress())) {
+            connectedDeviceModel.setIndex(mConnectedDevicesAdapter.getItemCount());
+            mConnectedDevicesAdapter.addConnectedDevice(connectedDeviceModel);
         }
     }
 

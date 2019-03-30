@@ -267,14 +267,14 @@ public class DeviceSettingFragment extends BaseFragment
                 if (isConnectedToBleDevice)
                     handleResetLock();
                 else
-                    Toast.makeText(getContext(), "This is not available in BLE disconnect mode!", Toast.LENGTH_SHORT).show();
+                    showToast("This is not available in BLE disconnect mode!");
                 break;
             case R.id.txv_remove_device_setting_fragment:
             case R.id.txv_remove_device_description_setting_fragment:
                 if (isUserLoggedIn())
                     handleRemoveLock();
                 else
-                    Toast.makeText(getContext(), "This is not available in Local mode!", Toast.LENGTH_SHORT).show();
+                    showToast("This is not available in Local mode!");
                 break;
 //            case R.id.txv_change_password_online_setting_fragment:
 //            case R.id.txv_change_password_online_description_setting_fragment:
@@ -327,6 +327,7 @@ public class DeviceSettingFragment extends BaseFragment
     public void onSetDoorInstallationSuccessful() {
         doorInstallationDone = true;
         handleSetSettingResponse();
+        showToast("Door installation done.");
     }
 
     @Override
@@ -334,6 +335,7 @@ public class DeviceSettingFragment extends BaseFragment
         mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
         closeProgressDialog();
         Log.e("Set Door Installation", "Failed");
+        showToast("Door installation failed.");
     }
 
     @Override
@@ -346,6 +348,7 @@ public class DeviceSettingFragment extends BaseFragment
     public void onChangePairingPasswordSuccessful() {
         closeProgressDialog();
         Log.e(getClass().getName(), "Change Pairing password successful.");
+        showToast("Change password done.");
 
         if (mChangePairingPasswordDialog != null) {
             mChangePairingPasswordDialog.dismiss();
@@ -373,6 +376,7 @@ public class DeviceSettingFragment extends BaseFragment
     @Override
     public void onCheckOldPairingPasswordFailed(String errorValue) {
         Log.e(getClass().getName(), String.format("Old password does not match pass in Device!: %s", errorValue));
+        showToast("Error in Old password.");
         closeProgressDialog();
     }
 
@@ -458,10 +462,23 @@ public class DeviceSettingFragment extends BaseFragment
 
         new Thread() {
             public void run() {
-                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
-                        handleLockPositionStatusImage("Lock", true));
+                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
+                    handleLockPositionStatusImage("Lock", true);
+                    DeviceSettingFragment.this.mDeviceViewModel.sendConfigCommand(mFragment);
+                });
             }
         }.start();
+    }
+
+    @Override
+    public void onSetConfigSuccessful() {
+        showToast("Set Config done.");
+        handleConfigResponse();
+    }
+
+    @Override
+    public void onInitializeCalibrationLockFailed() {
+        showToast("Check Lock then Click START again.");
     }
     //endregion IDeviceSettingFragment Callbacks
 
@@ -517,7 +534,7 @@ public class DeviceSettingFragment extends BaseFragment
                             mFragment,
                             findSelectedDoorInstallationOption(rdgDoorInstallationDialogDoorInstallation));
                 } else
-                    Toast.makeText(getContext(), "This is not available in BLE disconnect mode!", Toast.LENGTH_SHORT).show();
+                    showToast("This is not available in BLE disconnect mode!");
             });
         }
 
@@ -545,7 +562,7 @@ public class DeviceSettingFragment extends BaseFragment
                     openProgressDialog(mFragment.getContext(), null, "Initialize calibration lock ...");
                     DeviceSettingFragment.this.mDeviceViewModel.initializeCalibrationLock(this);
                 } else
-                    Toast.makeText(getContext(), "This is not available in BLE disconnect mode!", Toast.LENGTH_SHORT).show();
+                    showToast("This is not available in BLE disconnect mode!");
             });
         }
 
@@ -564,7 +581,10 @@ public class DeviceSettingFragment extends BaseFragment
             ConstraintLayout ctlSetLatchPositionDialogCalibrationLock = mCalibrationLockDialog.findViewById(R.id.ctl_set_latch_position_dialog_calibration_lock);
             ConstraintLayout ctlSetLockPositionDialogCalibrationLock = mCalibrationLockDialog.findViewById(R.id.ctl_set_lock_position_dialog_calibration_lock);
 
+            Button btnDoneDialogInitializeCalibrationLock = mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock);
             Button btnCancelDialogInitializeCalibrationLock = mCalibrationLockDialog.findViewById(R.id.btn_cancel_dialog_calibration_lock);
+
+            btnDoneDialogInitializeCalibrationLock.setEnabled(false);
 
             ctlSetIdlePositionDialogCalibrationLock.setOnClickListener(v -> {
                 handleLockPositions("Idle");
@@ -831,6 +851,11 @@ public class DeviceSettingFragment extends BaseFragment
         }
     }
 
+    private void handleConfigResponse(){
+        if (mCalibrationLockDialog !=null)
+            mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock).setEnabled(true);
+    }
+
     private void handleViewsBasedOnDeviceType() {
         switch (DeviceSettingFragment.this.mDeviceType) {
             case "LOCK":
@@ -840,6 +865,15 @@ public class DeviceSettingFragment extends BaseFragment
                 txvDoorInstallationDescriptionSettingFragment.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    private void showToast(String message) {
+        new Thread() {
+            public void run() {
+                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+            }
+        }.start();
     }
     //endregion Declare Methods
 }

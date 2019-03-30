@@ -31,7 +31,7 @@ public interface IGatewayPageFragment {
 
     void onSendRequestGetAvailableWifiSuccessful();
 
-    void onGetReceiveNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
+    void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
 
     void onDeviceDisconnectedSuccessfully();
 

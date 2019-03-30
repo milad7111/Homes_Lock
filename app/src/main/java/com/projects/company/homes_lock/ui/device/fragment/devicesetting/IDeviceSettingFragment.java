@@ -39,4 +39,8 @@ public interface IDeviceSettingFragment {
     void onSetLatchPositionSuccessful();
 
     void onSetLockPositionSuccessful();
+
+    void onSetConfigSuccessful();
+
+    void onInitializeCalibrationLockFailed();
 }

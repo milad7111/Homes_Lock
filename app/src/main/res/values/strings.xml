@@ -121,6 +121,7 @@
     <string name="dialog_button_connect">CONNECT</string>
     <string name="dialog_button_disconnect">DISCONNECT</string>
     <string name="dialog_button_start">START</string>
+    <string name="dialog_button_done">DONE</string>
     <!--//endregion Dialog Buttons-->
 
     <!--//region Dialog Checkboxes-->

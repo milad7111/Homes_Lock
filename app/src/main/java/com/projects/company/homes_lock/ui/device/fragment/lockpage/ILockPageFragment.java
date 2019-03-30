@@ -11,7 +11,7 @@ public interface ILockPageFragment {
 
     void onSendLockCommandSuccessful(String command);
 
-    void onSendLockCommandFailed(String command);
+    void onSendLockCommandFailed(String error);
 
     void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
 

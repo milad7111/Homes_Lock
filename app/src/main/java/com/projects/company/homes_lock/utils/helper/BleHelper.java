@@ -57,9 +57,10 @@ public class BleHelper {
     public static final String BLE_COMMAND_NPS = "nps";
     public static final String BLE_COMMAND_RGH = "rgh";
     public static final String BLE_COMMAND_SET = "set";
-    public static final String BLE_COMMAND_PIL = "pul";
+    public static final String BLE_COMMAND_PIL = "pil";
     public static final String BLE_COMMAND_PLK = "plk";
     public static final String BLE_COMMAND_PLT = "plt";
+    public static final String BLE_COMMAND_CFG = "cfg";
     public static final String BLE_COMMAND_ISW = "isw";
     public static final String BLE_COMMAND_ISI = "isi";
     public static final String BLE_COMMAND_ISQ = "isq";
@@ -84,8 +85,12 @@ public class BleHelper {
     public static final String BLE_RESPONSE_ERR_INTER = "inter";
     public static final String BLE_RESPONSE_ERR_PER = "per";
     public static final String BLE_RESPONSE_ERR_KEY = "key";
+    public static final String BLE_RESPONSE_ERR_SET = "set";
+    public static final String BLE_RESPONSE_ERR_CONFIG = "config";
     public static final String BLE_RESPONSE_ERR_OPS = "ops";
     public static final String BLE_RESPONSE_ERR_NPS = "nps";
+    public static final String BLE_RESPONSE_ERR_LOCK = "lock";
+    public static final String BLE_RESPONSE_ERR_UNLOCK = "unlock";
 
     private static final String PREFS_LOCATION_NOT_REQUIRED = "location_not_required";
     private static final String PREFS_PERMISSION_REQUESTED = "permission_requested";
@@ -315,6 +320,10 @@ public class BleHelper {
         }
 
         return tempJSONObject;
+    }
+
+    public static boolean isMyPhone(String macAddress) {
+        return macAddress.equals(myPhoneBleMacAddress);
     }
     //endregion Declare Methods
 }

@@ -61,6 +61,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCQ;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BLL;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_CFG;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_CON;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DID;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DIS;
@@ -77,9 +78,9 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_LOC;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_NPS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_OPS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PIL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PLK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PLT;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PIL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PRD;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PSK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RGH;
@@ -91,11 +92,15 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_TYP;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ULC;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_WFL;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_CONFIG;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_INTER;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_KEY;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_LOCK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_NPS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_OPS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_PER;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_SET;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_UNLOCK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_END;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_OK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_WAIT;
@@ -667,7 +672,7 @@ public class DeviceViewModel extends AndroidViewModel
                         else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END))
                             Log.i(getClass().getName(), "Get connected devices FINISHED.");
                         else
-                            mIGatewayPageFragment.onGetReceiveNewConnectedDevice(new ConnectedDeviceModel(
+                            mIGatewayPageFragment.onGetNewConnectedDevice(new ConnectedDeviceModel(
                                     0,
                                     keyCommandJson.getString(keyCommand).split(",")[0],
                                     true,
@@ -731,7 +736,7 @@ public class DeviceViewModel extends AndroidViewModel
                         }
                     }
                     break;
-                case "pil":
+                case BLE_COMMAND_PIL:
                     if (mIDeviceSettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
                             Log.i(getClass().getName(), "Set Idle position done.");
@@ -742,16 +747,24 @@ public class DeviceViewModel extends AndroidViewModel
                 case BLE_COMMAND_PLK:
                     if (mIDeviceSettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
-                            Log.i(getClass().getName(), "Set Latch position done.");
-                            DeviceViewModel.this.mIDeviceSettingFragment.onSetLatchPositionSuccessful();
+                            Log.i(getClass().getName(), "Set Lock position done.");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onSetLockPositionSuccessful();
                         }
                     }
                     break;
                 case BLE_COMMAND_PLT:
                     if (mIDeviceSettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
-                            Log.i(getClass().getName(), "Set Lock position done.");
-                            DeviceViewModel.this.mIDeviceSettingFragment.onSetLockPositionSuccessful();
+                            Log.i(getClass().getName(), "Set Latch position done.");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onSetLatchPositionSuccessful();
+                        }
+                    }
+                    break;
+                case BLE_COMMAND_CFG:
+                    if (mIDeviceSettingFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Set Config done.");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onSetConfigSuccessful();
                         }
                     }
                     break;
@@ -776,6 +789,24 @@ public class DeviceViewModel extends AndroidViewModel
                         case BLE_RESPONSE_ERR_NPS:
                             if (mIDeviceSettingFragment != null)
                                 mIDeviceSettingFragment.onChangePairingPasswordFailed(keyCommandJson.getString(keyCommand));
+                            break;
+                        case BLE_RESPONSE_ERR_SET:
+                            if (mIDeviceSettingFragment != null) {
+                                Log.i(getClass().getName(), "Initialize calibration lock failed ...");
+                                mIDeviceSettingFragment.onInitializeCalibrationLockFailed();
+                            }
+                            break;
+                        case BLE_RESPONSE_ERR_CONFIG:
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSendLockCommandFailed(keyCommandJson.getString(keyCommand));
+                            break;
+                        case BLE_RESPONSE_ERR_LOCK:
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSendLockCommandFailed(keyCommandJson.getString(keyCommand));
+                            break;
+                        case BLE_RESPONSE_ERR_UNLOCK:
+                            if (mILockPageFragment != null)
+                                mILockPageFragment.onSendLockCommandFailed(keyCommandJson.getString(keyCommand));
                             break;
                     }
                     break;
@@ -934,12 +965,17 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void applyCalibrationLatchPosition(Fragment parentFragment) {
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLK, JSONObject.NULL).toString(), (byte) 0));
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLT, JSONObject.NULL).toString(), (byte) 0));
     }
 
     public void applyCalibrationLockPosition(Fragment parentFragment) {
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLT, JSONObject.NULL).toString(), (byte) 0));
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLK, JSONObject.NULL).toString(), (byte) 0));
+    }
+
+    public void sendConfigCommand(Fragment parentFragment) {
+        this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_CFG, true).toString(), (byte) 0));
     }
     //endregion BLE Methods
 

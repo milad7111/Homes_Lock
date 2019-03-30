@@ -45,10 +45,13 @@ import java.util.Objects;
 
 import static android.support.v4.content.ContextCompat.getColor;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_CONFIG;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_LOCK;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_UNLOCK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.myPhoneBleMacAddress;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.isMyPhone;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusText;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
@@ -188,6 +191,7 @@ public class LockPageFragment extends BaseFragment
 
         //region Setup Views
         imgIsLockedLockPage.setOnClickListener(this);
+        imgBatteryStatusLockPage.setOnClickListener(this);
         imgConnectedDevicesLockPage.setOnClickListener(this);
         imgBleLockPage.setOnClickListener(this);
         imgManageMembersLockPage.setOnClickListener(this);
@@ -231,6 +235,10 @@ public class LockPageFragment extends BaseFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_lock_status_lock_page:
+                if (isUserLoggedIn() || isConnectedToBleDevice)
+                    sendLockCommand(!mDevice.getIsLocked());
+                break;
+            case R.id.img_battery_status_lock_page:
                 if (isUserLoggedIn() || isConnectedToBleDevice)
                     sendLockCommand(!mDevice.getIsLocked());
                 break;
@@ -286,8 +294,18 @@ public class LockPageFragment extends BaseFragment
     }
 
     @Override
-    public void onSendLockCommandFailed(String command) {
-        Log.d(getTag(), String.format("Command : %s , failed.", command));
+    public void onSendLockCommandFailed(String error) {
+        switch (error) {
+            case BLE_RESPONSE_ERR_LOCK:
+                showToast("Not Lock");
+                break;
+            case BLE_RESPONSE_ERR_UNLOCK:
+                showToast("Not Unlock");
+                break;
+            case BLE_RESPONSE_ERR_CONFIG:
+                showToast("Please config lock in setting page.");
+                break;
+        }
     }
 
     @Override
@@ -515,7 +533,7 @@ public class LockPageFragment extends BaseFragment
             addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
                     R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
         else
-            Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
+            showToast("This is not available in Local Mode");
     }
 
     private void closeAllDialogs() {
@@ -533,8 +551,13 @@ public class LockPageFragment extends BaseFragment
             closeProgressDialog();
     }
 
-    private boolean isMyPhone(String macAddress) {
-        return macAddress.equals(myPhoneBleMacAddress);
+    private void showToast(String message) {
+        new Thread() {
+            public void run() {
+                Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() ->
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+            }
+        }.start();
     }
     //endregion Declare Methods
 }
