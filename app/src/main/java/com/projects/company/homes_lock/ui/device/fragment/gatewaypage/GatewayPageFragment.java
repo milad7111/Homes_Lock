@@ -145,7 +145,7 @@ public class GatewayPageFragment extends BaseFragment
                 isConnectedToBleDevice = isConnected;
                 setBleConnectionStatusImage(imgBleGatewayPage, isConnected);
 
-                if (!isConnected) {
+                if (!isUserLoggedIn() && !isConnected) {
                     updateViewData(true);
                     closeAllDialogs();
 
@@ -160,7 +160,7 @@ public class GatewayPageFragment extends BaseFragment
                     GatewayPageFragment.this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
                     GatewayPageFragment.this.mDeviceViewModel.getGatewaySpecifiedInfoFromBleDevice();
                     updateViewData(false);
-                } else {
+                } else if (!isUserLoggedIn()) {
                     updateViewData(true);
 
                     if (mBluetoothLEHelper != null)
@@ -169,7 +169,7 @@ public class GatewayPageFragment extends BaseFragment
         });
         GatewayPageFragment.this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
             mDevice = device;
-            updateViewData(!isConnectedToBleDevice);
+            updateViewData(!isUserLoggedIn() && !isConnectedToBleDevice);
         });
         //endregion Initialize Objects
     }

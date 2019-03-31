@@ -136,7 +136,7 @@ public class LockPageFragment extends BaseFragment
                 isConnectedToBleDevice = isConnected;
                 setBleConnectionStatusImage(imgBleLockPage, isConnected);
 
-                if (!isConnected) {
+                if (!isUserLoggedIn() && !isConnected) {
                     updateViewData(true);
                     closeAllDialogs();
 
@@ -152,7 +152,7 @@ public class LockPageFragment extends BaseFragment
                     this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
                     this.mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
                     updateViewData(false);
-                } else {
+                } else if (!isUserLoggedIn()) {
                     updateViewData(true);
 
                     if (mBluetoothLEHelper != null)
@@ -161,7 +161,7 @@ public class LockPageFragment extends BaseFragment
         });
         this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
             mDevice = device;
-            updateViewData(!isConnectedToBleDevice);
+            updateViewData(!isUserLoggedIn() && !isConnectedToBleDevice);
         });
         //endregion Initialize Objects
     }

@@ -160,10 +160,6 @@ public class LocalRepository {
         mDeviceDao.setDoorInstallation(mDeviceObjectId, doorInstallation);
     }
 
-    public void updateLockStages(String mDeviceObjectId, Integer lockStages) {
-        mDeviceDao.setLockStages(mDeviceObjectId, lockStages);
-    }
-
     public void updateDevice(Device device) {
         new updateDeviceAsyncTask(mDeviceDao).execute(device);
     }

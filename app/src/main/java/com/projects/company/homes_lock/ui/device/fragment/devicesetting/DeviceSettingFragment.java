@@ -359,6 +359,7 @@ public class DeviceSettingFragment extends BaseFragment
     @Override
     public void onChangePairingPasswordFailed(String errorValue) {
         closeProgressDialog();
+        showToast(String.format("New password hasn't minimum requirements as pairing password!: %s", errorValue));
         Log.e(getClass().getName(), String.format("New password hasn't minimum requirements as pairing password!: %s", errorValue));
     }
 
@@ -393,6 +394,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     @Override
     public void onRemoveDeviceForOneMemberFailed(ResponseBodyFailureModel response) {
+        showToast("Can't remove member for device");
     }
 
     @Override
@@ -851,20 +853,9 @@ public class DeviceSettingFragment extends BaseFragment
         }
     }
 
-    private void handleConfigResponse(){
-        if (mCalibrationLockDialog !=null)
+    private void handleConfigResponse() {
+        if (mCalibrationLockDialog != null)
             mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock).setEnabled(true);
-    }
-
-    private void handleViewsBasedOnDeviceType() {
-        switch (DeviceSettingFragment.this.mDeviceType) {
-            case "LOCK":
-                break;
-            case "GATEWAY":
-                txvDoorInstallationSettingFragment.setVisibility(View.GONE);
-                txvDoorInstallationDescriptionSettingFragment.setVisibility(View.GONE);
-                break;
-        }
     }
 
     private void showToast(String message) {
