@@ -63,6 +63,9 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BLL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_CFG;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_CON;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DEM;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DEO;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DEP;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DID;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DIS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ERR;
@@ -770,6 +773,30 @@ public class DeviceViewModel extends AndroidViewModel
                         }
                     }
                     break;
+                case BLE_COMMAND_DEM:
+                    if (mIGatewayPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Write Server MacAddress for gateway done.");
+                            DeviceViewModel.this.mIGatewayPageFragment.onWriteServerMacAddressForGateWaySuccessful();
+                        }
+                    }
+                    break;
+                case BLE_COMMAND_DEP:
+                    if (mIGatewayPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Write Server Password for gateway done.");
+                            DeviceViewModel.this.mIGatewayPageFragment.onWriteServerPasswordForGateWaySuccessful();
+                        }
+                    }
+                    break;
+                case BLE_COMMAND_DEO:
+                    if (mIGatewayPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Log.i(getClass().getName(), "Connect to Server Command sent done.");
+                            DeviceViewModel.this.mIGatewayPageFragment.onConnectCommandSentToGateWaySuccessful();
+                        }
+                    }
+                    break;
                 case BLE_COMMAND_ERR:
                     switch (keyCommandJson.getString(keyCommand)) {
                         case BLE_RESPONSE_ERR_INTER:
@@ -979,6 +1006,18 @@ public class DeviceViewModel extends AndroidViewModel
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_CFG, true).toString(), (byte) 0));
     }
+
+    public void disconnectGateWayFromServer(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, false).toString(), (byte) 0));
+    }
+
+    public void connectGateWayToServer(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEM, availableBleDeviceModel.getMacAddress()).toString(), (byte) 0));
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEP, availableBleDeviceModel.getPassword()).toString(), (byte) 0));
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, true).toString(), (byte) 0));
+    }
     //endregion BLE Methods
 
     //region Online Methods
@@ -1073,23 +1112,6 @@ public class DeviceViewModel extends AndroidViewModel
     public void disconnectFromBleDevice(IGatewayPageFragment mIGatewayPageFragment, ConnectedDeviceModel connectedDeviceModel) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         disconnectFromBleDevice(connectedDeviceModel.getMacAddress());
-    }
-
-    private void connectToBleDevice(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
-        this.mIGatewayPageFragment = mIGatewayPageFragment;
-        connectToBleDevice(availableBleDeviceModel.getMacAddress());
-    }
-
-    private void disconnectFromBleDevice(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
-        this.mIGatewayPageFragment = mIGatewayPageFragment;
-        disconnectFromBleDevice(availableBleDeviceModel.getMacAddress());
-    }
-
-    public void handleConnectionAvailableDevices(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
-        if (availableBleDeviceModel.getConnectionStatus())
-            disconnectFromBleDevice(mIGatewayPageFragment, availableBleDeviceModel);
-        else
-            connectToBleDevice(mIGatewayPageFragment, availableBleDeviceModel);
     }
     //endregion Declare Methods
 

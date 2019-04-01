@@ -107,6 +107,7 @@
     <string name="dialog_title_calibration_lock">Calibration lock</string>
     <string name="dialog_title_initialize_calibration_lock_confirmation">Initialize calibration lock</string>
     <string name="dialog_title_confirmation_lock_position">Confirmation lock position</string>
+    <string name="dialog_title_connect_to_server">Connect to server</string>
     <!--//endregion Dialog Titles-->
 
     <!--//region Dialog Buttons-->

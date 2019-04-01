@@ -76,6 +76,9 @@ public class BleHelper {
     public static final String BLE_COMMAND_PSK = "psk";
     public static final String BLE_COMMAND_SEC = "sec";
     public static final String BLE_COMMAND_CON = "con";
+    public static final String BLE_COMMAND_DEM = "dem";
+    public static final String BLE_COMMAND_DEP = "dep";
+    public static final String BLE_COMMAND_DEO = "deo";
 
     public static final String BLE_RESPONSE_PUBLIC_OK = "ok";
     public static final String BLE_RESPONSE_PUBLIC_END = "end";
@@ -324,6 +327,17 @@ public class BleHelper {
 
     public static boolean isMyPhone(String macAddress) {
         return macAddress.equals(myPhoneBleMacAddress);
+    }
+
+    public static String generateDeviceType(String macAddress) {
+        switch (macAddress) {
+            case "6E":
+                return "LOCK";
+            case "6F":
+                return "GATEWAY";
+            default:
+                return "UNKNOWN";
+        }
     }
     //endregion Declare Methods
 }

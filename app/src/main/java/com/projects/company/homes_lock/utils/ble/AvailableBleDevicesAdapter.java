@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.generateDeviceType;
 
 public class AvailableBleDevicesAdapter extends RecyclerView.Adapter<AvailableBleDevicesAdapter.AvailableBleDevicesViewHolder> {
 
@@ -55,19 +56,21 @@ public class AvailableBleDevicesAdapter extends RecyclerView.Adapter<AvailableBl
             AvailableBleDeviceModel mAvailableBleDeviceModel = mAvailableBleDevices.get(i);
 
             String macAddress;
+            String deviceDescription = "UNKNOWN";
             Drawable connectionStatusDrawable = null;
 
             if (mAvailableBleDeviceModel.getIndex() == SEARCHING_SCAN_MODE || mAvailableBleDeviceModel.getIndex() == SEARCHING_TIMEOUT_MODE) {
                 macAddress = mAvailableBleDeviceModel.getIndex() == SEARCHING_SCAN_MODE ? "Scanning ..." : "Try again ...";
 
-                availableBleDevicesViewHolder.txvItemDeviceMacAddress.setTypeface(null, Typeface.ITALIC);
+                availableBleDevicesViewHolder.txvItemBleDeviceMacAddress.setTypeface(null, Typeface.ITALIC);
             } else {
                 macAddress = mAvailableBleDeviceModel.getMacAddress();
+                deviceDescription = generateDeviceType(mAvailableBleDeviceModel.getMacAddress());
                 connectionStatusDrawable = ContextCompat.getDrawable(mActivity,
                         mAvailableBleDeviceModel.getConnectionStatus() ? R.drawable.ic_valid_connected_devices_exist :
                                 R.drawable.ic_valid_connected_devices_not_exist);
 
-                availableBleDevicesViewHolder.txvItemDeviceMacAddress.setTypeface(null, Typeface.NORMAL);
+                availableBleDevicesViewHolder.txvItemBleDeviceMacAddress.setTypeface(null, Typeface.NORMAL);
 
                 availableBleDevicesViewHolder.itemView.setOnClickListener(v -> {
                     if (mAvailableBleDeviceModel.getIndex() != SEARCHING_SCAN_MODE &&
@@ -76,8 +79,9 @@ public class AvailableBleDevicesAdapter extends RecyclerView.Adapter<AvailableBl
                 });
             }
 
-            availableBleDevicesViewHolder.txvItemDeviceMacAddress.setText(macAddress);
-            availableBleDevicesViewHolder.imgItemDeviceConnectionStatus.setImageDrawable(connectionStatusDrawable);
+            availableBleDevicesViewHolder.txvItemBleDeviceMacAddress.setText(macAddress);
+            availableBleDevicesViewHolder.txvItemBleDeviceDescription.setText(deviceDescription);
+            availableBleDevicesViewHolder.imgItemBleDeviceConnectionStatus.setImageDrawable(connectionStatusDrawable);
         }
     }
 
@@ -110,13 +114,16 @@ public class AvailableBleDevicesAdapter extends RecyclerView.Adapter<AvailableBl
     }
 
     class AvailableBleDevicesViewHolder extends RecyclerView.ViewHolder {
-        TextView txvItemDeviceMacAddress;
-        ImageView imgItemDeviceConnectionStatus;
+        TextView txvItemBleDeviceMacAddress;
+        TextView txvItemBleDeviceDescription;
+        ImageView imgItemBleDeviceConnectionStatus;
 
         private AvailableBleDevicesViewHolder(View itemView) {
             super(itemView);
-            txvItemDeviceMacAddress = itemView.findViewById(R.id.txv_item_ble_device_mac_address);
-            imgItemDeviceConnectionStatus = itemView.findViewById(R.id.img_item_ble_device_connection_status);
+
+            txvItemBleDeviceMacAddress = itemView.findViewById(R.id.txv_item_ble_device_mac_address);
+            txvItemBleDeviceDescription = itemView.findViewById(R.id.txv_item_ble_device_description);
+            imgItemBleDeviceConnectionStatus = itemView.findViewById(R.id.img_item_ble_device_connection_status);
         }
     }
     //endregion Declare Methods

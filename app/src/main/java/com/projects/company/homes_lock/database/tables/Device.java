@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.generateDeviceType;
+
 @Entity(tableName = "device")
 public class Device extends BaseModel {
 
@@ -238,7 +240,7 @@ public class Device extends BaseModel {
         this.mDeviceHealth = false;
         this.mFWVersion = "0.0.0";
         this.mHWVersion = "0.0.0";
-        this.mDeviceType = generateDeviceType();
+        this.mDeviceType = generateDeviceType(mBleDeviceMacAddress.split(":")[1]);
         this.mProductionDate = "0000:00:00 00:00";
         this.mDynamicId = "000_0000_000_0000";
         this.mConnectedClientsCount = 1;
@@ -529,16 +531,5 @@ public class Device extends BaseModel {
 
     public int getConnectedServersCount() {
         return mConnectedServersCount;
-    }
-
-    private String generateDeviceType() {
-        switch (mBleDeviceMacAddress.split(":")[1]) {
-            case "6E":
-                return "LOCK";
-            case "6F":
-                return "GATEWAY";
-            default:
-                return "UNKNOWN";
-        }
     }
 }

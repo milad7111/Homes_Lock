@@ -36,6 +36,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
+import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.utils.ble.AvailableBleDevicesAdapter;
 import com.projects.company.homes_lock.utils.ble.ConnectedClientsAdapter;
@@ -114,7 +115,8 @@ public class GatewayPageFragment extends BaseFragment
     private Dialog deviceWifiNetworkDialog;
     private Dialog connectedClientsListDialog;
     private Dialog availableBleDevicesListDialog;
-    private Dialog disconnectClientDialog;
+    private Dialog connectToServerDialog;
+    private Dialog disconnectDeviceDialog;
     //endregion Declare Objects
 
     //region Constructor
@@ -356,6 +358,19 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     @Override
+    public void onWriteServerMacAddressForGateWaySuccessful() {
+    }
+
+    @Override
+    public void onWriteServerPasswordForGateWaySuccessful() {
+    }
+
+    @Override
+    public void onConnectCommandSentToGateWaySuccessful() {
+        showToast("Command CONNECT sent successfully, wait ...");
+    }
+
+    @Override
     public void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel) {
         if (connectedDeviceModel.isClient() && !isMyPhone(connectedDeviceModel.getMacAddress())) {
             connectedDeviceModel.setIndex(mConnectedClientsAdapter.getItemCount());
@@ -367,9 +382,9 @@ public class GatewayPageFragment extends BaseFragment
     public void onDeviceDisconnectedSuccessfully() {
         closeProgressDialog();
 
-        if (disconnectClientDialog != null) {
-            disconnectClientDialog.dismiss();
-            disconnectClientDialog = null;
+        if (disconnectDeviceDialog != null) {
+            disconnectDeviceDialog.dismiss();
+            disconnectDeviceDialog = null;
         }
 
         if (connectedClientsListDialog != null) {
@@ -520,23 +535,23 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     private void handleDialogDisconnectClientFromDevice(ConnectedDeviceModel mConnectedDeviceModel) {
-        if (disconnectClientDialog != null) {
-            disconnectClientDialog.dismiss();
-            disconnectClientDialog = null;
+        if (disconnectDeviceDialog != null) {
+            disconnectDeviceDialog.dismiss();
+            disconnectDeviceDialog = null;
         }
 
-        disconnectClientDialog = new Dialog(requireContext());
-        disconnectClientDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        disconnectClientDialog.setContentView(R.layout.dialog_disconnect_device);
+        disconnectDeviceDialog = new Dialog(requireContext());
+        disconnectDeviceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        disconnectDeviceDialog.setContentView(R.layout.dialog_disconnect_device);
 
         Button btnCancelDialogDisconnectClient =
-                disconnectClientDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
+                disconnectDeviceDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
         Button btnDisconnectDialogDisconnectClient =
-                disconnectClientDialog.findViewById(R.id.btn_disconnect_dialog_disconnect_device);
+                disconnectDeviceDialog.findViewById(R.id.btn_disconnect_dialog_disconnect_device);
 
         btnCancelDialogDisconnectClient.setOnClickListener(v -> {
-            disconnectClientDialog.dismiss();
-            disconnectClientDialog = null;
+            disconnectDeviceDialog.dismiss();
+            disconnectDeviceDialog = null;
         });
 
         btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
@@ -544,40 +559,71 @@ public class GatewayPageFragment extends BaseFragment
             GatewayPageFragment.this.mDeviceViewModel.disconnectFromBleDevice(this, mConnectedDeviceModel);
         });
 
-        disconnectClientDialog.show();
-        Objects.requireNonNull(disconnectClientDialog.getWindow()).setAttributes(getDialogLayoutParams(disconnectClientDialog));
+        disconnectDeviceDialog.show();
+        Objects.requireNonNull(disconnectDeviceDialog.getWindow()).setAttributes(getDialogLayoutParams(disconnectDeviceDialog));
     }
 
     private void handleDialogConnectionAvailableDevices(AvailableBleDeviceModel availableBleDeviceModel) {
-        if (disconnectClientDialog != null) {
-            disconnectClientDialog.dismiss();
-            disconnectClientDialog = null;
+        if (availableBleDeviceModel.getConnectionStatus()) {
+            if (disconnectDeviceDialog != null) {
+                disconnectDeviceDialog.dismiss();
+                disconnectDeviceDialog = null;
+            }
+
+            disconnectDeviceDialog = new Dialog(requireContext());
+            disconnectDeviceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            disconnectDeviceDialog.setContentView(R.layout.dialog_disconnect_device);
+
+            Button btnCancelDialogDisconnectClient =
+                    disconnectDeviceDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
+            Button btnDisconnectDialogDisconnectClient =
+                    disconnectDeviceDialog.findViewById(R.id.btn_disconnect_dialog_disconnect_device);
+
+            btnCancelDialogDisconnectClient.setOnClickListener(v -> {
+                disconnectDeviceDialog.dismiss();
+                disconnectDeviceDialog = null;
+            });
+
+            btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
+                openProgressDialog(getContext(), null, "Disconnect ...");
+                GatewayPageFragment.this.mDeviceViewModel.disconnectGateWayFromServer(this, availableBleDeviceModel);
+            });
+
+            disconnectDeviceDialog.show();
+            Objects.requireNonNull(disconnectDeviceDialog.getWindow()).setAttributes(getDialogLayoutParams(disconnectDeviceDialog));
+        } else {
+            if (connectToServerDialog != null) {
+                connectToServerDialog.dismiss();
+                connectToServerDialog = null;
+            }
+
+            connectToServerDialog = new Dialog(requireContext());
+            connectToServerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            connectToServerDialog.setContentView(R.layout.dialog_connect_device);
+
+            TextInputEditText tietSecurityCodeDialogConnectToServer =
+                    connectToServerDialog.findViewById(R.id.tiet_security_code_dialog_connect_to_server);
+
+            Button btnCancelDialogConnectToServer =
+                    connectToServerDialog.findViewById(R.id.btn_cancel_dialog_connect_to_server);
+            Button btnConnectDialogConnectToServer =
+                    connectToServerDialog.findViewById(R.id.btn_connect_dialog_connect_to_server);
+
+            btnCancelDialogConnectToServer.setOnClickListener(v -> {
+                disconnectDeviceDialog.dismiss();
+                disconnectDeviceDialog = null;
+            });
+
+            btnConnectDialogConnectToServer.setOnClickListener(v -> {
+                openProgressDialog(getContext(), null, "Connect to server ...");
+
+                availableBleDeviceModel.setPassword(Objects.requireNonNull(tietSecurityCodeDialogConnectToServer.getText()).toString());
+                GatewayPageFragment.this.mDeviceViewModel.connectGateWayToServer(this, availableBleDeviceModel);
+            });
+
+            disconnectDeviceDialog.show();
+            Objects.requireNonNull(disconnectDeviceDialog.getWindow()).setAttributes(getDialogLayoutParams(disconnectDeviceDialog));
         }
-
-        disconnectClientDialog = new Dialog(requireContext());
-        disconnectClientDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        disconnectClientDialog.setContentView(R.layout.dialog_disconnect_device);
-
-        Button btnCancelDialogDisconnectClient =
-                disconnectClientDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
-        Button btnDisconnectDialogDisconnectClient =
-                disconnectClientDialog.findViewById(R.id.btn_disconnect_dialog_disconnect_device);
-
-        if (!availableBleDeviceModel.getConnectionStatus())
-            btnDisconnectDialogDisconnectClient.setText(String.format("%s ...", getString(R.string.dialog_button_connect)));
-
-        btnCancelDialogDisconnectClient.setOnClickListener(v -> {
-            disconnectClientDialog.dismiss();
-            disconnectClientDialog = null;
-        });
-
-        btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
-            openProgressDialog(getContext(), null, btnDisconnectDialogDisconnectClient.getText().toString());
-            GatewayPageFragment.this.mDeviceViewModel.handleConnectionAvailableDevices(this, availableBleDeviceModel);
-        });
-
-        disconnectClientDialog.show();
-        Objects.requireNonNull(disconnectClientDialog.getWindow()).setAttributes(getDialogLayoutParams(disconnectClientDialog));
     }
 
     private void connectToDevice() {
@@ -793,13 +839,22 @@ public class GatewayPageFragment extends BaseFragment
             availableBleDevicesListDialog = null;
         }
 
-        if (disconnectClientDialog != null) {
-            disconnectClientDialog.dismiss();
-            disconnectClientDialog = null;
+        if (disconnectDeviceDialog != null) {
+            disconnectDeviceDialog.dismiss();
+            disconnectDeviceDialog = null;
         }
 
         if (!isUserLoggedIn())
             closeProgressDialog();
+    }
+
+    private void showToast(String message) {
+        new Thread() {
+            public void run() {
+                Objects.requireNonNull(GatewayPageFragment.this.getActivity()).runOnUiThread(() ->
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+            }
+        }.start();
     }
     //endregion Declare Methods
 }

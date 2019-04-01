@@ -36,4 +36,10 @@ public interface IGatewayPageFragment {
     void onDeviceDisconnectedSuccessfully();
 
     void onGetNewAvailableBleDevice(AvailableBleDeviceModel availableBleDeviceModel);
+
+    void onWriteServerMacAddressForGateWaySuccessful();
+
+    void onWriteServerPasswordForGateWaySuccessful();
+
+    void onConnectCommandSentToGateWaySuccessful();
 }
