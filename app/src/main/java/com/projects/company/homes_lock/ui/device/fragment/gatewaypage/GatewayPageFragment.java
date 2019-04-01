@@ -610,8 +610,8 @@ public class GatewayPageFragment extends BaseFragment
                     connectToServerDialog.findViewById(R.id.btn_connect_dialog_connect_to_server);
 
             btnCancelDialogConnectToServer.setOnClickListener(v -> {
-                disconnectDeviceDialog.dismiss();
-                disconnectDeviceDialog = null;
+                connectToServerDialog.dismiss();
+                connectToServerDialog = null;
             });
 
             btnConnectDialogConnectToServer.setOnClickListener(v -> {
@@ -621,8 +621,8 @@ public class GatewayPageFragment extends BaseFragment
                 GatewayPageFragment.this.mDeviceViewModel.connectGateWayToServer(this, availableBleDeviceModel);
             });
 
-            disconnectDeviceDialog.show();
-            Objects.requireNonNull(disconnectDeviceDialog.getWindow()).setAttributes(getDialogLayoutParams(disconnectDeviceDialog));
+            connectToServerDialog.show();
+            Objects.requireNonNull(connectToServerDialog.getWindow()).setAttributes(getDialogLayoutParams(connectToServerDialog));
         }
     }
 

@@ -56,7 +56,7 @@ public class AvailableBleDevicesAdapter extends RecyclerView.Adapter<AvailableBl
             AvailableBleDeviceModel mAvailableBleDeviceModel = mAvailableBleDevices.get(i);
 
             String macAddress;
-            String deviceDescription = "UNKNOWN";
+            String deviceDescription = "";
             Drawable connectionStatusDrawable = null;
 
             if (mAvailableBleDeviceModel.getIndex() == SEARCHING_SCAN_MODE || mAvailableBleDeviceModel.getIndex() == SEARCHING_TIMEOUT_MODE) {
