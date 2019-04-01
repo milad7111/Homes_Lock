@@ -599,7 +599,7 @@ public class DeviceViewModel extends AndroidViewModel
                     Log.e(getClass().getName(), String.format("bcq setting %s", keyCommandJson.getString(keyCommand)));
                     if (mILockPageFragment != null) {
                         mLocalRepository.updateConnectedClientsCount(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                                Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[0]));
+                                Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1]));
                     } else if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateConnectedClientsCount(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1]));
@@ -670,7 +670,7 @@ public class DeviceViewModel extends AndroidViewModel
                                             0,
                                             keyCommandJson.getString(keyCommand).split(",")[0],
                                             true,
-                                            !keyCommandJson.getString(keyCommand).split(",")[1].equals("s")));//s: 0, c:1
+                                            !keyCommandJson.getString(keyCommand).split(",")[2].equals("s")));//s: 0, c:1
                     } else if (mIGatewayPageFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT))
                             Log.i(getClass().getName(), "Start getting connected devices ...");

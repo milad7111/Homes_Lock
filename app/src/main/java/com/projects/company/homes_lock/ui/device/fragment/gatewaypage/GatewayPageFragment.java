@@ -36,7 +36,6 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
-import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.utils.ble.AvailableBleDevicesAdapter;
 import com.projects.company.homes_lock.utils.ble.ConnectedClientsAdapter;
@@ -95,7 +94,6 @@ public class GatewayPageFragment extends BaseFragment
 
     //region Declare Variables
     private boolean isConnectedToBleDevice;
-    private int wifiNetworksCount = 0;
     //endregion Declare Variables
 
     //region Declare Arrays & Lists
@@ -367,6 +365,21 @@ public class GatewayPageFragment extends BaseFragment
 
     @Override
     public void onConnectCommandSentToGateWaySuccessful() {
+        if (availableBleDevicesListDialog != null) {
+            availableBleDevicesListDialog.dismiss();
+            availableBleDevicesListDialog = null;
+        }
+
+        if (connectToServerDialog != null) {
+            connectToServerDialog.dismiss();
+            connectToServerDialog = null;
+        }
+
+        if (disconnectDeviceDialog != null) {
+            disconnectDeviceDialog.dismiss();
+            disconnectDeviceDialog = null;
+        }
+
         showToast("Command CONNECT sent successfully, wait ...");
     }
 
