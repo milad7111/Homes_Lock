@@ -361,6 +361,7 @@ public class GatewayPageFragment extends BaseFragment
 
     @Override
     public void onWriteServerPasswordForGateWaySuccessful() {
+        GatewayPageFragment.this.mDeviceViewModel.connectGateWayToServer(this);
     }
 
     @Override
@@ -630,8 +631,8 @@ public class GatewayPageFragment extends BaseFragment
             btnConnectDialogConnectToServer.setOnClickListener(v -> {
                 openProgressDialog(getContext(), null, "Connect to server ...");
 
-                availableBleDeviceModel.setPassword(Objects.requireNonNull(tietSecurityCodeDialogConnectToServer.getText()).toString());
-                GatewayPageFragment.this.mDeviceViewModel.connectGateWayToServer(this, availableBleDeviceModel);
+                availableBleDeviceModel.setPassword(Integer.valueOf(Objects.requireNonNull(tietSecurityCodeDialogConnectToServer.getText()).toString()));
+                GatewayPageFragment.this.mDeviceViewModel.setServerMacAddressPasswordForGateWay(this, availableBleDeviceModel);
             });
 
             connectToServerDialog.show();

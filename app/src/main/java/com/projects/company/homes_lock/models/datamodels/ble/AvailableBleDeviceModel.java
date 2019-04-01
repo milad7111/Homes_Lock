@@ -10,7 +10,7 @@ public class AvailableBleDeviceModel extends BaseModel {
     //region Declare Objects
     private int mIndex;
     private String mMacAddress;
-    private String mPassword;
+    private int mPassword;
     private int mRSSI;
     private boolean mConnectionStatus;
     //endregion Declare Objects
@@ -63,11 +63,11 @@ public class AvailableBleDeviceModel extends BaseModel {
         return mIndex == SEARCHING_SCAN_MODE || mIndex == SEARCHING_TIMEOUT_MODE;
     }
 
-    public String getPassword() {
-        return mPassword != null ? mPassword : "";
+    public int getPassword() {
+        return mPassword;
     }
 
-    public void setPassword(String mPassword) {
+    public void setPassword(int mPassword) {
         this.mPassword = mPassword;
     }
     //endregion Declare Methods

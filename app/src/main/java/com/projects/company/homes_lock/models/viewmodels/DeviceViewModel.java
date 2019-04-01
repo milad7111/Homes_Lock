@@ -670,7 +670,7 @@ public class DeviceViewModel extends AndroidViewModel
                                             0,
                                             keyCommandJson.getString(keyCommand).split(",")[0],
                                             true,
-                                            !keyCommandJson.getString(keyCommand).split(",")[2].equals("s")));//s: 0, c:1
+                                            !keyCommandJson.getString(keyCommand).split(",")[1].equals("S")));//s: 0, c:1
                     } else if (mIGatewayPageFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT))
                             Log.i(getClass().getName(), "Start getting connected devices ...");
@@ -1012,10 +1012,14 @@ public class DeviceViewModel extends AndroidViewModel
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, false).toString(), (byte) 0));
     }
 
-    public void connectGateWayToServer(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
+    public void setServerMacAddressPasswordForGateWay(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEM, availableBleDeviceModel.getMacAddress()).toString(), (byte) 0));
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEP, availableBleDeviceModel.getPassword()).toString(), (byte) 0));
+    }
+
+    public void connectGateWayToServer(IGatewayPageFragment mIGatewayPageFragment){
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, true).toString(), (byte) 0));
     }
     //endregion BLE Methods
