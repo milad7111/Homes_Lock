@@ -22,21 +22,21 @@ import java.util.List;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 
-public class ConnectedDevicesAdapter extends RecyclerView.Adapter<ConnectedDevicesAdapter.ConnectedDevicesViewHolder> {
+public class ConnectedClientsAdapter extends RecyclerView.Adapter<ConnectedClientsAdapter.ConnectedClientsViewHolder> {
 
     //region Declare Objects
     private Activity mActivity;
     private LayoutInflater mInflater;
-    private List<ConnectedDeviceModel> mConnectedDevices;
+    private List<ConnectedDeviceModel> mConnectedClients;
     private IBleScanListener mILockPageFragment;
     //endregion Declare Objects
 
     //region Constructor
-    public ConnectedDevicesAdapter(Fragment fragment, List<ConnectedDeviceModel> mConnectedDevices) {
+    public ConnectedClientsAdapter(Fragment fragment, List<ConnectedDeviceModel> mConnectedClients) {
         //region Initialize Objects
         this.mActivity = fragment.getActivity();
         this.mInflater = LayoutInflater.from(fragment.getActivity());
-        this.mConnectedDevices = mConnectedDevices;
+        this.mConnectedClients = mConnectedClients;
         this.mILockPageFragment = (IBleScanListener) fragment;
         //endregion Initialize Objects
     }
@@ -45,14 +45,14 @@ public class ConnectedDevicesAdapter extends RecyclerView.Adapter<ConnectedDevic
     //region Adapter CallBacks
     @NonNull
     @Override
-    public ConnectedDevicesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        return new ConnectedDevicesViewHolder(mInflater.inflate(R.layout.item_connected_devices, viewGroup, false));
+    public ConnectedClientsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        return new ConnectedClientsViewHolder(mInflater.inflate(R.layout.item_connected_devices, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ConnectedDevicesViewHolder connectedDevicesViewHolder, final int i) {
-        if (mConnectedDevices != null && !mConnectedDevices.isEmpty()) {
-            ConnectedDeviceModel mConnectedDeviceModel = mConnectedDevices.get(i);
+    public void onBindViewHolder(@NonNull ConnectedClientsViewHolder connectedClientsViewHolder, final int i) {
+        if (mConnectedClients != null && !mConnectedClients.isEmpty()) {
+            ConnectedDeviceModel mConnectedDeviceModel = mConnectedClients.get(i);
 
             String macAddress;
             String connectionType;
@@ -62,61 +62,61 @@ public class ConnectedDevicesAdapter extends RecyclerView.Adapter<ConnectedDevic
                 macAddress = mConnectedDeviceModel.getIndex() == SEARCHING_SCAN_MODE ? "Scanning ..." : "Try again ...";
                 connectionType = "";
 
-                connectedDevicesViewHolder.txvItemDeviceMacAddress.setTypeface(null, Typeface.ITALIC);
+                connectedClientsViewHolder.txvItemDeviceMacAddress.setTypeface(null, Typeface.ITALIC);
             } else {
                 macAddress = mConnectedDeviceModel.getMacAddress();
                 connectionType = mConnectedDeviceModel.isClient() ? "CLIENT" : "SERVER";
                 connectionStatusDrawable = ContextCompat.getDrawable(mActivity, R.drawable.ic_action_disconnect_device);
 
-                connectedDevicesViewHolder.txvItemDeviceMacAddress.setTypeface(null, Typeface.NORMAL);
+                connectedClientsViewHolder.txvItemDeviceMacAddress.setTypeface(null, Typeface.NORMAL);
 
-                connectedDevicesViewHolder.itemView.setOnClickListener(v -> {
+                connectedClientsViewHolder.itemView.setOnClickListener(v -> {
                     if (mConnectedDeviceModel.getIndex() != SEARCHING_SCAN_MODE &&
                             mConnectedDeviceModel.getIndex() != SEARCHING_TIMEOUT_MODE)
                         mILockPageFragment.onAdapterItemClick(mConnectedDeviceModel);
                 });
             }
 
-            connectedDevicesViewHolder.txvItemDeviceMacAddress.setText(macAddress);
-            connectedDevicesViewHolder.txvItemDeviceConnectionType.setText(connectionType);
-            connectedDevicesViewHolder.imgItemActionDisconnectDevice.setImageDrawable(connectionStatusDrawable);
+            connectedClientsViewHolder.txvItemDeviceMacAddress.setText(macAddress);
+            connectedClientsViewHolder.txvItemDeviceConnectionType.setText(connectionType);
+            connectedClientsViewHolder.imgItemActionDisconnectDevice.setImageDrawable(connectionStatusDrawable);
         }
     }
 
     @Override
     public int getItemCount() {
-        if (mConnectedDevices != null)
-            return mConnectedDevices.size();
+        if (mConnectedClients != null)
+            return mConnectedClients.size();
         else return 0;
     }
     //endregion Adapter CallBacks
 
     //region Declare Methods
-    public void setConnectedDevices(List<ConnectedDeviceModel> mConnectedDevices) {
-        this.mConnectedDevices = mConnectedDevices;
+    public void setConnectedClients(List<ConnectedDeviceModel> mConnectedClients) {
+        this.mConnectedClients = mConnectedClients;
         mActivity.runOnUiThread(this::notifyDataSetChanged);
     }
 
     public void addConnectedDevice(ConnectedDeviceModel mConnectedDeviceModel) {
-        if (!this.mConnectedDevices.isEmpty()) {
-            for (ConnectedDeviceModel mDevice : this.mConnectedDevices)
+        if (!this.mConnectedClients.isEmpty()) {
+            for (ConnectedDeviceModel mDevice : this.mConnectedClients)
                 if (mDevice.getMacAddress().equals(mConnectedDeviceModel.getMacAddress()))
                     return;
 
-            if (this.mConnectedDevices.get(0).isInvalidData() && mConnectedDeviceModel.isValidData())
-                this.mConnectedDevices = new ArrayList<>();
+            if (this.mConnectedClients.get(0).isInvalidData() && mConnectedDeviceModel.isValidData())
+                this.mConnectedClients = new ArrayList<>();
         }
 
-        this.mConnectedDevices.add(mConnectedDeviceModel);
+        this.mConnectedClients.add(mConnectedDeviceModel);
         mActivity.runOnUiThread(this::notifyDataSetChanged);
     }
 
-    class ConnectedDevicesViewHolder extends RecyclerView.ViewHolder {
+    class ConnectedClientsViewHolder extends RecyclerView.ViewHolder {
         TextView txvItemDeviceMacAddress;
         TextView txvItemDeviceConnectionType;
         ImageView imgItemActionDisconnectDevice;
 
-        private ConnectedDevicesViewHolder(View itemView) {
+        private ConnectedClientsViewHolder(View itemView) {
             super(itemView);
             txvItemDeviceMacAddress = itemView.findViewById(R.id.txv_item_device_mac_address);
             txvItemDeviceConnectionType = itemView.findViewById(R.id.txv_item_device_connection_type);

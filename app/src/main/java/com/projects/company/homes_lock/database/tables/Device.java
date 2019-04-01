@@ -107,9 +107,13 @@ public class Device extends BaseModel {
     @SerializedName("dynamicId")
     private String mDynamicId;
 
-    @ColumnInfo(name = "connectedDevicesCount")
-//    @SerializedName("connectedDevicesCount")
-    private int mConnectedDevicesCount;
+    @ColumnInfo(name = "connectedClientsCount")
+//    @SerializedName("connectedClientsCount")
+    private int mConnectedClientsCount;
+
+    @ColumnInfo(name = "connectedServersCount")
+//    @SerializedName("connectedServersCount")
+    private int mConnectedServersCount;
 
     @ColumnInfo(name = "doorInstallation")
     @SerializedName("doorInstallation")
@@ -185,7 +189,8 @@ public class Device extends BaseModel {
             String mDeviceType,
             String mProductionDate,
             String mDynamicId,
-            int mConnectedDevicesCount,
+            int mConnectedClientsCount,
+            int mConnectedServersCount,
             Boolean mDoorInstallation,
             Integer mLockPosition) {
         this.mObjectId = mObjectId;
@@ -209,7 +214,8 @@ public class Device extends BaseModel {
         this.mProductionDate = mProductionDate;
         this.mDynamicId = mDynamicId;
         this.mDoorInstallation = mDoorInstallation;
-        this.mConnectedDevicesCount = mConnectedDevicesCount;
+        this.mConnectedClientsCount = mConnectedClientsCount;
+        this.mConnectedServersCount = mConnectedServersCount;
         this.mLockPosition = mLockPosition;
     }
 
@@ -235,7 +241,8 @@ public class Device extends BaseModel {
         this.mDeviceType = generateDeviceType();
         this.mProductionDate = "0000:00:00 00:00";
         this.mDynamicId = "000_0000_000_0000";
-        this.mConnectedDevicesCount = 1;
+        this.mConnectedClientsCount = 1;
+        this.mConnectedServersCount = 0;
         this.mDoorInstallation = true;
         this.mLockPosition = 0;
     }
@@ -508,12 +515,20 @@ public class Device extends BaseModel {
         this.mDoorInstallation = mDoorInstallation;
     }
 
-    public void setConnectedDevicesCount(int mConnectedDevicesCount) {
-        this.mConnectedDevicesCount = mConnectedDevicesCount;
+    public void setConnectedClientsCount(int mConnectedClientsCount) {
+        this.mConnectedClientsCount = mConnectedClientsCount;
     }
 
-    public int getConnectedDevicesCount() {
-        return mConnectedDevicesCount;
+    public int getConnectedClientsCount() {
+        return mConnectedClientsCount;
+    }
+
+    public void setConnectedServersCount(int mConnectedServersCount) {
+        this.mConnectedServersCount = mConnectedServersCount;
+    }
+
+    public int getConnectedServersCount() {
+        return mConnectedServersCount;
     }
 
     private String generateDeviceType() {

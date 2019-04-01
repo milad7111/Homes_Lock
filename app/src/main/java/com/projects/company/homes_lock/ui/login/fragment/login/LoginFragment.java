@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andexert.library.RippleView;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
@@ -29,15 +30,18 @@ import com.projects.company.homes_lock.models.viewmodels.LoginViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.ui.device.activity.DeviceActivity;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
-import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.projects.company.homes_lock.base.BaseApplication.activeUserEmail;
+import static com.projects.company.homes_lock.base.BaseApplication.activeUserObjectId;
+import static com.projects.company.homes_lock.base.BaseApplication.activeUserToken;
 import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -51,14 +55,18 @@ public class LoginFragment extends BaseFragment
     //endregion Declare Constants
 
     //region Declare Views
-    private TextInputEditText tietEmail;
-    private TextInputEditText tietPassword;
+    private TextInputEditText tietEmailLoginFragment;
+    private TextInputEditText tietPasswordLoginFragment;
 
-    private TextView txvDirectConnect;
-    private TextView txvSignUp;
-    private TextView txvForgetPassword;
+    private TextView txvDirectConnectLoginFragment;
+    private TextView txvSignUpLoginFragment;
+    private TextView txvForgetPasswordLoginFragment;
 
-    private Button btnLogin;
+    private RippleView rpvDirectConnectLoginFragment;
+    private RippleView rpvSignUpLoginFragment;
+    private RippleView rpvForgetPasswordLoginFragment;
+
+    private Button btnLoginLoginFragment;
     //endregion Declare Views
 
     //region Declare Variables
@@ -103,19 +111,30 @@ public class LoginFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
-        tietEmail = view.findViewById(R.id.tiet_email_login_fragment);
-        tietPassword = view.findViewById(R.id.tiet_password_login_fragment);
-        btnLogin = view.findViewById(R.id.btn_login_login_fragment);
-        txvDirectConnect = view.findViewById(R.id.txv_direct_connect_login_fragment);
-        txvSignUp = view.findViewById(R.id.txv_sign_up_login_fragment);
-        txvForgetPassword = view.findViewById(R.id.txv_forget_password_login_fragment);
+        tietEmailLoginFragment = view.findViewById(R.id.tiet_email_login_fragment);
+        tietPasswordLoginFragment = view.findViewById(R.id.tiet_password_login_fragment);
+
+        btnLoginLoginFragment = view.findViewById(R.id.btn_login_login_fragment);
+
+        txvDirectConnectLoginFragment = view.findViewById(R.id.txv_direct_connect_login_fragment);
+        txvSignUpLoginFragment = view.findViewById(R.id.txv_sign_up_login_fragment);
+        txvForgetPasswordLoginFragment = view.findViewById(R.id.txv_forget_password_login_fragment);
+
+        rpvDirectConnectLoginFragment = view.findViewById(R.id.rpv_direct_connect_login_fragment);
+        rpvSignUpLoginFragment = view.findViewById(R.id.rpv_sign_up_login_fragment);
+        rpvForgetPasswordLoginFragment = view.findViewById(R.id.rpv_forget_password_login_fragment);
         //endregion Initialize Views
 
         //region Setup Views
-        btnLogin.setOnClickListener(this);
-        txvDirectConnect.setOnClickListener(this);
-        txvSignUp.setOnClickListener(this);
-        txvForgetPassword.setOnClickListener(this);
+        btnLoginLoginFragment.setOnClickListener(this);
+
+        txvDirectConnectLoginFragment.setOnClickListener(this);
+        txvSignUpLoginFragment.setOnClickListener(this);
+        txvForgetPasswordLoginFragment.setOnClickListener(this);
+
+        rpvDirectConnectLoginFragment.setOnClickListener(this);
+        rpvSignUpLoginFragment.setOnClickListener(this);
+        rpvForgetPasswordLoginFragment.setOnClickListener(this);
         //endregion Setup Views
 
         //region Initialize Objects
@@ -140,8 +159,8 @@ public class LoginFragment extends BaseFragment
             case R.id.btn_login_login_fragment:
                 openProgressDialog(getContext(), null, "Login process ...");
                 mUserViewModel.login(
-                        Objects.requireNonNull(tietEmail.getText()).toString(),
-                        Objects.requireNonNull(tietPassword.getText()).toString());
+                        Objects.requireNonNull(tietEmailLoginFragment.getText()).toString(),
+                        Objects.requireNonNull(tietPasswordLoginFragment.getText()).toString());
 //                this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
 //                    notSavedDevices = new ArrayList<>();
 //
@@ -150,18 +169,21 @@ public class LoginFragment extends BaseFragment
 //                            notSavedDevices.add(device);
 //                    }
 //
-//                    mUserViewModel.login(tietEmail.getText().toString(), tietPassword.getText().toString());
+//                    mUserViewModel.login(tietEmailLoginFragment.getText().toString(), tietPasswordLoginFragment.getText().toString());
 //                });
                 break;
             case R.id.txv_direct_connect_login_fragment:
+            case R.id.rpv_direct_connect_login_fragment:
                 setUserLoginMode(false);
                 startActivity(new Intent(getActivity(), DeviceActivity.class));
                 break;
             case R.id.txv_sign_up_login_fragment:
-                ViewHelper.addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new RegisterFragment());
+            case R.id.rpv_sign_up_login_fragment:
+                addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new RegisterFragment());
                 break;
             case R.id.txv_forget_password_login_fragment:
-                ViewHelper.addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new ForgetPasswordFragment());
+            case R.id.rpv_forget_password_login_fragment:
+                addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new ForgetPasswordFragment());
                 break;
         }
     }
@@ -170,9 +192,9 @@ public class LoginFragment extends BaseFragment
     //region Login CallBacks
     @Override
     public void onLoginSuccessful(User user) {
-        BaseApplication.activeUserObjectId = user.getObjectId();
-        BaseApplication.activeUserToken = user.getUserToken();
-        BaseApplication.activeUserEmail = user.getEmail();
+        activeUserObjectId = user.getObjectId();
+        activeUserToken = user.getUserToken();
+        activeUserEmail = user.getEmail();
 
 //        if (notSavedDevices.size() != 0)
 //            saveLocalDevicesToServer();
@@ -246,7 +268,6 @@ public class LoginFragment extends BaseFragment
 
     @Override
     public void onGetUserFailed(FailureModel response) {
-
     }
 
     @Override
@@ -261,8 +282,8 @@ public class LoginFragment extends BaseFragment
 
     //region Declare Methods
     private void clearViews() {
-        tietEmail.setText(null);
-        tietPassword.setText(null);
+        tietEmailLoginFragment.setText(null);
+        tietPasswordLoginFragment.setText(null);
     }
 
     private void saveLocalDevicesToServer() {

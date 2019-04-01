@@ -595,11 +595,13 @@ public class DeviceViewModel extends AndroidViewModel
                 case BLE_COMMAND_BCQ:
                     Log.e(getClass().getName(), String.format("bcq setting %s", keyCommandJson.getString(keyCommand)));
                     if (mILockPageFragment != null) {
-                        mLocalRepository.updateConnectedDevicesCount(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
-                                keyCommandJson.getString(keyCommand));
+                        mLocalRepository.updateConnectedClientsCount(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[0]));
                     } else if (mIGatewayPageFragment != null) {
-                        mLocalRepository.updateConnectedDevicesCount(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
-                                keyCommandJson.getString(keyCommand));
+                        mLocalRepository.updateConnectedClientsCount(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
+                                Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1]));
+                        mLocalRepository.updateConnectedServersCount(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[2]));
                     }
                     break;
                 case BLE_COMMAND_OPS:
@@ -875,13 +877,13 @@ public class DeviceViewModel extends AndroidViewModel
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_WFL, 0));
     }
 
-    public void getConnectedDevices(ILockPageFragment mILockPageFragment) {
+    public void getConnectedClients(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get wifi network list");
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL, 0));
     }
 
-    public void getConnectedDevices(IGatewayPageFragment mIGatewayPageFragment) {
+    public void getConnectedClients(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Log.d("Scenario Wifi", "1: Send request to get connected devices list");
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL, 0));

@@ -123,7 +123,7 @@ public class DataHelper {
     public static String getGatewayBriefStatusText(boolean internetStatus, boolean wifiStatus) {
         switch (getInternetStatusMode(internetStatus, wifiStatus)) {
             case CONNECTED:
-                return "Connected to server";
+                return "Connected to internet";
             case JUST_WIFI:
                 return "No internet";
             case NOT_CONNECTED:
