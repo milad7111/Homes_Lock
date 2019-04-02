@@ -603,7 +603,7 @@ public class DeviceViewModel extends AndroidViewModel
                     } else if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateConnectedClientsCount(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1]));
-                        mLocalRepository.updateConnectedServersCount(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                        mLocalRepository.updateConnectedServersCount(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[2]));
                     }
                     break;
@@ -681,7 +681,7 @@ public class DeviceViewModel extends AndroidViewModel
                                     0,
                                     keyCommandJson.getString(keyCommand).split(",")[0],
                                     true,
-                                    !keyCommandJson.getString(keyCommand).split(",")[1].equals("s")));//s: 0, c:1
+                                    !keyCommandJson.getString(keyCommand).split(",")[1].equals("S")));//s: 0, c:1
                     }
                     break;
                 case BLE_COMMAND_BLL:
