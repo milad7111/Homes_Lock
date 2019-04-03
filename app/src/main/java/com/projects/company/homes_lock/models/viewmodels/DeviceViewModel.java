@@ -696,7 +696,7 @@ public class DeviceViewModel extends AndroidViewModel
                         else
                             mIGatewayPageFragment.onGetNewAvailableBleDevice(new AvailableBleDeviceModel(
                                     keyCommandJson.getString(keyCommand).split(",")[0],
-                                    Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1]),
+                                    0,
                                     !keyCommandJson.getString(keyCommand).split(",")[2].equals("0")
                                             && keyCommandJson.getString(keyCommand).split(",")[2].equals("1"),
                                     true));
