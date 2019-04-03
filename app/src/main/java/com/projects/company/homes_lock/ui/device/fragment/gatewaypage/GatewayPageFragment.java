@@ -351,12 +351,12 @@ public class GatewayPageFragment extends BaseFragment
 
     @Override
     public void onGetNewAvailableBleDevice(AvailableBleDeviceModel availableBleDeviceModel) {
-        availableBleDeviceModel.setIndex(mAvailableBleDevicesAdapter.getItemCount());
         mAvailableBleDevicesAdapter.addAvailableBleDevice(availableBleDeviceModel);
     }
 
     @Override
-    public void onWriteServerMacAddressForGateWaySuccessful() {
+    public void onWriteServerMacAddressForGateWaySuccessful(AvailableBleDeviceModel availableBleDeviceModel) {
+        GatewayPageFragment.this.mDeviceViewModel.setServerPasswordForGateWay(this, availableBleDeviceModel);
     }
 
     @Override
@@ -623,6 +623,15 @@ public class GatewayPageFragment extends BaseFragment
             Button btnConnectDialogConnectToServer =
                     connectToServerDialog.findViewById(R.id.btn_connect_dialog_connect_to_server);
 
+            if (availableBleDeviceModel.isSaved()) {
+                tietSecurityCodeDialogConnectToServer.setEnabled(false);
+                tietSecurityCodeDialogConnectToServer.setText("000000");
+            } else {
+                tietSecurityCodeDialogConnectToServer.setEnabled(true);
+                tietSecurityCodeDialogConnectToServer.setText(null);
+                tietSecurityCodeDialogConnectToServer.requestFocus();
+            }
+
             btnCancelDialogConnectToServer.setOnClickListener(v -> {
                 connectToServerDialog.dismiss();
                 connectToServerDialog = null;
@@ -631,8 +640,12 @@ public class GatewayPageFragment extends BaseFragment
             btnConnectDialogConnectToServer.setOnClickListener(v -> {
                 openProgressDialog(getContext(), null, "Connect to server ...");
 
-                availableBleDeviceModel.setPassword(Integer.valueOf(Objects.requireNonNull(tietSecurityCodeDialogConnectToServer.getText()).toString()));
-                GatewayPageFragment.this.mDeviceViewModel.setServerMacAddressPasswordForGateWay(this, availableBleDeviceModel);
+                if (availableBleDeviceModel.isSaved())
+                    GatewayPageFragment.this.mDeviceViewModel.connectGateWayToServer(this);
+                else {
+                    availableBleDeviceModel.setPassword(Integer.valueOf(Objects.requireNonNull(tietSecurityCodeDialogConnectToServer.getText()).toString()));
+                    GatewayPageFragment.this.mDeviceViewModel.setServerMacAddressForGateWay(this, availableBleDeviceModel);
+                }
             });
 
             connectToServerDialog.show();

@@ -59,8 +59,8 @@ public class AvailableBleDevicesAdapter extends RecyclerView.Adapter<AvailableBl
             String deviceDescription = "";
             Drawable connectionStatusDrawable = null;
 
-            if (mAvailableBleDeviceModel.getIndex() == SEARCHING_SCAN_MODE || mAvailableBleDeviceModel.getIndex() == SEARCHING_TIMEOUT_MODE) {
-                macAddress = mAvailableBleDeviceModel.getIndex() == SEARCHING_SCAN_MODE ? "Scanning ..." : "Try again ...";
+            if (mAvailableBleDeviceModel.getRSSI() == SEARCHING_SCAN_MODE || mAvailableBleDeviceModel.getRSSI() == SEARCHING_TIMEOUT_MODE) {
+                macAddress = mAvailableBleDeviceModel.getRSSI() == SEARCHING_SCAN_MODE ? "Scanning ..." : "Try again ...";
 
                 availableBleDevicesViewHolder.txvItemBleDeviceMacAddress.setTypeface(null, Typeface.ITALIC);
             } else {
@@ -73,8 +73,8 @@ public class AvailableBleDevicesAdapter extends RecyclerView.Adapter<AvailableBl
                 availableBleDevicesViewHolder.txvItemBleDeviceMacAddress.setTypeface(null, Typeface.NORMAL);
 
                 availableBleDevicesViewHolder.itemView.setOnClickListener(v -> {
-                    if (mAvailableBleDeviceModel.getIndex() != SEARCHING_SCAN_MODE &&
-                            mAvailableBleDeviceModel.getIndex() != SEARCHING_TIMEOUT_MODE)
+                    if (mAvailableBleDeviceModel.getRSSI() != SEARCHING_SCAN_MODE &&
+                            mAvailableBleDeviceModel.getRSSI() != SEARCHING_TIMEOUT_MODE)
                         mIGatewayPageFragment.onAdapterItemClick(mAvailableBleDeviceModel);
                 });
             }

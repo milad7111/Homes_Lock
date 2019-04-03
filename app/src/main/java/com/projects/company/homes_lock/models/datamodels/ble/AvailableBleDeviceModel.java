@@ -8,35 +8,36 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_T
 public class AvailableBleDeviceModel extends BaseModel {
 
     //region Declare Objects
-    private int mIndex;
     private String mMacAddress;
     private int mPassword;
     private int mRSSI;
+    private boolean mSaved;
     private boolean mConnectionStatus;
     //endregion Declare Objects
 
     //region Constructor
-    public AvailableBleDeviceModel(int mIndex, String mMacAddress, int mRSSI, boolean mConnectionStatus) {
-        this.mIndex = mIndex;
+    public AvailableBleDeviceModel(String mMacAddress, int mRSSI, boolean mConnectionStatus, boolean mSaved) {
         this.mMacAddress = mMacAddress;
         this.mRSSI = mRSSI;
         this.mConnectionStatus = mConnectionStatus;
+        this.mSaved = mSaved;
     }
 
-    public AvailableBleDeviceModel(int mIndex) {
-        this.mIndex = mIndex;
+    public AvailableBleDeviceModel(int mRSSI) {
+        this.mRSSI = mRSSI;
         this.mMacAddress = null;
         this.mConnectionStatus = false;
+        this.mSaved = false;
     }
     //endregion Constructor
 
     //region Declare Methods
-    public void setIndex(int mIndex) {
-        this.mIndex = mIndex;
+    public void setRSSI(int mRSSI) {
+        this.mRSSI = mRSSI;
     }
 
-    public int getIndex() {
-        return mIndex;
+    public int getRSSI() {
+        return mRSSI;
     }
 
     public void setMacAddress(String mMacAddress) {
@@ -56,11 +57,11 @@ public class AvailableBleDeviceModel extends BaseModel {
     }
 
     public boolean isValidData() {
-        return mIndex != SEARCHING_SCAN_MODE && mIndex != SEARCHING_TIMEOUT_MODE;
+        return mRSSI != SEARCHING_SCAN_MODE && mRSSI != SEARCHING_TIMEOUT_MODE;
     }
 
     public boolean isInvalidData() {
-        return mIndex == SEARCHING_SCAN_MODE || mIndex == SEARCHING_TIMEOUT_MODE;
+        return mRSSI == SEARCHING_SCAN_MODE || mRSSI == SEARCHING_TIMEOUT_MODE;
     }
 
     public int getPassword() {
@@ -69,6 +70,14 @@ public class AvailableBleDeviceModel extends BaseModel {
 
     public void setPassword(int mPassword) {
         this.mPassword = mPassword;
+    }
+
+    public boolean isSaved() {
+        return mSaved;
+    }
+
+    public void setSaved(boolean mSaved) {
+        this.mSaved = mSaved;
     }
     //endregion Declare Methods
 }

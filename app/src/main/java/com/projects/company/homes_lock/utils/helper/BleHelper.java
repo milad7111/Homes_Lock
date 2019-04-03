@@ -70,6 +70,7 @@ public class BleHelper {
     public static final String BLE_COMMAND_BCL = "bcl";
     public static final String BLE_COMMAND_BCQ = "bcq";
     public static final String BLE_COMMAND_BLL = "bll";
+    public static final String BLE_COMMAND_BSL = "bsl";
     public static final String BLE_COMMAND_DIS = "dis";
     public static final String BLE_COMMAND_WFL = "wfl";
     public static final String BLE_COMMAND_SSD = "ssd";

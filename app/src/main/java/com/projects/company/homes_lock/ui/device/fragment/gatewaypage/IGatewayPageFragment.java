@@ -37,7 +37,7 @@ public interface IGatewayPageFragment {
 
     void onGetNewAvailableBleDevice(AvailableBleDeviceModel availableBleDeviceModel);
 
-    void onWriteServerMacAddressForGateWaySuccessful();
+    void onWriteServerMacAddressForGateWaySuccessful(AvailableBleDeviceModel availableBleDeviceModel);
 
     void onWriteServerPasswordForGateWaySuccessful();
 
