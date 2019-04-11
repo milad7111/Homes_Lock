@@ -1,8 +1,4 @@
-package com.projects.company.homes_lock.models.datamodels;
-
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+package com.projects.company.homes_lock.models.datamodels.request;
 
 import com.projects.company.homes_lock.R;
 
@@ -70,11 +66,11 @@ public class MemberModel {
         }
     }
 
-    public boolean hasMemberAction(){
+    public boolean hasMemberAction() {
         return mMemberAdminStatus != MEMBER_STATUS_PRIMARY_ADMIN;
     }
 
-    public boolean hasMemberType(){
+    public boolean hasMemberType() {
         return mMemberAdminStatus != MEMBER_STATUS_NOT_ADMIN;
     }
 

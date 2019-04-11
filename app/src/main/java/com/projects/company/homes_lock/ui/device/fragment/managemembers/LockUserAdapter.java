@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.models.datamodels.MemberModel;
+import com.projects.company.homes_lock.models.datamodels.request.MemberModel;
 
 import java.util.List;
 

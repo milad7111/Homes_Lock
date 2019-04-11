@@ -16,6 +16,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BAT;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DID;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_FW;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_HW;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ISI;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ISK;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ISO;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ISQ;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ISR;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ISW;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PRD;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RGH;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RSS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_TYP;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.generateDeviceType;
 
 @Entity(tableName = "device")
@@ -27,103 +41,73 @@ public class Device extends BaseModel {
     @SerializedName("objectId")
     private String mObjectId;
 
-    @ColumnInfo(name = "bleDeviceMacAddress")
-    @SerializedName("bleDeviceMacAddress")
+    @ColumnInfo(name = "mac")
+    @SerializedName("mac")
     private String mBleDeviceMacAddress;
 
-    @ColumnInfo(name = "serialNumber")
-    @SerializedName("serialNumber")
+    @ColumnInfo(name = "sn")
+    @SerializedName("sn")
     private String mSerialNumber;
 
-    @Ignore
-    @SerializedName("devicePassword")
-    private String mDevicePassword;
-
-    @ColumnInfo(name = "isLocked")
-    @SerializedName("isLocked")
+    @ColumnInfo(name = "isk")
+    @SerializedName("isk")
     private Boolean mIsLocked = false;
 
-    @ColumnInfo(name = "isDoorClosed")
-    @SerializedName("isDoorClosed")
+    @ColumnInfo(name = "iso")
+    @SerializedName("iso")
     private Boolean mIsDoorClosed = false;
 
-    @ColumnInfo(name = "internetStatus")
-    @SerializedName("internetStatus")
+    @ColumnInfo(name = "isi")
+    @SerializedName("isi")
     private Boolean mInternetStatus = false;
 
-    @ColumnInfo(name = "mqttServerStatus")
-    private Boolean mMQTTServerStatus = false;
-
-    @ColumnInfo(name = "restApiServerStatus")
+    @ColumnInfo(name = "isr")
+    @SerializedName("isr")
     private Boolean mRestApiServer = false;
 
-    @ColumnInfo(name = "batteryStatus")
-    @SerializedName("batteryStatus")
+    @ColumnInfo(name = "isq")
+    @SerializedName("isq")
+    private Boolean mMQTTServerStatus = false;
+
+    @ColumnInfo(name = "bat")
+    @SerializedName("bat")
     private Integer mBatteryPercentage;
 
-    @ColumnInfo(name = "wifiStatus")
-    @SerializedName("wifiStatus")
+    @ColumnInfo(name = "isw")
+    @SerializedName("isw")
     private Boolean mWifiStatus = false;
 
-    @ColumnInfo(name = "wifiStrength")
-    @SerializedName("wifiStrength")
+    @ColumnInfo(name = "rss")
+    @SerializedName("rss")
     private Integer mWifiStrength;
-
-    @ColumnInfo(name = "meanPowerCons")
-    @SerializedName("meanPowerCons")
-    private Integer mMeanPowerCons;
-
-    @ColumnInfo(name = "temperature")
-    @SerializedName("temperature")
-    private Double mTemperature;
-
-    @ColumnInfo(name = "humidity")
-    @SerializedName("humidity")
-    private Double mHumidity;
-
-    @ColumnInfo(name = "coLevel")
-    @SerializedName("coLevel")
-    private Integer mCOLevel;
 
     @ColumnInfo(name = "deviceHealth")
     @SerializedName("deviceHealth")
     private Boolean mDeviceHealth;
 
-    @ColumnInfo(name = "fwVersion")
-    @SerializedName("fwVersion")
+    @ColumnInfo(name = "fw")
+    @SerializedName("fw")
     private String mFWVersion;
 
-    @ColumnInfo(name = "hwVersion")
-    @SerializedName("hwVersion")
+    @ColumnInfo(name = "hw")
+    @SerializedName("hw")
     private String mHWVersion;
 
-    @ColumnInfo(name = "deviceType")
-    @SerializedName("deviceType")
+    @ColumnInfo(name = "typ")
+    @SerializedName("typ")
     private String mDeviceType;
 
-    @ColumnInfo(name = "productionDate")
-    @SerializedName("productionDate")
+    @ColumnInfo(name = "prd")
+    @SerializedName("prd")
     private String mProductionDate;
 
-    @ColumnInfo(name = "dynamicId")
-    @SerializedName("dynamicId")
+    @ColumnInfo(name = "did")
+    @SerializedName("did")
     private String mDynamicId;
 
-    @ColumnInfo(name = "connectedClientsCount")
-//    @SerializedName("connectedClientsCount")
-    private int mConnectedClientsCount;
-
-    @ColumnInfo(name = "connectedServersCount")
-//    @SerializedName("connectedServersCount")
-    private int mConnectedServersCount;
-
-    @ColumnInfo(name = "doorInstallation")
-    @SerializedName("doorInstallation")
+    @ColumnInfo(name = "rgh")
+    @SerializedName("rgh")
     private Boolean mDoorInstallation;
-
-    @ColumnInfo(name = "lockPosition")
-    @SerializedName("lockPosition")
-    private Integer mLockPosition;
 
     //region Ignore server attributes
     @Ignore
@@ -155,13 +139,19 @@ public class Device extends BaseModel {
     private User mUser;
     //endregion Ignore server attributes
 
-    //region Not Database Attributes
+    //region Not Server Attributes
     @ColumnInfo(name = "bleDeviceName")
     private String mBleDeviceName;
 
     @ColumnInfo(name = "favoriteStatus")
     private boolean mFavoriteStatus;
-    //endregion Not Database Attributes
+
+    @ColumnInfo(name = "connectedClientsCount")
+    private int mConnectedClientsCount;
+
+    @ColumnInfo(name = "connectedServersCount")
+    private int mConnectedServersCount;
+    //endregion Not Server Attributes
 
     //region Constructor
     //endregion Constructor
@@ -181,10 +171,6 @@ public class Device extends BaseModel {
             Integer mBatteryStatus,
             Boolean mWifiStatus,
             Integer mWifiStrength,
-            Integer mMeanPowerCons,
-            Double mTemperature,
-            Double mHumidity,
-            Integer mCOLevel,
             Boolean mDeviceHealth,
             String mFWVersion,
             String mHWVersion,
@@ -193,8 +179,7 @@ public class Device extends BaseModel {
             String mDynamicId,
             int mConnectedClientsCount,
             int mConnectedServersCount,
-            Boolean mDoorInstallation,
-            Integer mLockPosition) {
+            Boolean mDoorInstallation) {
         this.mObjectId = mObjectId;
         this.mBleDeviceName = mBleDeviceName;
         this.mBleDeviceMacAddress = mBleDeviceMacAddress;
@@ -205,10 +190,6 @@ public class Device extends BaseModel {
         this.mBatteryPercentage = mBatteryStatus;
         this.mWifiStatus = mWifiStatus;
         this.mWifiStrength = mWifiStrength;
-        this.mMeanPowerCons = mMeanPowerCons;
-        this.mTemperature = mTemperature;
-        this.mHumidity = mHumidity;
-        this.mCOLevel = mCOLevel;
         this.mDeviceHealth = mDeviceHealth;
         this.mFWVersion = mFWVersion;
         this.mHWVersion = mHWVersion;
@@ -218,7 +199,6 @@ public class Device extends BaseModel {
         this.mDoorInstallation = mDoorInstallation;
         this.mConnectedClientsCount = mConnectedClientsCount;
         this.mConnectedServersCount = mConnectedServersCount;
-        this.mLockPosition = mLockPosition;
     }
 
     public Device(TempDeviceModel device) {
@@ -233,10 +213,6 @@ public class Device extends BaseModel {
         this.mBatteryPercentage = 0;
         this.mWifiStatus = false;
         this.mWifiStrength = 0;
-        this.mMeanPowerCons = 0;
-        this.mTemperature = 0D;
-        this.mHumidity = 0D;
-        this.mCOLevel = 0;
         this.mDeviceHealth = false;
         this.mFWVersion = "0.0.0";
         this.mHWVersion = "0.0.0";
@@ -246,31 +222,28 @@ public class Device extends BaseModel {
         this.mConnectedClientsCount = 1;
         this.mConnectedServersCount = 0;
         this.mDoorInstallation = true;
-        this.mLockPosition = 0;
     }
 
     public Device(Map updatedLock) {
         this.mObjectId = Objects.requireNonNull(updatedLock.get("objectId")).toString();
         this.mBleDeviceName = Objects.requireNonNull(updatedLock.get("bleDeviceName")).toString();
-        this.mBleDeviceMacAddress = Objects.requireNonNull(updatedLock.get("bleDeviceMacAddress")).toString();
-        this.mSerialNumber = Objects.requireNonNull(updatedLock.get("serialNumber")).toString();
-        this.mIsLocked = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("isLocked")).toString());
-        this.mIsDoorClosed = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("isDoorClosed")).toString());
-        this.mInternetStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("internetStatus")).toString());
-        this.mBatteryPercentage = Integer.valueOf(Objects.requireNonNull(updatedLock.get("batteryStatus")).toString());
-        this.mWifiStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("wifiStatus")).toString());
-        this.mWifiStrength = Integer.valueOf(Objects.requireNonNull(updatedLock.get("wifiStrength")).toString());
-        this.mMeanPowerCons = Integer.valueOf(Objects.requireNonNull(updatedLock.get("meanPowerCons")).toString());
-        this.mTemperature = Double.valueOf(Objects.requireNonNull(updatedLock.get("temperature")).toString());
-        this.mHumidity = Double.valueOf(Objects.requireNonNull(updatedLock.get("humidity")).toString());
-        this.mCOLevel = Integer.valueOf(Objects.requireNonNull(updatedLock.get("coLevel")).toString());
+        this.mBleDeviceMacAddress = Objects.requireNonNull(updatedLock.get("mac")).toString();
+        this.mSerialNumber = Objects.requireNonNull(updatedLock.get("sn")).toString();
+        this.mIsLocked = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISK)).toString());
+        this.mIsDoorClosed = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISO)).toString());
+        this.mBatteryPercentage = Integer.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_BAT)).toString());
+        this.mWifiStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISW)).toString());
+        this.mInternetStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISI)).toString());
+        this.mRestApiServer = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISR)).toString());
+        this.mMQTTServerStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISQ)).toString());
+        this.mWifiStrength = Integer.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_RSS)).toString());
         this.mDeviceHealth = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("deviceHealth")).toString());
-        this.mFWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get("fwVersion")).toString());
-        this.mHWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get("hwVersion")).toString());
-        this.mDeviceType = String.valueOf(Objects.requireNonNull(updatedLock.get("deviceType")).toString());
-        this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get("productionDate")).toString());
-        this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get("dynamicId")).toString());
-        this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("doorInstallation")).toString());
+        this.mFWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_FW)).toString());
+        this.mHWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_HW)).toString());
+        this.mDeviceType = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_TYP)).toString());
+        this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_PRD)).toString());
+        this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_DID)).toString());
+        this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_RGH)).toString());
     }
 
     @NonNull
@@ -370,38 +343,6 @@ public class Device extends BaseModel {
         this.mRestApiServer = mRestApiServer;
     }
 
-    public Integer getMeanPowerCons() {
-        return mMeanPowerCons;
-    }
-
-    public void setMeanPowerCons(Integer mMeanPowerCons) {
-        this.mMeanPowerCons = mMeanPowerCons;
-    }
-
-    public Double getTemperature() {
-        return mTemperature;
-    }
-
-    public void setTemperature(Double mTemperature) {
-        this.mTemperature = mTemperature;
-    }
-
-    public Double getHumidity() {
-        return mHumidity;
-    }
-
-    public void setHumidity(Double mHumidity) {
-        this.mHumidity = mHumidity;
-    }
-
-    public Integer getCOLevel() {
-        return mCOLevel;
-    }
-
-    public void setCOLevel(Integer mCOLevel) {
-        this.mCOLevel = mCOLevel;
-    }
-
     public Boolean getDeviceHealth() {
         return mDeviceHealth;
     }
@@ -416,14 +357,6 @@ public class Device extends BaseModel {
 
     public void setFWVersion(String mFWVersion) {
         this.mFWVersion = mFWVersion;
-    }
-
-    public Integer getLockPosition() {
-        return mLockPosition;
-    }
-
-    public void setLockPosition(Integer mLockPosition) {
-        this.mLockPosition = mLockPosition;
     }
 
     public void setUserLocks(List<UserLock> userLocks) {

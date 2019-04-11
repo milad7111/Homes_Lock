@@ -100,7 +100,7 @@ public class LocalRepository {
         mDeviceDao.setWifiStatus(mDeviceObjectId, mWifiStatus);
     }
 
-    public void updateDeviceConnectedWifiStrength(String mDeviceObjectId, int mWifiStrength) {
+    public void updateConnectedWifiStrength(String mDeviceObjectId, int mWifiStrength) {
         mDeviceDao.setWifiStrength(mDeviceObjectId, mWifiStrength);
     }
 
@@ -114,18 +114,6 @@ public class LocalRepository {
 
     public void updateDeviceRestApiServerStatus(String mDeviceObjectId, boolean mRestApiServerStatus) {
         mDeviceDao.setRestApiServerStatus(mDeviceObjectId, mRestApiServerStatus);
-    }
-
-    public void updateDeviceTemperature(String mDeviceObjectId, byte temperature) {
-        mDeviceDao.setTemperature(mDeviceObjectId, temperature);
-    }
-
-    public void updateDeviceHumidity(String mDeviceObjectId, byte humidity) {
-        mDeviceDao.setHumidity(mDeviceObjectId, humidity);
-    }
-
-    public void updateDeviceCoLevel(String mDeviceObjectId, byte coLevel) {
-        mDeviceDao.setCoLevel(mDeviceObjectId, coLevel);
     }
 
     public void updateDeviceType(String mDeviceObjectId, String deviceType) {

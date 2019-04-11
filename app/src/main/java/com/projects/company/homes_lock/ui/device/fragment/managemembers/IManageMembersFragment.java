@@ -2,7 +2,7 @@ package com.projects.company.homes_lock.ui.device.fragment.managemembers;
 
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
-import com.projects.company.homes_lock.models.datamodels.MemberModel;
+import com.projects.company.homes_lock.models.datamodels.request.MemberModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 

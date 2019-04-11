@@ -88,6 +88,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PRD;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PSK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RGH;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RSS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RST;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SEC;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SET;
@@ -637,6 +638,12 @@ public class DeviceViewModel extends AndroidViewModel
                                 keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
+                case BLE_COMMAND_RSS:
+                    if (mIGatewayPageFragment != null) {
+                        mLocalRepository.updateConnectedWifiStrength(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getInt(keyCommand));
+                    }
+                    break;
                 case BLE_COMMAND_ISI:
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateDeviceInternetStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
@@ -894,6 +901,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void getGatewaySpecifiedInfoFromBleDevice() {
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISW, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RSS, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISI, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISQ, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISR, 0));

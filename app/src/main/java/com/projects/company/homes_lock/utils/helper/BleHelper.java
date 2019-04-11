@@ -62,6 +62,7 @@ public class BleHelper {
     public static final String BLE_COMMAND_PLT = "plt";
     public static final String BLE_COMMAND_CFG = "cfg";
     public static final String BLE_COMMAND_ISW = "isw";
+    public static final String BLE_COMMAND_RSS = "rss";
     public static final String BLE_COMMAND_ISI = "isi";
     public static final String BLE_COMMAND_ISQ = "isq";
     public static final String BLE_COMMAND_ISR = "isr";
