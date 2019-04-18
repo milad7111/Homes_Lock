@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -124,7 +125,7 @@ public class RegisterFragment extends BaseFragment
                 );
                 break;
             case R.id.txv_login_register_fragment:
-                ViewHelper.addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new LoginFragment());
+                addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new LoginFragment());
                 break;
         }
     }

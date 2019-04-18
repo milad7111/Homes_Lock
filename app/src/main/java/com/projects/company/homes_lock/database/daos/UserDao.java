@@ -20,7 +20,7 @@ public abstract class UserDao {
         if (user.getRelatedUserLocks() != null)
             for (UserLock userLock : user.getRelatedUserLocks()) {
                 Device tempDevice = userLock.getRelatedDevice();
-                tempDevice.setBleDeviceName(userLock.getLockName());
+                tempDevice.setBleDeviceName(userLock.getDeviceName());
 
                 insertDeviceForUser(tempDevice);
 

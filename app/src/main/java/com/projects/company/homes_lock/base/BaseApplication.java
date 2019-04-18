@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.projects.company.homes_lock.BuildConfig;
 import com.projects.company.homes_lock.repositories.remote.IRetrofit;
+import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -39,6 +40,8 @@ public class BaseApplication extends Application {
     public static String activeUserEmail = null;
 
     private static volatile IRetrofit IRETROFIT = null;
+
+    private static volatile MQTTHandler mqttHandler = null;
     //endregion Declare Objects
 
     //region Main Callbacks
@@ -78,6 +81,11 @@ public class BaseApplication extends Application {
 
         return IRETROFIT;
     }
+
+//    public static synchronized MQTTHandler getMqttHandler(){
+//        mqttHandler =
+//        return mqttHandler;
+//    }
 
     public static boolean isUserLoggedIn() {
         return userLoginMode;

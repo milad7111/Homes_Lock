@@ -9,6 +9,8 @@ import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
+
 public class LoginActivity extends BaseActivity implements ILoginActivity {
 
     //region Declare Constants
@@ -42,7 +44,7 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
         //endregion Setup Views
 
         ViewHelper.setContext(LoginActivity.this);
-        ViewHelper.addFragment(this, R.id.frg_login_activity, new LoginFragment());
+        addFragment(this, R.id.frg_login_activity, new LoginFragment());
     }
 
     @Override
@@ -52,7 +54,7 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
         if (mFragment instanceof LoginFragment)
             finishAffinity();
         else if (mFragment instanceof RegisterFragment)
-            ViewHelper.addFragment(this, R.id.frg_login_activity, new LoginFragment());
+            addFragment(this, R.id.frg_login_activity, new LoginFragment());
         else
             super.onBackPressed();
     }

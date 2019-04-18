@@ -1,8 +1,5 @@
 package com.projects.company.homes_lock.models.datamodels.response;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
@@ -19,18 +16,8 @@ public class ResponseBodyModel extends ResponseBody {
         else {
             String text = data.substring(data.indexOf("text=") + 5, data.indexOf("]") - 3) + "}";
 
-            try {
-                JSONObject body = new JSONObject(text);
-
-                if (body.has("code"))
-                    this.mCode = body.getInt("code");
-
-                if (body.has("message"))
-                    this.mMessage = body.getString("message");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            this.mCode = Integer.valueOf(text.substring(text.indexOf("code:") + 9, text.indexOf(",\"message\":")));
+            this.mMessage = (text.substring(text.indexOf("\"message\":") + 11)).substring(0, (text.substring(text.indexOf("\"message\":") + 11)).indexOf("\",\""));
         }
     }
 

@@ -16,26 +16,28 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTTHandler {
-    private MqttAndroidClient client;
+    private static MqttAndroidClient client;
     private static String TAG = "MQTTHandler Class";
+    private IMQTTListener mIMQTTListener;
 
-    public void setup(final IMQTTListener mIMQTTListener, Context mContext, String deviceObjectId) {
+    public void setup(IMQTTListener mIMQTTListener, Context mContext, String clientId) {
+        this.mIMQTTListener = mIMQTTListener;
         client = new MqttAndroidClient(
                 mContext,
                 "tcp://185.208.175.56",
-                deviceObjectId);
+                clientId);
 
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-                mIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
+                MQTTHandler.this.mIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
                 Log.w(TAG, "Connection to broker Lost.");
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
                 try {
-                    mIMQTTListener.onMessageArrived(new MessageModel(topic, message));
+                    MQTTHandler.this.mIMQTTListener.onMessageArrived(new MessageModel(topic, message));
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
                 }
@@ -43,15 +45,15 @@ public class MQTTHandler {
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-                mIMQTTListener.onDeliveryMessageComplete(token);
+                MQTTHandler.this.mIMQTTListener.onDeliveryMessageComplete(token);
                 Log.i(TAG, "Receiving Message Completed.");
             }
         });
 
-        connect(mIMQTTListener);
+        connect();
     }
 
-    private void connect(final IMQTTListener mIMQTTListener) {
+    private void connect() {
         try {
             MqttConnectOptions mMqttOptions = new MqttConnectOptions();
             mMqttOptions.setAutomaticReconnect(true);
@@ -61,17 +63,20 @@ public class MQTTHandler {
                 client.connect(mMqttOptions).setActionCallback(new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
-                        if (mIMQTTListener != null)
-                            mIMQTTListener.onConnectionSuccessful(asyncActionToken);
-                        Log.i(TAG, "Connection to broker Success.");
+                        if (MQTTHandler.this.mIMQTTListener != null) {
+                            subscribe();
+                            MQTTHandler.this.mIMQTTListener.onConnectionSuccessful(asyncActionToken);
+                            Log.i(TAG, "Connection to broker Success.");
+                        }
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                         // Something went wrong e.g. connection timeout or firewall problems
-                        if (mIMQTTListener != null)
-                            mIMQTTListener.onConnectionFailure(new FailureModel(exception.getMessage()));
-                        Log.e(TAG, "Connection to broker Failed");
+                        if (MQTTHandler.this.mIMQTTListener != null) {
+                            MQTTHandler.this.mIMQTTListener.onConnectionFailure(new FailureModel(exception.getMessage()));
+                            Log.e(TAG, "Connection to broker Failed");
+                        }
                     }
                 });
         } catch (Exception e) {
@@ -79,23 +84,23 @@ public class MQTTHandler {
         }
     }
 
-    public void subscribe(final IMQTTListener mIMQTTListener) {
+    public void subscribe() {
         try {
             if (client != null) {
-                IMqttToken subToken = client.subscribe("response", 0);
+                IMqttToken subscribeToken = client.subscribe(String.format("rsp/%s/#", client.getClientId()), 0);
 
-                subToken.setActionCallback(new IMqttActionListener() {
+                subscribeToken.setActionCallback(new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
-                        if (mIMQTTListener != null)
-                            mIMQTTListener.onSubscribeSuccessful(asyncActionToken);
+                        if (MQTTHandler.this.mIMQTTListener != null)
+                            MQTTHandler.this.mIMQTTListener.onSubscribeSuccessful(asyncActionToken);
                         Log.i(TAG, "Subscribing Done.");
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        if (mIMQTTListener != null)
-                            mIMQTTListener.onSubscribeFailure(new FailureModel(exception.getMessage()));
+                        if (MQTTHandler.this.mIMQTTListener != null)
+                            MQTTHandler.this.mIMQTTListener.onSubscribeFailure(new FailureModel(exception.getMessage()));
                         Log.e(TAG, "Subscribe Failed.");
                     }
                 });
@@ -105,12 +110,13 @@ public class MQTTHandler {
         }
     }
 
-    public void toggle(final IMQTTListener mIMQTTListener, String mLockSerialNumber, byte[] command) {
+    public void sendLockCommand(IMQTTListener mIMQTTListener, String mLockSerialNumber, byte[] command) {
+        MQTTHandler.this.mIMQTTListener = mIMQTTListener;
         IMqttDeliveryToken publishToken = null;
 
         try {
             if (client != null)
-                publishToken = client.publish("cmd", new MqttMessage(command));
+                publishToken = client.publish(String.format("cmd/%s/%s", client.getClientId(), mLockSerialNumber), new MqttMessage(command));
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
@@ -119,15 +125,15 @@ public class MQTTHandler {
             publishToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    if (mIMQTTListener != null)
-                        mIMQTTListener.onPublishSuccessful(asyncActionToken);
+                    if (MQTTHandler.this.mIMQTTListener != null)
+                        MQTTHandler.this.mIMQTTListener.onPublishSuccessful(asyncActionToken);
                     Log.i(TAG, "Publishing Done.");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    if (mIMQTTListener != null)
-                        mIMQTTListener.onPublishFailure(new FailureModel(exception.getMessage()));
+                    if (MQTTHandler.this.mIMQTTListener != null)
+                        MQTTHandler.this.mIMQTTListener.onPublishFailure(new FailureModel(exception.getMessage()));
                     Log.e(TAG, "Publishing Failed.");
                 }
             });
@@ -135,13 +141,13 @@ public class MQTTHandler {
             Log.e(TAG, "publishToken is null.");
     }
 
-    public void disconnect() {
+    public static void disconnect() {
         if (client != null) {
             try {
                 client.disconnectForcibly();
                 client.close();
                 client = null;
-            } catch (MqttException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

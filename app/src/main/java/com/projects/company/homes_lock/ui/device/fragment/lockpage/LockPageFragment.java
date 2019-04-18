@@ -206,7 +206,7 @@ public class LockPageFragment extends BaseFragment
 
         if (isUserLoggedIn()) {
             this.mDeviceViewModel.setListenerForDevice(this, mDevice);
-            this.mDeviceViewModel.initMQTT(getActivity(), mDevice.getObjectId());
+//            this.mDeviceViewModel.initMQTT(getActivity(), mDevice.getObjectId());
         }
         //endregion init
     }
@@ -215,7 +215,7 @@ public class LockPageFragment extends BaseFragment
     public void onPause() {
         super.onPause();
 
-        this.mDeviceViewModel.disconnectMQTT();
+//        this.mDeviceViewModel.disconnectMQTT();
         this.mDeviceViewModel.removeListenerForDevice(mDevice);
     }
 
@@ -224,7 +224,7 @@ public class LockPageFragment extends BaseFragment
         super.onDestroy();
 
         this.mDeviceViewModel.disconnect();
-        this.mDeviceViewModel.disconnectMQTT();
+//        this.mDeviceViewModel.disconnectMQTT();
         this.mDeviceViewModel.removeListenerForDevice(mDevice);
 
         if (mBluetoothLEHelper != null)
@@ -392,7 +392,7 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
-        this.mDeviceViewModel.sendLockCommand(this, lockCommand);
+        this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
     }
 
     private List<ScannedDeviceModel> getListOfScannedDevices() {

@@ -35,7 +35,7 @@ public class CustomDeviceAdapter extends SmartFragmentStatePagerAdapter {
         if (position != getCount() - 1) {
             if (mDeviceList.get(position).getDeviceType().equals("LOCK"))
                 return LockPageFragment.newInstance(mDeviceList.get(position));
-            else if (mDeviceList.get(position).getDeviceType().equals("GATEWAY"))
+            else if (mDeviceList.get(position).getDeviceType().equals("GTWY"))
                 return GatewayPageFragment.newInstance(mDeviceList.get(position));
 
             throw new InputMismatchException();

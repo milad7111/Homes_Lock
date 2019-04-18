@@ -145,7 +145,7 @@ public class DeviceSettingFragment extends BaseFragment
         return inflater.inflate(
                 this.mDeviceType.equals("LOCK") ?
                         R.layout.fragment_lock_setting :
-                        (this.mDeviceType.equals("GATEWAY") ? R.layout.fragment_gateway_setting : R.layout.fragment_lock_setting), container, false);
+                        (this.mDeviceType.equals("GTWY") ? R.layout.fragment_gateway_setting : R.layout.fragment_lock_setting), container, false);
     }
 
     @Override

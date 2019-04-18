@@ -336,7 +336,7 @@ public class BleHelper {
             case "6E":
                 return "LOCK";
             case "6F":
-                return "GATEWAY";
+                return "GTWY";
             default:
                 return "UNKNOWN";
         }

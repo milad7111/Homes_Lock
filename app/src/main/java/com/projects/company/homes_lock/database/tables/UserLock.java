@@ -35,9 +35,9 @@ public class UserLock extends BaseModel {
     @SerializedName("adminStatus")
     private boolean mAdminStatus = false;
 
-    @ColumnInfo(name = "lockName")
-    @SerializedName("lockName")
-    private String mLockName;
+    @ColumnInfo(name = "deviceName")
+    @SerializedName("deviceName")
+    private String mDeviceName;
 
     @ColumnInfo(name = "favorite")
     @SerializedName("favorite")
@@ -70,10 +70,10 @@ public class UserLock extends BaseModel {
     }
 
     @Ignore
-    public UserLock(String mUserId, String mDeviceId, String mLockName, boolean mFavorite) {
+    public UserLock(String mUserId, String mDeviceId, String mDeviceName, boolean mFavorite) {
         this.mUserId = mUserId;
         this.mDeviceId = mDeviceId;
-        this.mLockName = mLockName;
+        this.mDeviceName = mDeviceName;
         this.mFavorite = mFavorite;
     }
 
@@ -86,12 +86,12 @@ public class UserLock extends BaseModel {
         this.mObjectId = mObjectId;
     }
 
-    public String getLockName() {
-        return mLockName;
+    public String getDeviceName() {
+        return mDeviceName;
     }
 
-    public void setLockName(String mLockName) {
-        this.mLockName = mLockName;
+    public void setDeviceName(String mDeviceName) {
+        this.mDeviceName = mDeviceName;
     }
 
     public boolean getAdminStatus() {

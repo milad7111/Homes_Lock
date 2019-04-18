@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
@@ -57,6 +56,7 @@ import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
 import okhttp3.ResponseBody;
 
+import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BAT;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCQ;
@@ -363,6 +363,8 @@ public class DeviceViewModel extends AndroidViewModel
         } else if (response instanceof Device) {
             if (mILockPageFragment != null)
                 mILockPageFragment.onGetUpdatedDevice((Device) response);
+            else if (mIGatewayPageFragment != null)
+                mIGatewayPageFragment.onGetUpdatedDevice((Device) response);
         }
     }
 
@@ -454,7 +456,6 @@ public class DeviceViewModel extends AndroidViewModel
 
     @Override
     public void onConnectionSuccessful(Object response) {
-        (new MQTTHandler()).subscribe(this);
     }
 
     @Override
@@ -704,8 +705,8 @@ public class DeviceViewModel extends AndroidViewModel
                             mIGatewayPageFragment.onGetNewAvailableBleDevice(new AvailableBleDeviceModel(
                                     keyCommandJson.getString(keyCommand).split(",")[0],
                                     0,
-                                    !keyCommandJson.getString(keyCommand).split(",")[2].equals("0")
-                                            && keyCommandJson.getString(keyCommand).split(",")[2].equals("1"),
+                                    !keyCommandJson.getString(keyCommand).split(",")[1].equals("0")
+                                            && keyCommandJson.getString(keyCommand).split(",")[1].equals("1"),
                                     true));
                     }
                     break;
@@ -870,10 +871,10 @@ public class DeviceViewModel extends AndroidViewModel
         }
     }
 
-    public void sendLockCommand(LockPageFragment fragment, boolean lockCommand) {
+    public void sendLockCommand(LockPageFragment fragment, String serialNumber, boolean lockCommand) {
         mILockPageFragment = fragment;
-        if (BaseApplication.isUserLoggedIn())
-            (new MQTTHandler()).toggle(this, "",
+        if (isUserLoggedIn())
+            (new MQTTHandler()).sendLockCommand(this, serialNumber,
                     createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC, 0));
         else
             addNewCommandToBlePool(createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC, 0));
@@ -1092,7 +1093,11 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void setListenerForDevice(Fragment fragment, Device mDevice) {
-        mILockPageFragment = (ILockPageFragment) fragment;
+        if (fragment instanceof LockPageFragment)
+            mILockPageFragment = (ILockPageFragment) fragment;
+        else if (fragment instanceof GatewayPageFragment)
+            mIGatewayPageFragment = (IGatewayPageFragment) fragment;
+
         mNetworkRepository.setListenerForDevice(this, mDevice);
     }
 
@@ -1121,13 +1126,13 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Online Methods
 
     //region Declare Methods
-    public void initMQTT(Context context, String deviceObjectId) {
-        if (BaseApplication.isUserLoggedIn())
-            (new MQTTHandler()).setup(this, context, deviceObjectId);
+    public void initMQTT(Context context, String clientId) {
+        if (isUserLoggedIn())
+            (new MQTTHandler()).setup(this, context, clientId);
     }
 
     public void disconnectMQTT() {
-        (new MQTTHandler()).disconnect();
+        MQTTHandler.disconnect();
     }
 
     public void updateDevice(Device device) {

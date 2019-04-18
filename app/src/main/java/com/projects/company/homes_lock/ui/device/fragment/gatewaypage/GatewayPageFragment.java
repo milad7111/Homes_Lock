@@ -211,10 +211,10 @@ public class GatewayPageFragment extends BaseFragment
 
         updateViewData(!isUserLoggedIn());
 
-//        if (isUserLoggedIn()) {
-//            this.mDeviceViewModel.setListenerForDevice(this, mDevice);
-//            this.mDeviceViewModel.initMQTT(getActivity(), mDevice.getObjectId());
-//        }
+        if (isUserLoggedIn()) {
+            this.mDeviceViewModel.setListenerForDevice(this, mDevice);
+            this.mDeviceViewModel.initMQTT(getActivity(), mDevice.getSerialNumber());
+        }
         //endregion init
     }
 
@@ -222,8 +222,10 @@ public class GatewayPageFragment extends BaseFragment
     public void onPause() {
         super.onPause();
 
-//        if (BaseApplication.isUserLoggedIn())
-//            this.mDeviceViewModel.disconnectMQTT();
+        if (isUserLoggedIn()) {
+            this.mDeviceViewModel.disconnectMQTT();
+            this.mDeviceViewModel.removeListenerForDevice(mDevice);
+        }
     }
 
     @Override
@@ -231,6 +233,7 @@ public class GatewayPageFragment extends BaseFragment
         super.onDestroy();
 
         GatewayPageFragment.this.mDeviceViewModel.disconnect();
+        GatewayPageFragment.this.mDeviceViewModel.disconnectMQTT();
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
     }
@@ -260,7 +263,7 @@ public class GatewayPageFragment extends BaseFragment
                     addFragment(
                             (AppCompatActivity) Objects.requireNonNull(getActivity()),
                             R.id.frg_lock_activity,
-                            DeviceSettingFragment.newInstance(mDevice, "GATEWAY", GatewayPageFragment.this.mDeviceViewModel));
+                            DeviceSettingFragment.newInstance(mDevice, "GTWY", GatewayPageFragment.this.mDeviceViewModel));
                 break;
         }
     }
