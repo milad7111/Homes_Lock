@@ -1,5 +1,7 @@
 package com.projects.company.homes_lock.repositories.remote;
 
+import android.support.annotation.NonNull;
+
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
@@ -108,7 +110,7 @@ public class NetworkRepository {
         BaseApplication.getRetrofitAPI().addUserLock(BaseApplication.activeUserToken, parameter).enqueue(new Callback<UserLock>() {
             @Override
             public void onResponse(Call<UserLock> call, Response<UserLock> response) {
-                if (response != null && response.body() != null)
+                if (response.body() != null)
                     listener.onResponse(response.body());
             }
 
@@ -127,7 +129,7 @@ public class NetworkRepository {
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response != null && response.body() != null)
+                        if (response.body() != null)
                             listener.onResponse(response.body());
                     }
 
@@ -145,13 +147,13 @@ public class NetworkRepository {
                 parameter)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response != null && response.body() != null)
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        if (response.body() != null)
                             listener.onResponse(response.body());
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                         listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(t.getMessage()));
                     }
                 });
@@ -161,8 +163,8 @@ public class NetworkRepository {
         BaseApplication.getRetrofitAPI().removeDeviceForAllMembers(BaseApplication.activeUserToken,
                 String.format("relatedDevice.objectId='%s'", objectId)).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response != null && response.body() != null)
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.body() != null)
                     listener.onResponse(response.body());
             }
 

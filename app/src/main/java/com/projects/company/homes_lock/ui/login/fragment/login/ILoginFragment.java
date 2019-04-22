@@ -8,7 +8,7 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 /**
  * This is LoginFragment Interface
  */
-public interface ILoginFragment<T> {
+public interface ILoginFragment {
     void onLoginSuccessful(User user);
 
     void onLoginFailed(FailureModel response);

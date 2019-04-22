@@ -274,7 +274,7 @@ public class ManageMembersFragment extends BaseFragment
                     getContext(),
                     null,
                     String.format("Adding Lock ... %d %%", getRandomPercentNumber(4, 4)));
-            mDeviceViewModel.addUserLockToUser(mUser.getObjectId(), mUserLock.getObjectId());
+            mDeviceViewModel.addUserLockToUser(this, mUser.getObjectId(), mUserLock.getObjectId());
         } else
             onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
     }
@@ -376,7 +376,7 @@ public class ManageMembersFragment extends BaseFragment
                     getContext(),
                     null,
                     String.format("Add Lock Member ... %d %%", getRandomPercentNumber(3, 4)));
-            mDeviceViewModel.addLockToUserLock(mUserLock.getObjectId(), mDevice.getObjectId());
+            mDeviceViewModel.addLockToUserLock(this, mUserLock.getObjectId(), mDevice.getObjectId());
         }
 
         if (mAddLockMemberDialog != null && !mAddLockMemberDialog.isShowing()) {

@@ -46,7 +46,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
+import static com.projects.company.homes_lock.base.BaseApplication.activeUserObjectId;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices;
@@ -188,7 +188,7 @@ public class AddDeviceFragment extends BaseFragment
                 String.format("Adding Lock ... %d %%", getRandomPercentNumber(3, 8)));
 
         userLockObjectId = userLock.getObjectId();
-        mDeviceViewModel.addLockToUserLock(userLockObjectId, this.lockObjectId);
+        mDeviceViewModel.addLockToUserLock(this, userLockObjectId, this.lockObjectId);
     }
 
     @Override
@@ -202,7 +202,7 @@ public class AddDeviceFragment extends BaseFragment
                     getContext(),
                     null,
                     String.format("Adding Lock ... %d %%", getRandomPercentNumber(4, 8)));
-            mDeviceViewModel.addUserLockToUser(BaseApplication.activeUserObjectId, userLockObjectId);
+            mDeviceViewModel.addUserLockToUser(this, activeUserObjectId, userLockObjectId);
         } else
             onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
     }
@@ -225,7 +225,7 @@ public class AddDeviceFragment extends BaseFragment
             }
 
             mDeviceViewModel.enablePushNotification(this.lockObjectId);
-            mUserViewModel.getUserWithObjectId(BaseApplication.activeUserObjectId);
+            mUserViewModel.getUserWithObjectId(activeUserObjectId);
         } else
             onAddUserLockToUserFailed(new ResponseBodyFailureModel("add user lock to user failed."));
     }
@@ -241,7 +241,7 @@ public class AddDeviceFragment extends BaseFragment
                 null,
                 String.format("Adding Lock ... %d %%", getRandomPercentNumber(6, 8)));
 
-        BaseApplication.activeUserObjectId = response.getObjectId();
+        activeUserObjectId = response.getObjectId();
         BaseApplication.activeUserToken = response.getUserToken();
         DeviceActivity.PERMISSION_READ_ALL_LOCAL_DEVICES = true;
         mUserViewModel.insertUser(response);
@@ -318,14 +318,14 @@ public class AddDeviceFragment extends BaseFragment
 
     //region Declare Methods
     private void addNewDevice() {
-        if (isUserLoggedIn())
-            handleDialogAddDeviceOnline(false); // Means user Wrote username and password then clicked Login
-        else {
-            mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
-            mTempDevice = new TempDeviceModel();
-            if (getScanPermission(this))
-                handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
-        }
+//        if (isUserLoggedIn())
+//            handleDialogAddDeviceOnline(false); // Means user Wrote username and password then clicked Login
+//        else {
+        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
+        mTempDevice = new TempDeviceModel();
+        if (getScanPermission(this))
+            handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
+//        }
     }
 
     private void handleDialogListOfAvailableBleDevices(List<ScannedDeviceModel> devices) {
@@ -405,7 +405,7 @@ public class AddDeviceFragment extends BaseFragment
                                 mTempDevice.setDeviceName(Objects.requireNonNull(tietDeviceNameDialogAddNewDevice.getText()).toString());
                                 mTempDevice.setDeviceSerialNumber(Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString());
                                 mTempDevice.setFavoriteStatus(chbDeviceFavoriteStatusDialogAddNewDevice.isChecked());
-                                mTempDevice.setDeviceMacAddress(mDevice.getMacAddress());
+                                mTempDevice.setDeviceMacAddress(mDevice.getMacAddress().toLowerCase());
 
                                 DeviceActivity.PERMISSION_READ_ALL_LOCAL_DEVICES = true;
                                 this.mDeviceViewModel.insertLocalDevice(this, new Device(mTempDevice));
@@ -449,7 +449,7 @@ public class AddDeviceFragment extends BaseFragment
             });
         } else {
             if (deviceExistenceStatus)
-                mDeviceViewModel.insertOnlineUserLock(
+                mDeviceViewModel.insertOnlineUserLock(this,
                         new UserLockModel(
                                 Objects.requireNonNull(tietDeviceNameDialogAddNewDevice.getText()).toString(),
                                 true,
