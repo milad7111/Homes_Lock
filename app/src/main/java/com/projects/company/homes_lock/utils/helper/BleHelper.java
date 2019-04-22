@@ -333,9 +333,9 @@ public class BleHelper {
 
     public static String generateDeviceType(String macAddress) {
         switch (macAddress) {
-            case "6E":
+            case "6e":
                 return "LOCK";
-            case "6F":
+            case "6f":
                 return "GTWY";
             default:
                 return "UNKNOWN";

@@ -42,4 +42,8 @@ public interface IGatewayPageFragment {
     void onWriteServerPasswordForGateWaySuccessful();
 
     void onConnectCommandSentToGateWaySuccessful();
+
+    void onConnectToServerSuccessful(boolean isrState, boolean isqState);
+
+    void onConnectToMqttServerSuccessful(boolean isrState, boolean isqState);
 }

@@ -130,7 +130,10 @@ public class DeviceViewModel extends AndroidViewModel
 
     //region Declare Variables
     private String requestType = "";
+
     private boolean bleBufferStatus = false;
+    private boolean lastISR = false;
+    private boolean lastISQ = false;
 
     private Integer oldPairingPassword = 0;
     private Integer newPairingPassword = 0;
@@ -655,12 +658,18 @@ public class DeviceViewModel extends AndroidViewModel
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateDeviceMQTTServerStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
+
+                        lastISQ = keyCommandJson.getBoolean(keyCommand);
+                        this.mIGatewayPageFragment.onConnectToMqttServerSuccessful(lastISR, lastISQ);
                     }
                     break;
                 case BLE_COMMAND_ISR:
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateDeviceRestApiServerStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
+
+                        lastISR = keyCommandJson.getBoolean(keyCommand);
+                        this.mIGatewayPageFragment.onConnectToServerSuccessful(lastISR, lastISQ);
                     }
                     break;
                 case BLE_COMMAND_RST:
@@ -880,13 +889,13 @@ public class DeviceViewModel extends AndroidViewModel
             addNewCommandToBlePool(createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC, 0));
     }
 
-    public void getDeviceDataFromBleDevice() {
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BAT, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISO, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISK, 0));
-    }
+    public void getDeviceCommonSettingInfoFromBleDevice(Fragment parentFragment) {
+        if (parentFragment instanceof ILockPageFragment)
+            this.mILockPageFragment = (ILockPageFragment) parentFragment;
+        else if (parentFragment instanceof IGatewayPageFragment)
+            this.mIGatewayPageFragment = (IGatewayPageFragment) parentFragment;
 
-    public void getDeviceCommonSettingInfoFromBleDevice() {
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BAT, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_TYP, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_FW, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_HW, 0));
@@ -896,16 +905,25 @@ public class DeviceViewModel extends AndroidViewModel
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ, 0));
     }
 
-    public void getLockSpecifiedSettingInfoFromBleDevice() {
+    public void getLockSpecifiedSettingInfoFromBleDevice(Fragment parentFragment) {
+        if (parentFragment instanceof ILockPageFragment)
+            this.mILockPageFragment = (ILockPageFragment) parentFragment;
+        else if (parentFragment instanceof IDeviceSettingFragment)
+            this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RGH, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISO, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISK, 0));
     }
 
-    public void getGatewaySpecifiedInfoFromBleDevice() {
+    public void getGatewaySpecifiedInfoFromBleDevice(IGatewayPageFragment mIGatewayPageFragment) {
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
+
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISW, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RSS, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISI, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISQ, 0));
         addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISR, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RSS, 0));
     }
 
     private void addNewCommandToBlePool(byte[] command) {

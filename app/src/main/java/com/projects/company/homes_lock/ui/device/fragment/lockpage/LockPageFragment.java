@@ -148,9 +148,8 @@ public class LockPageFragment extends BaseFragment
         this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
             if (isSupported != null)
                 if (isSupported) {
-                    this.mDeviceViewModel.getDeviceDataFromBleDevice();
-                    this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
-                    this.mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+                    this.mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice(this);
+                    this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice(this);
                     updateViewData(false);
                 } else if (!isUserLoggedIn()) {
                     updateViewData(true);
@@ -382,7 +381,7 @@ public class LockPageFragment extends BaseFragment
 
     private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices) {
         for (ScannedDeviceModel device : listOfScannedDevices) {
-            if (device.getMacAddress().equals(mDevice.getBleDeviceMacAddress())) {
+            if (device.getMacAddress().toLowerCase().equals(mDevice.getBleDeviceMacAddress().toLowerCase())) {
                 this.mDeviceViewModel.connect(this, device);
                 return true;
             }

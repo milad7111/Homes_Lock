@@ -157,8 +157,8 @@ public class GatewayPageFragment extends BaseFragment
         GatewayPageFragment.this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
             if (isSupported != null)
                 if (isSupported) {
-                    GatewayPageFragment.this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice();
-                    GatewayPageFragment.this.mDeviceViewModel.getGatewaySpecifiedInfoFromBleDevice();
+                    GatewayPageFragment.this.mDeviceViewModel.getGatewaySpecifiedInfoFromBleDevice(this);
+                    GatewayPageFragment.this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice(this);
                     updateViewData(false);
                 } else if (!isUserLoggedIn()) {
                     updateViewData(true);
@@ -413,7 +413,22 @@ public class GatewayPageFragment extends BaseFragment
         } else
             handleConnectedClients();
     }
+
+    @Override
+    public void onConnectToServerSuccessful(boolean isrState, boolean isqState) {
+        if (isrState && isqState)
+            showToast("Connect to server successfully.");
+    }
+
+    @Override
+    public void onConnectToMqttServerSuccessful(boolean isrState, boolean isqState) {
+        if (isrState && isqState)
+            showToast("Connect to server successfully.");
+    }
     //endregion BLE CallBacks
+
+    //region IGatewayPageFragment CallBacks
+    //endregion IGatewayPageFragment CallBacks
 
     //region Declare BLE Methods
     private void handleDeviceBleConnection() {
@@ -685,7 +700,7 @@ public class GatewayPageFragment extends BaseFragment
 
     private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices) {
         for (ScannedDeviceModel device : listOfScannedDevices) {
-            if (device.getMacAddress().equals(mDevice.getBleDeviceMacAddress())) {
+            if (device.getMacAddress().toLowerCase().equals(mDevice.getBleDeviceMacAddress().toLowerCase())) {
                 GatewayPageFragment.this.mDeviceViewModel.connect(this, device);
                 return true;
             }

@@ -332,7 +332,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     @Override
     public void onSetDoorInstallationFailed() {
-        mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+        mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice(this);
         closeProgressDialog();
         Log.e("Set Door Installation", "Failed");
         showToast("Door installation failed.");
@@ -848,7 +848,7 @@ public class DeviceSettingFragment extends BaseFragment
                 mDoorInstallationDialog.dismiss();
                 mDoorInstallationDialog = null;
             }
-            mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice();
+            mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice(this);
             Log.i("Set Setting", "Done");
         }
     }
