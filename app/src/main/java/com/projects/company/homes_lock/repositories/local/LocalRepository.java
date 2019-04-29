@@ -140,6 +140,10 @@ public class LocalRepository {
         mDeviceDao.setDynamicId(mDeviceObjectId, dynamicId);
     }
 
+    public void updateConnectedDevicesCount(String mDeviceObjectId, String count) {
+        mDeviceDao.setConnectedDevicesCount(mDeviceObjectId, count);
+    }
+
     public void updateConnectedClientsCount(String mDeviceObjectId, int connectedClientsCount) {
         mDeviceDao.setConnectedClientsCount(mDeviceObjectId, connectedClientsCount);
     }

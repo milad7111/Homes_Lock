@@ -36,6 +36,7 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_ONL
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAIRING_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -309,7 +310,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     @Override
-    public void onRemoveAllLockMembersSuccessful(String count) {
+    public void onRemoveAllDeviceMembersSuccessful(String count) {
         closeProgressDialog();
         if (mRemoveLockDialog != null) {
             mRemoveLockDialog.dismiss();
@@ -371,7 +372,7 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         this.mDeviceViewModel.disconnect();
-        Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+        requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -408,7 +409,7 @@ public class DeviceSettingFragment extends BaseFragment
 
         new Thread() {
             public void run() {
-                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> handleCalibrationLockSteps());
+                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> handleCalibrationLockSteps());
             }
         }.start();
     }
@@ -426,7 +427,7 @@ public class DeviceSettingFragment extends BaseFragment
 
         new Thread() {
             public void run() {
-                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
                         handleLockPositionStatusImage("Idle", true));
             }
         }.start();
@@ -445,7 +446,7 @@ public class DeviceSettingFragment extends BaseFragment
 
         new Thread() {
             public void run() {
-                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
                         handleLockPositionStatusImage("Latch", true));
             }
         }.start();
@@ -464,7 +465,7 @@ public class DeviceSettingFragment extends BaseFragment
 
         new Thread() {
             public void run() {
-                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
+                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
                     handleLockPositionStatusImage("Lock", true);
                     DeviceSettingFragment.this.mDeviceViewModel.sendConfigCommand(mFragment);
                 });
@@ -513,7 +514,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     private void handleDoorInstallation() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mDoorInstallationDialog = new Dialog(Objects.requireNonNull(getContext()));
+            mDoorInstallationDialog = new Dialog(requireNonNull(getContext()));
             mDoorInstallationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mDoorInstallationDialog.setContentView(R.layout.dialog_device_setting);
 
@@ -541,13 +542,13 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         mDoorInstallationDialog.show();
-        Objects.requireNonNull(mDoorInstallationDialog.getWindow())
+        requireNonNull(mDoorInstallationDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mDoorInstallationDialog));
     }
 
     private void handleInitializeCalibrationLock() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mInitializeCalibrationLockDialog = new Dialog(Objects.requireNonNull(getContext()));
+            mInitializeCalibrationLockDialog = new Dialog(requireNonNull(getContext()));
             mInitializeCalibrationLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mInitializeCalibrationLockDialog.setContentView(R.layout.dialog_initialize_calibration_lock_confirmation);
 
@@ -569,13 +570,13 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         mInitializeCalibrationLockDialog.show();
-        Objects.requireNonNull(mInitializeCalibrationLockDialog.getWindow())
+        requireNonNull(mInitializeCalibrationLockDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mInitializeCalibrationLockDialog));
     }
 
     private void handleCalibrationLockSteps() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mCalibrationLockDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
+            mCalibrationLockDialog = new Dialog(requireNonNull(mFragment.getContext()));
             mCalibrationLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mCalibrationLockDialog.setContentView(R.layout.dialog_calibration_lock);
 
@@ -605,13 +606,13 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         mCalibrationLockDialog.show();
-        Objects.requireNonNull(mCalibrationLockDialog.getWindow())
+        requireNonNull(mCalibrationLockDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mCalibrationLockDialog));
     }
 
     private void handleLockPositions(String position) {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mLockPositionsDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
+            mLockPositionsDialog = new Dialog(requireNonNull(mFragment.getContext()));
             mLockPositionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mLockPositionsDialog.setContentView(R.layout.dialog_confirmation_lock_position);
 
@@ -656,7 +657,7 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         mLockPositionsDialog.show();
-        Objects.requireNonNull(mLockPositionsDialog.getWindow())
+        requireNonNull(mLockPositionsDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mLockPositionsDialog));
     }
 
@@ -680,7 +681,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleResetLock() {
-        mResetLockDialog = new Dialog(Objects.requireNonNull(getContext()));
+        mResetLockDialog = new Dialog(requireNonNull(getContext()));
         mResetLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mResetLockDialog.setContentView(R.layout.dialog_reset_lock);
 
@@ -700,28 +701,31 @@ public class DeviceSettingFragment extends BaseFragment
         });
 
         mResetLockDialog.show();
-        Objects.requireNonNull(mResetLockDialog.getWindow())
+        requireNonNull(mResetLockDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mResetLockDialog));
     }
 
     private void handleRemoveLock() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mRemoveLockDialog = new Dialog(Objects.requireNonNull(getContext()));
+            mRemoveLockDialog = new Dialog(requireNonNull(getContext()));
             mRemoveLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mRemoveLockDialog.setContentView(R.layout.dialog_remove_lock);
 
-            CheckBox chbRemoveAllMembersDialogRemoveLock =
-                    mRemoveLockDialog.findViewById(R.id.chb_remove_all_members_dialog_remove_lock);
+            //TODO when remove any device, must delete any members of that admin, but now any admin member delete all members but in future
+            //TODO any admin just can delete his/her members
 
-            if (mDevice.getAdminMembersCount() == 1) {//TODO I must get this from server
-                chbRemoveAllMembersDialogRemoveLock.setChecked(true);
-                chbRemoveAllMembersDialogRemoveLock.setEnabled(false);
-            }
+//            CheckBox chbRemoveAllMembersDialogRemoveLock =
+//                    mRemoveLockDialog.findViewById(R.id.chb_remove_all_members_dialog_remove_lock);
 
-            if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-                chbRemoveAllMembersDialogRemoveLock.setChecked(false);
-                chbRemoveAllMembersDialogRemoveLock.setVisibility(View.GONE);
-            }
+//            if (mDevice.getAdminMembersCount() == 1) {//TODO I must get this from server
+//                chbRemoveAllMembersDialogRemoveLock.setChecked(true);
+//                chbRemoveAllMembersDialogRemoveLock.setEnabled(false);
+//            }
+
+//            if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+//                chbRemoveAllMembersDialogRemoveLock.setChecked(false);
+//                chbRemoveAllMembersDialogRemoveLock.setVisibility(View.GONE);
+//            }
 
             Button btnCancelDialogRemoveLock =
                     mRemoveLockDialog.findViewById(R.id.btn_cancel_dialog_remove_lock);
@@ -737,13 +741,13 @@ public class DeviceSettingFragment extends BaseFragment
                 openProgressDialog(getContext(), null, "Remove lock ...");
                 mDeviceViewModel.removeDevice(
                         mFragment,
-                        chbRemoveAllMembersDialogRemoveLock.isChecked(),
+                        true,
                         mDevice);
             });
         }
 
         mRemoveLockDialog.show();
-        Objects.requireNonNull(mRemoveLockDialog.getWindow())
+        requireNonNull(mRemoveLockDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mRemoveLockDialog));
     }
 
@@ -760,7 +764,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     private void handleDialogChangeOnlinePassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mChangeOnlinePasswordDialog = new Dialog(Objects.requireNonNull(getContext()));
+            mChangeOnlinePasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
 
@@ -782,19 +786,19 @@ public class DeviceSettingFragment extends BaseFragment
             btnApplyDialogChangeOnlinePassword.setOnClickListener(v -> {
                 openProgressDialog(mFragment.getContext(), null, "Change online password ...");
                 mDeviceViewModel.changeOnlinePasswordViaBle(mFragment,
-                        Objects.requireNonNull(tietOldPasswordDialogChangeOnlinePassword.getText()).toString(),
-                        Objects.requireNonNull(tietNewPasswordDialogChangeOnlinePassword.getText()).toString());
+                        requireNonNull(tietOldPasswordDialogChangeOnlinePassword.getText()).toString(),
+                        requireNonNull(tietNewPasswordDialogChangeOnlinePassword.getText()).toString());
             });
         }
 
         mChangeOnlinePasswordDialog.show();
-        Objects.requireNonNull(mChangeOnlinePasswordDialog.getWindow())
+        requireNonNull(mChangeOnlinePasswordDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mChangeOnlinePasswordDialog));
     }
 
     private void handleDialogChangePairingPassword() {
         if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mChangePairingPasswordDialog = new Dialog(Objects.requireNonNull(getContext()));
+            mChangePairingPasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
 
@@ -816,13 +820,13 @@ public class DeviceSettingFragment extends BaseFragment
             btnApplyDialogChangePairingPassword.setOnClickListener(v -> {
                 openProgressDialog(mFragment.getContext(), null, "Change pairing password ...");
                 mDeviceViewModel.changePairingPasswordViaBle(mFragment,
-                        Integer.valueOf(Objects.requireNonNull(tietOldPasswordDialogChangePairingPassword.getText()).toString()),
-                        Integer.valueOf(Objects.requireNonNull(tietNewPasswordDialogChangePairingPassword.getText()).toString()));
+                        Integer.valueOf(requireNonNull(tietOldPasswordDialogChangePairingPassword.getText()).toString()),
+                        Integer.valueOf(requireNonNull(tietNewPasswordDialogChangePairingPassword.getText()).toString()));
             });
         }
 
         mChangePairingPasswordDialog.show();
-        Objects.requireNonNull(mChangePairingPasswordDialog.getWindow())
+        requireNonNull(mChangePairingPasswordDialog.getWindow())
                 .setAttributes(ViewHelper.getDialogLayoutParams(mChangePairingPasswordDialog));
     }
 
@@ -838,7 +842,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void logoutLocally() {
-        Objects.requireNonNull(getActivity()).finish();
+        requireNonNull(getActivity()).finish();
     }
 
     private void handleSetSettingResponse() {
@@ -861,7 +865,7 @@ public class DeviceSettingFragment extends BaseFragment
     private void showToast(String message) {
         new Thread() {
             public void run() {
-                Objects.requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
                         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
             }
         }.start();

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BAT;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCQ;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DID;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_FW;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_HW;
@@ -44,6 +45,14 @@ public class Device extends BaseModel {
     @ColumnInfo(name = "mac")
     @SerializedName("mac")
     private String mBleDeviceMacAddress;
+
+    @ColumnInfo(name = "gwi")
+    @SerializedName("gwi")
+    private String mGateWayId;
+
+    @ColumnInfo(name = "bcq")
+    @SerializedName("bcq")
+    private String mConnectedDevices;
 
     @ColumnInfo(name = "sn")
     @SerializedName("sn")
@@ -217,11 +226,15 @@ public class Device extends BaseModel {
         this.mFWVersion = "0.0.0";
         this.mHWVersion = "0.0.0";
         this.mDeviceType = generateDeviceType(mBleDeviceMacAddress.split(":")[1]);
-        this.mProductionDate = "0000:00:00 00:00";
-        this.mDynamicId = "000_0000_000_0000";
+        this.mProductionDate = "0000:00:00";
+        this.mDynamicId = "0.0.0";
         this.mConnectedClientsCount = 1;
         this.mConnectedServersCount = 0;
         this.mDoorInstallation = true;
+        this.mGateWayId = "";
+        this.mConnectedDevices = "0,0,0";
+        this.mConnectedClientsCount = 0;
+        this.mConnectedServersCount = 0;
     }
 
     public Device(Map updatedLock) {
@@ -244,6 +257,10 @@ public class Device extends BaseModel {
         this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_PRD)).toString());
         this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_DID)).toString());
         this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_RGH)).toString());
+        this.mGateWayId = String.valueOf(Objects.requireNonNull(updatedLock.get("gwi")).toString());
+        this.mConnectedDevices = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_BCQ)).toString());
+        this.mConnectedClientsCount = Integer.valueOf(this.mConnectedDevices.split(",")[1]);
+        this.mConnectedServersCount = Integer.valueOf(this.mConnectedDevices.split(",")[2]);
     }
 
     @NonNull
@@ -375,21 +392,21 @@ public class Device extends BaseModel {
         return DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
     }
 
-    public boolean isLockSavedInServerByCheckUserLocks() {
-        if (mRelatedUsers != null)
-            return mRelatedUsers.size() != 0;
+//    public boolean isLockSavedInServerByCheckUserLocks() {
+//        if (mRelatedUsers != null)
+//            return mRelatedUsers.size() != 0;
+//
+//        return false;
+//    }
 
-        return false;
-    }
-
-    public int getAdminMembersCount() {
-        int count = 0;
-        for (UserLock userLock : mRelatedUsers)
-            if (userLock.getAdminStatus())
-                count++;
-
-        return count;
-    }
+//    public int getAdminMembersCount() {
+//        int count = 0;
+//        for (UserLock userLock : mRelatedUsers)
+//            if (userLock.getAdminStatus())
+//                count++;
+//
+//        return count;
+//    }
 
     public String getUserLockObjectId() {
         if (mRelatedUsers != null && mRelatedUsers.size() != 0)
@@ -398,7 +415,7 @@ public class Device extends BaseModel {
         return null;
     }
 
-    public boolean isLockSavedInServer() {
+    public boolean isDeviceSavedInServer() {
         return !this.getObjectId().equals(this.getSerialNumber());
     }
 
@@ -464,5 +481,26 @@ public class Device extends BaseModel {
 
     public int getConnectedServersCount() {
         return mConnectedServersCount;
+    }
+
+    public String getGateWayId() {
+        return mGateWayId;
+    }
+
+    public void setGateWayId(String mGateWayId) {
+        this.mGateWayId = mGateWayId;
+    }
+
+    public String getConnectedDevices() {
+        return mConnectedDevices;
+    }
+
+    public void setConnectedDevices(String mConnectedDevices) {
+        this.mConnectedDevices = mConnectedDevices;
+
+        try {
+            this.mConnectedClientsCount = Integer.valueOf(this.mConnectedDevices.split(",")[1]);
+            this.mConnectedServersCount = Integer.valueOf(this.mConnectedDevices.split(",")[2]);
+        } catch (Exception e){}
     }
 }

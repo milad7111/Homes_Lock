@@ -36,23 +36,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_remove_lock" />
 
-    <CheckBox
-        android:id="@+id/chb_remove_all_members_dialog_remove_lock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:drawableTint="@color/check_box_tint_color"
-        android:focusable="true"
-        android:nextFocusDown="@+id/btn_remove_dialog_remove_lock"
-        android:text="@string/dialog_check_box_remove_all_members"
-        android:textColor="@color/check_box_text_color"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_message_dialog_remove_lock">
+    <!--<CheckBox-->
+        <!--android:id="@+id/chb_remove_all_members_dialog_remove_lock"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:drawableTint="@color/check_box_tint_color"-->
+        <!--android:focusable="true"-->
+        <!--android:nextFocusDown="@+id/btn_remove_dialog_remove_lock"-->
+        <!--android:text="@string/dialog_check_box_remove_all_members"-->
+        <!--android:textColor="@color/check_box_text_color"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/txv_message_dialog_remove_lock">-->
 
-        <requestFocus />
+        <!--<requestFocus />-->
 
-    </CheckBox>
+    <!--</CheckBox>-->
 
     <Button
         android:id="@+id/btn_remove_dialog_remove_lock"
@@ -66,7 +66,7 @@
         android:text="@string/dialog_button_remove"
         android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_remove_lock"
-        app:layout_constraintTop_toBottomOf="@+id/chb_remove_all_members_dialog_remove_lock" />
+        app:layout_constraintTop_toTopOf="@+id/txv_message_dialog_remove_lock" />
 
     <Button
         android:id="@+id/btn_cancel_dialog_remove_lock"
@@ -81,6 +81,6 @@
         android:text="@string/dialog_button_cancel"
         android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chb_remove_all_members_dialog_remove_lock" />
+        app:layout_constraintTop_toTopOf="@+id/txv_message_dialog_remove_lock" />
 
 </android.support.constraint.ConstraintLayout>

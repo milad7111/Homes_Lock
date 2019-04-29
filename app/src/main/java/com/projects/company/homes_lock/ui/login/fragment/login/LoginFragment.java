@@ -110,7 +110,7 @@ public class LoginFragment extends BaseFragment
             notSavedDevices = new ArrayList<>();
 
             for (Device device : devices)
-                if (!device.isLockSavedInServer())
+                if (!device.isDeviceSavedInServer())
                     notSavedDevices.add(device);
         });
         //endregion Initialize Objects

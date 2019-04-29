@@ -42,6 +42,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import timber.log.Timber;
+
 import static com.projects.company.homes_lock.utils.helper.DataHelper.LOCK_MEMBERS_SYNCING_MODE;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_NOT_ADMIN;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
@@ -210,7 +212,7 @@ public class ManageMembersFragment extends BaseFragment
 
     @Override
     public void onGetUserLockDataFailed(Object response) {
-        Log.i(this.getClass().getSimpleName(), ((FailureModel) response).getFailureMessage());
+        Timber.i(((FailureModel) response).getFailureMessage());
         closeProgressDialog();
         fabSyncManageMembersFragment.setClickable(true);
     }
@@ -240,7 +242,7 @@ public class ManageMembersFragment extends BaseFragment
         }
         syncLockMembersWithServer();
 
-        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
+        Timber.i(response.getFailureMessage());
     }
 
     @Override
@@ -254,7 +256,7 @@ public class ManageMembersFragment extends BaseFragment
 
     @Override
     public void onGetUserListWithEmailAddressFailed(FailureModel response) {
-        Log.e(getClass().getName(), response.getFailureMessage());
+        Timber.e(response.getFailureMessage());
     }
 
     @Override

@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import timber.log.Timber;
 
 import static android.support.v4.content.ContextCompat.getColor;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
@@ -289,7 +290,7 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onSendLockCommandSuccessful(String command) {
-        Log.d(getTag(), String.format("Command : %s , received by device successfully.", command));
+        Timber.d("Command : %s , received by device successfully.", command);
     }
 
     @Override

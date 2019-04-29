@@ -10,7 +10,7 @@ public interface IDeviceSettingFragment {
 
     void onSetDeviceSetting(boolean value);
 
-    void onRemoveAllLockMembersSuccessful(String count);
+    void onRemoveAllDeviceMembersSuccessful(String count);
 
     void onRemoveDeviceForOneMemberSuccessful(String count);
 
