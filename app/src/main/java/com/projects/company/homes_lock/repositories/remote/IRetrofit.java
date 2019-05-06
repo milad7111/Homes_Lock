@@ -1,5 +1,6 @@
 package com.projects.company.homes_lock.repositories.remote;
 
+import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
@@ -31,6 +32,9 @@ public interface IRetrofit {
 
     @GET("data/Users/{userObjectId}?relationsDepth=2")
     Call<User> getUserWithObjectId(@Header("user-token") String userToken, @Path("userObjectId") String userObjectId);
+
+    @GET("data/Device/{deviceObjectId}")
+    Call<Device> getDeviceWithObjectId(@Header("user-token") String userToken, @Path("deviceObjectId") String deviceObjectId);
 
     @Headers({"Content-Type: application/json"})
     @GET("data/users?")

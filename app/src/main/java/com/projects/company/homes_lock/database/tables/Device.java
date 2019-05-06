@@ -30,6 +30,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PRD;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RGH;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_RSS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SN;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_TYP;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.generateDeviceType;
 
@@ -118,6 +119,10 @@ public class Device extends BaseModel {
     @SerializedName("rgh")
     private Boolean mDoorInstallation;
 
+    @ColumnInfo(name = "err")
+    @SerializedName("err")
+    private String mError;
+
     //region Ignore server attributes
     @Ignore
     @SerializedName("created")
@@ -188,7 +193,8 @@ public class Device extends BaseModel {
             String mDynamicId,
             int mConnectedClientsCount,
             int mConnectedServersCount,
-            Boolean mDoorInstallation) {
+            Boolean mDoorInstallation,
+            String mError) {
         this.mObjectId = mObjectId;
         this.mBleDeviceName = mBleDeviceName;
         this.mBleDeviceMacAddress = mBleDeviceMacAddress;
@@ -208,6 +214,7 @@ public class Device extends BaseModel {
         this.mDoorInstallation = mDoorInstallation;
         this.mConnectedClientsCount = mConnectedClientsCount;
         this.mConnectedServersCount = mConnectedServersCount;
+        this.mError = mError;
     }
 
     public Device(TempDeviceModel device) {
@@ -225,7 +232,7 @@ public class Device extends BaseModel {
         this.mDeviceHealth = false;
         this.mFWVersion = "0.0.0";
         this.mHWVersion = "0.0.0";
-        this.mDeviceType = generateDeviceType(mBleDeviceMacAddress.split(":")[1]);
+        if (mBleDeviceMacAddress != null) this.mDeviceType = generateDeviceType(mBleDeviceMacAddress.split(":")[1]);
         this.mProductionDate = "0000:00:00";
         this.mDynamicId = "0.0.0";
         this.mConnectedClientsCount = 1;
@@ -235,32 +242,86 @@ public class Device extends BaseModel {
         this.mConnectedDevices = "0,0,0";
         this.mConnectedClientsCount = 0;
         this.mConnectedServersCount = 0;
+        this.mError = "Every things is OK.";
     }
 
     public Device(Map updatedLock) {
-        this.mObjectId = Objects.requireNonNull(updatedLock.get("objectId")).toString();
-        this.mBleDeviceName = Objects.requireNonNull(updatedLock.get("bleDeviceName")).toString();
-        this.mBleDeviceMacAddress = Objects.requireNonNull(updatedLock.get("mac")).toString();
-        this.mSerialNumber = Objects.requireNonNull(updatedLock.get("sn")).toString();
-        this.mIsLocked = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISK)).toString());
-        this.mIsDoorClosed = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISO)).toString());
-        this.mBatteryPercentage = Integer.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_BAT)).toString());
-        this.mWifiStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISW)).toString());
-        this.mInternetStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISI)).toString());
-        this.mRestApiServer = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISR)).toString());
-        this.mMQTTServerStatus = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_ISQ)).toString());
-        this.mWifiStrength = Integer.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_RSS)).toString());
-        this.mDeviceHealth = Boolean.valueOf(Objects.requireNonNull(updatedLock.get("deviceHealth")).toString());
-        this.mFWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_FW)).toString());
-        this.mHWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_HW)).toString());
-        this.mDeviceType = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_TYP)).toString());
-        this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_PRD)).toString());
-        this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_DID)).toString());
-        this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_RGH)).toString());
-        this.mGateWayId = String.valueOf(Objects.requireNonNull(updatedLock.get("gti")).toString());
-        this.mConnectedDevices = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_BCQ)).toString());
-        this.mConnectedClientsCount = Integer.valueOf(this.mConnectedDevices.split(",")[1]);
-        this.mConnectedServersCount = Integer.valueOf(this.mConnectedDevices.split(",")[2]);
+        if (updatedLock.containsKey("objectId"))
+            this.mObjectId = Objects.requireNonNull(updatedLock.get("objectId")).toString();
+
+        if (updatedLock.containsKey("bleDeviceName"))
+            this.mBleDeviceName = Objects.requireNonNull(updatedLock.get("bleDeviceName")).toString();
+
+        if (updatedLock.containsKey("mac"))
+            this.mBleDeviceMacAddress = Objects.requireNonNull(updatedLock.get("mac")).toString();
+
+        if (updatedLock.containsKey(BLE_COMMAND_SN))
+            this.mSerialNumber = Objects.requireNonNull(updatedLock.get(BLE_COMMAND_SN)).toString();
+
+        if (updatedLock.containsKey(BLE_COMMAND_ISK))
+            this.mIsLocked = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_ISK) != null ? updatedLock.get(BLE_COMMAND_ISK).toString() : "false");
+
+        if (updatedLock.containsKey(BLE_COMMAND_ISO))
+            this.mIsDoorClosed = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_ISO) != null ? updatedLock.get(BLE_COMMAND_ISO).toString() : "false");
+
+        if (updatedLock.containsKey(BLE_COMMAND_BAT))
+            this.mBatteryPercentage = Integer.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_BAT)).toString());
+
+        if (updatedLock.containsKey(BLE_COMMAND_ISW))
+            this.mWifiStatus = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_ISW) != null ? updatedLock.get(BLE_COMMAND_ISW).toString() : "false");
+
+        if (updatedLock.containsKey(BLE_COMMAND_ISI))
+            this.mInternetStatus = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_ISI) != null ? updatedLock.get(BLE_COMMAND_ISI).toString() : "false");
+
+        if (updatedLock.containsKey(BLE_COMMAND_ISR))
+            this.mRestApiServer = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_ISR) != null ? updatedLock.get(BLE_COMMAND_ISR).toString() : "false");
+
+        if (updatedLock.containsKey(BLE_COMMAND_ISQ))
+            this.mMQTTServerStatus = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_ISQ) != null ? updatedLock.get(BLE_COMMAND_ISQ).toString() : "false");
+
+        if (updatedLock.containsKey(BLE_COMMAND_RSS))
+            this.mWifiStrength = Integer.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_RSS)).toString());
+
+        if (updatedLock.containsKey("deviceHealth"))
+            this.mDeviceHealth = Boolean.valueOf(
+                    updatedLock.get("deviceHealth") != null ? updatedLock.get("deviceHealth").toString() : "true");
+
+        if (updatedLock.containsKey(BLE_COMMAND_FW))
+            this.mFWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_FW)).toString());
+
+        if (updatedLock.containsKey(BLE_COMMAND_HW))
+            this.mHWVersion = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_HW)).toString());
+
+        if (updatedLock.containsKey(BLE_COMMAND_TYP))
+            this.mDeviceType = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_TYP)).toString());
+
+        if (updatedLock.containsKey(BLE_COMMAND_PRD))
+            this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_PRD)).toString());
+
+        if (updatedLock.containsKey(BLE_COMMAND_DID))
+            this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_DID)).toString());
+
+        if (updatedLock.containsKey(BLE_COMMAND_RGH))
+            this.mDoorInstallation = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_RGH) != null ? updatedLock.get(BLE_COMMAND_RGH).toString() : "true");
+
+        if (updatedLock.containsKey("gti"))
+            this.mGateWayId = String.valueOf(Objects.requireNonNull(updatedLock.get("gti")).toString());
+
+        if (updatedLock.containsKey(BLE_COMMAND_BCQ)) {
+            this.mConnectedDevices = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_BCQ)).toString());
+            this.mConnectedClientsCount = Integer.valueOf(this.mConnectedDevices.split(",")[1]);
+            this.mConnectedServersCount = Integer.valueOf(this.mConnectedDevices.split(",")[2]);
+        }
+
+        if (updatedLock.containsKey("err"))
+            this.mError = String.valueOf(Objects.requireNonNull(updatedLock.get("err")).toString());
     }
 
     @NonNull
@@ -501,6 +562,15 @@ public class Device extends BaseModel {
         try {
             this.mConnectedClientsCount = Integer.valueOf(this.mConnectedDevices.split(",")[1]);
             this.mConnectedServersCount = Integer.valueOf(this.mConnectedDevices.split(",")[2]);
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
+    }
+
+    public String getError() {
+        return mError;
+    }
+
+    public void setError(String mError) {
+        this.mError = mError;
     }
 }

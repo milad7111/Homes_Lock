@@ -339,10 +339,14 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare BLE Methods
     private void handleLockBleConnection() {
-        if (isConnectedToBleDevice)
-            this.mDeviceViewModel.disconnect();
-        else
-            connectToDevice();
+        if (isUserLoggedIn())//TODO check if device connection status is false, user can connect direct
+            Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
+        else {
+            if (isConnectedToBleDevice)
+                this.mDeviceViewModel.disconnect();
+            else
+                connectToDevice();
+        }
     }
 
     private void handleConnectedClients() {
@@ -555,8 +559,9 @@ public class LockPageFragment extends BaseFragment
     private void showToast(String message) {
         new Thread() {
             public void run() {
-                Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() ->
-                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+                if (LockPageFragment.this.getActivity() != null)
+                    LockPageFragment.this.getActivity().runOnUiThread(() ->
+                            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
             }
         }.start();
     }

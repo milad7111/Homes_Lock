@@ -6,6 +6,7 @@ import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.push.DeviceRegistrationResult;
+import com.backendless.rt.data.BulkEvent;
 import com.backendless.rt.data.EventHandler;
 import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseModel;
@@ -15,6 +16,7 @@ import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
+import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -84,6 +86,21 @@ public class NetworkRepository {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
+            }
+        });
+    }
+
+    public void getDeviceWithObjectId(final NetworkListener.SingleNetworkListener<BaseModel> listener, String parameter) {
+        BaseApplication.getRetrofitAPI().getDeviceWithObjectId(BaseApplication.activeUserToken, parameter).enqueue(new Callback<Device>() {
+            @Override
+            public void onResponse(Call<Device> call, Response<Device> response) {
+                if (response != null && response.body() != null)
+                    listener.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Device> call, Throwable t) {
                 listener.onSingleNetworkListenerFailure(new FailureModel(t.getMessage()));
             }
         });
@@ -227,12 +244,30 @@ public class NetworkRepository {
     }
 
     public void setListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
-        final EventHandler<Map> lockObject = Backendless.Data.of("Device").rt();
-        lockObject.addUpdateListener(String.format("objectId = '%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
+        final EventHandler<Map> lockObjectUpdate = Backendless.Data.of("Device").rt();
+        lockObjectUpdate.addUpdateListener(String.format("objectId = '%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
             @Override
             public void handleResponse(Map updatedLock) {
                 updatedLock.put("bleDeviceName", mDevice.getBleDeviceName());
                 listener.onResponse(new Device(updatedLock));
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(fault.getMessage()));
+            }
+        });
+
+        final EventHandler<Map> lockObjectBulkUpdate = Backendless.Data.of("Device").rt();
+        lockObjectBulkUpdate.addBulkUpdateListener(String.format("sn='%s'", mDevice.getSerialNumber()), new AsyncCallback<BulkEvent>() {
+            @Override
+            public void handleResponse(BulkEvent response) {
+                if (response.getCount() >= 1) {
+                    TempDeviceModel tempDevice = new TempDeviceModel();
+                    tempDevice.setDeviceName("_needUpdate");
+                    tempDevice.setDeviceSerialNumber(mDevice.getObjectId());
+                    listener.onResponse(new Device(tempDevice));
+                }
             }
 
             @Override

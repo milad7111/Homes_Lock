@@ -88,11 +88,11 @@ public class User extends BaseModel {
         return mObjectId;
     }
 
-    public void setIsLock(Boolean mIsGateway) {
+    public void setIsGateway(Boolean mIsGateway) {
         this.mIsGateway = mIsGateway;
     }
 
-    public Boolean getIsLock() {
+    public Boolean isGateway() {
         return mIsGateway;
     }
 

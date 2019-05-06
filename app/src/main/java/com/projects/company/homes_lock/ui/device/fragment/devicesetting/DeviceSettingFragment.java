@@ -29,6 +29,8 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.Objects;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_LEFT_HANDED;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
@@ -277,6 +279,9 @@ public class DeviceSettingFragment extends BaseFragment
                 else
                     showToast("This is not available in Local mode!");
                 break;
+            case R.id.btn_done_dialog_calibration_lock:
+                dismissAllConfigDialogs();
+                break;
 //            case R.id.txv_change_password_online_setting_fragment:
 //            case R.id.txv_change_password_online_description_setting_fragment:
 //                handleChangePassword(CHANGE_ONLINE_PASSWORD);
@@ -490,18 +495,18 @@ public class DeviceSettingFragment extends BaseFragment
 //        handleViewsBasedOnDeviceType();
 
         if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            txvDoorInstallationSettingFragment.setVisibility(View.GONE);
-            txvDoorInstallationDescriptionSettingFragment.setVisibility(View.GONE);
-            txvChangePairingPasswordSettingFragment.setVisibility(View.GONE);
-            txvChangePairingPasswordDescriptionSettingFragment.setVisibility(View.GONE);
+            txvDoorInstallationSettingFragment.setVisibility(GONE);
+            txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
+            txvChangePairingPasswordSettingFragment.setVisibility(GONE);
+            txvChangePairingPasswordDescriptionSettingFragment.setVisibility(GONE);
 
 //            txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
 //            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
         }
 
         if (!isUserLoggedIn()) {
-            txvRemoveLockSettingFragment.setVisibility(View.GONE);
-            txvRemoveLockDescriptionSettingFragment.setVisibility(View.GONE);
+            txvRemoveLockSettingFragment.setVisibility(GONE);
+            txvRemoveLockDescriptionSettingFragment.setVisibility(GONE);
         }
 
         txvDeviceTypeDescriptionSettingFragment.setText(mDevice.getDeviceType());
@@ -587,7 +592,8 @@ public class DeviceSettingFragment extends BaseFragment
             Button btnDoneDialogInitializeCalibrationLock = mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock);
             Button btnCancelDialogInitializeCalibrationLock = mCalibrationLockDialog.findViewById(R.id.btn_cancel_dialog_calibration_lock);
 
-            btnDoneDialogInitializeCalibrationLock.setEnabled(false);
+            btnDoneDialogInitializeCalibrationLock.setVisibility(GONE);
+            btnDoneDialogInitializeCalibrationLock.setOnClickListener(this);
 
             ctlSetIdlePositionDialogCalibrationLock.setOnClickListener(v -> {
                 handleLockPositions("Idle");
@@ -600,8 +606,7 @@ public class DeviceSettingFragment extends BaseFragment
             });
 
             btnCancelDialogInitializeCalibrationLock.setOnClickListener(v -> {
-                mCalibrationLockDialog.dismiss();
-                mCalibrationLockDialog = null;
+                dismissAllConfigDialogs();
             });
         }
 
@@ -859,7 +864,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     private void handleConfigResponse() {
         if (mCalibrationLockDialog != null)
-            mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock).setEnabled(true);
+            mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock).setVisibility(VISIBLE);
     }
 
     private void showToast(String message) {
@@ -869,6 +874,23 @@ public class DeviceSettingFragment extends BaseFragment
                         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
             }
         }.start();
+    }
+
+    private void dismissAllConfigDialogs() {
+        if (mInitializeCalibrationLockDialog != null){
+            mInitializeCalibrationLockDialog.dismiss();
+            mInitializeCalibrationLockDialog = null;
+        }
+
+        if (mCalibrationLockDialog != null){
+            mCalibrationLockDialog.dismiss();
+            mCalibrationLockDialog = null;
+        }
+
+        if (mLockPositionsDialog != null){
+            mLockPositionsDialog.dismiss();
+            mLockPositionsDialog = null;
+        }
     }
     //endregion Declare Methods
 }

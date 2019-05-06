@@ -384,10 +384,14 @@ public class DeviceViewModel extends AndroidViewModel
             if (mIAddDeviceFragment != null)
                 mIAddDeviceFragment.onGetUserSuccessful((User) response);
         } else if (response instanceof Device) {
-            if (mILockPageFragment != null)
-                mILockPageFragment.onGetUpdatedDevice((Device) response);
-            else if (mIGatewayPageFragment != null)
-                mIGatewayPageFragment.onGetUpdatedDevice((Device) response);
+            if (((Device) response).getBleDeviceName() != null && ((Device) response).getBleDeviceName().equals("_needUpdate")) {
+                mNetworkRepository.getDeviceWithObjectId(this, ((Device) response).getObjectId());
+            } else {
+                if (mILockPageFragment != null)
+                    mILockPageFragment.onGetUpdatedDevice((Device) response);
+                else if (mIGatewayPageFragment != null)
+                    mIGatewayPageFragment.onGetUpdatedDevice((Device) response);
+            }
         }
     }
 
@@ -777,10 +781,10 @@ public class DeviceViewModel extends AndroidViewModel
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT)) {
                             Timber.i("Start getting wifi networks ...");
                             bleBufferStatus = false;
-                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END))
-                        {Timber.i("Finish getting wifi networks ...");
-                            bleBufferStatus = true;}
-                        else
+                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END)) {
+                            Timber.i("Finish getting wifi networks ...");
+                            bleBufferStatus = true;
+                        } else
                             mIGatewayPageFragment.onFindNewNetworkAroundDevice(new WifiNetworksModel(
                                     keyCommandJson.getString(keyCommand).split(",")[0],
                                     Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1])));
