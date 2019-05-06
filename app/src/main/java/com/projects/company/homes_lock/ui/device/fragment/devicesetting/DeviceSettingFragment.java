@@ -268,7 +268,7 @@ public class DeviceSettingFragment extends BaseFragment
                 if (isConnectedToBleDevice)
                     handleResetLock();
                 else
-                    showToast("This is not available in BLE disconnect mode!");
+                    showToast("This is not available in BLE mqttDisconnect mode!");
                 break;
             case R.id.txv_remove_device_setting_fragment:
             case R.id.txv_remove_device_description_setting_fragment:
@@ -537,7 +537,7 @@ public class DeviceSettingFragment extends BaseFragment
                             mFragment,
                             findSelectedDoorInstallationOption(rdgDoorInstallationDialogDoorInstallation));
                 } else
-                    showToast("This is not available in BLE disconnect mode!");
+                    showToast("This is not available in BLE mqttDisconnect mode!");
             });
         }
 
@@ -565,7 +565,7 @@ public class DeviceSettingFragment extends BaseFragment
                     openProgressDialog(mFragment.getContext(), null, "Initialize calibration lock ...");
                     DeviceSettingFragment.this.mDeviceViewModel.initializeCalibrationLock(this);
                 } else
-                    showToast("This is not available in BLE disconnect mode!");
+                    showToast("This is not available in BLE mqttDisconnect mode!");
             });
         }
 

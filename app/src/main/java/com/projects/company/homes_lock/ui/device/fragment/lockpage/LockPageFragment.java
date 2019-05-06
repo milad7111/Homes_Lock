@@ -290,6 +290,7 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onSendLockCommandSuccessful(String command) {
+        showToast(String.format("%s command received by LOCK.", command));
         Timber.d("Command : %s , received by device successfully.", command);
     }
 

@@ -21,9 +21,9 @@ public class User extends BaseModel {
     @SerializedName("objectId")
     private String mObjectId;
 
-    @ColumnInfo(name = "isLock")
-    @SerializedName("isLock")
-    private String mIsLock;
+    @ColumnInfo(name = "isGateway")
+    @SerializedName("isGateway")
+    private Boolean mIsGateway;
 
     @ColumnInfo(name = "lastLogin")
     @SerializedName("lastLogin")
@@ -88,12 +88,12 @@ public class User extends BaseModel {
         return mObjectId;
     }
 
-    public void setIsLock(String mIsLock) {
-        this.mIsLock = mIsLock;
+    public void setIsLock(Boolean mIsGateway) {
+        this.mIsGateway = mIsGateway;
     }
 
-    public String getIsLock() {
-        return mIsLock;
+    public Boolean getIsLock() {
+        return mIsGateway;
     }
 
     public void setName(String mName) {

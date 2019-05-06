@@ -257,7 +257,7 @@ public class Device extends BaseModel {
         this.mProductionDate = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_PRD)).toString());
         this.mDynamicId = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_DID)).toString());
         this.mDoorInstallation = Boolean.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_RGH)).toString());
-        this.mGateWayId = String.valueOf(Objects.requireNonNull(updatedLock.get("gwi")).toString());
+        this.mGateWayId = String.valueOf(Objects.requireNonNull(updatedLock.get("gti")).toString());
         this.mConnectedDevices = String.valueOf(Objects.requireNonNull(updatedLock.get(BLE_COMMAND_BCQ)).toString());
         this.mConnectedClientsCount = Integer.valueOf(this.mConnectedDevices.split(",")[1]);
         this.mConnectedServersCount = Integer.valueOf(this.mConnectedDevices.split(",")[2]);

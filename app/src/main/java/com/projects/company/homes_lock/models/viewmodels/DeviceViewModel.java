@@ -226,8 +226,8 @@ public class DeviceViewModel extends AndroidViewModel
         mConnectionState.postValue(getApplication().getString(R.string.ble_state_discovering_services));
 
 //        //TODO remove these lines after test ble without password
-//        if (mIBleScanListener != null)
-//            mIBleScanListener.onBonded(device);
+        if (mIBleScanListener != null)
+            mIBleScanListener.onBonded(device);
     }
 
     @Override
@@ -278,8 +278,8 @@ public class DeviceViewModel extends AndroidViewModel
     @Override
     public void onBonded(final BluetoothDevice device) {
         //TODO uncomment these lines after test ble without password
-        if (mIBleScanListener != null)
-            mIBleScanListener.onBonded(device);
+//        if (mIBleScanListener != null)
+//            mIBleScanListener.onBonded(device);
     }
 
     @Override
@@ -537,7 +537,7 @@ public class DeviceViewModel extends AndroidViewModel
             bleBufferStatus = true;
         }
 
-        String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 1));
+        String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 2));
 
         try {
             JSONObject keyCommandJson = new JSONObject(keyValue);
@@ -908,8 +908,8 @@ public class DeviceViewModel extends AndroidViewModel
         sendNextCommandFromBlePool();
     }
 
-    public void sendLockCommand(LockPageFragment fragment, String serialNumber, boolean lockCommand) {
-        mILockPageFragment = fragment;
+    public void sendLockCommand(Fragment parentFragment, String serialNumber, boolean lockCommand) {
+        mILockPageFragment = (ILockPageFragment) parentFragment;
         if (isUserLoggedIn())
             (new MQTTHandler()).sendLockCommand(this, serialNumber,
                     createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC, 0));
@@ -1197,13 +1197,13 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Online Methods
 
     //region Declare Methods
-    public void initMQTT(Context context, String clientId) {
+    public void initMQTT(Context context, String deviceSerialNumber) {
         if (isUserLoggedIn())
-            (new MQTTHandler()).setup(this, context, clientId);
+            MQTTHandler.setup(this, context, deviceSerialNumber);
     }
 
     public void disconnectMQTT() {
-        MQTTHandler.disconnect();
+        MQTTHandler.mqttDisconnect();
     }
 
     public void updateDevice(Device device) {

@@ -36,6 +36,8 @@ import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
 
+import static com.projects.company.homes_lock.utils.mqtt.MQTTHandler.mqttDisconnect;
+
 public class DeviceActivity extends BaseActivity
         implements
         ILockActivity,
@@ -140,9 +142,10 @@ public class DeviceActivity extends BaseActivity
                 getSupportFragmentManager().popBackStackImmediate();
             else if (mFragment instanceof DeviceSettingFragment)
                 getSupportFragmentManager().popBackStackImmediate();
-            else if (mViewPager.getChildCount() == 0)
+            else if (mViewPager.getChildCount() == 0) {
+                mqttDisconnect();
                 finish();
-            else {
+            } else {
                 if (mViewPager.getCurrentItem() == 0)
                     finish();
                 else if (mViewPager.getCurrentItem() == mViewPager.getChildCount() - 1)
@@ -194,6 +197,13 @@ public class DeviceActivity extends BaseActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mqttDisconnect();
+    }
+
     //endregion Main CallBacks
 
     //region Declare Methods
