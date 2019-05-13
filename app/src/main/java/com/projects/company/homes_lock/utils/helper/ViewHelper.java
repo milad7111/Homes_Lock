@@ -64,18 +64,17 @@ public class ViewHelper {
         }
     }
 
-    public static void setAvailableBleDevicesStatusImage(ImageView imageViewConnectedClients, int connectedServersCount, boolean setDefault) {
-        if (setDefault) {
-            if (connectedServersCount == 0)
-                imageViewConnectedClients.setImageResource(R.drawable.ic_invalid_connected_servers);
-            else
-                imageViewConnectedClients.setImageResource(R.drawable.ic_invalid_connected_servers);
-        } else {
-            if (connectedServersCount == 0)
-                imageViewConnectedClients.setImageResource(R.drawable.ic_valid_no_connected_servers);
-            else
-                imageViewConnectedClients.setImageResource(R.drawable.ic_valid_connected_servers);
-        }
+    public static void setAvailableBleDevicesStatusImage(ImageView imageViewConnectedClients, int connectedClientsCount, boolean setDefault) {
+        if (connectedClientsCount == 0)
+            imageViewConnectedClients.setImageResource(
+                    setDefault ?
+                            R.drawable.ic_invalid_connected_servers :
+                            R.drawable.ic_valid_no_connected_servers);
+        else
+            imageViewConnectedClients.setImageResource(
+                    setDefault ?
+                            R.drawable.ic_invalid_connected_servers :
+                            R.drawable.ic_valid_connected_servers);
     }
 
     public static void setBleConnectionStatusImage(ImageView imageViewBle, boolean bleConnectionStatus) {
@@ -138,7 +137,7 @@ public class ViewHelper {
 
     public static void setConnectedClientsStatusImage(
             ImageView imgConnectionStatusLockPage, boolean setDefault, int connectedClientsCount) {
-        if (connectedClientsCount - 1 <= 0) // -1 added to connectedClientsCount because my phone always is one of connected devices
+        if (connectedClientsCount <= 0) // -1 added to connectedClientsCount because my phone always is one of connected devices
             imgConnectionStatusLockPage.setImageResource(setDefault ?
                     R.drawable.ic_invalid_connected_devices_not_exist : R.drawable.ic_valid_connected_devices_not_exist);
         else

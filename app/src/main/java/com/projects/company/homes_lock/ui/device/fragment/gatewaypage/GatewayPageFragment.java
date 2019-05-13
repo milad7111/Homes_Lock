@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +49,7 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -115,6 +119,8 @@ public class GatewayPageFragment extends BaseFragment
     private Dialog availableBleDevicesListDialog;
     private Dialog connectToServerDialog;
     private Dialog disconnectDeviceDialog;
+
+    private Snackbar mInternetStatusSnackBar;
     //endregion Declare Objects
 
     //region Constructor
@@ -811,29 +817,32 @@ public class GatewayPageFragment extends BaseFragment
 
     //region Declare Methods
     private void updateViewData(boolean setDefault) {
-        setBleMoreInfoImage(imgMoreInfoGatewayPage, setDefault);
-        setAvailableBleDevicesStatusImage(imgAvailableBleDevicesGatewayPage, mDevice.getConnectedServersCount(), setDefault);
+        setBleMoreInfoImage(imgMoreInfoGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
+        setAvailableBleDevicesStatusImage(imgAvailableBleDevicesGatewayPage, mDevice.getConnectedServersCount(), (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
 
         setGatewayInternetConnectionStatusImage(
-                imgConnectionStatusGatewayPage, setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+                imgConnectionStatusGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
         setConnectedClientsStatusImage(
-                imgConnectedClientsGatewayPage, !isConnectedToBleDevice && setDefault, mDevice.getConnectedClientsCount());
+                imgConnectedClientsGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getConnectedClientsCount());
 
         imgManageMembersGatewayPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
-        txvDeviceNameGatewayPage.setTextColor(setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
+        txvDeviceNameGatewayPage.setTextColor((!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
         txvDeviceNameGatewayPage.setText(mDevice.getBleDeviceName());
 
         txvBriefStatusGatewayPage.setText(
-                setDefault ?
+                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ?
                         getString(R.string.fragment_text_view_data_not_synced) :
                         getGatewayBriefStatusText(mDevice.getInternetStatus(), mDevice.getWifiStatus()));
         txvBriefStatusGatewayPage.setTextColor(
-                setDefault ? getColor(mContext, R.color.md_grey_500) :
+                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) :
                         getColor(mContext, getGatewayBriefStatusColor(mDevice.getInternetStatus(), mDevice.getWifiStatus())));
 
         txvNewUpdateGatewayPage.setText(null);
 
         closeProgressDialog();
+
+        if (isUserLoggedIn() && !mDevice.getInternetStatus())
+            showSnack("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
     }
 
     private void handleGatewayInternetConnection() {
@@ -900,6 +909,32 @@ public class GatewayPageFragment extends BaseFragment
                         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
             }
         }.start();
+    }
+
+    private void showSnack(String message) {
+        if (GatewayPageFragment.this.getActivity() != null)
+//            GatewayPageFragment.this.getActivity().runOnUiThread(() -> {
+            if (GatewayPageFragment.this.mInternetStatusSnackBar != null)
+                GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
+
+            if (GatewayPageFragment.this.getView() != null) {
+                GatewayPageFragment.this.mInternetStatusSnackBar = Snackbar
+                        .make(imgAvailableBleDevicesGatewayPage, message, Snackbar.LENGTH_INDEFINITE)
+                        .setActionTextColor(getColor(Objects.requireNonNull(getContext()), R.color.md_yellow_700));
+                GatewayPageFragment.this.mInternetStatusSnackBar.setAction("OK", v -> {
+                    GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
+                });
+                View view = GatewayPageFragment.this.mInternetStatusSnackBar.getView();
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
+                params.gravity = Gravity.TOP;
+                view.setLayoutParams(params);
+
+                TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setMaxLines(5);
+
+                GatewayPageFragment.this.mInternetStatusSnackBar.show();
+            }
+//            });
     }
     //endregion Declare Methods
 }

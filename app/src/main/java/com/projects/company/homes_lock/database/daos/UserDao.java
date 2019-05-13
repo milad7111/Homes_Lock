@@ -22,6 +22,9 @@ public abstract class UserDao {
                 Device tempDevice = userLock.getRelatedDevice();
                 tempDevice.setBleDeviceName(userLock.getDeviceName());
 
+                tempDevice.setConnectedClientsCount(Integer.valueOf(tempDevice.getConnectedDevices().split(",")[1]));
+                tempDevice.setConnectedServersCount(Integer.valueOf(tempDevice.getConnectedDevices().split(",")[2]));
+
                 insertDeviceForUser(tempDevice);
 
                 userLock.setDeviceId(userLock.getRelatedDevice().getObjectId());

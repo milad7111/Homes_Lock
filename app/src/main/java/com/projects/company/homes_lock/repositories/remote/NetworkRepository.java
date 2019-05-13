@@ -245,7 +245,7 @@ public class NetworkRepository {
 
     public void setListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
         final EventHandler<Map> lockObjectUpdate = Backendless.Data.of("Device").rt();
-        lockObjectUpdate.addUpdateListener(String.format("objectId = '%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
+        lockObjectUpdate.addUpdateListener(String.format("objectId='%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
             @Override
             public void handleResponse(Map updatedLock) {
                 updatedLock.put("bleDeviceName", mDevice.getBleDeviceName());
@@ -263,10 +263,7 @@ public class NetworkRepository {
             @Override
             public void handleResponse(BulkEvent response) {
                 if (response.getCount() >= 1) {
-                    TempDeviceModel tempDevice = new TempDeviceModel();
-                    tempDevice.setDeviceName("_needUpdate");
-                    tempDevice.setDeviceSerialNumber(mDevice.getObjectId());
-                    listener.onResponse(new Device(tempDevice));
+                    listener.onResponse(new TempDeviceModel(mDevice.getObjectId()));
                 }
             }
 

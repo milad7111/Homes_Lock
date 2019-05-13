@@ -19,6 +19,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
+import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
@@ -384,14 +385,16 @@ public class DeviceViewModel extends AndroidViewModel
             if (mIAddDeviceFragment != null)
                 mIAddDeviceFragment.onGetUserSuccessful((User) response);
         } else if (response instanceof Device) {
-            if (((Device) response).getBleDeviceName() != null && ((Device) response).getBleDeviceName().equals("_needUpdate")) {
-                mNetworkRepository.getDeviceWithObjectId(this, ((Device) response).getObjectId());
-            } else {
-                if (mILockPageFragment != null)
-                    mILockPageFragment.onGetUpdatedDevice((Device) response);
-                else if (mIGatewayPageFragment != null)
-                    mIGatewayPageFragment.onGetUpdatedDevice((Device) response);
-            }
+            ((Device) response).setConnectedClientsCount(Integer.valueOf(((Device) response).getConnectedDevices().split(",")[1]));
+            ((Device) response).setConnectedServersCount(Integer.valueOf(((Device) response).getConnectedDevices().split(",")[2]));
+
+            if (mILockPageFragment != null)
+                mILockPageFragment.onGetUpdatedDevice((Device) response);
+            else if (mIGatewayPageFragment != null)
+                mIGatewayPageFragment.onGetUpdatedDevice((Device) response);
+        } else if (response instanceof TempDeviceModel) {
+            if (((TempDeviceModel) response).isUpdateRequired())
+                mNetworkRepository.getDeviceWithObjectId(this, ((TempDeviceModel) response).getObjectId());
         }
     }
 
