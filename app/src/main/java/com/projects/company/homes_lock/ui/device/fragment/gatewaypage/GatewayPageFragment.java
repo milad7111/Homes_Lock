@@ -913,7 +913,6 @@ public class GatewayPageFragment extends BaseFragment
 
     private void showSnack(String message) {
         if (GatewayPageFragment.this.getActivity() != null)
-//            GatewayPageFragment.this.getActivity().runOnUiThread(() -> {
             if (GatewayPageFragment.this.mInternetStatusSnackBar != null)
                 GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
 
@@ -934,7 +933,6 @@ public class GatewayPageFragment extends BaseFragment
 
                 GatewayPageFragment.this.mInternetStatusSnackBar.show();
             }
-//            });
     }
     //endregion Declare Methods
 }

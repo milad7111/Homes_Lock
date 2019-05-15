@@ -8,7 +8,7 @@ public class FailureModel extends BaseModel {
     @SerializedName("message")
     private String mFailureMessage;
     @SerializedName("code")
-    private int mFailureCode;
+    private int mFailureCode = 0;
 
     public FailureModel(String mFailureMessage) {
         this.mFailureMessage = mFailureMessage;

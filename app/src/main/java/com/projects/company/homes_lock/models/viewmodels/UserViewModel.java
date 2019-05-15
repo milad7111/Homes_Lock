@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.util.Log;
 
-import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
@@ -18,7 +17,6 @@ import com.projects.company.homes_lock.ui.device.fragment.adddevice.IAddDeviceFr
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.IManageMembersFragment;
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
 import com.projects.company.homes_lock.ui.login.fragment.register.IRegisterFragment;
-import com.projects.company.homes_lock.utils.helper.ValidationHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -196,12 +194,9 @@ public class UserViewModel extends AndroidViewModel
         mNetworkRepository.login(this, new LoginModel(email, password));
     }
 
-    public void register(RegisterModel mRegisterModel, String mConfirmPassword) {
-        if (ValidationHelper.validateEquality(mRegisterModel.getPassword(), mConfirmPassword)) {
-            setRequestType("register");
-            mNetworkRepository.register(this, mRegisterModel);
-        } else if (mIRegisterFragment != null)
-            mIRegisterFragment.onRegisterFailed(new FailureModel("Confirm password not match."));
+    public void register(RegisterModel mRegisterModel) {
+        setRequestType("register");
+        mNetworkRepository.register(this, mRegisterModel);
     }
 
     public void getUserWithObjectId(String userObjectId) {

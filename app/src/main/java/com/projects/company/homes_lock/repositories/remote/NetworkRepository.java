@@ -65,8 +65,12 @@ public class NetworkRepository {
         BaseApplication.getRetrofitAPI().register(parameter).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                if (response != null && response.body() != null)
-                    listener.onResponse(response.body());
+                if (response != null) {
+                    if (response.body() != null)
+                        listener.onResponse(response.body());
+                    else if (response.errorBody() != null)
+                        listener.onSingleNetworkListenerFailure(new FailureModel(response.message(), response.code()));
+                }
             }
 
             @Override

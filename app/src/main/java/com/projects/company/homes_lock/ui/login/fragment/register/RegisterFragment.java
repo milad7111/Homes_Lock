@@ -25,8 +25,18 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
+import static android.support.v4.content.res.ResourcesCompat.getDrawable;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_EMAIL_FORMAT;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_MOBILE_NUMBER_FORMAT;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_REGISTER_NO_MATCH;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_REGISTER_PASS_LENGTH;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_USERNAME_LENGTH;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateMobileNumber;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserEmail;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserName;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserPassword;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
 
 /**
@@ -114,15 +124,16 @@ public class RegisterFragment extends BaseFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_sign_up_register_fragment:
-                openProgressDialog(getContext(), null, "Register process ...");
-                mUserViewModel.register(
-                        new RegisterModel(
-                                Objects.requireNonNull(tietEmail.getText()).toString(),
-                                Objects.requireNonNull(tietUserName.getText()).toString(),
-                                Objects.requireNonNull(tietMobileNumber.getText()).toString(),
-                                Objects.requireNonNull(tietPassword.getText()).toString()),
-                        Objects.requireNonNull(tietConfirmPassword.getText()).toString()
-                );
+                if (isInputsValid()) {
+                    openProgressDialog(getContext(), null, "Register process ...");
+                    mUserViewModel.register(
+                            new RegisterModel(
+                                    Objects.requireNonNull(tietEmail.getText()).toString(),
+                                    Objects.requireNonNull(tietUserName.getText()).toString(),
+                                    Objects.requireNonNull(tietMobileNumber.getText()).toString(),
+                                    Objects.requireNonNull(tietPassword.getText()).toString())
+                    );
+                }
                 break;
             case R.id.txv_login_register_fragment:
                 addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_login_activity, new LoginFragment());
@@ -144,9 +155,83 @@ public class RegisterFragment extends BaseFragment
         closeProgressDialog();
         Timber.i(response.getFailureMessage());
         Toast.makeText(getContext(), response.getFailureMessage(), Toast.LENGTH_SHORT).show();
+
+        if (response.getFailureCode() == 409){
+            tietEmail.setError("this email is redundant",
+                    getDrawable(getResources(),
+                            android.R.drawable.stat_notify_error,
+                            Objects.requireNonNull(getContext()).getTheme()));
+            tietEmail.requestFocus();
+        }
     }
     //endregion Register Callbacks
 
     //region Declare Methods
+    private boolean isInputsValid() {
+        tietEmail.setError(null);
+        tietMobileNumber.setError(null);
+        tietPassword.setError(null);
+        tietConfirmPassword.setError(null);
+
+        switch (validateUserEmail(Objects.requireNonNull(tietEmail.getText()).toString())) {
+            case VALIDATION_EMAIL_FORMAT:
+                tietEmail.setError("Wrong email format",
+                        getDrawable(getResources(),
+                                android.R.drawable.stat_notify_error,
+                                Objects.requireNonNull(getContext()).getTheme()));
+                tietEmail.requestFocus();
+                return false;
+        }
+
+        switch (validateUserName(Objects.requireNonNull(tietUserName.getText()).toString())) {
+            case VALIDATION_USERNAME_LENGTH:
+                tietUserName.setError("At least 4 characters",
+                        getDrawable(getResources(),
+                                android.R.drawable.stat_notify_error,
+                                Objects.requireNonNull(getContext()).getTheme()));
+                tietUserName.requestFocus();
+                return false;
+        }
+
+        switch (validateMobileNumber(Objects.requireNonNull(tietMobileNumber.getText()).toString())) {
+            case VALIDATION_MOBILE_NUMBER_FORMAT:
+                tietMobileNumber.setError("Wrong phone number format",
+                        getDrawable(getResources(),
+                                android.R.drawable.stat_notify_error,
+                                Objects.requireNonNull(getContext()).getTheme()));
+                tietMobileNumber.requestFocus();
+                return false;
+        }
+
+        switch (validateUserPassword(
+                Objects.requireNonNull(tietPassword.getText()).toString(),
+                Objects.requireNonNull(tietConfirmPassword.getText()).toString())) {
+            case VALIDATION_REGISTER_PASS_LENGTH:
+                tietPassword.setError("At least 8 characters",
+                        getDrawable(getResources(),
+                                android.R.drawable.stat_notify_error,
+                                Objects.requireNonNull(getContext()).getTheme()));
+                tietPassword.requestFocus();
+                return false;
+            case VALIDATION_REGISTER_NO_MATCH:
+                tietConfirmPassword.setError("Not match with original password",
+                        getDrawable(getResources(),
+                                android.R.drawable.stat_notify_error,
+                                Objects.requireNonNull(getContext()).getTheme()));
+                tietConfirmPassword.requestFocus();
+                return false;
+        }
+
+        return true;
+    }
+
+    private void showToast(String message) {
+        new Thread() {
+            public void run() {
+                Objects.requireNonNull(RegisterFragment.this.getActivity()).runOnUiThread(() ->
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+            }
+        }.start();
+    }
     //endregion Declare Methods
 }
