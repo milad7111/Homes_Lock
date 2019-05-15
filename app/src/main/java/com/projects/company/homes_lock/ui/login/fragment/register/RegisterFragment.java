@@ -32,12 +32,13 @@ import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALI
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_MOBILE_NUMBER_FORMAT;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_REGISTER_NO_MATCH;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_REGISTER_PASS_LENGTH;
-import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_USERNAME_LENGTH;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_USERNAME_EMPTY;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateMobileNumber;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserEmail;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserName;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserPassword;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.hideKeyboard;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -125,6 +126,7 @@ public class RegisterFragment extends BaseFragment
         switch (v.getId()) {
             case R.id.btn_sign_up_register_fragment:
                 if (isInputsValid()) {
+                    hideKeyboard(Objects.requireNonNull(getActivity()));
                     openProgressDialog(getContext(), null, "Register process ...");
                     mUserViewModel.register(
                             new RegisterModel(
@@ -156,8 +158,8 @@ public class RegisterFragment extends BaseFragment
         Timber.i(response.getFailureMessage());
         Toast.makeText(getContext(), response.getFailureMessage(), Toast.LENGTH_SHORT).show();
 
-        if (response.getFailureCode() == 409){
-            tietEmail.setError("this email is redundant",
+        if (response.getFailureCode() == 409) {
+            tietEmail.setError("Redundant email",
                     getDrawable(getResources(),
                             android.R.drawable.stat_notify_error,
                             Objects.requireNonNull(getContext()).getTheme()));
@@ -183,9 +185,9 @@ public class RegisterFragment extends BaseFragment
                 return false;
         }
 
-        switch (validateUserName(Objects.requireNonNull(tietUserName.getText()).toString())) {
-            case VALIDATION_USERNAME_LENGTH:
-                tietUserName.setError("At least 4 characters",
+        switch (validateUserName(String.valueOf(tietUserName.getText()))) {
+            case VALIDATION_USERNAME_EMPTY:
+                tietUserName.setError("Must not be empty",
                         getDrawable(getResources(),
                                 android.R.drawable.stat_notify_error,
                                 Objects.requireNonNull(getContext()).getTheme()));

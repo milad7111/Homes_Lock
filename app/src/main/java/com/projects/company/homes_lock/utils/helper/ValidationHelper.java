@@ -14,12 +14,12 @@ public class ValidationHelper {
 
     public static final int VALIDATION_MOBILE_NUMBER_FORMAT = 300;
 
-    public static final int VALIDATION_USERNAME_LENGTH = 400;
+    public static final int VALIDATION_USERNAME_EMPTY = 400;
 
     //region Public Methods
     public static int validateUserName(String userName) {
-        if (!checkUserNameLength(userName))
-            return VALIDATION_USERNAME_LENGTH;
+        if (checkUserNameEmpty(userName))
+            return VALIDATION_USERNAME_EMPTY;
 
         return VALIDATION_OK;
     }
@@ -57,18 +57,12 @@ public class ValidationHelper {
         return password.length() >= 8;
     }
 
-    private static boolean checkUserNameLength(String userName) {
-        return userName.length() >= 4;
+    private static boolean checkUserNameEmpty(String userName) {
+        return userName.isEmpty();
     }
 
     private static boolean checkEmailFormat(String email) {
-        String regExpn =
-                "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
-                        + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                        + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
-                        + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                        + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
-                        + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$";
+        String regExpn = "^([a-zA-Z0-9_\\-.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$";
 
         Pattern pattern = Pattern.compile(regExpn, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
