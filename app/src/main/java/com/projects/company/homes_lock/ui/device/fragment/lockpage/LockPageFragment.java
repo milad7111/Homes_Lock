@@ -1,7 +1,6 @@
 package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
@@ -22,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +49,8 @@ import java.util.Objects;
 import timber.log.Timber;
 
 import static android.support.v4.content.ContextCompat.getColor;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_CONFIG;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_LOCK;
@@ -93,6 +95,9 @@ public class LockPageFragment extends BaseFragment
     TextView txvNewUpdateLockPage;
     TextView txvBriefStatusLockPage;
     TextView txvDeviceTypeLockPage;
+    private TextView txvValidDataStatusLockPage;
+
+    private RelativeLayout rllValidDataStatusLockPage;
     //endregion Declare Views
 
     //region Declare Variables
@@ -193,6 +198,9 @@ public class LockPageFragment extends BaseFragment
         txvNewUpdateLockPage = view.findViewById(R.id.txv_new_update_lock_page);
         txvBriefStatusLockPage = view.findViewById(R.id.txv_brief_status_lock_page);
         txvDeviceTypeLockPage = view.findViewById(R.id.txv_device_type_lock_page);
+        txvValidDataStatusLockPage = view.findViewById(R.id.txv_valid_data_status_lock_page);
+
+        rllValidDataStatusLockPage = view.findViewById(R.id.rll_valid_data_status_lock_page);
         //endregion Initialize Views
 
         //region Setup Views
@@ -241,8 +249,14 @@ public class LockPageFragment extends BaseFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_lock_status_lock_page:
-                if (isUserLoggedIn() || isConnectedToBleDevice)
+                if (isConnectedToBleDevice)
                     sendLockCommand(!mDevice.getIsLocked());
+                else if (isUserLoggedIn()) {
+                    if (mDevice.getMQTTServerStatus())
+                        sendLockCommand(!mDevice.getIsLocked());
+                    else
+                        showToast("Device is not connected to internet");
+                }
                 break;
             case R.id.img_battery_status_lock_page:
                 if (isUserLoggedIn() || isConnectedToBleDevice)
@@ -549,8 +563,15 @@ public class LockPageFragment extends BaseFragment
 
         closeProgressDialog();
 
-        if (isUserLoggedIn() && !mDevice.getInternetStatus())
-            showInvalidDataAlertDialog("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
+        if (isUserLoggedIn()) {
+            if (!mDevice.getInternetStatus()) {
+                rllValidDataStatusLockPage.setVisibility(VISIBLE);
+                txvValidDataStatusLockPage.setText("Not connected to internet.\nLast update: " + new Date(mDevice.getUpdated()));
+            } else {
+                rllValidDataStatusLockPage.setVisibility(GONE);
+                txvValidDataStatusLockPage.setText(null);
+            }
+        }
     }
 
     private void handleDeviceMembers() {
@@ -588,43 +609,5 @@ public class LockPageFragment extends BaseFragment
             }
         }.start();
     }
-
-    private void showInvalidDataAlertDialog(String message) {
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                .setTitle("Data is not update")
-                .setMessage(message)
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(android.R.string.ok, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-        alertDialog.setCanceledOnTouchOutside(false);
-    }
-
-//    private void showSnack(String message) {
-//        if (LockPageFragment.this.getActivity() != null)
-////            LockPageFragment.this.getActivity().runOnUiThread(() -> {
-//            if (LockPageFragment.this.mInternetStatusSnackBar != null)
-//                LockPageFragment.this.mInternetStatusSnackBar.dismiss();
-//
-//            if (LockPageFragment.this.getView() != null) {
-//                LockPageFragment.this.mInternetStatusSnackBar = Snackbar
-//                        .make(imgIsLockedLockPage, message, Snackbar.LENGTH_INDEFINITE)
-//                        .setActionTextColor(getColor(Objects.requireNonNull(getContext()), R.color.md_yellow_700));
-//                LockPageFragment.this.mInternetStatusSnackBar.setAction("OK", v -> {
-//                    LockPageFragment.this.mInternetStatusSnackBar.dismiss();
-//                });
-//                View view = LockPageFragment.this.mInternetStatusSnackBar.getView();
-//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
-//                params.gravity = Gravity.TOP;
-//                view.setLayoutParams(params);
-//
-//                TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-//                textView.setMaxLines(5);
-//
-//                LockPageFragment.this.mInternetStatusSnackBar.show();
-//            }
-//    }
     //endregion Declare Methods
 }

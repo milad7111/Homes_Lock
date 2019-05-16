@@ -1,7 +1,6 @@
 package com.projects.company.homes_lock.ui.device.fragment.gatewaypage;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
@@ -24,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +54,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.support.v4.content.ContextCompat.getColor;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
@@ -94,6 +96,9 @@ public class GatewayPageFragment extends BaseFragment
     private TextView txvDeviceNameGatewayPage;
     private TextView txvNewUpdateGatewayPage;
     private TextView txvBriefStatusGatewayPage;
+    private TextView txvValidDataStatusGatewayPage;
+
+    private RelativeLayout rllValidDataStatusGatewayPage;
     //endregion Declare Views
 
     //region Declare Variables
@@ -200,6 +205,9 @@ public class GatewayPageFragment extends BaseFragment
         txvDeviceNameGatewayPage = view.findViewById(R.id.txv_device_name_gateway_page);
         txvNewUpdateGatewayPage = view.findViewById(R.id.txv_new_update_gateway_page);
         txvBriefStatusGatewayPage = view.findViewById(R.id.txv_brief_status_gateway_page);
+        txvValidDataStatusGatewayPage = view.findViewById(R.id.txv_valid_data_status_gateway_page);
+
+        rllValidDataStatusGatewayPage = view.findViewById(R.id.rll_valid_data_status_gateway_page);
         //endregion Initialize Views
 
         //region Setup Views
@@ -846,8 +854,15 @@ public class GatewayPageFragment extends BaseFragment
 
         closeProgressDialog();
 
-        if (isUserLoggedIn() && !mDevice.getInternetStatus())
-            showInvalidDataAlertDialog("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
+        if (isUserLoggedIn()) {
+            if (!mDevice.getInternetStatus()) {
+                rllValidDataStatusGatewayPage.setVisibility(VISIBLE);
+                txvValidDataStatusGatewayPage.setText("Not connected to internet.\nLast update: " + new Date(mDevice.getUpdated()));
+            } else {
+                rllValidDataStatusGatewayPage.setVisibility(GONE);
+                txvValidDataStatusGatewayPage.setText(null);
+            }
+        }
     }
 
     private void handleGatewayInternetConnection() {
@@ -919,19 +934,6 @@ public class GatewayPageFragment extends BaseFragment
         }.start();
     }
 
-    private void showInvalidDataAlertDialog(String message) {
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                .setTitle("Data is not update")
-                .setMessage(message)
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(android.R.string.ok, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-        alertDialog.setCanceledOnTouchOutside(false);
-    }
-
     @SuppressLint("DefaultLocale")
     private String getConnectedClientsMessage(int connectedClientsCount) {
         switch (connectedClientsCount) {
@@ -955,29 +957,5 @@ public class GatewayPageFragment extends BaseFragment
                 return String.format("Gateway is connected to %d devices", connectedServersCount);
         }
     }
-
-//    private void showSnack(String message) {
-//        if (GatewayPageFragment.this.getActivity() != null)
-//            if (GatewayPageFragment.this.mInternetStatusSnackBar != null)
-//                GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
-//
-//        if (GatewayPageFragment.this.getView() != null) {
-//            GatewayPageFragment.this.mInternetStatusSnackBar = Snackbar
-//                    .make(imgAvailableBleDevicesGatewayPage, message, Snackbar.LENGTH_INDEFINITE)
-//                    .setActionTextColor(getColor(Objects.requireNonNull(getContext()), R.color.md_yellow_700));
-//            GatewayPageFragment.this.mInternetStatusSnackBar.setAction("OK", v -> {
-//                GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
-//            });
-//            View view = GatewayPageFragment.this.mInternetStatusSnackBar.getView();
-//            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
-//            params.gravity = Gravity.TOP;
-//            view.setLayoutParams(params);
-//
-//            TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-//            textView.setMaxLines(5);
-//
-//            GatewayPageFragment.this.mInternetStatusSnackBar.show();
-//        }
-//    }
     //endregion Declare Methods
 }

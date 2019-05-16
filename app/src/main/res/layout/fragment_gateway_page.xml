@@ -1,5 +1,4 @@
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,6 +27,45 @@
             app:srcCompat="@drawable/ic_homes_lock_idle" />
 
     </com.andexert.library.RippleView>
+
+    <RelativeLayout
+        android:id="@+id/rll_valid_data_status_gateway_page"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_valid_data_status_gateway_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            android:contentDescription="@string/content_description_valid_status_gateway_page"
+            android:focusable="false"
+            app:srcCompat="@drawable/ic_sync_problem" />
+
+        <TextView
+            android:id="@+id/txv_valid_data_status_gateway_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_toEndOf="@+id/img_valid_data_status_gateway_page"
+            android:layout_toRightOf="@+id/img_valid_data_status_gateway_page"
+            android:clickable="false"
+            android:focusable="false"
+            android:textColor="@color/md_yellow_A200"
+            android:textSize="14sp"
+            android:textStyle="italic|bold" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/txv_device_name_gateway_page"

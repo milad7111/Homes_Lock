@@ -19,6 +19,9 @@
     <string name="content_description_temperature_celsius_lock_page">centigrade symbol</string>
     <string name="content_description_lock_status_symbol_lock_page">lock status</string>
     <string name="content_description_water_percent_lock_page">water percent</string>
+    <string name="content_description_valid_status_lock_page">This is an alarm image shows data is invalid</string>
+
+    <string name="content_description_valid_status_gateway_page">This is an alarm image shows data is invalid</string>
     <string name="content_description_connected_devices_gateway_page">Show if any device connect to gateway</string>
 
     <string name="content_description_item_action_disconnect_device">This is action to disconnect device</string>
