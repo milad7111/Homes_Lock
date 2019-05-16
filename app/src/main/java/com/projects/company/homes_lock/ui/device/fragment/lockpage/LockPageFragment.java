@@ -1,5 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
@@ -40,6 +42,7 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,7 +57,6 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_S
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.isMyPhone;
-import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusText;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
@@ -249,6 +251,8 @@ public class LockPageFragment extends BaseFragment
             case R.id.img_connected_devices_lock_page:
                 if (isConnectedToBleDevice)
                     handleConnectedClients();
+                else if (isUserLoggedIn())
+                    showToast(getConnectedClientsMessage(mDevice.getConnectedClientsCount()));
                 break;
             case R.id.img_ble_lock_page:
                 handleLockBleConnection();
@@ -257,12 +261,23 @@ public class LockPageFragment extends BaseFragment
                 handleDeviceMembers();
                 break;
             case R.id.img_more_info_lock_page:
-                if (isUserLoggedIn() || isConnectedToBleDevice) {
+                if (isUserLoggedIn() || isConnectedToBleDevice)
                     addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
                             R.id.frg_lock_activity,
                             DeviceSettingFragment.newInstance(mDevice, "LOCK", mDeviceViewModel));
-                }
                 break;
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private String getConnectedClientsMessage(int connectedClientsCount) {
+        switch (connectedClientsCount) {
+            case 0:
+                return "No device is connect to Lock";
+            case 1:
+                return "One device is connected to Lock";
+            default:
+                return String.format("%d devices are connected to Lock", connectedClientsCount);
         }
     }
     //endregion Main CallBacks
@@ -534,13 +549,13 @@ public class LockPageFragment extends BaseFragment
 
         closeProgressDialog();
 
-//        if (isUserLoggedIn() && !mDevice.getInternetStatus())
-//            showSnack("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
+        if (isUserLoggedIn() && !mDevice.getInternetStatus())
+            showInvalidDataAlertDialog("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
     }
 
     private void handleDeviceMembers() {
         if (isUserLoggedIn()) {
-            if (mDevice.getUserAdminStatus() == MEMBER_STATUS_PRIMARY_ADMIN)
+            if (mDevice.getMemberAdminStatus())
                 addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
                         R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
             else
@@ -572,6 +587,19 @@ public class LockPageFragment extends BaseFragment
                             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
             }
         }.start();
+    }
+
+    private void showInvalidDataAlertDialog(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle("Data is not update")
+                .setMessage(message)
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+        alertDialog.setCanceledOnTouchOutside(false);
     }
 
 //    private void showSnack(String message) {

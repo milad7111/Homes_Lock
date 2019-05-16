@@ -78,10 +78,6 @@ public class DeviceSettingFragment extends BaseFragment
     private TextView txvCalibrationLockSettingFragment;
     private TextView txvCalibrationLockDescriptionSettingFragment;
 
-    //Gateway Specific Setting
-    //TODO
-    //endregion Declare Views
-
     //region Declare Variables
     private boolean doorInstallationDone = false;
     private boolean isConnectedToBleDevice = false;
@@ -489,13 +485,18 @@ public class DeviceSettingFragment extends BaseFragment
 
     //region Declare Methods
     private void initViews() {
-//        handleViewsBasedOnDeviceType();
+        if (!mDevice.getMemberAdminStatus()) {
+            if (this.mDeviceType.equals("LOCK")) {
+                txvDoorInstallationSettingFragment.setVisibility(GONE);
+                txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
+                txvCalibrationLockSettingFragment.setVisibility(GONE);
+                txvCalibrationLockDescriptionSettingFragment.setVisibility(GONE);
+            }
 
-        if (mDevice.getUserAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            txvDoorInstallationSettingFragment.setVisibility(GONE);
-            txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
             txvChangePairingPasswordSettingFragment.setVisibility(GONE);
             txvChangePairingPasswordDescriptionSettingFragment.setVisibility(GONE);
+            txvSerialNumberSettingFragment.setVisibility(GONE);
+            txvSerialNumberDescriptionSettingFragment.setVisibility(GONE);
 
 //            txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
 //            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
@@ -504,6 +505,18 @@ public class DeviceSettingFragment extends BaseFragment
         if (!isUserLoggedIn()) {
             txvRemoveLockSettingFragment.setVisibility(GONE);
             txvRemoveLockDescriptionSettingFragment.setVisibility(GONE);
+        } else {
+            if (this.mDeviceType.equals("LOCK")) {
+                txvDoorInstallationSettingFragment.setVisibility(GONE);
+                txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
+                txvCalibrationLockSettingFragment.setVisibility(GONE);
+                txvCalibrationLockDescriptionSettingFragment.setVisibility(GONE);
+            }
+
+            txvChangePairingPasswordSettingFragment.setVisibility(GONE);
+            txvChangePairingPasswordDescriptionSettingFragment.setVisibility(GONE);
+            txvResetLockSettingFragment.setVisibility(GONE);
+            txvResetLockDescriptionSettingFragment.setVisibility(GONE);
         }
 
         txvDeviceTypeDescriptionSettingFragment.setText(mDevice.getDeviceType());
@@ -865,26 +878,29 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void showToast(String message) {
-        new Thread() {
-            public void run() {
-                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
-                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-            }
-        }.start();
+//        new Thread() {
+//            public void run() {
+//                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+//                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+//            }
+//        }.start();
+
+        requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
     }
 
     private void dismissAllConfigDialogs() {
-        if (mInitializeCalibrationLockDialog != null){
+        if (mInitializeCalibrationLockDialog != null) {
             mInitializeCalibrationLockDialog.dismiss();
             mInitializeCalibrationLockDialog = null;
         }
 
-        if (mCalibrationLockDialog != null){
+        if (mCalibrationLockDialog != null) {
             mCalibrationLockDialog.dismiss();
             mCalibrationLockDialog = null;
         }
 
-        if (mLockPositionsDialog != null){
+        if (mLockPositionsDialog != null) {
             mLockPositionsDialog.dismiss();
             mLockPositionsDialog = null;
         }

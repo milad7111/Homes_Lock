@@ -1,5 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.gatewaypage;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
@@ -9,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -250,13 +250,18 @@ public class GatewayPageFragment extends BaseFragment
             case R.id.img_available_ble_devices_gateway_page:
                 if (isConnectedToBleDevice)
                     handleAvailableBleDevices();
+                else if (isUserLoggedIn())
+                    showToast(getConnectedServersMessage(mDevice.getConnectedServersCount()));
                 break;
             case R.id.img_connection_status_gateway_page:
                 if (isConnectedToBleDevice)
                     handleGatewayInternetConnection();
                 break;
             case R.id.img_connected_devices_gateway_page:
-                handleConnectedClients();
+                if (isConnectedToBleDevice)
+                    handleConnectedClients();
+                else if (isUserLoggedIn())
+                    showToast(getConnectedClientsMessage(mDevice.getConnectedClientsCount()));
                 break;
             case R.id.img_ble_gateway_page:
                 handleDeviceBleConnection();
@@ -438,8 +443,8 @@ public class GatewayPageFragment extends BaseFragment
 
     //region Declare BLE Methods
     private void handleDeviceBleConnection() {
-        if (isUserLoggedIn())//TODO check if device connection status is false, user can connect direct
-            Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
+        if (isUserLoggedIn())
+            showToast("This is not available in Login Mode");
         else {
             if (isConnectedToBleDevice)
                 GatewayPageFragment.this.mDeviceViewModel.disconnect();
@@ -842,7 +847,7 @@ public class GatewayPageFragment extends BaseFragment
         closeProgressDialog();
 
         if (isUserLoggedIn() && !mDevice.getInternetStatus())
-            showSnack("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
+            showInvalidDataAlertDialog("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
     }
 
     private void handleGatewayInternetConnection() {
@@ -867,9 +872,12 @@ public class GatewayPageFragment extends BaseFragment
 
     private void handleDeviceMembers() {
         if (isUserLoggedIn())
-            addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
+            if (mDevice.getMemberAdminStatus())
+                addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
+            else
+                showToast("Access Denied");
         else
-            Toast.makeText(getActivity(), "This is not available in Local Mode", Toast.LENGTH_LONG).show();
+            showToast("This is not available in Local Mode");
     }
 
     private void closeAllDialogs() {
@@ -911,28 +919,65 @@ public class GatewayPageFragment extends BaseFragment
         }.start();
     }
 
-    private void showSnack(String message) {
-        if (GatewayPageFragment.this.getActivity() != null)
-            if (GatewayPageFragment.this.mInternetStatusSnackBar != null)
-                GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
+    private void showInvalidDataAlertDialog(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle("Data is not update")
+                .setMessage(message)
 
-            if (GatewayPageFragment.this.getView() != null) {
-                GatewayPageFragment.this.mInternetStatusSnackBar = Snackbar
-                        .make(imgAvailableBleDevicesGatewayPage, message, Snackbar.LENGTH_INDEFINITE)
-                        .setActionTextColor(getColor(Objects.requireNonNull(getContext()), R.color.md_yellow_700));
-                GatewayPageFragment.this.mInternetStatusSnackBar.setAction("OK", v -> {
-                    GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
-                });
-                View view = GatewayPageFragment.this.mInternetStatusSnackBar.getView();
-                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
-                params.gravity = Gravity.TOP;
-                view.setLayoutParams(params);
-
-                TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setMaxLines(5);
-
-                GatewayPageFragment.this.mInternetStatusSnackBar.show();
-            }
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+        alertDialog.setCanceledOnTouchOutside(false);
     }
+
+    @SuppressLint("DefaultLocale")
+    private String getConnectedClientsMessage(int connectedClientsCount) {
+        switch (connectedClientsCount) {
+            case 0:
+                return "No device is connect to Gateway";
+            case 1:
+                return "One device is connected to Gateway";
+            default:
+                return String.format("%d devices are connected to Gateway", mDevice.getConnectedClientsCount());
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private String getConnectedServersMessage(int connectedServersCount) {
+        switch (connectedServersCount) {
+            case 0:
+                return "Gateway isn't connect to any device";
+            case 1:
+                return "Gateway is connected to one device";
+            default:
+                return String.format("Gateway is connected to %d devices", connectedServersCount);
+        }
+    }
+
+//    private void showSnack(String message) {
+//        if (GatewayPageFragment.this.getActivity() != null)
+//            if (GatewayPageFragment.this.mInternetStatusSnackBar != null)
+//                GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
+//
+//        if (GatewayPageFragment.this.getView() != null) {
+//            GatewayPageFragment.this.mInternetStatusSnackBar = Snackbar
+//                    .make(imgAvailableBleDevicesGatewayPage, message, Snackbar.LENGTH_INDEFINITE)
+//                    .setActionTextColor(getColor(Objects.requireNonNull(getContext()), R.color.md_yellow_700));
+//            GatewayPageFragment.this.mInternetStatusSnackBar.setAction("OK", v -> {
+//                GatewayPageFragment.this.mInternetStatusSnackBar.dismiss();
+//            });
+//            View view = GatewayPageFragment.this.mInternetStatusSnackBar.getView();
+//            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
+//            params.gravity = Gravity.TOP;
+//            view.setLayoutParams(params);
+//
+//            TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+//            textView.setMaxLines(5);
+//
+//            GatewayPageFragment.this.mInternetStatusSnackBar.show();
+//        }
+//    }
     //endregion Declare Methods
 }
