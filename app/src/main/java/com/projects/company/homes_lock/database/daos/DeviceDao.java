@@ -18,7 +18,7 @@ public interface DeviceDao extends BaseDao<Device> {
     void insert(Device device);
 
     @Delete
-    void delete(Device... device);
+    void delete(Device device);
 
     @Update
     void update(Device... device);

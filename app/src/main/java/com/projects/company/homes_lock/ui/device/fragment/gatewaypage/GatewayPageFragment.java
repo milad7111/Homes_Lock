@@ -38,6 +38,8 @@ import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceMode
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
+import com.projects.company.homes_lock.ui.device.activity.CustomDeviceAdapter;
+import com.projects.company.homes_lock.ui.device.activity.DeviceActivity;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.utils.ble.AvailableBleDevicesAdapter;
@@ -180,7 +182,14 @@ public class GatewayPageFragment extends BaseFragment
         });
         GatewayPageFragment.this.mDeviceViewModel.getDeviceInfo(mDevice.getObjectId()).observe(this, device -> {
             mDevice = device;
-            updateViewData(!isUserLoggedIn() && !isConnectedToBleDevice);
+
+            if (device == null) {
+                mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
+                    ((DeviceActivity) getActivity()).setViewPagerAdapter(
+                            new CustomDeviceAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), devices));
+                });
+            } else
+                updateViewData(!isUserLoggedIn() && !isConnectedToBleDevice);
         });
         //endregion Initialize Objects
     }

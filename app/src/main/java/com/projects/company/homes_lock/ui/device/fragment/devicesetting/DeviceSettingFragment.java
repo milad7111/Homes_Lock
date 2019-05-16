@@ -268,7 +268,7 @@ public class DeviceSettingFragment extends BaseFragment
             case R.id.txv_remove_device_setting_fragment:
             case R.id.txv_remove_device_description_setting_fragment:
                 if (isUserLoggedIn())
-                    handleRemoveLock();
+                    handleRemoveDevice();
                 else
                     showToast("This is not available in Local mode!");
                 break;
@@ -315,7 +315,7 @@ public class DeviceSettingFragment extends BaseFragment
             mRemoveLockDialog = null;
         }
 
-        logoutLocally();
+        requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -388,7 +388,7 @@ public class DeviceSettingFragment extends BaseFragment
             mRemoveLockDialog = null;
         }
 
-        logoutLocally();
+        requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -720,14 +720,13 @@ public class DeviceSettingFragment extends BaseFragment
                 .setAttributes(ViewHelper.getDialogLayoutParams(mResetLockDialog));
     }
 
-    private void handleRemoveLock() {
-        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
-            mRemoveLockDialog = new Dialog(requireNonNull(getContext()));
-            mRemoveLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            mRemoveLockDialog.setContentView(R.layout.dialog_remove_lock);
+    private void handleRemoveDevice() {
+        mRemoveLockDialog = new Dialog(requireNonNull(getContext()));
+        mRemoveLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mRemoveLockDialog.setContentView(R.layout.dialog_remove_device);
 
-            //TODO when remove any device, must delete any members of that admin, but now any admin member delete all members but in future
-            //TODO any admin just can delete his/her members
+        //TODO when remove any device, must deleteDevice any members of that admin, but now any admin member deleteDevice all members but in future
+        //TODO any admin just can deleteDevice his/her members
 
 //            CheckBox chbRemoveAllMembersDialogRemoveLock =
 //                    mRemoveLockDialog.findViewById(R.id.chb_remove_all_members_dialog_remove_lock);
@@ -742,24 +741,23 @@ public class DeviceSettingFragment extends BaseFragment
 //                chbRemoveAllMembersDialogRemoveLock.setVisibility(View.GONE);
 //            }
 
-            Button btnCancelDialogRemoveLock =
-                    mRemoveLockDialog.findViewById(R.id.btn_cancel_dialog_remove_lock);
-            Button btnRemoveDialogRemoveLock =
-                    mRemoveLockDialog.findViewById(R.id.btn_remove_dialog_remove_lock);
+        Button btnCancelDialogRemoveLock =
+                mRemoveLockDialog.findViewById(R.id.btn_cancel_dialog_remove_lock);
+        Button btnRemoveDialogRemoveLock =
+                mRemoveLockDialog.findViewById(R.id.btn_remove_dialog_remove_lock);
 
-            btnCancelDialogRemoveLock.setOnClickListener(v -> {
-                mRemoveLockDialog.dismiss();
-                mRemoveLockDialog = null;
-            });
+        btnCancelDialogRemoveLock.setOnClickListener(v -> {
+            mRemoveLockDialog.dismiss();
+            mRemoveLockDialog = null;
+        });
 
-            btnRemoveDialogRemoveLock.setOnClickListener(v -> {
-                openProgressDialog(getContext(), null, "Remove lock ...");
-                mDeviceViewModel.removeDevice(
-                        mFragment,
-                        true,
-                        mDevice);
-            });
-        }
+        btnRemoveDialogRemoveLock.setOnClickListener(v -> {
+            openProgressDialog(getContext(), null, "Remove device ...");
+            DeviceSettingFragment.this.mDeviceViewModel.removeDevice(
+                    mFragment,
+                    true,
+                    mDevice);
+        });
 
         mRemoveLockDialog.show();
         requireNonNull(mRemoveLockDialog.getWindow())
@@ -854,10 +852,6 @@ public class DeviceSettingFragment extends BaseFragment
             default:
                 return true;
         }
-    }
-
-    private void logoutLocally() {
-        requireNonNull(getActivity()).finish();
     }
 
     private void handleSetSettingResponse() {

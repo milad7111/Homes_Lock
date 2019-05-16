@@ -77,7 +77,7 @@ public class LocalRepository {
     }
 
     public void deleteDevice(Device device) {
-        new deleteDeviceAsyncTask(mDeviceDao).execute(device);
+        new deleteDeviceAsyncTask(mUserDao).execute(device);
     }
 
     public LiveData<Device> getADevice(String mDeviceObjectId) {
@@ -208,15 +208,15 @@ public class LocalRepository {
 
     private static class deleteDeviceAsyncTask extends AsyncTask<Device, Void, Void> {
 
-        private DeviceDao mDeviceDao;
+        private UserDao mUSerDao;
 
-        deleteDeviceAsyncTask(DeviceDao mDeviceDao) {
-            this.mDeviceDao = mDeviceDao;
+        deleteDeviceAsyncTask(UserDao mUserDao) {
+            this.mUSerDao = mUserDao;
         }
 
         @Override
         protected Void doInBackground(final Device... params) {
-            this.mDeviceDao.delete(params[0]);
+            this.mUSerDao.deleteDevice(params[0].getObjectId());
             return null;
         }
     }

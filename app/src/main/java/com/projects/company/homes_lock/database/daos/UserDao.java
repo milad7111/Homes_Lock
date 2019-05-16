@@ -9,8 +9,6 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 
-import java.util.List;
-
 @Dao
 public abstract class UserDao {
 
@@ -38,6 +36,12 @@ public abstract class UserDao {
         return id;
     }
 
+
+    public void deleteDevice(String mObjectId) {
+        _deleteUserLockForUser(mObjectId);
+        _deleteDevice(mObjectId);
+    }
+
     private void insertDeviceForUser(Device device) {
         _insertDeviceForUser(device);
     }
@@ -45,22 +49,6 @@ public abstract class UserDao {
     private void insertUserLockForUser(UserLock userLock) {
         _insertUserLockForUser(userLock);
     }
-
-    public List<User> getUsersWithDevices() {
-        List<User> users = _getAllUsers();
-
-        for (User user : users) {
-            List<UserLock> mUserLocks = _getUserLockByUserId(user.getObjectId());
-
-            for (UserLock userLock : mUserLocks)
-                userLock.setRelatedDevice(_getDeviceByObjectId(userLock.getDeviceId()));
-
-            user.setRelatedUserLocks(mUserLocks);
-        }
-
-        return users;
-    }
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract Long _insertUser(User user);
@@ -71,18 +59,13 @@ public abstract class UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void _insertUserLockForUser(UserLock userLock);
 
-    @Query("SELECT * FROM user")
-    abstract List<User> _getAllUsers();
+    @Query("DELETE FROM userLock WHERE deviceId = :mDeviceId")
+    abstract void _deleteUserLockForUser(String mDeviceId);
 
-    @Query("SELECT * FROM userLock WHERE userId = :mUserId")
-    abstract List<UserLock> _getUserLockByUserId(String mUserId);
-
-    @Query("SELECT * FROM device WHERE objectId = :mDeviceId")
-    abstract Device _getDeviceByObjectId(String mDeviceId);
+    @Query("DELETE FROM device WHERE objectId= :mObjectId")
+    abstract void _deleteDevice(String mObjectId);
 
     @Query("DELETE FROM user")
     public void clearAllData() {
     }
-
-    ;
 }

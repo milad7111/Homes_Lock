@@ -1189,15 +1189,16 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
-        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+        DeviceViewModel.this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
         this.lastDeletedDevice = mDevice;
+
         if (mDevice.isDeviceSavedInServer()) {
             if (removeAllMembers) {
                 setRequestType("removeDeviceForAllMembers");
-                mNetworkRepository.removeDeviceForAllMembers(this, mDevice.getObjectId());
+                DeviceViewModel.this.mNetworkRepository.removeDeviceForAllMembers(this, mDevice.getObjectId());
             } else {
                 setRequestType("removeDeviceForOneMember");
-                mNetworkRepository.removeDeviceForOneMember(this, mDevice.getUserLockObjectId());
+                DeviceViewModel.this.mNetworkRepository.removeDeviceForOneMember(this, mDevice.getUserLockObjectId());
             }
         } else
             mLocalRepository.deleteDevice(mDevice);

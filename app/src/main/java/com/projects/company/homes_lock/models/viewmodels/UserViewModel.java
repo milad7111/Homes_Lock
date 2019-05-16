@@ -98,7 +98,7 @@ public class UserViewModel extends AndroidViewModel
 
         //region Initialize Objects
         this.mIManageMembersFragment = mIManageMembersFragment;
-        this.mLocalRepository = new LocalRepository(application);//TODO if not need delete this line
+        this.mLocalRepository = new LocalRepository(application);//TODO if not need deleteDevice this line
         this.mNetworkRepository = new NetworkRepository();
         //endregion Initialize Objects
     }

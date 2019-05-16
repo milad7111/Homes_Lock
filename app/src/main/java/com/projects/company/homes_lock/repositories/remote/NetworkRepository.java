@@ -187,6 +187,8 @@ public class NetworkRepository {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.body() != null)
                     listener.onResponse(response.body());
+                else if (response.errorBody() != null)
+                    listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(response.message()));
             }
 
             @Override
