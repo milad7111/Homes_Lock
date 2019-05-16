@@ -5,7 +5,9 @@ import java.util.regex.Pattern;
 
 public class ValidationHelper {
 
+    //region Constants
     public static final int VALIDATION_OK = 0;
+    public static final int VALIDATION_EMPTY = 1;
 
     public static final int VALIDATION_REGISTER_PASS_LENGTH = 100;
     public static final int VALIDATION_REGISTER_NO_MATCH = 101;
@@ -13,29 +15,28 @@ public class ValidationHelper {
     public static final int VALIDATION_EMAIL_FORMAT = 200;
 
     public static final int VALIDATION_MOBILE_NUMBER_FORMAT = 300;
-
-    public static final int VALIDATION_USERNAME_EMPTY = 400;
+    //endregion Constants
 
     //region Public Methods
     public static int validateUserName(String userName) {
-        if (checkUserNameEmpty(userName))
-            return VALIDATION_USERNAME_EMPTY;
-
-        return VALIDATION_OK;
+        return checkEmptyValue(userName) ? VALIDATION_EMPTY : VALIDATION_OK;
     }
 
     public static int validateUserEmail(String email) {
-        if (!checkEmailFormat(email))
+        if (checkEmptyValue(email))
+            return VALIDATION_EMPTY;
+        else if (!checkEmailFormat(email))
             return VALIDATION_EMAIL_FORMAT;
 
         return VALIDATION_OK;
     }
 
-    public static int validateMobileNumber(String mobileNumber) {
-        if (!checkMobileNumberFormat(mobileNumber))
-            return VALIDATION_MOBILE_NUMBER_FORMAT;
+    public static int validateDeviceNameForUser(String name) {
+        return (checkEmptyValue(name)) ? VALIDATION_EMPTY : VALIDATION_OK;
+    }
 
-        return VALIDATION_OK;
+    public static int validateMobileNumber(String mobileNumber) {
+        return !checkMobileNumberFormat(mobileNumber) ? VALIDATION_MOBILE_NUMBER_FORMAT : VALIDATION_OK;
     }
 
     public static int validateUserPassword(String password1, String password2) {
@@ -57,8 +58,8 @@ public class ValidationHelper {
         return password.length() >= 8;
     }
 
-    private static boolean checkUserNameEmpty(String userName) {
-        return userName.isEmpty();
+    private static boolean checkEmptyValue(String param) {
+        return param.isEmpty();
     }
 
     private static boolean checkEmailFormat(String email) {

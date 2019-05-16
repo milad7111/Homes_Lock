@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -26,8 +25,6 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
-
-import java.util.Objects;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -494,7 +491,7 @@ public class DeviceSettingFragment extends BaseFragment
     private void initViews() {
 //        handleViewsBasedOnDeviceType();
 
-        if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             txvDoorInstallationSettingFragment.setVisibility(GONE);
             txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
             txvChangePairingPasswordSettingFragment.setVisibility(GONE);
@@ -518,7 +515,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleDoorInstallation() {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             mDoorInstallationDialog = new Dialog(requireNonNull(getContext()));
             mDoorInstallationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mDoorInstallationDialog.setContentView(R.layout.dialog_device_setting);
@@ -552,7 +549,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleInitializeCalibrationLock() {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             mInitializeCalibrationLockDialog = new Dialog(requireNonNull(getContext()));
             mInitializeCalibrationLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mInitializeCalibrationLockDialog.setContentView(R.layout.dialog_initialize_calibration_lock_confirmation);
@@ -580,7 +577,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleCalibrationLockSteps() {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             mCalibrationLockDialog = new Dialog(requireNonNull(mFragment.getContext()));
             mCalibrationLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mCalibrationLockDialog.setContentView(R.layout.dialog_calibration_lock);
@@ -616,7 +613,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleLockPositions(String position) {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             mLockPositionsDialog = new Dialog(requireNonNull(mFragment.getContext()));
             mLockPositionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mLockPositionsDialog.setContentView(R.layout.dialog_confirmation_lock_position);
@@ -711,7 +708,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleRemoveLock() {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             mRemoveLockDialog = new Dialog(requireNonNull(getContext()));
             mRemoveLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mRemoveLockDialog.setContentView(R.layout.dialog_remove_lock);
@@ -727,7 +724,7 @@ public class DeviceSettingFragment extends BaseFragment
 //                chbRemoveAllMembersDialogRemoveLock.setEnabled(false);
 //            }
 
-//            if (mDevice.getMemberAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+//            if (mDevice.getUserAdminStatus() == DataHelper.MEMBER_STATUS_NOT_ADMIN) {
 //                chbRemoveAllMembersDialogRemoveLock.setChecked(false);
 //                chbRemoveAllMembersDialogRemoveLock.setVisibility(View.GONE);
 //            }
@@ -768,7 +765,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleDialogChangeOnlinePassword() {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             mChangeOnlinePasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
@@ -802,7 +799,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleDialogChangePairingPassword() {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
             mChangePairingPasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);

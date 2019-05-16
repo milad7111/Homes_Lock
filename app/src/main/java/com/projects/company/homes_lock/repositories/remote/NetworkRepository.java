@@ -236,8 +236,11 @@ public class NetworkRepository {
                 String.format("email='%s'", emailAddress)).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response != null && response.body() != null)
-                    listener.onResponse(response.body());
+                if (response != null)
+                    if (response.body() != null)
+                        listener.onResponse(response.body());
+                    else if (response.errorBody() != null)
+                        listener.onListNetworkListenerFailure(new FailureModel(response.message(), response.code()));
             }
 
             @Override
@@ -253,6 +256,7 @@ public class NetworkRepository {
             @Override
             public void handleResponse(Map updatedLock) {
                 updatedLock.put("bleDeviceName", mDevice.getBleDeviceName());
+                updatedLock.put("memberAdminStatus", mDevice.getUserAdminStatus());
                 listener.onResponse(new Device(updatedLock));
             }
 

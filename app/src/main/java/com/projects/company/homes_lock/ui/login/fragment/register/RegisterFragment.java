@@ -20,6 +20,7 @@ import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.viewmodels.RegisterViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
+import com.projects.company.homes_lock.utils.helper.ValidationHelper;
 
 import java.util.Objects;
 
@@ -28,11 +29,11 @@ import timber.log.Timber;
 import static android.support.v4.content.res.ResourcesCompat.getDrawable;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_EMPTY;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_EMAIL_FORMAT;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_MOBILE_NUMBER_FORMAT;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_REGISTER_NO_MATCH;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_REGISTER_PASS_LENGTH;
-import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_USERNAME_EMPTY;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateMobileNumber;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserEmail;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserName;
@@ -176,6 +177,13 @@ public class RegisterFragment extends BaseFragment
         tietConfirmPassword.setError(null);
 
         switch (validateUserEmail(Objects.requireNonNull(tietEmail.getText()).toString())) {
+            case VALIDATION_EMPTY:
+                tietEmail.setError("Must not be empty",
+                        getDrawable(getResources(),
+                                android.R.drawable.stat_notify_error,
+                                Objects.requireNonNull(getContext()).getTheme()));
+                tietEmail.requestFocus();
+                return false;
             case VALIDATION_EMAIL_FORMAT:
                 tietEmail.setError("Wrong email format",
                         getDrawable(getResources(),
@@ -186,7 +194,7 @@ public class RegisterFragment extends BaseFragment
         }
 
         switch (validateUserName(String.valueOf(tietUserName.getText()))) {
-            case VALIDATION_USERNAME_EMPTY:
+            case ValidationHelper.VALIDATION_EMPTY:
                 tietUserName.setError("Must not be empty",
                         getDrawable(getResources(),
                                 android.R.drawable.stat_notify_error,

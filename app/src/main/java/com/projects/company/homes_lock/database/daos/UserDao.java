@@ -25,6 +25,8 @@ public abstract class UserDao {
                 tempDevice.setConnectedClientsCount(Integer.valueOf(tempDevice.getConnectedDevices().split(",")[1]));
                 tempDevice.setConnectedServersCount(Integer.valueOf(tempDevice.getConnectedDevices().split(",")[2]));
 
+                tempDevice.setMemberAdminStatus(userLock.getAdminStatus());
+
                 insertDeviceForUser(tempDevice);
 
                 userLock.setDeviceId(userLock.getRelatedDevice().getObjectId());

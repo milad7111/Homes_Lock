@@ -142,7 +142,7 @@ public class UserViewModel extends AndroidViewModel
                     mIManageMembersFragment.onGetUserLockDataFailed(new FailureModel("there is no UserLock"));
                 else if (getRequestType().equals("getUserListWithEmailAddress"))
                     mIManageMembersFragment.onGetUserListWithEmailAddressFailed(
-                            new FailureModel("there is no User With specific EmailAddress"));
+                            new FailureModel("No user exists with this email"));
             }
         }
     }

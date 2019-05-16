@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import android.widget.CheckBox;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
@@ -34,7 +32,6 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.ManageMembersViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
@@ -44,6 +41,7 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
+import static com.projects.company.homes_lock.base.BaseApplication.activeUserEmail;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.LOCK_MEMBERS_SYNCING_MODE;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_NOT_ADMIN;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
@@ -53,6 +51,11 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.convertJso
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomPercentNumber;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_EMAIL_FORMAT;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_EMPTY;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_OK;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateDeviceNameForUser;
+import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserEmail;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -77,6 +80,10 @@ public class ManageMembersFragment extends BaseFragment
 
     //region Declare Variables
     //endregion Declare Variables
+
+    //region Declare Arrays & Lists
+    private List<String> mDeviceMembersEmail = new ArrayList<>();
+    //endregion Declare Arrays & Lists
 
     //region Declare Objects
     private Fragment mFragment;
@@ -171,8 +178,6 @@ public class ManageMembersFragment extends BaseFragment
                 break;
         }
     }
-
-
     //endregion Main Callbacks
 
     //region IManageMembersFragment Callbacks
@@ -180,26 +185,40 @@ public class ManageMembersFragment extends BaseFragment
     public void onGetUserLockDataSuccessful(List<User> response) {
         closeProgressDialog();
 
+        mDeviceMembersEmail = new ArrayList<>();
+
         ArrayList<MemberModel> mMemberList = new ArrayList<>();
         boolean findPrimaryAdmin = false;
 
         for (User user : response) {
-            int adminStatus;
-            if (user.getRelatedUserLocks().get(0).getAdminStatus()) {
-                if (findPrimaryAdmin)
-                    adminStatus = MEMBER_STATUS_SECONDARY_ADMIN;
-                else {
-                    adminStatus = MEMBER_STATUS_PRIMARY_ADMIN;
-                    findPrimaryAdmin = true;
-                }
-            } else
-                adminStatus = MEMBER_STATUS_NOT_ADMIN;
+            mDeviceMembersEmail.add(user.getEmail());
 
-            mMemberList.add(new MemberModel(
-                    R.drawable.ic_default_not_admin_user,
-                    user.getName(),
-                    adminStatus,
-                    user.getRelatedUserLocks().get(0).getObjectId()));
+            int adminStatus;
+
+            int userLockIndex = -1;
+            for (int i = 0; i < user.getRelatedUserLocks().size(); i++) {
+                if (user.getRelatedUserLocks().get(i).getRelatedDevice().getObjectId().equals(mDevice.getObjectId())) {
+                    userLockIndex = i;
+                    break;
+                }
+            }
+            if (userLockIndex != -1) {
+                if (user.getRelatedUserLocks().get(userLockIndex).getAdminStatus()) {
+                    if (findPrimaryAdmin)
+                        adminStatus = user.getEmail().equals(activeUserEmail) ? MEMBER_STATUS_PRIMARY_ADMIN : MEMBER_STATUS_SECONDARY_ADMIN;
+                    else {
+                        adminStatus = MEMBER_STATUS_PRIMARY_ADMIN;
+                        findPrimaryAdmin = true;
+                    }
+                } else
+                    adminStatus = MEMBER_STATUS_NOT_ADMIN;
+
+                mMemberList.add(new MemberModel(
+                        R.drawable.ic_default_not_admin_user,
+                        user.getName(),
+                        adminStatus,
+                        user.getRelatedUserLocks().get(0).getObjectId()));
+            }
         }
 
         if (getActivity() != null) {
@@ -250,13 +269,18 @@ public class ManageMembersFragment extends BaseFragment
         if (response.size() != 0) {
             this.mUser = response.get(0);
             handleAddLockMemberDialog(INSERT_LOCK_MEMBER);
-        } else
-            onGetUserListWithEmailAddressFailed(new FailureModel("user does not exist"));
+        }
     }
 
     @Override
     public void onGetUserListWithEmailAddressFailed(FailureModel response) {
         Timber.e(response.getFailureMessage());
+
+        closeProgressDialog();
+        if (mAddLockMemberDialog != null && mAddLockMemberDialog.isShowing()) {
+            ((TextInputEditText) mAddLockMemberDialog.findViewById(R.id.tiet_email_dialog_add_member)).setError(response.getFailureMessage());
+            mAddLockMemberDialog.findViewById(R.id.tiet_email_dialog_add_member).requestFocus();
+        }
     }
 
     @Override
@@ -352,20 +376,40 @@ public class ManageMembersFragment extends BaseFragment
             });
 
             btnAddDialogAddMember.setOnClickListener(v -> {
-                openProgressDialog(
-                        getContext(),
-                        null,
-                        String.format("Add Lock Member ... %d %%", getRandomPercentNumber(1, 4)));
-
-                this.mUserLockModel = new UserLockModel(
-                        tietLockNameDialogAddMember.getText().toString(),
-                        chbUserAdminStatusDialogAddMember.isChecked(),
-                        chbLockFavoriteStatusDialogAddMember.isChecked());
-
-                if (tietEmailDialogAddMember.getText().toString().equals(BaseApplication.activeUserEmail))
-                    onGetUserListWithEmailAddressFailed(new FailureModel("email is same as your email"));
+                if (tietEmailDialogAddMember.getText().toString().equals(activeUserEmail))
+                    onGetUserListWithEmailAddressFailed(new FailureModel("Email is same as yours"));
+                else if (mDeviceMembersEmail.contains(tietEmailDialogAddMember.getText().toString()))
+                    onGetUserListWithEmailAddressFailed(new FailureModel("Already is member of device"));
                 else
-                    mUserViewModel.getUserListWithEmailAddress(tietEmailDialogAddMember.getText().toString());
+                    switch (validateUserEmail(tietEmailDialogAddMember.getText().toString())) {
+                        case VALIDATION_EMPTY:
+                            onGetUserListWithEmailAddressFailed(new FailureModel("Must not be empty"));
+                            break;
+                        case VALIDATION_EMAIL_FORMAT:
+                            onGetUserListWithEmailAddressFailed(new FailureModel("Wrong email format"));
+                            break;
+                        case VALIDATION_OK:
+                            switch (validateDeviceNameForUser(tietLockNameDialogAddMember.getText().toString())) {
+                                case VALIDATION_EMPTY:
+                                    closeProgressDialog();
+                                    tietLockNameDialogAddMember.setError("Must not be empty");
+                                    tietLockNameDialogAddMember.requestFocus();
+                                    break;
+                                case VALIDATION_OK:
+                                    openProgressDialog(
+                                            getContext(),
+                                            null,
+                                            String.format("Add Lock Member ... %d %%", getRandomPercentNumber(1, 4)));
+
+                                    this.mUserLockModel = new UserLockModel(
+                                            tietLockNameDialogAddMember.getText().toString(),
+                                            chbUserAdminStatusDialogAddMember.isChecked(),
+                                            chbLockFavoriteStatusDialogAddMember.isChecked());
+                                    mUserViewModel.getUserListWithEmailAddress(tietEmailDialogAddMember.getText().toString());
+                                    break;
+                            }
+                            break;
+                    }
             });
         } else if (mAddLockMemberDialog != null && status == INSERT_LOCK_MEMBER) {
             openProgressDialog(
@@ -388,7 +432,7 @@ public class ManageMembersFragment extends BaseFragment
     }
 
     private void handleDeleteLockMember(MemberModel member) {
-        if (mDevice.getMemberAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getUserAdminStatus() != MEMBER_STATUS_NOT_ADMIN) {
             mRemoveLockMemberDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             mRemoveLockMemberDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mRemoveLockMemberDialog.setContentView(R.layout.dialog_remove_member);

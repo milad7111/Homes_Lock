@@ -9,13 +9,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +32,6 @@ import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceMode
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
-import com.projects.company.homes_lock.ui.device.fragment.gatewaypage.GatewayPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.utils.ble.ConnectedClientsAdapter;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
@@ -43,7 +40,6 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,6 +54,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_S
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.isMyPhone;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusText;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
@@ -537,15 +534,18 @@ public class LockPageFragment extends BaseFragment
 
         closeProgressDialog();
 
-        if (isUserLoggedIn() && !mDevice.getInternetStatus())
-            showSnack("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
+//        if (isUserLoggedIn() && !mDevice.getInternetStatus())
+//            showSnack("This device not connected to internet;\nLast update:\n" + new Date(mDevice.getUpdated()));
     }
 
     private void handleDeviceMembers() {
-        if (isUserLoggedIn())
-            addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
-                    R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
-        else
+        if (isUserLoggedIn()) {
+            if (mDevice.getUserAdminStatus() == MEMBER_STATUS_PRIMARY_ADMIN)
+                addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
+                        R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
+            else
+                showToast("Access Denied");
+        } else
             showToast("This is not available in Local Mode");
     }
 
@@ -574,29 +574,29 @@ public class LockPageFragment extends BaseFragment
         }.start();
     }
 
-    private void showSnack(String message) {
-        if (LockPageFragment.this.getActivity() != null)
-//            LockPageFragment.this.getActivity().runOnUiThread(() -> {
-            if (LockPageFragment.this.mInternetStatusSnackBar != null)
-                LockPageFragment.this.mInternetStatusSnackBar.dismiss();
-
-            if (LockPageFragment.this.getView() != null) {
-                LockPageFragment.this.mInternetStatusSnackBar = Snackbar
-                        .make(imgIsLockedLockPage, message, Snackbar.LENGTH_INDEFINITE)
-                        .setActionTextColor(getColor(Objects.requireNonNull(getContext()), R.color.md_yellow_700));
-                LockPageFragment.this.mInternetStatusSnackBar.setAction("OK", v -> {
-                    LockPageFragment.this.mInternetStatusSnackBar.dismiss();
-                });
-                View view = LockPageFragment.this.mInternetStatusSnackBar.getView();
-                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
-                params.gravity = Gravity.TOP;
-                view.setLayoutParams(params);
-
-                TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setMaxLines(5);
-
-                LockPageFragment.this.mInternetStatusSnackBar.show();
-            }
-    }
+//    private void showSnack(String message) {
+//        if (LockPageFragment.this.getActivity() != null)
+////            LockPageFragment.this.getActivity().runOnUiThread(() -> {
+//            if (LockPageFragment.this.mInternetStatusSnackBar != null)
+//                LockPageFragment.this.mInternetStatusSnackBar.dismiss();
+//
+//            if (LockPageFragment.this.getView() != null) {
+//                LockPageFragment.this.mInternetStatusSnackBar = Snackbar
+//                        .make(imgIsLockedLockPage, message, Snackbar.LENGTH_INDEFINITE)
+//                        .setActionTextColor(getColor(Objects.requireNonNull(getContext()), R.color.md_yellow_700));
+//                LockPageFragment.this.mInternetStatusSnackBar.setAction("OK", v -> {
+//                    LockPageFragment.this.mInternetStatusSnackBar.dismiss();
+//                });
+//                View view = LockPageFragment.this.mInternetStatusSnackBar.getView();
+//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
+//                params.gravity = Gravity.TOP;
+//                view.setLayoutParams(params);
+//
+//                TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+//                textView.setMaxLines(5);
+//
+//                LockPageFragment.this.mInternetStatusSnackBar.show();
+//            }
+//    }
     //endregion Declare Methods
 }

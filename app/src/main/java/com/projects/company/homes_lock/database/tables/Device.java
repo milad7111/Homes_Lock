@@ -32,6 +32,8 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_SN;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_TYP;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.generateDeviceType;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_NOT_ADMIN;
+import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
 
 @Entity(tableName = "device")
 public class Device extends BaseModel {
@@ -164,6 +166,9 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "connectedServersCount")
     private int mConnectedServersCount;
+
+    @ColumnInfo(name = "memberAdminStatus")
+    private boolean mMemberAdminStatus;
     //endregion Not Server Attributes
 
     //region Constructor
@@ -214,6 +219,7 @@ public class Device extends BaseModel {
         this.mConnectedClientsCount = mConnectedClientsCount;
         this.mConnectedServersCount = mConnectedServersCount;
         this.mError = mError;
+        this.mMemberAdminStatus = false;
     }
 
     public Device(TempDeviceModel device) {
@@ -243,6 +249,7 @@ public class Device extends BaseModel {
         this.mConnectedClientsCount = 0;
         this.mConnectedServersCount = 0;
         this.mError = "Every things is OK.";
+        this.mMemberAdminStatus = false;
     }
 
     public Device(Map updatedLock) {
@@ -269,6 +276,7 @@ public class Device extends BaseModel {
         handleSn(updatedLock);
         handleMac(updatedLock);
         handleUpdated(updatedLock);
+        handleMemberAdminStatus(updatedLock);
     }
 
     @NonNull
@@ -393,12 +401,12 @@ public class Device extends BaseModel {
         mRelatedUsers.add(userLocks);
     }
 
-    public int getMemberAdminStatus() {
-        if (mRelatedUsers != null && mRelatedUsers.size() != 0)
-            return mRelatedUsers.get(0).getAdminStatus() ? DataHelper.MEMBER_STATUS_PRIMARY_ADMIN : DataHelper.MEMBER_STATUS_NOT_ADMIN;
-
-        return DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
-    }
+//    public int getUserAdminStatus() {
+//        if (mRelatedUsers != null && mRelatedUsers.size() != 0)
+//            return mRelatedUsers.get(0).getAdminStatus() ? DataHelper.MEMBER_STATUS_PRIMARY_ADMIN : DataHelper.MEMBER_STATUS_NOT_ADMIN;
+//
+//        return DataHelper.MEMBER_STATUS_PRIMARY_ADMIN;
+//    }
 
 //    public int getAdminMembersCount() {
 //        int count = 0;
@@ -528,6 +536,12 @@ public class Device extends BaseModel {
             this.mUpdated = Long.valueOf(updatedLock.get("updated").toString());
     }
 
+    private void handleMemberAdminStatus(Map updatedLock) {
+        if (updatedLock.containsKey("memberAdminStatus"))
+            this.mMemberAdminStatus = Boolean.valueOf(
+                    updatedLock.get("memberAdminStatus") != null ? updatedLock.get("memberAdminStatus").toString() : "false");
+    }
+
     private void handleSn(Map updatedLock) {
         if (updatedLock.containsKey(BLE_COMMAND_SN) && updatedLock.get(BLE_COMMAND_SN) != null)
             this.mSerialNumber = updatedLock.get(BLE_COMMAND_SN).toString();
@@ -642,5 +656,17 @@ public class Device extends BaseModel {
 
     public void setUpdated(Long mUpdated) {
         this.mUpdated = mUpdated;
+    }
+
+    public void setMemberAdminStatus(boolean mMemberAdminStatus) {
+        this.mMemberAdminStatus = mMemberAdminStatus;
+    }
+
+    public int getUserAdminStatus() {
+        return this.mMemberAdminStatus ? MEMBER_STATUS_PRIMARY_ADMIN : MEMBER_STATUS_NOT_ADMIN;
+    }
+
+    public boolean getMemberAdminStatus() {
+        return this.mMemberAdminStatus;
     }
 }

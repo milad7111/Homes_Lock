@@ -379,8 +379,9 @@ public class DeviceViewModel extends AndroidViewModel
                     mIAddDeviceFragment.onInsertUserLockSuccessful((UserLock) response);
                 else if (mILoginFragment != null)
                     mILoginFragment.onInsertUserLockSuccessful((UserLock) response);
-            } else if (mIManageMembersFragment != null)
-                mIManageMembersFragment.onInsertUserLockSuccessful((UserLock) response);
+                else if (mIManageMembersFragment != null)
+                    mIManageMembersFragment.onInsertUserLockSuccessful((UserLock) response);
+            }
         } else if (response instanceof User) {
             if (mIAddDeviceFragment != null)
                 mIAddDeviceFragment.onGetUserSuccessful((User) response);
