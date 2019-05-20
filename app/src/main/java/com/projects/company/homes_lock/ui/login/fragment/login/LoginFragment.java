@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andexert.library.RippleView;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.Device;
@@ -34,9 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.fabric.sdk.android.Fabric;
+
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserEmail;
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserObjectId;
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserToken;
+import static com.projects.company.homes_lock.base.BaseApplication.logUserCrashesInFabric;
 import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
@@ -191,6 +196,8 @@ public class LoginFragment extends BaseFragment
         activeUserObjectId = user.getObjectId();
         activeUserToken = user.getUserToken();
         activeUserEmail = user.getEmail();
+        logUserCrashesInFabric();
+        logAuthEvent();
 
         for (Device localDevice : notSavedDevices) {
             for (UserLock userLock : user.getRelatedUserLocks()) {
@@ -286,6 +293,11 @@ public class LoginFragment extends BaseFragment
     //endregion Login CallBacks
 
     //region Declare Methods
+    public void logAuthEvent() {
+        Answers.getInstance().logCustom(new CustomEvent("Auth")
+                .putCustomAttribute("Login", activeUserEmail));
+    }
+
     private void clearViews() {
         tietEmailLoginFragment.setText(null);
         tietPasswordLoginFragment.setText(null);
