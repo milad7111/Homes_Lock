@@ -21,11 +21,11 @@ import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
-import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.models.viewmodels.LoginViewModelFactory;
+import com.projects.company.homes_lock.models.viewmodels.UserViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.ui.device.activity.DeviceActivity;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
@@ -71,9 +71,13 @@ public class LoginFragment extends BaseFragment
     //region Declare Variables
     private int savedDevicesIndex = 0;
 
-    private String lockObjectId = "";
-    private String userLockObjectId = "";
+    private String deviceObjectId = "";
+    private String userDeviceObjectId = "";
+    private String deviceSerialNumber = "";
     //endregion Declare Variables
+
+    //region Declare Arrays & Lists
+    //endregion Declare Arrays & Lists
 
     //region Declare Objects
     private UserViewModel mUserViewModel;
@@ -102,7 +106,7 @@ public class LoginFragment extends BaseFragment
         //region Initialize Objects
         this.mUserViewModel = ViewModelProviders.of(
                 this,
-                new LoginViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this))
+                new UserViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this))
                 .get(UserViewModel.class);
 
         this.mDeviceViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
@@ -216,9 +220,9 @@ public class LoginFragment extends BaseFragment
 
     @Override
     public void onFindLockInOnlineDataBaseSuccessful(String lockObjectId) {
-        this.lockObjectId = lockObjectId;
-        this.mDeviceViewModel.insertOnlineUserLock(this,
-                new UserLockModel(
+        this.deviceObjectId = lockObjectId;
+        this.mDeviceViewModel.insertOnlineUserDevice(this,
+                new UserDeviceModel(
                         notSavedDevices.get(savedDevicesIndex).getBleDeviceName(),
                         true,
                         notSavedDevices.get(savedDevicesIndex).isFavoriteStatus()
@@ -231,8 +235,8 @@ public class LoginFragment extends BaseFragment
 
     @Override
     public void onInsertUserLockSuccessful(UserLock userLock) {
-        this.userLockObjectId = userLock.getObjectId();
-        mDeviceViewModel.addLockToUserLock(this, this.userLockObjectId, this.lockObjectId);
+        this.userDeviceObjectId = userLock.getObjectId();
+        mDeviceViewModel.addLockToUserLock(this, this.userDeviceObjectId, this.deviceObjectId);
     }
 
     @Override
@@ -242,7 +246,7 @@ public class LoginFragment extends BaseFragment
     @Override
     public void onAddLockToUserLockSuccessful(Boolean addLockToUserLockSuccessful) {
         if (addLockToUserLockSuccessful)
-            mDeviceViewModel.addUserLockToUser(this, activeUserObjectId, this.userLockObjectId);
+            mDeviceViewModel.addUserLockToUser(this, activeUserObjectId, this.userDeviceObjectId);
         else
             onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
     }
@@ -253,6 +257,11 @@ public class LoginFragment extends BaseFragment
 
     @Override
     public void onAddUserLockToUserSuccessful(Boolean response) {
+        if (!this.deviceSerialNumber.isEmpty()) {
+            this.mDeviceViewModel.enablePushNotification(this.deviceSerialNumber);
+            this.deviceSerialNumber = "";
+        }
+
         if (++savedDevicesIndex < notSavedDevices.size())
             saveNotSavedLocalDevicesToServer();
         else {
@@ -275,6 +284,16 @@ public class LoginFragment extends BaseFragment
     }
 
     @Override
+    public void onDeviceRegistrationForPushNotificationSuccessful(String registrationId) {
+        showToast(String.format("device registration done: %s", registrationId));
+    }
+
+    @Override
+    public void onDeviceRegistrationForPushNotificationFailed(ResponseBodyFailureModel response) {
+
+    }
+
+    @Override
     public void onDataInsert(Object object) {
         closeProgressDialog();
         if (object instanceof User) {
@@ -292,6 +311,7 @@ public class LoginFragment extends BaseFragment
     }
 
     private void saveNotSavedLocalDevicesToServer() {
+        this.deviceSerialNumber = notSavedDevices.get(savedDevicesIndex).getSerialNumber();
         this.mDeviceViewModel.validateLockInOnlineDatabase(this, notSavedDevices.get(savedDevicesIndex).getSerialNumber());
     }
 

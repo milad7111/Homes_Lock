@@ -28,7 +28,7 @@ import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.AddLockViewModelFactory;
@@ -224,7 +224,7 @@ public class AddDeviceFragment extends BaseFragment
                 mAddDeviceOnlineDialog = null;
             }
 
-            mDeviceViewModel.enablePushNotification(this.lockObjectId);
+//            mDeviceViewModel.enablePushNotification(this.lockObjectId);
             mUserViewModel.getUserWithObjectId(activeUserObjectId);
         } else
             onAddUserLockToUserFailed(new ResponseBodyFailureModel("add user lock to user failed."));
@@ -318,14 +318,10 @@ public class AddDeviceFragment extends BaseFragment
 
     //region Declare Methods
     private void addNewDevice() {
-//        if (isUserLoggedIn())
-//            handleDialogAddDeviceOnline(false); // Means user Wrote username and password then clicked Login
-//        else {
         mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
         mTempDevice = new TempDeviceModel();
         if (getScanPermission(this))
             handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
-//        }
     }
 
     private void handleDialogListOfAvailableBleDevices(List<ScannedDeviceModel> devices) {
@@ -449,12 +445,11 @@ public class AddDeviceFragment extends BaseFragment
             });
         } else {
             if (deviceExistenceStatus)
-                mDeviceViewModel.insertOnlineUserLock(this,
-                        new UserLockModel(
+                mDeviceViewModel.insertOnlineUserDevice(this,
+                        new UserDeviceModel(
                                 Objects.requireNonNull(tietDeviceNameDialogAddNewDevice.getText()).toString(),
                                 true,
-                                chbDeviceFavoriteStatusDialogAddNewDevice.isChecked()
-                        ));
+                                chbDeviceFavoriteStatusDialogAddNewDevice.isChecked()));
         }
 
 

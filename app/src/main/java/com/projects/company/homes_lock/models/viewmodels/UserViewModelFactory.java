@@ -6,11 +6,11 @@ import android.arch.lifecycle.ViewModelProvider;
 
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
 
-public class LoginViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class UserViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private Application mApplication;
     private ILoginFragment mILoginFragment;
 
-    public LoginViewModelFactory(Application mApplication, ILoginFragment mILoginFragment) {
+    public UserViewModelFactory(Application mApplication, ILoginFragment mILoginFragment) {
         this.mApplication = mApplication;
         this.mILoginFragment = mILoginFragment;
     }

@@ -26,7 +26,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.MemberModel;
-import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
@@ -92,7 +92,7 @@ public class ManageMembersFragment extends BaseFragment
     private Device mDevice;
     private User mUser;
     private UserLock mUserLock;
-    private UserLockModel mUserLockModel;
+    private UserDeviceModel mUserLockModel;
     private LockUserAdapter mLockUserAdapter;
     private Dialog mRemoveLockMemberDialog;
     private Dialog mAddLockMemberDialog;
@@ -401,7 +401,7 @@ public class ManageMembersFragment extends BaseFragment
                                             null,
                                             String.format("Add Lock Member ... %d %%", getRandomPercentNumber(1, 4)));
 
-                                    this.mUserLockModel = new UserLockModel(
+                                    this.mUserLockModel = new UserDeviceModel(
                                             tietLockNameDialogAddMember.getText().toString(),
                                             chbUserAdminStatusDialogAddMember.isChecked(),
                                             chbLockFavoriteStatusDialogAddMember.isChecked());
@@ -416,7 +416,7 @@ public class ManageMembersFragment extends BaseFragment
                     getContext(),
                     null,
                     String.format("Add Lock Member ... %d %%", getRandomPercentNumber(2, 4)));
-            mDeviceViewModel.insertOnlineUserLock(this, this.mUserLockModel);
+            mDeviceViewModel.insertOnlineUserDevice(this, this.mUserLockModel);
         } else if (mAddLockMemberDialog != null && status == ADD_RELATED_DEVICE_RELATION) {
             openProgressDialog(
                     getContext(),

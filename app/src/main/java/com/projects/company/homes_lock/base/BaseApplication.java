@@ -40,8 +40,6 @@ public class BaseApplication extends Application {
     public static String activeUserEmail = null;
 
     private static volatile IRetrofit IRETROFIT = null;
-
-    private static volatile MQTTHandler mqttHandler = null;
     //endregion Declare Objects
 
     //region Main Callbacks

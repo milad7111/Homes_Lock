@@ -145,6 +145,16 @@ public class ForgetPasswordFragment extends BaseFragment implements ILoginFragme
     public void onGetUserFailed(FailureModel response) {
 
     }
+
+    @Override
+    public void onDeviceRegistrationForPushNotificationSuccessful(String registrationId) {
+
+    }
+
+    @Override
+    public void onDeviceRegistrationForPushNotificationFailed(ResponseBodyFailureModel response) {
+
+    }
     //endregion ILoginFragment
 
     //region Declare Methods

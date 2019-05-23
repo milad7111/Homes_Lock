@@ -9,7 +9,7 @@ import com.projects.company.homes_lock.database.tables.UserLock;
 import java.util.List;
 
 @Dao
-public abstract class LockUserViewDao {
+public abstract class LockUserDao {
 
     public Device getUserLockInfo(String objectId) {
 

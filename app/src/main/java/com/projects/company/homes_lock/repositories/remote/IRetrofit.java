@@ -6,7 +6,7 @@ import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
-import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public interface IRetrofit {
 
     @Headers({"Content-Type: application/json"})
     @POST("data/UserLock")
-    Call<UserLock> addUserLock(@Header("user-token") String userToken, @Body UserLockModel parameter);
+    Call<UserLock> addUserLock(@Header("user-token") String userToken, @Body UserDeviceModel parameter);
 
     @Headers({"Content-Type: application/json"})
     @PUT("data/UserLock/{userLockObjectId}/relatedDevice")

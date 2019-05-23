@@ -10,20 +10,24 @@ import android.support.annotation.NonNull;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
 import com.projects.company.homes_lock.database.daos.DeviceErrorDao;
 import com.projects.company.homes_lock.database.daos.ErrorDao;
-import com.projects.company.homes_lock.database.daos.LockUserViewDao;
+import com.projects.company.homes_lock.database.daos.LockUserDao;
+import com.projects.company.homes_lock.database.daos.NotificationDao;
 import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.DeviceError;
 import com.projects.company.homes_lock.database.tables.Error;
+import com.projects.company.homes_lock.database.tables.Notification;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 
 @Database(entities = {
         Device.class,
         DeviceError.class,
-        Error.class, User.class,
-        UserLock.class},
+        Error.class,
+        User.class,
+        UserLock.class,
+        Notification.class},
         version = 1, exportSchema = false)
 public abstract class LockDatabase extends RoomDatabase {
 
@@ -66,6 +70,8 @@ public abstract class LockDatabase extends RoomDatabase {
 
     public abstract UserLockDao userLockDao();
 
-    public abstract LockUserViewDao lockUserViewDao();
+    public abstract LockUserDao lockUserDao();
+
+    public abstract NotificationDao notificationDao();
     //endregion declare Objects
 }

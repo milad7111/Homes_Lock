@@ -34,4 +34,8 @@ public interface ILoginFragment {
     void onGetUserSuccessful(User response);
 
     void onGetUserFailed(FailureModel response);
+
+    void onDeviceRegistrationForPushNotificationSuccessful(String registrationId);
+
+    void onDeviceRegistrationForPushNotificationFailed(ResponseBodyFailureModel response);
 }

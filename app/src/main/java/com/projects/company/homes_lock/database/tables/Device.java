@@ -124,6 +124,10 @@ public class Device extends BaseModel {
     @SerializedName("err")
     private String mError;
 
+    @ColumnInfo(name = "registrationId")
+    @SerializedName("registrationId")
+    private String mRegistrationId = "NOT_SET";
+
     //region Ignore server attributes
     @Ignore
     @SerializedName("created")
@@ -668,5 +672,13 @@ public class Device extends BaseModel {
 
     public boolean getMemberAdminStatus() {
         return this.mMemberAdminStatus;
+    }
+
+    public String getRegistrationId() {
+        return mRegistrationId;
+    }
+
+    public void setRegistrationId(String mRegistrationId) {
+        this.mRegistrationId = mRegistrationId;
     }
 }

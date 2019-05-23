@@ -17,11 +17,12 @@ import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelp
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -127,7 +128,7 @@ public class NetworkRepository {
                 });
     }
 
-    public void insertUserLock(final NetworkListener.SingleNetworkListener<BaseModel> listener, UserLockModel parameter) {
+    public void insertUserLock(final NetworkListener.SingleNetworkListener<BaseModel> listener, UserDeviceModel parameter) {
         BaseApplication.getRetrofitAPI().addUserLock(BaseApplication.activeUserToken, parameter).enqueue(new Callback<UserLock>() {
             @Override
             public void onResponse(Call<UserLock> call, Response<UserLock> response) {
@@ -299,8 +300,8 @@ public class NetworkRepository {
         });
     }
 
-    public void enablePushNotification(final NetworkListener.SingleNetworkListener<ResponseBody> listener, List<String> channels) {
-        Backendless.Messaging.registerDevice(channels, new AsyncCallback<DeviceRegistrationResult>() {
+    public void enablePushNotification(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String serialNumber) {
+        Backendless.Messaging.registerDevice(Collections.singletonList(serialNumber), new AsyncCallback<DeviceRegistrationResult>() {
             @Override
             public void handleResponse(DeviceRegistrationResult response) {
                 listener.onResponse(new ResponseBodyModel(response.getDeviceToken(), true));

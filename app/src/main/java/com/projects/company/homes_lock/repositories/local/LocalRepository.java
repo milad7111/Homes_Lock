@@ -9,10 +9,12 @@ import com.projects.company.homes_lock.database.base.LockDatabase;
 import com.projects.company.homes_lock.database.daos.DeviceDao;
 import com.projects.company.homes_lock.database.daos.DeviceErrorDao;
 import com.projects.company.homes_lock.database.daos.ErrorDao;
-import com.projects.company.homes_lock.database.daos.LockUserViewDao;
+import com.projects.company.homes_lock.database.daos.LockUserDao;
+import com.projects.company.homes_lock.database.daos.NotificationDao;
 import com.projects.company.homes_lock.database.daos.UserDao;
 import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.Notification;
 import com.projects.company.homes_lock.database.tables.User;
 
 import java.util.List;
@@ -33,7 +35,8 @@ public class LocalRepository {
     private DeviceDao mDeviceDao;
     private DeviceErrorDao mDeviceErrorDao;
     private ErrorDao mErrorDao;
-    private LockUserViewDao mLockUserViewDao;
+    private NotificationDao mNotificationDao;
+    private LockUserDao mLockUserDao;
     private SharedPreferences mSharedPreferences = null;
     private static ILocalRepository mILocalRepository = null;
     //endregion Declare Objects
@@ -49,7 +52,8 @@ public class LocalRepository {
         mDeviceDao = LockDatabase.getDatabase(application).deviceDao();
         mDeviceErrorDao = LockDatabase.getDatabase(application).deviceErrorDao();
         mErrorDao = LockDatabase.getDatabase(application).errorDao();
-        mLockUserViewDao = LockDatabase.getDatabase(application).lockUserViewDao();
+        mLockUserDao = LockDatabase.getDatabase(application).lockUserDao();
+        mNotificationDao = LockDatabase.getDatabase(application).notificationDao();
         mSharedPreferences = application.getSharedPreferences(application.getPackageName(), MODE_PRIVATE);
         //endregion Initialize Objects
     }
@@ -64,11 +68,11 @@ public class LocalRepository {
     }
 
     public Device getUserLockInfo(String objectId) {
-        return mLockUserViewDao.getUserLockInfo(objectId);
+        return mLockUserDao.getUserLockInfo(objectId);
     }
 
     public List<Device> getAllUserLocks() {
-        return mLockUserViewDao.getAllUserLocks();
+        return mLockUserDao.getAllUserLocks();
     }
 
     public void insertDevice(ILocalRepository iLocalRepository, Device device) {
@@ -167,6 +171,17 @@ public class LocalRepository {
         new clearAllDataAndInsertUserAsyncTask(mUserDao, mUserLockDao, mDeviceDao, mDeviceErrorDao, mErrorDao, user).execute();
     }
     //endregion User and UserLock table
+
+    //region Notification table
+    public void insertNotification(ILocalRepository iLocalRepository, Notification notification) {
+        mILocalRepository = iLocalRepository;
+        new insertNotificationAsyncTask(mNotificationDao).execute(notification);
+    }
+
+    public LiveData<List<Notification>> getAllNotifications() {
+        return mNotificationDao.getAllNotifications();
+    }
+    //endregion Notification table
 
     //region Declare Classes & Interfaces
     private static class insertDeviceAsyncTask extends AsyncTask<Device, Void, Device> {
@@ -281,6 +296,29 @@ public class LocalRepository {
             if (mILocalRepository != null)
                 mILocalRepository.onClearAllData();
             new insertUserAsyncTask(mUserDao).execute(mUser);
+        }
+    }
+
+    private static class insertNotificationAsyncTask extends AsyncTask<Notification, Void, Notification> {
+
+        private NotificationDao mNotificationDao;
+
+        insertNotificationAsyncTask(NotificationDao mNotificationDao) {
+            this.mNotificationDao = mNotificationDao;
+        }
+
+        @Override
+        protected Notification doInBackground(Notification... notifications) {
+            this.mNotificationDao.insert(notifications[0]);
+
+            return notifications[0];
+        }
+
+        @Override
+        protected void onPostExecute(Notification notification) {
+            super.onPostExecute(notification);
+            if (mILocalRepository != null)
+                mILocalRepository.onDataInsert(notification);
         }
     }
     //endregion Declare Classes & Interfaces

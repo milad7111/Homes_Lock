@@ -20,7 +20,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.request.UserLockModel;
+import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
@@ -48,7 +48,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -367,14 +366,14 @@ public class DeviceViewModel extends AndroidViewModel
                                         .replace("\"", ""));
                     break;
                 case "enablePushNotification":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onDeviceRegistrationPushNotificationSuccessful(((ResponseBodyModel) response).getRegistrationId());
+                    if (mILoginFragment != null)
+                        mILoginFragment.onDeviceRegistrationForPushNotificationSuccessful(((ResponseBodyModel) response).getRegistrationId());
                     break;
                 default:
                     break;
             }
         } else if (response instanceof UserLock) {
-            if (getRequestType().equals("insertOnlineUserLock")) {
+            if (getRequestType().equals("insertOnlineUserDevice")) {
                 if (mIAddDeviceFragment != null)
                     mIAddDeviceFragment.onInsertUserLockSuccessful((UserLock) response);
                 else if (mILoginFragment != null)
@@ -430,8 +429,8 @@ public class DeviceViewModel extends AndroidViewModel
                         mIDeviceSettingFragment.onRemoveDeviceForOneMemberFailed((ResponseBodyFailureModel) response);
                     break;
                 case "enablePushNotification":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onDeviceRegistrationPushNotificationFailed((ResponseBodyFailureModel) response);
+                    if (mILoginFragment != null)
+                        mILoginFragment.onDeviceRegistrationForPushNotificationFailed((ResponseBodyFailureModel) response);
                     break;
                 default:
                     break;
@@ -442,14 +441,14 @@ public class DeviceViewModel extends AndroidViewModel
                     case "############"://TODO i do not know this label is true
                         mIAddDeviceFragment.onGetUserFailed((FailureModel) response);
                         break;
-                    case "insertOnlineUserLock":
+                    case "insertOnlineUserDevice":
                         mIAddDeviceFragment.onInsertUserLockFailed((FailureModel) response);
                         break;
                 }
             } else if (mIManageMembersFragment != null)
                 mIManageMembersFragment.onInsertUserLockFailed((FailureModel) response);
             else if (mILoginFragment != null) {
-                if (getRequestType().equals("insertOnlineUserLock"))
+                if (getRequestType().equals("insertOnlineUserDevice"))
                     mILoginFragment.onInsertUserLockFailed((FailureModel) response);
             }
         }
@@ -1131,8 +1130,8 @@ public class DeviceViewModel extends AndroidViewModel
         DeviceViewModel.this.mNetworkRepository.getDeviceObjectIdWithSerialNumber(this, serialNumber);
     }
 
-    public void insertOnlineUserLock(Fragment fragment, UserLockModel userLock) {
-        setRequestType("insertOnlineUserLock");
+    public void insertOnlineUserDevice(Fragment fragment, UserDeviceModel userLock) {
+        setRequestType("insertOnlineUserDevice");
 
         if (fragment instanceof IAddDeviceFragment)
             DeviceViewModel.this.mIAddDeviceFragment = (IAddDeviceFragment) fragment;
@@ -1183,9 +1182,9 @@ public class DeviceViewModel extends AndroidViewModel
         mNetworkRepository.removeListenerForDevice(this, mDevice);
     }
 
-    public void enablePushNotification(String lockObjectId) {
+    public void enablePushNotification(String serialNumber) {
         setRequestType("enablePushNotification");
-        mNetworkRepository.enablePushNotification(this, Collections.singletonList(lockObjectId));
+        mNetworkRepository.enablePushNotification(this, serialNumber);
     }
 
     public void removeDevice(Fragment parentFragment, boolean removeAllMembers, Device mDevice) {
