@@ -3,11 +3,16 @@ package com.projects.company.homes_lock.ui.login.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.crashlytics.android.answers.Answers;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
 import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
+
+import java.io.IOException;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
 
@@ -45,6 +50,7 @@ public class LoginActivity extends BaseActivity implements ILoginActivity {
 
         ViewHelper.setContext(LoginActivity.this);
         addFragment(this, R.id.frg_login_activity, new LoginFragment());
+        Fabric.with(this, new Answers());
     }
 
     @Override

@@ -6,17 +6,18 @@ package com.projects.company.homes_lock.base;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.backendless.Backendless;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.projects.company.homes_lock.BuildConfig;
 import com.projects.company.homes_lock.repositories.remote.IRetrofit;
 import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
+import io.fabric.sdk.android.Fabric;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -48,6 +49,9 @@ public class BaseApplication extends Application {
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Backendless.initApp(this, BACKENDLESS_APPLICATION_ID, BACKENDLESS_ANDROID_API_KEY);
+        Fabric.with(this, new Crashlytics());
+        // TODO: Move this to where you establish a user session
+        logUserCrashesInFabric();
     }
 
     @Override
@@ -80,17 +84,18 @@ public class BaseApplication extends Application {
         return IRETROFIT;
     }
 
-//    public static synchronized MQTTHandler getMqttHandler(){
-//        mqttHandler =
-//        return mqttHandler;
-//    }
-
     public static boolean isUserLoggedIn() {
         return userLoginMode;
     }
 
     public static void setUserLoginMode(boolean userLoginMode) {
         BaseApplication.userLoginMode = userLoginMode;
+    }
+
+    public static void logUserCrashesInFabric() {
+        Crashlytics.setUserIdentifier(activeUserObjectId);
+        Crashlytics.setUserEmail(activeUserEmail);
+        Crashlytics.setUserName(activeUserToken);
     }
     //endregion Declare Methods
 }
