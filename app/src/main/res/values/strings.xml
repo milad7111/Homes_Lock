@@ -30,6 +30,8 @@
     <string name="content_description_calibration_lock_idle_position_status">green if idle position set and gray if not set</string>
     <string name="content_description_calibration_lock_latch_position_status">green if latch position set and gray if not set</string>
     <string name="content_description_calibration_lock_lock_position_status">green if lock position set and gray if not set</string>
+
+    <string name="content_description_notification_list_item_img_priority">show priority of notification</string>
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->
