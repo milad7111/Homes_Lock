@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:clickable="true"
+    android:fillViewport="true"
+    android:focusable="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -51,7 +53,7 @@
                 android:inputType="textEmailAddress"
                 android:nextFocusDown="@+id/tiet_password_login_fragment"
                 android:textColor="@color/hintColor"
-                android:textColorHint="@color/hintColor"/>
+                android:textColorHint="@color/hintColor" />
 
         </android.support.design.widget.TextInputLayout>
 

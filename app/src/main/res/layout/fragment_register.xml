@@ -28,7 +28,7 @@
             android:inputType="textEmailAddress"
             android:nextFocusDown="@+id/tiet_user_name_register_fragment"
             android:textColor="@color/hintColor"
-            android:textColorHint="@color/hintColor"/>
+            android:textColorHint="@color/hintColor" />
 
     </android.support.design.widget.TextInputLayout>
 

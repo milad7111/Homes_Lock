@@ -123,8 +123,6 @@ public class DeviceActivity extends BaseActivity
 
         getAllDevices();
         //endregion init
-
-        throw new RuntimeException("This is a test crash");
     }
 
     @Override

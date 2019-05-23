@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,7 +64,7 @@ import static com.projects.company.homes_lock.utils.helper.ValidationHelper.vali
 public class ManageMembersFragment extends BaseFragment
         implements
         IManageMembersFragment,
-        View.OnClickListener {
+        View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     //region Declare Constants
     private static final String ARG_PARAM = "param";
@@ -73,8 +74,9 @@ public class ManageMembersFragment extends BaseFragment
     //endregion Declare Constants
 
     //region Declare Views
+    private SwipeRefreshLayout srlManageMembersFragment;
     private RecyclerView rcvManageMembersFragment;
-    private FloatingActionButton fabSyncManageMembersFragment;
+//    private FloatingActionButton fabSyncManageMembersFragment;
     private FloatingActionButton fabAddManageMembersFragment;
     //endregion Declare Views
 
@@ -146,14 +148,21 @@ public class ManageMembersFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
 
         //region Initialize Views
+        srlManageMembersFragment = view.findViewById(R.id.srl_manage_members_fragment);
         rcvManageMembersFragment = view.findViewById(R.id.rcv_manage_members_fragment);
-        fabSyncManageMembersFragment = view.findViewById(R.id.fab_sync_manage_members_fragment);
+//        fabSyncManageMembersFragment = view.findViewById(R.id.fab_sync_manage_members_fragment);
         fabAddManageMembersFragment = view.findViewById(R.id.fab_add_manage_members_fragment);
         //endregion Initialize Views
 
         //region Setup Views
-        fabSyncManageMembersFragment.setOnClickListener(this);
+//        fabSyncManageMembersFragment.setOnClickListener(this);
         fabAddManageMembersFragment.setOnClickListener(this);
+        srlManageMembersFragment.setOnRefreshListener(this);
+        srlManageMembersFragment.setColorSchemeResources(
+                R.color.colorPrimary,
+                R.color.colorPrimaryDark,
+                R.color.colorAccent
+        );
         //endregion Setup Views
 
         //region init
@@ -170,13 +179,18 @@ public class ManageMembersFragment extends BaseFragment
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fab_sync_manage_members_fragment:
-                syncLockMembersWithServer();
-                break;
+//            case R.id.fab_sync_manage_members_fragment:
+//                syncLockMembersWithServer();
+//                break;
             case R.id.fab_add_manage_members_fragment:
                 handleAddLockMemberDialog(CHECK_EXIST_USER_WITH_EMAIL);
                 break;
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        syncLockMembersWithServer();
     }
     //endregion Main Callbacks
 
@@ -184,6 +198,7 @@ public class ManageMembersFragment extends BaseFragment
     @Override
     public void onGetUserLockDataSuccessful(List<User> response) {
         closeProgressDialog();
+        srlManageMembersFragment.setRefreshing(false);
 
         mDeviceMembersEmail = new ArrayList<>();
 
@@ -226,14 +241,15 @@ public class ManageMembersFragment extends BaseFragment
             rcvManageMembersFragment.setAdapter(mLockUserAdapter);
         }
 
-        fabSyncManageMembersFragment.setClickable(true);
+//        fabSyncManageMembersFragment.setClickable(true);
     }
 
     @Override
     public void onGetUserLockDataFailed(Object response) {
         Timber.i(((FailureModel) response).getFailureMessage());
         closeProgressDialog();
-        fabSyncManageMembersFragment.setClickable(true);
+        srlManageMembersFragment.setRefreshing(false);
+//        fabSyncManageMembersFragment.setClickable(true);
     }
 
     @Override
@@ -332,9 +348,10 @@ public class ManageMembersFragment extends BaseFragment
 
     //region Declare Methods
     private void syncLockMembersWithServer() {
-        openProgressDialog(mFragment.getContext(), null, "Sync Lock members ...");
+        srlManageMembersFragment.setRefreshing(true);
+//        openProgressDialog(mFragment.getContext(), null, "Sync Lock members ...");
 
-        fabSyncManageMembersFragment.setClickable(false);
+//        fabSyncManageMembersFragment.setClickable(false);
 
         mLockUserAdapter = new LockUserAdapter(this,
                 Collections.singletonList(new MemberModel(NOT_DEFINED_INTEGER_NUMBER, "", LOCK_MEMBERS_SYNCING_MODE, "")));
