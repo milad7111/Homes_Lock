@@ -611,13 +611,9 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void showToast(String message) {
-        new Thread() {
-            public void run() {
-                if (LockPageFragment.this.getActivity() != null)
-                    LockPageFragment.this.getActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-            }
-        }.start();
+        if (LockPageFragment.this.getActivity() != null)
+            LockPageFragment.this.getActivity().runOnUiThread(() ->
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
     }
     //endregion Declare Methods
 }

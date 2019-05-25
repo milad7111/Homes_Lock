@@ -935,12 +935,8 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     private void showToast(String message) {
-        new Thread() {
-            public void run() {
-                Objects.requireNonNull(GatewayPageFragment.this.getActivity()).runOnUiThread(() ->
-                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-            }
-        }.start();
+        Objects.requireNonNull(GatewayPageFragment.this.getActivity()).runOnUiThread(() ->
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
     }
 
     @SuppressLint("DefaultLocale")

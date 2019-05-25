@@ -328,12 +328,8 @@ public class LoginFragment extends BaseFragment
     }
 
     private void showToast(String message) {
-        new Thread() {
-            public void run() {
-                Objects.requireNonNull(LoginFragment.this.getActivity()).runOnUiThread(() ->
-                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-            }
-        }.start();
+        Objects.requireNonNull(LoginFragment.this.getActivity()).runOnUiThread(() ->
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
     }
     //endregion Declare Methods
 }

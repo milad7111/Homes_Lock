@@ -26,6 +26,8 @@ import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.utils.helper.DataHelper;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
+import timber.log.Timber;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
@@ -69,8 +71,8 @@ public class DeviceSettingFragment extends BaseFragment
     private TextView txvResetLockDescriptionSettingFragment;
     private TextView txvRemoveLockSettingFragment;
     private TextView txvRemoveLockDescriptionSettingFragment;
-//    private TextView txvChangePasswordOnlineSettingFragment;
-//    private TextView txvChangePasswordOnlineDescriptionSettingFragment;
+    private TextView txvChangeOnlinePasswordSettingFragment;
+    private TextView txvChangeOnlinePasswordDescriptionSettingFragment;
 
     //Lock Specific Setting
     private TextView txvDoorInstallationSettingFragment;
@@ -168,8 +170,6 @@ public class DeviceSettingFragment extends BaseFragment
         txvResetLockDescriptionSettingFragment = view.findViewById(R.id.txv_reset_lock_description_setting_fragment);
         txvRemoveLockSettingFragment = view.findViewById(R.id.txv_remove_device_setting_fragment);
         txvRemoveLockDescriptionSettingFragment = view.findViewById(R.id.txv_remove_device_description_setting_fragment);
-//        txvChangePasswordOnlineSettingFragment = view.findViewById(R.id.txv_change_password_online_setting_fragment);
-//        txvChangePasswordOnlineDescriptionSettingFragment = view.findViewById(R.id.txv_change_password_online_description_setting_fragment);
 
         //Lock Specific Setting
         if (this.mDeviceType.equals("LOCK")) {
@@ -180,7 +180,10 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         //Gateway Specific Setting
-        //TODO
+        if (this.mDeviceType.equals("GTWY")) {
+            txvChangeOnlinePasswordSettingFragment = view.findViewById(R.id.txv_change_online_password_setting_fragment);
+            txvChangeOnlinePasswordDescriptionSettingFragment = view.findViewById(R.id.txv_change_online_password_description_setting_fragment);
+        }
         //endregion Initialize Views
 
         //region Setup Views
@@ -201,8 +204,8 @@ public class DeviceSettingFragment extends BaseFragment
         txvResetLockDescriptionSettingFragment.setOnClickListener(this);
         txvRemoveLockSettingFragment.setOnClickListener(this);
         txvRemoveLockDescriptionSettingFragment.setOnClickListener(this);
-//        txvChangePasswordOnlineSettingFragment.setOnClickListener(this);
-//        txvChangePasswordOnlineDescriptionSettingFragment.setOnClickListener(this);
+        txvChangeOnlinePasswordSettingFragment.setOnClickListener(this);
+        txvChangeOnlinePasswordDescriptionSettingFragment.setOnClickListener(this);
 
         //Lock Specific Setting
         if (this.mDeviceType.equals("LOCK")) {
@@ -213,7 +216,10 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         //Gateway Specific Setting
-        //TODO
+        if (this.mDeviceType.equals("GTWY")) {
+            txvChangeOnlinePasswordSettingFragment.setOnClickListener(this);
+            txvChangeOnlinePasswordDescriptionSettingFragment.setOnClickListener(this);
+        }
         //endregion Setup Views
     }
 
@@ -275,29 +281,15 @@ public class DeviceSettingFragment extends BaseFragment
             case R.id.btn_done_dialog_calibration_lock:
                 dismissAllConfigDialogs();
                 break;
-//            case R.id.txv_change_password_online_setting_fragment:
-//            case R.id.txv_change_password_online_description_setting_fragment:
-//                handleChangePassword(CHANGE_ONLINE_PASSWORD);
-//                break;
+            case R.id.txv_change_online_password_setting_fragment:
+            case R.id.txv_change_online_password_description_setting_fragment:
+                handleChangePassword(CHANGE_ONLINE_PASSWORD);
+                break;
         }
     }
     //endregion Main Callbacks
 
     //region IDeviceSettingFragment Callbacks
-    @Override
-    public void onSetDeviceSetting(boolean deviceSettingStatus) {
-//        ProgressDialogHelper.openProgressDialog(null, null, null, false);
-//
-//        if (deviceSettingStatus) {
-//            if (mDoorInstallationDialog != null) {
-//                mDoorInstallationDialog.dismiss();
-//                mDoorInstallationDialog = null;
-//            }
-//            Log.i(getTag(), "Device Setting set successfully");
-//        } else
-//            Toast.makeText(getContext(), "Device Setting failed.", Toast.LENGTH_LONG).show();
-    }
-
     @Override
     public void onChangeOnlinePassword(boolean value) {
         closeProgressDialog();
@@ -333,20 +325,20 @@ public class DeviceSettingFragment extends BaseFragment
     public void onSetDoorInstallationFailed() {
         mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice(this);
         closeProgressDialog();
-        Log.e("Set Door Installation", "Failed");
+        Timber.tag("Set Door Installation").e("Failed");
         showToast("Door installation failed.");
     }
 
     @Override
     public void onCheckOldPairingPasswordSuccessful() {
         closeProgressDialog();
-        Log.e(getClass().getName(), "Old password doesn't match real one!");
+        Timber.e("Old password doesn't match real one!");
     }
 
     @Override
     public void onChangePairingPasswordSuccessful() {
         closeProgressDialog();
-        Log.e(getClass().getName(), "Change Pairing password successful.");
+        Timber.e("Change Pairing password successful.");
         showToast("Change password done.");
 
         if (mChangePairingPasswordDialog != null) {
@@ -359,7 +351,7 @@ public class DeviceSettingFragment extends BaseFragment
     public void onChangePairingPasswordFailed(String errorValue) {
         closeProgressDialog();
         showToast(String.format("New password hasn't minimum requirements as pairing password!: %s", errorValue));
-        Log.e(getClass().getName(), String.format("New password hasn't minimum requirements as pairing password!: %s", errorValue));
+        Timber.e("New password hasn't minimum requirements as pairing password!: %s", errorValue);
     }
 
     @Override
@@ -375,7 +367,7 @@ public class DeviceSettingFragment extends BaseFragment
 
     @Override
     public void onCheckOldPairingPasswordFailed(String errorValue) {
-        Log.e(getClass().getName(), String.format("Old password does not match pass in Device!: %s", errorValue));
+        Timber.e("Old password does not match pass in Device!: %s", errorValue);
         showToast("Error in Old password.");
         closeProgressDialog();
     }
@@ -405,11 +397,7 @@ public class DeviceSettingFragment extends BaseFragment
             mInitializeCalibrationLockDialog = null;
         }
 
-        new Thread() {
-            public void run() {
-                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> handleCalibrationLockSteps());
-            }
-        }.start();
+        requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> handleCalibrationLockSteps());
     }
 
     @Override
@@ -423,12 +411,8 @@ public class DeviceSettingFragment extends BaseFragment
             }
         }
 
-        new Thread() {
-            public void run() {
-                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
-                        handleLockPositionStatusImage("Idle", true));
-            }
-        }.start();
+        requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+                handleLockPositionStatusImage("Idle", true));
     }
 
     @Override
@@ -442,12 +426,8 @@ public class DeviceSettingFragment extends BaseFragment
             }
         }
 
-        new Thread() {
-            public void run() {
-                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
-                        handleLockPositionStatusImage("Latch", true));
-            }
-        }.start();
+        requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
+                handleLockPositionStatusImage("Latch", true));
     }
 
     @Override
@@ -461,14 +441,20 @@ public class DeviceSettingFragment extends BaseFragment
             }
         }
 
-        new Thread() {
-            public void run() {
-                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
-                    handleLockPositionStatusImage("Lock", true);
-                    DeviceSettingFragment.this.mDeviceViewModel.sendConfigCommand(mFragment);
-                });
-            }
-        }.start();
+//        new Thread() {
+//            public void run() {
+//                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
+//                    handleLockPositionStatusImage("Lock", true);
+//                    DeviceSettingFragment.this.mDeviceViewModel.sendConfigCommand(mFragment);
+//                });
+//            }
+//        }.start();
+
+        //TODO top code replace with below code
+        requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
+            handleLockPositionStatusImage("Lock", true);
+            DeviceSettingFragment.this.mDeviceViewModel.sendConfigCommand(mFragment);
+        });
     }
 
     @Override
@@ -485,46 +471,42 @@ public class DeviceSettingFragment extends BaseFragment
 
     //region Declare Methods
     private void initViews() {
-        if (!mDevice.getMemberAdminStatus()) {
-            if (this.mDeviceType.equals("LOCK")) {
-                txvDoorInstallationSettingFragment.setVisibility(GONE);
-                txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
-                txvCalibrationLockSettingFragment.setVisibility(GONE);
-                txvCalibrationLockDescriptionSettingFragment.setVisibility(GONE);
-            }
-
-            txvChangePairingPasswordSettingFragment.setVisibility(GONE);
-            txvChangePairingPasswordDescriptionSettingFragment.setVisibility(GONE);
-            txvSerialNumberSettingFragment.setVisibility(GONE);
-            txvSerialNumberDescriptionSettingFragment.setVisibility(GONE);
-
-//            txvChangePasswordOnlineSettingFragment.setVisibility(View.GONE);
-//            txvChangePasswordOnlineDescriptionSettingFragment.setVisibility(View.GONE);
-        }
-
-        if (!isUserLoggedIn()) {
-            txvRemoveLockSettingFragment.setVisibility(GONE);
-            txvRemoveLockDescriptionSettingFragment.setVisibility(GONE);
-        } else {
-            if (this.mDeviceType.equals("LOCK")) {
-                txvDoorInstallationSettingFragment.setVisibility(GONE);
-                txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
-                txvCalibrationLockSettingFragment.setVisibility(GONE);
-                txvCalibrationLockDescriptionSettingFragment.setVisibility(GONE);
-            }
-
-            txvChangePairingPasswordSettingFragment.setVisibility(GONE);
-            txvChangePairingPasswordDescriptionSettingFragment.setVisibility(GONE);
-            txvResetLockSettingFragment.setVisibility(GONE);
-            txvResetLockDescriptionSettingFragment.setVisibility(GONE);
-        }
-
         txvDeviceTypeDescriptionSettingFragment.setText(mDevice.getDeviceType());
         txvFirmwareVersionDescriptionSettingFragment.setText(mDevice.getFWVersion());
         txvHardwareVersionDescriptionSettingFragment.setText(mDevice.getHWVersion());
         txvProductionDateDescriptionSettingFragment.setText(mDevice.getProductionDate());
         txvDynamicIdDescriptionSettingFragment.setText(mDevice.getDynamicId());
         txvSerialNumberDescriptionSettingFragment.setText(mDevice.getSerialNumber());
+
+        if (!mDevice.getMemberAdminStatus() || isUserLoggedIn()) {
+            if (this.mDeviceType.equals("GTWY")) {
+                txvChangeOnlinePasswordSettingFragment.setVisibility(View.GONE);
+                txvChangeOnlinePasswordDescriptionSettingFragment.setVisibility(View.GONE);
+            }
+
+            if (this.mDeviceType.equals("LOCK")) {
+                txvDoorInstallationSettingFragment.setVisibility(GONE);
+                txvDoorInstallationDescriptionSettingFragment.setVisibility(GONE);
+                txvCalibrationLockSettingFragment.setVisibility(GONE);
+                txvCalibrationLockDescriptionSettingFragment.setVisibility(GONE);
+            }
+
+            txvChangePairingPasswordSettingFragment.setVisibility(GONE);
+            txvChangePairingPasswordDescriptionSettingFragment.setVisibility(GONE);
+        }
+
+        if (!mDevice.getMemberAdminStatus()) {
+            txvSerialNumberSettingFragment.setVisibility(GONE);
+            txvSerialNumberDescriptionSettingFragment.setVisibility(GONE);
+        }
+
+        if (isUserLoggedIn()) {
+            txvResetLockSettingFragment.setVisibility(GONE);
+            txvResetLockDescriptionSettingFragment.setVisibility(GONE);
+        } else {
+            txvRemoveLockSettingFragment.setVisibility(GONE);
+            txvRemoveLockDescriptionSettingFragment.setVisibility(GONE);
+        }
     }
 
     private void handleDoorInstallation() {
@@ -872,13 +854,6 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void showToast(String message) {
-//        new Thread() {
-//            public void run() {
-//                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
-//                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-//            }
-//        }.start();
-
         requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
                 Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
     }

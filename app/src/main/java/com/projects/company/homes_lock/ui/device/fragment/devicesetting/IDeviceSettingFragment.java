@@ -8,8 +8,6 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
 public interface IDeviceSettingFragment {
     void onChangeOnlinePassword(boolean value);
 
-    void onSetDeviceSetting(boolean value);
-
     void onRemoveAllDeviceMembersSuccessful(String count);
 
     void onRemoveDeviceForOneMemberSuccessful(String count);
