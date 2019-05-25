@@ -253,7 +253,7 @@ public class Device extends BaseModel {
         this.mConnectedClientsCount = 0;
         this.mConnectedServersCount = 0;
         this.mError = "Every things is OK.";
-        this.mMemberAdminStatus = false;
+        this.mMemberAdminStatus = true;
     }
 
     public Device(Map updatedLock) {

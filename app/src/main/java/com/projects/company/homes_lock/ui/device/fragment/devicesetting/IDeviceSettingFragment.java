@@ -41,4 +41,12 @@ public interface IDeviceSettingFragment {
     void onSetConfigSuccessful();
 
     void onInitializeCalibrationLockFailed();
+
+    void onCheckOldOnlinePasswordSuccessful();
+
+    void onChangeOnlinePasswordSuccessful();
+
+    void onCheckOldOnlinePasswordFailed(String string);
+
+    void onChangeOnlinePasswordFailed(String string);
 }

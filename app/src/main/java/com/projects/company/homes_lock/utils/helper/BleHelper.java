@@ -81,6 +81,8 @@ public class BleHelper {
     public static final String BLE_COMMAND_DEM = "dem";
     public static final String BLE_COMMAND_DEP = "dep";
     public static final String BLE_COMMAND_DEO = "deo";
+    public static final String BLE_COMMAND_OPR = "opr";
+    public static final String BLE_COMMAND_NPR = "npr";
 
     public static final String BLE_RESPONSE_PUBLIC_OK = "ok";
     public static final String BLE_RESPONSE_PUBLIC_END = "end";
@@ -94,6 +96,8 @@ public class BleHelper {
     public static final String BLE_RESPONSE_ERR_CONFIG = "config";
     public static final String BLE_RESPONSE_ERR_OPS = "ops";
     public static final String BLE_RESPONSE_ERR_NPS = "nps";
+    public static final String BLE_RESPONSE_ERR_OPR = "opr";
+    public static final String BLE_RESPONSE_ERR_NPR = "npr";
     public static final String BLE_RESPONSE_ERR_LOCK = "lock";
     public static final String BLE_RESPONSE_ERR_UNLOCK = "unlock";
 

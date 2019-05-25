@@ -79,6 +79,7 @@ public class DeviceSettingFragment extends BaseFragment
     private TextView txvDoorInstallationDescriptionSettingFragment;
     private TextView txvCalibrationLockSettingFragment;
     private TextView txvCalibrationLockDescriptionSettingFragment;
+    //endregion Declare Views
 
     //region Declare Variables
     private boolean doorInstallationDone = false;
@@ -332,7 +333,7 @@ public class DeviceSettingFragment extends BaseFragment
     @Override
     public void onCheckOldPairingPasswordSuccessful() {
         closeProgressDialog();
-        Timber.e("Old password doesn't match real one!");
+        Timber.e("Old pairing password matches.");
     }
 
     @Override
@@ -466,6 +467,38 @@ public class DeviceSettingFragment extends BaseFragment
     @Override
     public void onInitializeCalibrationLockFailed() {
         showToast("Check Lock then Click START again.");
+    }
+
+    @Override
+    public void onCheckOldOnlinePasswordSuccessful() {
+        closeProgressDialog();
+        Timber.e("Old rest password matches.");
+    }
+
+    @Override
+    public void onChangeOnlinePasswordSuccessful() {
+        closeProgressDialog();
+        Timber.e("Change Online password successful.");
+        showToast("Change password done.");
+
+        if (mChangeOnlinePasswordDialog != null) {
+            mChangeOnlinePasswordDialog.dismiss();
+            mChangeOnlinePasswordDialog = null;
+        }
+    }
+
+    @Override
+    public void onCheckOldOnlinePasswordFailed(String errorValue) {
+        Timber.e("Old password does not match pass in Server!: %s", errorValue);
+        showToast("Error in Old password online.");
+        closeProgressDialog();
+    }
+
+    @Override
+    public void onChangeOnlinePasswordFailed(String errorValue) {
+        closeProgressDialog();
+        showToast(String.format("New password hasn't minimum requirements as online password!: %s", errorValue));
+        Timber.e("New password hasn't minimum requirements as online password!: %s", errorValue);
     }
     //endregion IDeviceSettingFragment Callbacks
 
@@ -758,7 +791,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleDialogChangeOnlinePassword() {
-        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getMemberAdminStatus()) {
             mChangeOnlinePasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
@@ -792,7 +825,7 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleDialogChangePairingPassword() {
-        if (mDevice.getUserAdminStatus() != DataHelper.MEMBER_STATUS_NOT_ADMIN) {
+        if (mDevice.getMemberAdminStatus()) {
             mChangePairingPasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);

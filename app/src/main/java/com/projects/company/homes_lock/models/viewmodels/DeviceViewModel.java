@@ -80,7 +80,9 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ISW;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_KNK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_LOC;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_NPR;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_NPS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_OPR;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_OPS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PIL;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_PLK;
@@ -101,7 +103,9 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONS
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_INTER;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_KEY;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_LOCK;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_NPR;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_NPS;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_OPR;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_OPS;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_PER;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_SET;
@@ -137,6 +141,9 @@ public class DeviceViewModel extends AndroidViewModel
 
     private Integer oldPairingPassword = 0;
     private Integer newPairingPassword = 0;
+
+    private String oldOnlinePassword = "";
+    private String newOnlinePassword = "";
     //endregion Declare Variables
 
     //region Declare Arrays & Lists
@@ -646,16 +653,28 @@ public class DeviceViewModel extends AndroidViewModel
                     }
                     break;
                 case BLE_COMMAND_OPS:
-                    Timber.e("old pass %s", keyCommandJson.getString(keyCommand));
+                    Timber.e("old pairing pass %s", keyCommandJson.getString(keyCommand));
                     if (mIDeviceSettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
                         changePairingPasswordViaBleFinalStep();
                         mIDeviceSettingFragment.onCheckOldPairingPasswordSuccessful();
                     }
                     break;
                 case BLE_COMMAND_NPS:
-                    Timber.e("new pass %s", keyCommandJson.getString(keyCommand));
+                    Timber.e("new pairing pass %s", keyCommandJson.getString(keyCommand));
                     if (mIDeviceSettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
                         mIDeviceSettingFragment.onChangePairingPasswordSuccessful();
+                    break;
+                case BLE_COMMAND_OPR:
+                    Timber.e("old rest pass %s", keyCommandJson.getString(keyCommand));
+                    if (mIDeviceSettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                        changeOnlinePasswordViaBleFinalStep();
+                        mIDeviceSettingFragment.onCheckOldOnlinePasswordSuccessful();
+                    }
+                    break;
+                case BLE_COMMAND_NPR:
+                    Timber.e("new rest pass %s", keyCommandJson.getString(keyCommand));
+                    if (mIDeviceSettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
+                        mIDeviceSettingFragment.onChangeOnlinePasswordSuccessful();
                     break;
                 case BLE_COMMAND_RGH:
                     if (mIDeviceSettingFragment != null) {
@@ -883,9 +902,17 @@ public class DeviceViewModel extends AndroidViewModel
                             if (mIDeviceSettingFragment != null)
                                 mIDeviceSettingFragment.onCheckOldPairingPasswordFailed(keyCommandJson.getString(keyCommand));
                             break;
+                        case BLE_RESPONSE_ERR_OPR:
+                            if (mIDeviceSettingFragment != null)
+                                mIDeviceSettingFragment.onCheckOldOnlinePasswordFailed(keyCommandJson.getString(keyCommand));
+                            break;
                         case BLE_RESPONSE_ERR_NPS:
                             if (mIDeviceSettingFragment != null)
                                 mIDeviceSettingFragment.onChangePairingPasswordFailed(keyCommandJson.getString(keyCommand));
+                            break;
+                        case BLE_RESPONSE_ERR_NPR:
+                            if (mIDeviceSettingFragment != null)
+                                mIDeviceSettingFragment.onChangeOnlinePasswordFailed(keyCommandJson.getString(keyCommand));
                             break;
                         case BLE_RESPONSE_ERR_SET:
                             if (mIDeviceSettingFragment != null) {
@@ -1023,10 +1050,6 @@ public class DeviceViewModel extends AndroidViewModel
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_RGH, doorInstallation).toString(), (byte) 0));
     }
 
-    public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
-        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-    }
-
     public void changePairingPasswordViaBle(Fragment parentFragment, Integer oldPassword, Integer newPassword) {
         mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
 
@@ -1036,12 +1059,29 @@ public class DeviceViewModel extends AndroidViewModel
         changePairingPasswordViaBleInitialStep();
     }
 
+    public void changeOnlinePasswordViaBle(Fragment parentFragment, String oldPassword, String newPassword) {
+        mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
+
+        oldOnlinePassword = oldPassword;
+        newOnlinePassword = newPassword;
+
+        changeOnlinePasswordViaBleInitialStep();
+    }
+
     private void changePairingPasswordViaBleInitialStep() {
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_OPS, oldPairingPassword).toString(), (byte) 0));
     }
 
+    private void changeOnlinePasswordViaBleInitialStep() {
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_OPR, oldOnlinePassword).toString(), (byte) 0));
+    }
+
     private void changePairingPasswordViaBleFinalStep() {
         addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_NPS, newPairingPassword).toString(), (byte) 0));
+    }
+
+    private void changeOnlinePasswordViaBleFinalStep() {
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_NPS, newOnlinePassword).toString(), (byte) 0));
     }
 
     public void resetBleDevice(Fragment parentFragment) {

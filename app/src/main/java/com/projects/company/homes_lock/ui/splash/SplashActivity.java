@@ -37,11 +37,10 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_MOVE:
                 startActivity(new Intent(this, LoginActivity.class));
-        }
+//        }
 
         finish();
 
