@@ -87,17 +87,17 @@ public class LockPageFragment extends BaseFragment
     //endregion Declare Constants
 
     //region Declare Views
-    ImageView imgIsLockedLockPage;
-    ImageView imgBatteryStatusLockPage;
-    ImageView imgConnectedClientsLockPage;
-    ImageView imgBleLockPage;
-    ImageView imgManageMembersLockPage;
-    ImageView imgMoreInfoLockPage;
+    private ImageView imgIsLockedLockPage;
+    private ImageView imgBatteryStatusLockPage;
+    private ImageView imgConnectedClientsLockPage;
+    private ImageView imgBleLockPage;
+    private ImageView imgManageMembersLockPage;
+    private ImageView imgMoreInfoLockPage;
 
-    TextView txvDeviceNameLockPage;
-    TextView txvNewUpdateLockPage;
-    TextView txvBriefStatusLockPage;
-    TextView txvDeviceTypeLockPage;
+    private TextView txvDeviceNameLockPage;
+    private TextView txvNewUpdateLockPage;
+    private TextView txvBriefStatusLockPage;
+    private TextView txvDeviceTypeLockPage;
     private TextView txvValidDataStatusLockPage;
 
     private RelativeLayout rllValidDataStatusLockPage;
@@ -228,10 +228,8 @@ public class LockPageFragment extends BaseFragment
 
         updateViewData(!isUserLoggedIn());
 
-        if (isUserLoggedIn()) {
+        if (isUserLoggedIn())
             this.mDeviceViewModel.setListenerForDevice(this, mDevice);
-//            this.mDeviceViewModel.initMQTT(getActivity(), mDevice.getObjectId());
-        }
         //endregion init
     }
 
@@ -239,7 +237,6 @@ public class LockPageFragment extends BaseFragment
     public void onPause() {
         super.onPause();
 
-//        this.mDeviceViewModel.disconnectMQTT();
         this.mDeviceViewModel.removeListenerForDevice(mDevice);
     }
 
@@ -248,7 +245,6 @@ public class LockPageFragment extends BaseFragment
         super.onDestroy();
 
         this.mDeviceViewModel.disconnect();
-//        this.mDeviceViewModel.disconnectMQTT();
         this.mDeviceViewModel.removeListenerForDevice(mDevice);
 
         if (mBluetoothLEHelper != null)

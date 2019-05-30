@@ -476,10 +476,16 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     @Override
+    public void onChangeOnlinePasswordWait() {
+        Timber.e("Change Online password wait.");
+        showToast("Change online password wait.");
+    }
+
+    @Override
     public void onChangeOnlinePasswordSuccessful() {
         closeProgressDialog();
         Timber.e("Change Online password successful.");
-        showToast("Change password done.");
+        showToast("Change online password done.");
 
         if (mChangeOnlinePasswordDialog != null) {
             mChangeOnlinePasswordDialog.dismiss();

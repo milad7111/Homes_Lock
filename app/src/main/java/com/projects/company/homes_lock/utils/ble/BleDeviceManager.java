@@ -1,6 +1,5 @@
 package com.projects.company.homes_lock.utils.ble;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -80,10 +79,8 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            Log.e("pureReceivedResponse", new String(characteristic.getValue()));
-
             if (getNibble(characteristic.getValue()[1], true) == 4) {
-                Log.e(getClass().getName(), "Buffer partition is free");
+                Log.e("@Me" + getClass().getName(), "Buffer partition is free");
                 bleBufferStatus = true;
                 sendNextCommandFromBlePool();
             }
@@ -104,22 +101,23 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         public void onCharacteristicNotified(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            try {
-                String keyValue = new String(subArrayByte(characteristic.getValue(), 2, characteristic.getValue().length - 1));
-                new JSONObject(keyValue);//Just do this line to check if frame is valid
-
-                Log.e("pureReceivedResponse", new String(characteristic.getValue()));
-
-                if (getNibble(characteristic.getValue()[1], true) == 4) {
-                    Log.e(getClass().getName(), "Buffer partition is free");
-                    bleBufferStatus = true;
-                    sendNextCommandFromBlePool();
-                }
-
-                mCallbacks.onDataReceived(characteristic);
-            } catch (JSONException e) {
-                readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
-            }
+            readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
+//            try {
+//                String keyValue = new String(subArrayByte(characteristic.getValue(), 2, characteristic.getValue().length - 1));
+//                new JSONObject(keyValue);//Just do this line to check if frame is valid
+//
+//                Log.e("pureReceivedResponse", new String(characteristic.getValue()));
+//
+//                if (getNibble(characteristic.getValue()[1], true) == 4) {
+//                    Log.e(getClass().getName(), "Buffer partition is free");
+//                    bleBufferStatus = true;
+//                    sendNextCommandFromBlePool();
+//                }
+//
+//                mCallbacks.onDataReceived(characteristic);
+//            } catch (JSONException e) {
+//                readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
+//            }
         }
     };
     //endregion Declare Objects
@@ -155,7 +153,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     }
 
     private void writeCharacteristic(UUID characteristicUUID, byte[] value) {
-        Log.e("writeCharacteristic", new String(value));
+        Log.e("@MewriteCharacteristic", "Partition command ---------------------------------> " + new String(value));
         BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
 
         if (mBluetoothGattCharacteristic != null)
@@ -163,11 +161,11 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     }
 
     public void customWriteCharacteristic(UUID characteristicUUID, byte[] value) {
-        Log.e("CWriteCharacteristic", new String(value));
+        Log.e("@MeCWriteCharacteristic", "Full command ************************************************ " + new String(value));
         BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
 
         if (mBluetoothGattCharacteristic != null) {
-            int parts = ((value.length - 3) / 17) + (((value.length - 3) % 17 == 0) ? 0 : 1);
+            int parts = (value.length / 20) + ((value.length % 20 == 0) ? 0 : 1);
 
             if (parts == 1)
                 addNewCommandToBlePool(value);
@@ -187,7 +185,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
     private void sendNextCommandFromBlePool() {
         if (mBleCommandsPool.size() > 0 && bleBufferStatus) {
-            Log.e(getClass().getName(), "Buffer partition is full");
+            Log.e("@Me" + getClass().getName(), "Buffer partition is full");
             bleBufferStatus = false;
             writeCharacteristic(CHARACTERISTIC_UUID_RX, mBleCommandsPool.get(0));
             mBleCommandsPool.remove(0);

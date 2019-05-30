@@ -673,8 +673,11 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case BLE_COMMAND_NPR:
                     Timber.e("new rest pass %s", keyCommandJson.getString(keyCommand));
-                    if (mIDeviceSettingFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
-                        mIDeviceSettingFragment.onChangeOnlinePasswordSuccessful();
+                    if (mIDeviceSettingFragment != null)
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT))
+                            mIDeviceSettingFragment.onChangeOnlinePasswordWait();
+                        else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
+                            mIDeviceSettingFragment.onChangeOnlinePasswordSuccessful();
                     break;
                 case BLE_COMMAND_RGH:
                     if (mIDeviceSettingFragment != null) {
@@ -1081,7 +1084,7 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void changeOnlinePasswordViaBleFinalStep() {
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_NPS, newOnlinePassword).toString(), (byte) 0));
+        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_NPR, newOnlinePassword).toString(), (byte) 0));
     }
 
     public void resetBleDevice(Fragment parentFragment) {

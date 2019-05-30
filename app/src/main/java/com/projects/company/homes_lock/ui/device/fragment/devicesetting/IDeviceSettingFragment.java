@@ -44,6 +44,8 @@ public interface IDeviceSettingFragment {
 
     void onCheckOldOnlinePasswordSuccessful();
 
+    void onChangeOnlinePasswordWait();
+
     void onChangeOnlinePasswordSuccessful();
 
     void onCheckOldOnlinePasswordFailed(String string);

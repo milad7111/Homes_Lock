@@ -15,13 +15,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.projects.company.homes_lock.BuildConfig;
 import com.projects.company.homes_lock.repositories.remote.IRetrofit;
-import com.projects.company.homes_lock.utils.mqtt.MQTTHandler;
 
 import io.fabric.sdk.android.Fabric;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_ANDROID_API_KEY;
 import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_APPLICATION_ID;
@@ -52,6 +52,8 @@ public class BaseApplication extends Application {
         Fabric.with(this, new Crashlytics());
         // TODO: Move this to where you establish a user session
         logUserCrashesInFabric();
+        if (BuildConfig.DEBUG)
+            Timber.plant(new Timber.DebugTree());
     }
 
     @Override

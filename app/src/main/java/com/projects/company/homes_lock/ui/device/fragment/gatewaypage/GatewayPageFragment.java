@@ -257,6 +257,7 @@ public class GatewayPageFragment extends BaseFragment
 
         GatewayPageFragment.this.mDeviceViewModel.disconnect();
         GatewayPageFragment.this.mDeviceViewModel.disconnectMQTT();
+
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
     }
@@ -271,14 +272,10 @@ public class GatewayPageFragment extends BaseFragment
                     showToast(getConnectedServersMessage(mDevice.getConnectedServersCount()));
                 break;
             case R.id.img_connection_status_gateway_page:
-                if (isConnectedToBleDevice)
-                    handleGatewayInternetConnection();
+                handleGatewayInternetConnection();
                 break;
             case R.id.img_connected_devices_gateway_page:
-                if (isConnectedToBleDevice)
-                    handleConnectedClients();
-                else if (isUserLoggedIn())
-                    showToast(getConnectedClientsMessage(mDevice.getConnectedClientsCount()));
+                handleConnectedClients();
                 break;
             case R.id.img_ble_gateway_page:
                 handleDeviceBleConnection();
@@ -323,12 +320,6 @@ public class GatewayPageFragment extends BaseFragment
     @Override
     public void onFindNewNetworkAroundDevice(WifiNetworksModel mWifiNetworksModel) {
         mWifiNetworksAdapter.addWifiNetwork(mWifiNetworksModel);
-//        addFoundNetworkToList(wifiNetworksModel);
-//
-//        if (wifiNetworksModel.getIndex() != wifiNetworksCount - 1)
-//            mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this, wifiNetworksModel.getIndex() + 1);
-//
-//        handleDialogListOfAvailableWifiNetworksAroundDevice();
     }
 
     @Override
@@ -473,6 +464,8 @@ public class GatewayPageFragment extends BaseFragment
     private void handleConnectedClients() {
         if (isConnectedToBleDevice)
             handleDialogListOfConnectedClients();
+        else if (isUserLoggedIn())
+            showToast(getConnectedClientsMessage(mDevice.getConnectedClientsCount()));
         else if (connectedClientsListDialog != null) {
             connectedClientsListDialog.dismiss();
             connectedClientsListDialog = null;
@@ -751,38 +744,42 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     private void handleDialogListOfAvailableWifiNetworksAroundDevice() {
-        if (deviceWifiNetworkListDialog == null) {
-            deviceWifiNetworkListDialog = new Dialog(requireContext());
-            deviceWifiNetworkListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            deviceWifiNetworkListDialog.setContentView(R.layout.dialog_available_networks);
+        deviceWifiNetworkListDialog = new Dialog(requireContext());
+        deviceWifiNetworkListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        deviceWifiNetworkListDialog.setContentView(R.layout.dialog_available_networks);
+//            deviceWifiNetworkListDialog.setOnDismissListener(dialog -> {
+//                mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+//                deviceWifiNetworkListDialog = null;
+//            });
 
-            if (mWifiNetworksAdapter == null)
-                mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+        mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
 
-            RecyclerView rcvDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.rcv_dialog_available_networks);
-            Button btnCancelDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_cancel_dialog_available_networks);
-            Button btnScanDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_scan_dialog_available_networks);
+        RecyclerView rcvDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.rcv_dialog_available_networks);
+        Button btnCancelDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_cancel_dialog_available_networks);
+        Button btnScanDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_scan_dialog_available_networks);
 
-            rcvDialogAvailableNetworks.setLayoutManager(new LinearLayoutManager(getContext()));
-            rcvDialogAvailableNetworks.setItemAnimator(new DefaultItemAnimator());
-            rcvDialogAvailableNetworks.setAdapter(mWifiNetworksAdapter);
+        rcvDialogAvailableNetworks.setLayoutManager(new LinearLayoutManager(getContext()));
+        rcvDialogAvailableNetworks.setItemAnimator(new DefaultItemAnimator());
+        rcvDialogAvailableNetworks.setAdapter(mWifiNetworksAdapter);
 
-            btnCancelDialogAvailableNetworks.setOnClickListener(v -> {
-                mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-                deviceWifiNetworkListDialog.dismiss();
-                deviceWifiNetworkListDialog = null;
-            });
-
-            btnScanDialogAvailableNetworks.setOnClickListener(v -> {
-                mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-                GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this);
-            });
-
-            GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this);
-        } else {
+        btnCancelDialogAvailableNetworks.setOnClickListener(v -> {
             mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-            mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
-        }
+            deviceWifiNetworkListDialog.dismiss();
+            deviceWifiNetworkListDialog = null;
+        });
+
+        btnScanDialogAvailableNetworks.setOnClickListener(v -> {
+            mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+            GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this);
+        });
+
+        GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this);
+//    else
+//
+//    {
+//        mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
+//        mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
+//    }
 
         if (!deviceWifiNetworkListDialog.isShowing()) {
             deviceWifiNetworkListDialog.show();
@@ -829,11 +826,12 @@ public class GatewayPageFragment extends BaseFragment
 
         Objects.requireNonNull(deviceWifiNetworkDialog.getWindow()).setAttributes(getDialogLayoutParams(deviceWifiNetworkDialog));
     }
-    //endregion Declare BLE Methods
+//endregion Declare BLE Methods
 
     //region Declare Classes & Interfaces
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+
     }
     //endregion Declare Classes & Interfaces
 
