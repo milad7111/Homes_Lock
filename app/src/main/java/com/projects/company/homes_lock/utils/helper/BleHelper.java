@@ -299,9 +299,11 @@ public class BleHelper {
     public static boolean getScanPermission(Fragment fragment) {
         if (isLocationRequired(fragment.getContext())) {
             if (isLocationPermissionsGranted(fragment.getContext())) {
-                if (isBleEnabled())
-                    return true;
-                else enableBluetooth(Objects.requireNonNull(fragment.getActivity()));
+                if (isLocationEnabled(fragment.getContext())) {
+                    if (isBleEnabled())
+                        return true;
+                    else enableBluetooth(Objects.requireNonNull(fragment.getActivity()));
+                } else enableLocation(fragment.getActivity());
             } else {
                 final boolean deniedForever = isLocationPermissionDeniedForever(fragment.getActivity());
                 if (!deniedForever)
