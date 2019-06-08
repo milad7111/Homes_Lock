@@ -793,15 +793,21 @@ public class GatewayPageFragment extends BaseFragment
             deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceWifiNetworkDialog.setContentView(R.layout.dialog_device_wifi_network_connect);
 
+            TextView txvTitleDialogGatewayWifiNetworkConnect =
+                    deviceWifiNetworkDialog.findViewById(R.id.txv_title_dialog_gateway_wifi_network_connect);
+
+            txvTitleDialogGatewayWifiNetworkConnect.setText(
+                    String.format(getString(R.string.dialog_title_gateway_wifi_network_connect), wifiNetwork.getSSID()));
+
             TextInputEditText tietWifiPasswordDialogDeviceWifiNetworkConnect =
-                    deviceWifiNetworkDialog.findViewById(R.id.tiet_wifi_password_dialog_device_wifi_network_connect);
+                    deviceWifiNetworkDialog.findViewById(R.id.tiet_wifi_password_dialog_gateway_wifi_network_connect);
             Spinner spnWifiTypeDialogDeviceWifiNetworkConnect =
-                    deviceWifiNetworkDialog.findViewById(R.id.spn_wifi_type_dialog_device_wifi_network_connect);
+                    deviceWifiNetworkDialog.findViewById(R.id.spn_wifi_type_dialog_gateway_wifi_network_connect);
 
             Button btnCancelDialogDeviceWifiNetworkConnect =
-                    deviceWifiNetworkDialog.findViewById(R.id.btn_cancel_dialog_device_wifi_network_connect);
+                    deviceWifiNetworkDialog.findViewById(R.id.btn_cancel_dialog_gateway_wifi_network_connect);
             Button btnConnectDialogDeviceWifiNetworkConnect =
-                    deviceWifiNetworkDialog.findViewById(R.id.btn_connect_dialog_device_wifi_network_connect);
+                    deviceWifiNetworkDialog.findViewById(R.id.btn_connect_dialog_gateway_wifi_network_connect);
 
             btnCancelDialogDeviceWifiNetworkConnect.setOnClickListener(v -> {
                 deviceWifiNetworkDialog.dismiss();

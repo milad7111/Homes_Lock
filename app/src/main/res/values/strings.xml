@@ -104,7 +104,7 @@
     <string name="dialog_title_add_member">Add member</string>
     <string name="dialog_title_available_devices">Available devices</string>
     <string name="dialog_title_available_networks">Available networks</string>
-    <string name="dialog_title_device_wifi_network_connect">Connect Lock to network</string>
+    <string name="dialog_title_gateway_wifi_network_connect">Connect Gateway to %s</string>
     <string name="dialog_title_door_installation_door_installation">Door installation</string>
     <string name="dialog_title_lock_stages_device_setting">Lock stages</string>
     <string name="dialog_title_remove_device">Remove device</string>
