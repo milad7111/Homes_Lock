@@ -442,16 +442,6 @@ public class DeviceSettingFragment extends BaseFragment
             }
         }
 
-//        new Thread() {
-//            public void run() {
-//                requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
-//                    handleLockPositionStatusImage("Lock", true);
-//                    DeviceSettingFragment.this.mDeviceViewModel.sendConfigCommand(mFragment);
-//                });
-//            }
-//        }.start();
-
-        //TODO top code replace with below code
         requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
             handleLockPositionStatusImage("Lock", true);
             DeviceSettingFragment.this.mDeviceViewModel.sendConfigCommand(mFragment);
@@ -888,8 +878,10 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     private void handleConfigResponse() {
-        if (mCalibrationLockDialog != null)
-            mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock).setVisibility(VISIBLE);
+        requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() -> {
+            if (mCalibrationLockDialog != null)
+                mCalibrationLockDialog.findViewById(R.id.btn_done_dialog_calibration_lock).setVisibility(VISIBLE);
+        });
     }
 
     private void showToast(String message) {
