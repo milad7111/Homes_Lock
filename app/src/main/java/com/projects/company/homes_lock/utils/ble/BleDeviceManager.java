@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
     //region Declare Variables
     private boolean bleBufferStatus = false;
+    private byte[] lastNotifiedData = new byte[]{};
     //endregion Declare Variables
 
     //region Declare Objects
@@ -53,9 +55,6 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
             final LinkedList<Request> requests = new LinkedList<>();
 
             requests.push(Request.newEnableNotificationsRequest(mTXCharacteristic));
-
-//            requests.push(Request.newWriteRequest(mRXCharacteristic, createCommand(new byte[]{0x01}, new byte[]{})));
-//            requests.push(Request.newReadRequest(mTXCharacteristic));
 
             return requests;
         }
@@ -101,7 +100,11 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         public void onCharacteristicNotified(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
-            readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
+            if (!Arrays.equals(lastNotifiedData, characteristic.getValue())) {
+                lastNotifiedData = characteristic.getValue();
+                readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
+            }
+
 //            try {
 //                String keyValue = new String(subArrayByte(characteristic.getValue(), 2, characteristic.getValue().length - 1));
 //                new JSONObject(keyValue);//Just do this line to check if frame is valid

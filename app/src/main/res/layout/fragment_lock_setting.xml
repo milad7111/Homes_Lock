@@ -255,7 +255,7 @@
             app:layout_constraintTop_toBottomOf="@+id/txv_change_pairing_password_description_setting_fragment" />
 
         <TextView
-            android:id="@+id/txv_reset_lock_description_setting_fragment"
+            android:id="@+id/txv_reset_device_description_setting_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -278,7 +278,7 @@
             android:text="@string/fragment_text_view_remove_device"
             android:textColor="@color/remove_device_color"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/txv_reset_lock_description_setting_fragment" />
+            app:layout_constraintTop_toBottomOf="@+id/txv_reset_device_description_setting_fragment" />
 
         <TextView
             android:id="@+id/txv_remove_device_description_setting_fragment"

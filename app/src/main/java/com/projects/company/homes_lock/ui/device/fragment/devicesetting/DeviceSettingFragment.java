@@ -67,10 +67,10 @@ public class DeviceSettingFragment extends BaseFragment
     private TextView txvDynamicIdDescriptionSettingFragment;
     private TextView txvSerialNumberSettingFragment;
     private TextView txvSerialNumberDescriptionSettingFragment;
-    private TextView txvResetLockSettingFragment;
-    private TextView txvResetLockDescriptionSettingFragment;
-    private TextView txvRemoveLockSettingFragment;
-    private TextView txvRemoveLockDescriptionSettingFragment;
+    private TextView txvResetDeviceSettingFragment;
+    private TextView txvResetDeviceDescriptionSettingFragment;
+    private TextView txvRemoveDeviceSettingFragment;
+    private TextView txvRemoveDeviceDescriptionSettingFragment;
     private TextView txvChangeOnlinePasswordSettingFragment;
     private TextView txvChangeOnlinePasswordDescriptionSettingFragment;
 
@@ -167,10 +167,10 @@ public class DeviceSettingFragment extends BaseFragment
         txvDynamicIdDescriptionSettingFragment = view.findViewById(R.id.txv_dynamic_id_description_setting_fragment);
         txvSerialNumberSettingFragment = view.findViewById(R.id.txv_serial_number_setting_fragment);
         txvSerialNumberDescriptionSettingFragment = view.findViewById(R.id.txv_serial_number_description_setting_fragment);
-        txvResetLockSettingFragment = view.findViewById(R.id.txv_reset_device_setting_fragment);
-        txvResetLockDescriptionSettingFragment = view.findViewById(R.id.txv_reset_lock_description_setting_fragment);
-        txvRemoveLockSettingFragment = view.findViewById(R.id.txv_remove_device_setting_fragment);
-        txvRemoveLockDescriptionSettingFragment = view.findViewById(R.id.txv_remove_device_description_setting_fragment);
+        txvResetDeviceSettingFragment = view.findViewById(R.id.txv_reset_device_setting_fragment);
+        txvResetDeviceDescriptionSettingFragment = view.findViewById(R.id.txv_reset_device_description_setting_fragment);
+        txvRemoveDeviceSettingFragment = view.findViewById(R.id.txv_remove_device_setting_fragment);
+        txvRemoveDeviceDescriptionSettingFragment = view.findViewById(R.id.txv_remove_device_description_setting_fragment);
 
         //Lock Specific Setting
         if (this.mDeviceType.equals("LOCK")) {
@@ -199,14 +199,14 @@ public class DeviceSettingFragment extends BaseFragment
         txvProductionDateDescriptionSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordSettingFragment.setOnClickListener(this);
         txvChangePairingPasswordDescriptionSettingFragment.setOnClickListener(this);
+        txvDynamicIdSettingFragment.setOnClickListener(this);
         txvDynamicIdDescriptionSettingFragment.setOnClickListener(this);
+        txvSerialNumberSettingFragment.setOnClickListener(this);
         txvSerialNumberDescriptionSettingFragment.setOnClickListener(this);
-        txvResetLockSettingFragment.setOnClickListener(this);
-        txvResetLockDescriptionSettingFragment.setOnClickListener(this);
-        txvRemoveLockSettingFragment.setOnClickListener(this);
-        txvRemoveLockDescriptionSettingFragment.setOnClickListener(this);
-        txvChangeOnlinePasswordSettingFragment.setOnClickListener(this);
-        txvChangeOnlinePasswordDescriptionSettingFragment.setOnClickListener(this);
+        txvResetDeviceSettingFragment.setOnClickListener(this);
+        txvResetDeviceDescriptionSettingFragment.setOnClickListener(this);
+        txvRemoveDeviceSettingFragment.setOnClickListener(this);
+        txvRemoveDeviceDescriptionSettingFragment.setOnClickListener(this);
 
         //Lock Specific Setting
         if (this.mDeviceType.equals("LOCK")) {
@@ -266,7 +266,7 @@ public class DeviceSettingFragment extends BaseFragment
                 //TODO copy info to clipboard
                 break;
             case R.id.txv_reset_device_setting_fragment:
-            case R.id.txv_reset_lock_description_setting_fragment:
+            case R.id.txv_reset_device_description_setting_fragment:
                 if (isConnectedToBleDevice)
                     handleResetLock();
                 else
@@ -540,11 +540,11 @@ public class DeviceSettingFragment extends BaseFragment
         }
 
         if (isUserLoggedIn()) {
-            txvResetLockSettingFragment.setVisibility(GONE);
-            txvResetLockDescriptionSettingFragment.setVisibility(GONE);
+            txvResetDeviceSettingFragment.setVisibility(GONE);
+            txvResetDeviceDescriptionSettingFragment.setVisibility(GONE);
         } else {
-            txvRemoveLockSettingFragment.setVisibility(GONE);
-            txvRemoveLockDescriptionSettingFragment.setVisibility(GONE);
+            txvRemoveDeviceSettingFragment.setVisibility(GONE);
+            txvRemoveDeviceDescriptionSettingFragment.setVisibility(GONE);
         }
     }
 

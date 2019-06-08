@@ -12,12 +12,12 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_lock"
+        layout="@layout/app_bar_device"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <FrameLayout
-        android:id="@+id/frg_lock_activity"
+        android:id="@+id/frg_device_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

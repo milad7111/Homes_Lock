@@ -6,6 +6,7 @@
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
+    android:background="@android:color/white"
     tools:context=".ui.splash.SplashActivity">
 
     <TextView
@@ -14,7 +15,7 @@
         android:layout_height="wrap_content"
         android:elevation="10dp"
         android:shadowColor="@color/md_grey_500"
-        android:text="Homes"
+        android:text="Neurnet"
         android:textSize="32sp" />
 
 </RelativeLayout>

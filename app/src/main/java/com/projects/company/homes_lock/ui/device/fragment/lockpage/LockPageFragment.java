@@ -63,7 +63,6 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPerm
 import static com.projects.company.homes_lock.utils.helper.BleHelper.isMyPhone;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusColor;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBriefStatusText;
-import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomPercentNumber;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
@@ -283,7 +282,7 @@ public class LockPageFragment extends BaseFragment
             case R.id.img_more_info_lock_page:
                 if (isUserLoggedIn() || isConnectedToBleDevice)
                     addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
-                            R.id.frg_lock_activity,
+                            R.id.frg_device_activity,
                             DeviceSettingFragment.newInstance(mDevice, "LOCK", mDeviceViewModel));
                 break;
         }
@@ -584,7 +583,7 @@ public class LockPageFragment extends BaseFragment
         if (isUserLoggedIn()) {
             if (mDevice.getMemberAdminStatus())
                 addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
-                        R.id.frg_lock_activity, ManageMembersFragment.newInstance(mDevice));
+                        R.id.frg_device_activity, ManageMembersFragment.newInstance(mDevice));
             else
                 showToast("Access Denied");
         } else

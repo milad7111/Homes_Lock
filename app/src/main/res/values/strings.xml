@@ -1,7 +1,8 @@
 <resources>
 
     <!--//region Main-->
-    <string name="app_name" translatable="false">Homes</string>
+    <string name="app_name" translatable="false">Neurnet</string>
+    <string name="about_us_description">We create engaging brand assets and trusted content for your site, and then market it to authoritative sites across the web. Clients also get consulting from Jim Boykin and Ann Smarty. We\'ve been trusted since 1999. Peace and Love.</string>
     <!--//endregion Main-->
 
     <!--//region Content Description-->
@@ -32,6 +33,8 @@
     <string name="content_description_calibration_lock_lock_position_status">green if lock position set and gray if not set</string>
 
     <string name="content_description_notification_list_item_img_priority">show priority of notification</string>
+
+    <string name="content_description_about_us_activity_img_logo">This is logo at top of about us view</string>
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->

@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -35,6 +34,8 @@ import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 import static com.projects.company.homes_lock.utils.mqtt.MQTTHandler.mqttDisconnect;
 
@@ -136,7 +137,7 @@ public class DeviceActivity extends BaseActivity
         if (activityLockDrawerLayout.isDrawerOpen(GravityCompat.START))
             activityLockDrawerLayout.closeDrawer(GravityCompat.START);
         else {
-            Fragment mFragment = getSupportFragmentManager().findFragmentById(R.id.frg_lock_activity);
+            Fragment mFragment = getSupportFragmentManager().findFragmentById(R.id.frg_device_activity);
 
             if (mFragment instanceof ManageMembersFragment)
                 getSupportFragmentManager().popBackStackImmediate();
@@ -252,7 +253,7 @@ public class DeviceActivity extends BaseActivity
         try {
             mViewPager.setAdapter(adapter);
         } catch (Exception e) {
-            Log.e(DeviceActivity.class.getName(), "Set ViewPager Adapter failed.");
+            Timber.e("Set ViewPager Adapter failed.");
         }
     }
 
