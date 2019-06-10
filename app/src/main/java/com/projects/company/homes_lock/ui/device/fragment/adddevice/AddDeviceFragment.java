@@ -10,7 +10,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +19,12 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
-import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.User;
-import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
-import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
-import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.AddLockViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
@@ -46,7 +40,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static com.projects.company.homes_lock.base.BaseApplication.activeUserObjectId;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices;
@@ -165,92 +158,92 @@ public class AddDeviceFragment extends BaseFragment
     //endregion Main CallBacks
 
     //region IAddDeviceFragment CallBacks
-    @Override
-    public void onFindLockInOnlineDataBaseSuccessful(String lockObjectId) {
-        openProgressDialog(
-                getContext(),
-                null,
-                String.format("Adding Lock ... %d %%", getRandomPercentNumber(2, 8)));
+//    @Override
+//    public void onFindLockInOnlineDataBaseSuccessful(String lockObjectId) {
+//        openProgressDialog(
+//                getContext(),
+//                null,
+//                String.format("Adding Lock ... %d %%", getRandomPercentNumber(2, 8)));
+//
+//        this.lockObjectId = lockObjectId;
+//        handleDialogAddDeviceOnline(true);
+//    }
 
-        this.lockObjectId = lockObjectId;
-        handleDialogAddDeviceOnline(true);
-    }
+//    @Override
+//    public void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response) {
+//    }
 
-    @Override
-    public void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response) {
-    }
+//    @Override
+//    public void onInsertUserLockSuccessful(UserLock userLock) {
+//        openProgressDialog(
+//                getContext(),
+//                null,
+//                String.format("Adding Lock ... %d %%", getRandomPercentNumber(3, 8)));
+//
+//        userLockObjectId = userLock.getObjectId();
+//        mDeviceViewModel.addLockToUserLock(this, userLockObjectId, this.lockObjectId);
+//    }
 
-    @Override
-    public void onInsertUserLockSuccessful(UserLock userLock) {
-        openProgressDialog(
-                getContext(),
-                null,
-                String.format("Adding Lock ... %d %%", getRandomPercentNumber(3, 8)));
+//    @Override
+//    public void onInsertUserLockFailed(FailureModel response) {
+//    }
 
-        userLockObjectId = userLock.getObjectId();
-        mDeviceViewModel.addLockToUserLock(this, userLockObjectId, this.lockObjectId);
-    }
+//    @Override
+//    public void onAddLockToUserLockSuccessful(Boolean addLockToUserLockSuccessful) {
+//        if (addLockToUserLockSuccessful) {
+//            openProgressDialog(
+//                    getContext(),
+//                    null,
+//                    String.format("Adding Lock ... %d %%", getRandomPercentNumber(4, 8)));
+//            mDeviceViewModel.addUserLockToUser(this, activeUserObjectId, userLockObjectId);
+//        } else
+//            onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
+//    }
 
-    @Override
-    public void onInsertUserLockFailed(FailureModel response) {
-    }
+//    @Override
+//    public void onAddLockToUserLockFailed(ResponseBodyFailureModel response) {
+//    }
 
-    @Override
-    public void onAddLockToUserLockSuccessful(Boolean addLockToUserLockSuccessful) {
-        if (addLockToUserLockSuccessful) {
-            openProgressDialog(
-                    getContext(),
-                    null,
-                    String.format("Adding Lock ... %d %%", getRandomPercentNumber(4, 8)));
-            mDeviceViewModel.addUserLockToUser(this, activeUserObjectId, userLockObjectId);
-        } else
-            onAddLockToUserLockFailed(new ResponseBodyFailureModel("add lock to user lock failed."));
-    }
+//    @Override
+//    public void onAddUserLockToUserSuccessful(Boolean addUserLockToUserSuccessful) {
+//        if (addUserLockToUserSuccessful) {
+//            openProgressDialog(
+//                    getContext(),
+//                    null,
+//                    String.format("Adding Lock ... %d %%", getRandomPercentNumber(5, 8)));
+//
+//            if (mAddDeviceOnlineDialog != null) {
+//                mAddDeviceOnlineDialog.dismiss();
+//                mAddDeviceOnlineDialog = null;
+//            }
+//
+////            mDeviceViewModel.enablePushNotification(this.lockObjectId);
+//            mUserViewModel.getUserWithObjectId(activeUserObjectId);
+//        } else
+//            onAddUserLockToUserFailed(new ResponseBodyFailureModel("add user lock to user failed."));
+//    }
 
-    @Override
-    public void onAddLockToUserLockFailed(ResponseBodyFailureModel response) {
-    }
+//    @Override
+//    public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
+//    }
 
-    @Override
-    public void onAddUserLockToUserSuccessful(Boolean addUserLockToUserSuccessful) {
-        if (addUserLockToUserSuccessful) {
-            openProgressDialog(
-                    getContext(),
-                    null,
-                    String.format("Adding Lock ... %d %%", getRandomPercentNumber(5, 8)));
+//    @Override
+//    public void onGetUserSuccessful(User response) {
+//        openProgressDialog(
+//                getContext(),
+//                null,
+//                String.format("Adding Lock ... %d %%", getRandomPercentNumber(6, 8)));
+//
+//        activeUserObjectId = response.getObjectId();
+//        BaseApplication.activeUserToken = response.getUserToken();
+//        DeviceActivity.PERMISSION_READ_ALL_LOCAL_DEVICES = true;
+//        mUserViewModel.insertUser(response);
+//    }
 
-            if (mAddDeviceOnlineDialog != null) {
-                mAddDeviceOnlineDialog.dismiss();
-                mAddDeviceOnlineDialog = null;
-            }
-
-//            mDeviceViewModel.enablePushNotification(this.lockObjectId);
-            mUserViewModel.getUserWithObjectId(activeUserObjectId);
-        } else
-            onAddUserLockToUserFailed(new ResponseBodyFailureModel("add user lock to user failed."));
-    }
-
-    @Override
-    public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
-    }
-
-    @Override
-    public void onGetUserSuccessful(User response) {
-        openProgressDialog(
-                getContext(),
-                null,
-                String.format("Adding Lock ... %d %%", getRandomPercentNumber(6, 8)));
-
-        activeUserObjectId = response.getObjectId();
-        BaseApplication.activeUserToken = response.getUserToken();
-        DeviceActivity.PERMISSION_READ_ALL_LOCAL_DEVICES = true;
-        mUserViewModel.insertUser(response);
-    }
-
-    @Override
-    public void onGetUserFailed(FailureModel response) {
-        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
-    }
+//    @Override
+//    public void onGetUserFailed(FailureModel response) {
+//        Log.i(this.getClass().getSimpleName(), response.getFailureMessage());
+//    }
 
     @Override
     public void onDataInsert(Object object) {
@@ -277,15 +270,15 @@ public class AddDeviceFragment extends BaseFragment
         }
     }
 
-    @Override
-    public void onDeviceRegistrationPushNotificationSuccessful(String registrationId) {
-        Log.i(getTag(), "Device registered for push notification with registrationId: " + registrationId);
-    }
+//    @Override
+//    public void onDeviceRegistrationPushNotificationSuccessful(String registrationId) {
+//        Log.i(getTag(), "Device registered for push notification with registrationId: " + registrationId);
+//    }
 
-    @Override
-    public void onDeviceRegistrationPushNotificationFailed(ResponseBodyFailureModel response) {
-        Toast.makeText(getContext(), response.getFailureMessage(), Toast.LENGTH_LONG).show();
-    }
+//    @Override
+//    public void onDeviceRegistrationPushNotificationFailed(ResponseBodyFailureModel response) {
+//        Toast.makeText(getContext(), response.getFailureMessage(), Toast.LENGTH_LONG).show();
+//    }
     //endregion IAddDeviceFragment CallBacks
 
     //region Ble Callbacks
@@ -416,49 +409,49 @@ public class AddDeviceFragment extends BaseFragment
         Objects.requireNonNull(mAddDeviceOfflineDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mAddDeviceOfflineDialog));
     }
 
-    private void handleDialogAddDeviceOnline(boolean deviceExistenceStatus) {
-        if (mAddDeviceOnlineDialog == null) {
-            mAddDeviceOnlineDialog = new Dialog(Objects.requireNonNull(getContext()));
-
-            mAddDeviceOnlineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            mAddDeviceOnlineDialog.setContentView(R.layout.dialog_add_new_device);
-
-            mAddDeviceOnlineDialog.setOnDismissListener(dialog -> mAddDeviceOnlineDialog = null);
-
-            Button btnCancelDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.btn_cancel_dialog_add_new_device);
-            Button btnAddDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.btn_add_dialog_add_new_device);
-
-            tietDeviceNameDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.tiet_device_name_dialog_add_new_device);
-            tietDeviceSerialNumberDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.tiet_device_serial_number_dialog_add_new_device);
-            chbDeviceFavoriteStatusDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.chb_device_favorite_status_dialog_add_new_device);
-
-            btnCancelDialogAddNewDevice.setOnClickListener(v -> mAddDeviceOnlineDialog.dismiss());
-
-            btnAddDialogAddNewDevice.setOnClickListener(v -> {
-                openProgressDialog(
-                        getContext(),
-                        null,
-                        String.format("Adding Lock ... %d %%", getRandomPercentNumber(1, 8)));
-
-                mDeviceViewModel.validateLockInOnlineDatabase(this,
-                        Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString());
-            });
-        } else {
-            if (deviceExistenceStatus)
-                mDeviceViewModel.insertOnlineUserDevice(this,
-                        new UserDeviceModel(
-                                Objects.requireNonNull(tietDeviceNameDialogAddNewDevice.getText()).toString(),
-                                true,
-                                chbDeviceFavoriteStatusDialogAddNewDevice.isChecked()));
-        }
-
-
-        if (!mAddDeviceOnlineDialog.isShowing())
-            mAddDeviceOnlineDialog.show();
-
-        mAddDeviceOnlineDialog.show();
-        Objects.requireNonNull(mAddDeviceOnlineDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mAddDeviceOnlineDialog));
-    }
+//    private void handleDialogAddDeviceOnline(boolean deviceExistenceStatus) {
+//        if (mAddDeviceOnlineDialog == null) {
+//            mAddDeviceOnlineDialog = new Dialog(Objects.requireNonNull(getContext()));
+//
+//            mAddDeviceOnlineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            mAddDeviceOnlineDialog.setContentView(R.layout.dialog_add_new_device);
+//
+//            mAddDeviceOnlineDialog.setOnDismissListener(dialog -> mAddDeviceOnlineDialog = null);
+//
+//            Button btnCancelDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.btn_cancel_dialog_add_new_device);
+//            Button btnAddDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.btn_add_dialog_add_new_device);
+//
+//            tietDeviceNameDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.tiet_device_name_dialog_add_new_device);
+//            tietDeviceSerialNumberDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.tiet_device_serial_number_dialog_add_new_device);
+//            chbDeviceFavoriteStatusDialogAddNewDevice = mAddDeviceOnlineDialog.findViewById(R.id.chb_device_favorite_status_dialog_add_new_device);
+//
+//            btnCancelDialogAddNewDevice.setOnClickListener(v -> mAddDeviceOnlineDialog.dismiss());
+//
+//            btnAddDialogAddNewDevice.setOnClickListener(v -> {
+//                openProgressDialog(
+//                        getContext(),
+//                        null,
+//                        String.format("Adding Lock ... %d %%", getRandomPercentNumber(1, 8)));
+//
+//                mDeviceViewModel.validateLockInOnlineDatabase(this,
+//                        Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString());
+//            });
+//        } else {
+//            if (deviceExistenceStatus)
+//                mDeviceViewModel.insertOnlineUserDevice(this,
+//                        new UserDeviceModel(
+//                                Objects.requireNonNull(tietDeviceNameDialogAddNewDevice.getText()).toString(),
+//                                true,
+//                                chbDeviceFavoriteStatusDialogAddNewDevice.isChecked()));
+//        }
+//
+//
+//        if (!mAddDeviceOnlineDialog.isShowing())
+//            mAddDeviceOnlineDialog.show();
+//
+//        mAddDeviceOnlineDialog.show();
+//        Objects.requireNonNull(mAddDeviceOnlineDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(mAddDeviceOnlineDialog));
+//    }
 
     private void connectToDevice(ScannedDeviceModel device) {
         mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());

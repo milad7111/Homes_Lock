@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -27,16 +28,14 @@ import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
-import com.projects.company.homes_lock.models.viewmodels.UserViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
+import com.projects.company.homes_lock.models.viewmodels.UserViewModelFactory;
 import com.projects.company.homes_lock.ui.device.activity.DeviceActivity;
 import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import io.fabric.sdk.android.Fabric;
 
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserEmail;
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserObjectId;
@@ -79,6 +78,8 @@ public class LoginFragment extends BaseFragment
     private String deviceObjectId = "";
     private String userDeviceObjectId = "";
     private String deviceSerialNumber = "";
+
+    private List<String> wrongSerialNumberDevices;
     //endregion Declare Variables
 
     //region Declare Arrays & Lists
@@ -163,6 +164,13 @@ public class LoginFragment extends BaseFragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        wrongSerialNumberDevices = new ArrayList<>();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         closeProgressDialog();
@@ -238,6 +246,12 @@ public class LoginFragment extends BaseFragment
 
     @Override
     public void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response) {
+        wrongSerialNumberDevices.add("Device "
+                + (wrongSerialNumberDevices.size() + 1) + " with serial number : "
+                + this.deviceSerialNumber
+                + " not exist in server");
+
+        handleNextSync();
     }
 
     @Override
@@ -269,6 +283,14 @@ public class LoginFragment extends BaseFragment
             this.deviceSerialNumber = "";
         }
 
+        handleNextSync();
+    }
+
+    @Override
+    public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
+    }
+
+    private void handleNextSync() {
         if (++savedDevicesIndex < notSavedDevices.size())
             saveNotSavedLocalDevicesToServer();
         else {
@@ -277,9 +299,6 @@ public class LoginFragment extends BaseFragment
         }
     }
 
-    @Override
-    public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
-    }
 
     @Override
     public void onGetUserSuccessful(User user) {
@@ -304,7 +323,18 @@ public class LoginFragment extends BaseFragment
     public void onDataInsert(Object object) {
         closeProgressDialog();
         if (object instanceof User) {
-            startActivity(new Intent(getActivity(), DeviceActivity.class));
+            Intent deviceActivity = new Intent(getActivity(), DeviceActivity.class);
+
+            if (wrongSerialNumberDevices.size() != 0) {
+                StringBuilder message = new StringBuilder();
+
+                for (String serialNumber : wrongSerialNumberDevices)
+                    message.append(serialNumber).append("\n");
+
+                deviceActivity.putExtra("notSyncedDevicesMessage", message.toString());
+            }
+
+            startActivity(deviceActivity);
             setUserLoginMode(true);
             clearViews();
         }

@@ -639,7 +639,7 @@ public class GatewayPageFragment extends BaseFragment
 
             btnDisconnectDialogDisconnectClient.setOnClickListener(v -> {
                 openProgressDialog(getContext(), null, "Disconnect ...");
-                GatewayPageFragment.this.mDeviceViewModel.disconnectGateWayFromServer(this, availableBleDeviceModel);
+                GatewayPageFragment.this.mDeviceViewModel.disconnectGateWayFromServer(this);
             });
 
             disconnectDeviceDialog.show();

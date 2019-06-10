@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.Request;
+import timber.log.Timber;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_PUBLIC_PRT;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_RX;
@@ -168,10 +169,10 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
 
         if (mBluetoothGattCharacteristic != null) {
-            int parts = (value.length / 20) + ((value.length % 20 == 0) ? 0 : 1);
+            int parts = (value.length / 17) + ((value.length % 17 == 0) ? 0 : 1);
 
             if (parts == 1)
-                addNewCommandToBlePool(value);
+                addNewCommandToBlePool(getBleCommandPart(value, 0, 0));
             else
                 for (int i = 0; i < parts; i++)
                     addNewCommandToBlePool(getBleCommandPart(value, i, parts - (i + 1)));
@@ -231,8 +232,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         else if (characteristicUUID.equals(CHARACTERISTIC_UUID_RX) && mRXCharacteristic != null)
             return mRXCharacteristic;
 
-        Log.e(this.getClass().getName(),
-                "BluetoothGattCharacteristic " + characteristicUUID + " Not Ready Yet.");
+        Timber.e("BluetoothGattCharacteristic " + characteristicUUID + " Not Ready Yet.");
 
         return null;
     }

@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
-import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.AvailableBleDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
@@ -28,7 +27,6 @@ import com.projects.company.homes_lock.repositories.local.ILocalRepository;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
-import com.projects.company.homes_lock.ui.device.fragment.adddevice.AddDeviceFragment;
 import com.projects.company.homes_lock.ui.device.fragment.adddevice.IAddDeviceFragment;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.IDeviceSettingFragment;
 import com.projects.company.homes_lock.ui.device.fragment.gatewaypage.GatewayPageFragment;
@@ -117,7 +115,6 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERIS
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createBleReadMessage;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createJSONObjectWithKeyValue;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.createWriteMessage;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.isInstanceOfList;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.subArrayByte;
 
@@ -232,7 +229,7 @@ public class DeviceViewModel extends AndroidViewModel
         mIsConnected.postValue(true);
         mConnectionState.postValue(getApplication().getString(R.string.ble_state_discovering_services));
 
-//        //TODO remove these lines after test ble without password
+        //TODO remove these lines after test ble without password
         if (mIBleScanListener != null)
             mIBleScanListener.onBonded(device);
     }
@@ -323,13 +320,14 @@ public class DeviceViewModel extends AndroidViewModel
         else if (response instanceof ResponseBody) {
             switch (getRequestType()) {
                 case "validateLockInOnlineDatabase":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onFindLockInOnlineDataBaseSuccessful(
-                                ((ResponseBody) response).source().toString()
-                                        .replace("[text=", "")
-                                        .replace("]", "")
-                                        .replace("\"", ""));
-                    else if (mILoginFragment != null)
+//                    if (mIAddDeviceFragment != null)
+//                        mIAddDeviceFragment.onFindLockInOnlineDataBaseSuccessful(
+//                                ((ResponseBody) response).source().toString()
+//                                        .replace("[text=", "")
+//                                        .replace("]", "")
+//                                        .replace("\"", ""));
+//                    else
+                    if (mILoginFragment != null)
                         mILoginFragment.onFindLockInOnlineDataBaseSuccessful(
                                 ((ResponseBody) response).source().toString()
                                         .replace("[text=", "")
@@ -337,17 +335,19 @@ public class DeviceViewModel extends AndroidViewModel
                                         .replace("\"", ""));
                     break;
                 case "addLockToUserLock":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onAddLockToUserLockSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
-                    else if (mIManageMembersFragment != null)
+//                    if (mIAddDeviceFragment != null)
+//                        mIAddDeviceFragment.onAddLockToUserLockSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
+//                    else
+                    if (mIManageMembersFragment != null)
                         mIManageMembersFragment.onAddLockToUserLockSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
                     else if (mILoginFragment != null)
                         mILoginFragment.onAddLockToUserLockSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
                     break;
                 case "addUserLockToUser":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
-                    else if (mIManageMembersFragment != null)
+//                    if (mIAddDeviceFragment != null)
+//                        mIAddDeviceFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
+//                    else
+                    if (mIManageMembersFragment != null)
                         mIManageMembersFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
                     else if (mILoginFragment != null)
                         mILoginFragment.onAddUserLockToUserSuccessful(((ResponseBody) response).source().toString().equals("[text=1]"));
@@ -381,17 +381,20 @@ public class DeviceViewModel extends AndroidViewModel
             }
         } else if (response instanceof UserLock) {
             if (getRequestType().equals("insertOnlineUserDevice")) {
-                if (mIAddDeviceFragment != null)
-                    mIAddDeviceFragment.onInsertUserLockSuccessful((UserLock) response);
-                else if (mILoginFragment != null)
+//                if (mIAddDeviceFragment != null)
+//                    mIAddDeviceFragment.onInsertUserLockSuccessful((UserLock) response);
+//                else
+                if (mILoginFragment != null)
                     mILoginFragment.onInsertUserLockSuccessful((UserLock) response);
                 else if (mIManageMembersFragment != null)
                     mIManageMembersFragment.onInsertUserLockSuccessful((UserLock) response);
             }
-        } else if (response instanceof User) {
-            if (mIAddDeviceFragment != null)
-                mIAddDeviceFragment.onGetUserSuccessful((User) response);
-        } else if (response instanceof Device) {
+        }
+//        else if (response instanceof User) {
+//            if (mIAddDeviceFragment != null)
+//                mIAddDeviceFragment.onGetUserSuccessful((User) response);
+//        }
+        else if (response instanceof Device) {
             ((Device) response).setConnectedClientsCount(Integer.valueOf(((Device) response).getConnectedDevices().split(",")[1]));
             ((Device) response).setConnectedServersCount(Integer.valueOf(((Device) response).getConnectedDevices().split(",")[2]));
 
@@ -410,18 +413,25 @@ public class DeviceViewModel extends AndroidViewModel
         if (response instanceof ResponseBodyFailureModel) {
             switch (getRequestType()) {
                 case "validateLockInOnlineDatabase":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onFindLockInOnlineDataBaseFailed((ResponseBodyFailureModel) response);
+//                    if (mIAddDeviceFragment != null)
+//                        mIAddDeviceFragment.onFindLockInOnlineDataBaseFailed((ResponseBodyFailureModel) response);
+//                    else
+                    if (mILoginFragment != null)
+                        mILoginFragment.onFindLockInOnlineDataBaseFailed((ResponseBodyFailureModel) response);
                     break;
                 case "addLockToUserLock":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onAddLockToUserLockFailed((ResponseBodyFailureModel) response);
+//                    if (mIAddDeviceFragment != null)
+//                        mIAddDeviceFragment.onAddLockToUserLockFailed((ResponseBodyFailureModel) response);
+                    if (mILoginFragment != null)
+                        mILoginFragment.onAddLockToUserLockFailed((ResponseBodyFailureModel) response);
                     else if (mIManageMembersFragment != null)
                         mIManageMembersFragment.onAddLockToUserLockFailed((ResponseBodyFailureModel) response);
                     break;
                 case "addUserLockToUser":
-                    if (mIAddDeviceFragment != null)
-                        mIAddDeviceFragment.onAddUserLockToUserFailed((ResponseBodyFailureModel) response);
+//                    if (mIAddDeviceFragment != null)
+//                        mIAddDeviceFragment.onAddUserLockToUserFailed((ResponseBodyFailureModel) response);
+                    if (mILoginFragment != null)
+                        mILoginFragment.onAddUserLockToUserFailed((ResponseBodyFailureModel) response);
                     else if (mIManageMembersFragment != null)
                         mIManageMembersFragment.onAddUserLockToUserFailed((ResponseBodyFailureModel) response);
                     break;
@@ -443,16 +453,17 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
             }
         } else if (response instanceof FailureModel) {
-            if (mIAddDeviceFragment != null) {
-                switch (getRequestType()) {
-                    case "############"://TODO i do not know this label is true
-                        mIAddDeviceFragment.onGetUserFailed((FailureModel) response);
-                        break;
-                    case "insertOnlineUserDevice":
-                        mIAddDeviceFragment.onInsertUserLockFailed((FailureModel) response);
-                        break;
-                }
-            } else if (mIManageMembersFragment != null)
+//            if (mIAddDeviceFragment != null) {
+//                switch (getRequestType()) {
+//                    case "############"://TODO i do not know this label is true
+//                        mIAddDeviceFragment.onGetUserFailed((FailureModel) response);
+//                        break;
+//                    case "insertOnlineUserDevice":
+//                        mIAddDeviceFragment.onInsertUserLockFailed((FailureModel) response);
+//                        break;
+//                }
+//            }
+            if (mIManageMembersFragment != null)
                 mIManageMembersFragment.onInsertUserLockFailed((FailureModel) response);
             else if (mILoginFragment != null) {
                 if (getRequestType().equals("insertOnlineUserDevice"))
@@ -551,7 +562,7 @@ public class DeviceViewModel extends AndroidViewModel
             bleBufferStatus = true;
         }
 
-        String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 2));
+        String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 1));
 
         try {
             JSONObject keyCommandJson = new JSONObject(keyValue);
@@ -949,9 +960,9 @@ public class DeviceViewModel extends AndroidViewModel
         mILockPageFragment = (ILockPageFragment) parentFragment;
         if (isUserLoggedIn())
             (new MQTTHandler()).sendLockCommand(this, serialNumber,
-                    createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC, 0));
+                    createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC));
         else
-            addNewCommandToBlePool(createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC, 0));
+            addNewCommandToBlePool(createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC));
     }
 
     public void getDeviceCommonSettingInfoFromBleDevice(Fragment parentFragment) {
@@ -960,14 +971,14 @@ public class DeviceViewModel extends AndroidViewModel
         else if (parentFragment instanceof IGatewayPageFragment)
             this.mIGatewayPageFragment = (IGatewayPageFragment) parentFragment;
 
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BAT, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_TYP, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_FW, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_HW, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_PRD, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_SN, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_DID, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BAT));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_TYP));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_FW));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_HW));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_PRD));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_SN));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_DID));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ));
     }
 
     public void getLockSpecifiedSettingInfoFromBleDevice(Fragment parentFragment) {
@@ -976,19 +987,19 @@ public class DeviceViewModel extends AndroidViewModel
         else if (parentFragment instanceof IDeviceSettingFragment)
             this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
 
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RGH, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISO, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISK, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RGH));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISO));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISK));
     }
 
     public void getGatewaySpecifiedInfoFromBleDevice(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
 
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISW, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISI, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISQ, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISR, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RSS, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISW));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISI));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISQ));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_ISR));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_RSS));
     }
 
     private void addNewCommandToBlePool(byte[] command) {
@@ -1011,46 +1022,46 @@ public class DeviceViewModel extends AndroidViewModel
     public void getAvailableWifiNetworksAroundDevice(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Timber.d("1: Send request to get wifi network list");
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_WFL, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_WFL));
     }
 
     public void getConnectedClients(ILockPageFragment mILockPageFragment) {
         this.mILockPageFragment = mILockPageFragment;
         Timber.d("1: Send request to get wifi network list");
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL));
     }
 
     public void getConnectedClients(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Timber.d("1: Send request to get connected devices list");
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCQ));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BCL));
     }
 
     public void getAvailableBleDevices(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         Timber.d("1: Send request to get available devices list");
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BSL, 0));
-        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BLL, 0));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BSL));
+        addNewCommandToBlePool(createBleReadMessage(BLE_COMMAND_BLL));
     }
 
     public void setGatewayWifiNetwork(IGatewayPageFragment mIGatewayPageFragment, WifiNetworksModel wifiNetwork) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_SSD, wifiNetwork.getSSID()).toString(), (byte) 0));
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PSK, wifiNetwork.getPassword()).toString(), (byte) 0));
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_SEC, wifiNetwork.getAuthenticateType()).toString(), (byte) 0));
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_CON, true).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_SSD, wifiNetwork.getSSID()).toString().getBytes());
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_PSK, wifiNetwork.getPassword()).toString().getBytes());
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_SEC, wifiNetwork.getAuthenticateType()).toString().getBytes());
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_CON, true).toString().getBytes());
     }
 
     public void disconnectGatewayWifiNetwork(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_CON, false).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_CON, false).toString().getBytes());
     }
 
     public void setDoorInstallation(Fragment parentFragment, boolean doorInstallation) {
         mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_RGH, doorInstallation).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_RGH, doorInstallation).toString().getBytes());
     }
 
     public void changePairingPasswordViaBle(Fragment parentFragment, Integer oldPassword, Integer newPassword) {
@@ -1072,24 +1083,24 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void changePairingPasswordViaBleInitialStep() {
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_OPS, oldPairingPassword).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_OPS, oldPairingPassword).toString().getBytes());
     }
 
     private void changeOnlinePasswordViaBleInitialStep() {
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_OPR, oldOnlinePassword).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_OPR, oldOnlinePassword).toString().getBytes());
     }
 
     private void changePairingPasswordViaBleFinalStep() {
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_NPS, newPairingPassword).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_NPS, newPairingPassword).toString().getBytes());
     }
 
     private void changeOnlinePasswordViaBleFinalStep() {
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_NPR, newOnlinePassword).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_NPR, newOnlinePassword).toString().getBytes());
     }
 
     public void resetBleDevice(Fragment parentFragment) {
         mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_RST, JSONObject.NULL).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_RST, JSONObject.NULL).toString().getBytes());
     }
 
     public LiveData<Boolean> isConnected() {
@@ -1101,66 +1112,66 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     private void connectToBleDevice(String macAddress) {
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_CON, macAddress).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_CON, macAddress).toString().getBytes());
     }
 
     private void disconnectFromBleDevice(String macAddress) {
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DIS, macAddress).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_DIS, macAddress).toString().getBytes());
     }
 
     public void initializeCalibrationLock(Fragment parentFragment) {
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_SET, JSONObject.NULL).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_SET, JSONObject.NULL).toString().getBytes());
     }
 
     public void applyCalibrationIdlePosition(Fragment parentFragment) {
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PIL, JSONObject.NULL).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_PIL, JSONObject.NULL).toString().getBytes());
     }
 
     public void applyCalibrationLatchPosition(Fragment parentFragment) {
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLT, JSONObject.NULL).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_PLT, JSONObject.NULL).toString().getBytes());
     }
 
     public void applyCalibrationLockPosition(Fragment parentFragment) {
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_PLK, JSONObject.NULL).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_PLK, JSONObject.NULL).toString().getBytes());
     }
 
     public void sendConfigCommand(Fragment parentFragment) {
         this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_CFG, true).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_CFG, true).toString().getBytes());
     }
 
-    public void disconnectGateWayFromServer(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
+    public void disconnectGateWayFromServer(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, false).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, false).toString().getBytes());
     }
 
     public void setServerMacAddressForGateWay(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         this.mSelectedAvailableBleServer = availableBleDeviceModel;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEM, availableBleDeviceModel.getMacAddress()).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_DEM, availableBleDeviceModel.getMacAddress()).toString().getBytes());
     }
 
     public void setServerPasswordForGateWay(IGatewayPageFragment mIGatewayPageFragment, AvailableBleDeviceModel availableBleDeviceModel) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEP, availableBleDeviceModel.getPassword()).toString(), (byte) 0));
+        addNewCommandToBlePool((createJSONObjectWithKeyValue(BLE_COMMAND_DEP, availableBleDeviceModel.getPassword()).toString().getBytes()));
     }
 
     public void connectGateWayToServer(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
-        addNewCommandToBlePool(createWriteMessage(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, true).toString(), (byte) 0));
+        addNewCommandToBlePool(createJSONObjectWithKeyValue(BLE_COMMAND_DEO, true).toString().getBytes());
     }
     //endregion BLE Methods
 
     //region Online Methods
-    public void validateLockInOnlineDatabase(AddDeviceFragment fragment, String serialNumber) {
-        setRequestType("validateLockInOnlineDatabase");
-        mIAddDeviceFragment = fragment;
-        mNetworkRepository.getDeviceObjectIdWithSerialNumber(this, serialNumber);
-    }
+//    public void validateLockInOnlineDatabase(AddDeviceFragment fragment, String serialNumber) {
+//        setRequestType("validateLockInOnlineDatabase");
+//        mIAddDeviceFragment = fragment;
+//        mNetworkRepository.getDeviceObjectIdWithSerialNumber(this, serialNumber);
+//    }
 
     public void validateLockInOnlineDatabase(Fragment fragment, String serialNumber) {
         setRequestType("validateLockInOnlineDatabase");

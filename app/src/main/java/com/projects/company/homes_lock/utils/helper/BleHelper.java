@@ -227,24 +227,18 @@ public class BleHelper {
         context.startActivity(intent);
     }
 
-    public static byte[] createWriteMessage(String command, byte remain) {
-        return mergeArrays(new byte[]{0x00, Byte.valueOf(String.valueOf(0x40 | remain))}, mergeArrays(command.getBytes(), new byte[]{0x00}));
-    }
-
-    public static byte[] createBleReadMessage(String key, int remain) {
-        return mergeArrays(new byte[]{0x00, Byte.valueOf(String.valueOf(0x40 | remain))},
-                mergeArrays((("{\"" + key + "\":null}")).getBytes(), new byte[]{0x00}));
+    public static byte[] createBleReadMessage(String key) {
+        return (("{\"" + key + "\":null}")).getBytes();
     }
 
     public static byte[] getBleCommandPart(byte[] command, int part, int remain) {
         return mergeArrays(
-                mergeArrays(mergeArrays(new byte[]{command[0]},
-                        new byte[]{Byte.valueOf(String.valueOf(0x40 | remain))}
+                mergeArrays(mergeArrays(new byte[]{0x00}, new byte[]{Byte.valueOf(String.valueOf(0x40 | remain))}
                 ), subArrayByte(
-                        subArrayByte(command, 2, command.length - 2),
+                        command,
                         part * 17,
-                        part * 17 + 16)),
-                new byte[]{command[command.length - 1]});//every 20bytes data is a frame, 3 bytes is out of data
+                        part * 17 + (remain != 0 ? 17 - 1 : command.length - part * 17 - 1))),
+                new byte[]{0x00});//every 20bytes data is a frame, 3 bytes is out of data
     }
 
     private static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {

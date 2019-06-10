@@ -114,11 +114,13 @@ public class NetworkRepository {
     public void getDeviceObjectIdWithSerialNumber(final NetworkListener.SingleNetworkListener<ResponseBody> listener, String parameter) {
         BaseApplication.getRetrofitAPI().getDeviceObjectIdWithSerialNumber(BaseApplication.activeUserToken, parameter)
                 .enqueue(new Callback<ResponseBody>() {
-
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response != null && response.body() != null)
-                            listener.onResponse(response.body());
+                        if (response != null)
+                            if (response.body() != null)
+                                listener.onResponse(response.body());
+                            else if (response.errorBody() != null)
+                                listener.onSingleNetworkListenerFailure(new ResponseBodyFailureModel(response.message()));
                     }
 
                     @Override

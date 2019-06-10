@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -16,8 +17,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
@@ -56,6 +59,7 @@ public class DeviceActivity extends BaseActivity
 
     //region Declare Variables
     public static boolean PERMISSION_READ_ALL_LOCAL_DEVICES = true;
+    private String mNotSyncedDevicesMessage = "";
     //endregion Declare Variables
 
     //region Declare Objects
@@ -120,10 +124,34 @@ public class DeviceActivity extends BaseActivity
         mAdapter = new CustomDeviceAdapter(getSupportFragmentManager(), new ArrayList<>());
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mWormDotsIndicator.setViewPager(mViewPager);
-        setViewPagerAdapter(mAdapter);
 
+        setViewPagerAdapter(mAdapter);
+        readExtraData();
         getAllDevices();
+        handleNotSyncedDevicesMessage();
         //endregion init
+    }
+
+    private void handleNotSyncedDevicesMessage() {
+        if (!mNotSyncedDevicesMessage.isEmpty()) {
+            Snackbar mSnackBar =
+                    Snackbar.make(
+                            mViewPager,
+                            mNotSyncedDevicesMessage,
+                            Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
+                    });
+
+            View mSnackBarView = mSnackBar.getView();
+            TextView textView = mSnackBarView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setMaxLines(5);
+
+            mSnackBar.show();
+        }
+    }
+
+    private void readExtraData() {
+        if (getIntent().hasExtra("notSyncedDevicesMessage"))
+            mNotSyncedDevicesMessage = getIntent().getStringExtra("notSyncedDevicesMessage");
     }
 
     @Override

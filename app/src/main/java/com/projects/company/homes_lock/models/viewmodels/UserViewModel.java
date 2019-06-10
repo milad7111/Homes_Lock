@@ -112,8 +112,8 @@ public class UserViewModel extends AndroidViewModel
                 mILoginFragment.onLoginSuccessful((User) response);
             else if (mIRegisterFragment != null)
                 mIRegisterFragment.onRegisterSuccessful(response);
-            else if (mIAddDeviceFragment != null)
-                mIAddDeviceFragment.onGetUserSuccessful((User) response);
+//            else if (mIAddDeviceFragment != null)
+//                mIAddDeviceFragment.onGetUserSuccessful((User) response);
         } else if (response instanceof ResponseBody) {
             switch (getRequestType()) {
                 case "removeLockMember":
@@ -153,8 +153,8 @@ public class UserViewModel extends AndroidViewModel
             mILoginFragment.onLoginFailed((FailureModel) response);
         else if (getRequestType().equals("register") && mIRegisterFragment != null)
             mIRegisterFragment.onRegisterFailed((FailureModel) response);
-        else if (getRequestType().equals("getUserWithObjectId") && mIManageMembersFragment != null)
-            mIAddDeviceFragment.onGetUserFailed((FailureModel) response);
+//        else if (getRequestType().equals("getUserWithObjectId") && mIManageMembersFragment != null)
+//            mIAddDeviceFragment.onGetUserFailed((FailureModel) response);
         else if (getRequestType().equals("removeLockMember") && mIManageMembersFragment != null)
             mIManageMembersFragment.onRemoveMemberFailed((ResponseBodyFailureModel) response);
     }

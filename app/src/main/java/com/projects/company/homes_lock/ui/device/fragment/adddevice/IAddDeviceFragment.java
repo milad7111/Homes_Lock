@@ -10,29 +10,29 @@ import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFa
  * This is AddDeviceFragment Interface
  */
 public interface IAddDeviceFragment {
-    void onFindLockInOnlineDataBaseSuccessful(String response);
+//    void onFindLockInOnlineDataBaseSuccessful(String response);
 
-    void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response);
+//    void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response);
 
-    void onInsertUserLockSuccessful(UserLock response);
+//    void onInsertUserLockSuccessful(UserLock response);
 
-    void onInsertUserLockFailed(FailureModel response);
+//    void onInsertUserLockFailed(FailureModel response);
 
-    void onAddLockToUserLockSuccessful(Boolean response);
+//    void onAddLockToUserLockSuccessful(Boolean response);
 
-    void onAddLockToUserLockFailed(ResponseBodyFailureModel response);
+//    void onAddLockToUserLockFailed(ResponseBodyFailureModel response);
 
-    void onAddUserLockToUserSuccessful(Boolean response);
+//    void onAddUserLockToUserSuccessful(Boolean response);
 
-    void onAddUserLockToUserFailed(ResponseBodyFailureModel response);
+//    void onAddUserLockToUserFailed(ResponseBodyFailureModel response);
 
-    void onGetUserSuccessful(User response);
+//    void onGetUserSuccessful(User response);
 
-    void onGetUserFailed(FailureModel response);
+//    void onGetUserFailed(FailureModel response);
 
     void onDataInsert(Object object);
 
-    void onDeviceRegistrationPushNotificationSuccessful(String registrationId);
+//    void onDeviceRegistrationPushNotificationSuccessful(String registrationId);
 
-    void onDeviceRegistrationPushNotificationFailed(ResponseBodyFailureModel response);
+//    void onDeviceRegistrationPushNotificationFailed(ResponseBodyFailureModel response);
 }
