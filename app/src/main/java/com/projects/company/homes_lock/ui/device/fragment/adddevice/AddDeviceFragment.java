@@ -1,6 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.adddevice;
 
 import android.app.Dialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -284,7 +285,9 @@ public class AddDeviceFragment extends BaseFragment
     //region Ble Callbacks
     @Override
     public void onFindBleSuccess(List<ScannedDeviceModel> devices) {
-        handleDialogListOfAvailableBleDevices(removeSavedDevicesFromDevicesList(devices));
+        handleDialogListOfAvailableBleDevices(
+                devices.size() == 0 ? Collections.singletonList(new ScannedDeviceModel(SEARCHING_TIMEOUT_MODE))
+                        : removeSavedDevicesFromDevicesList(devices));
     }
 
     @Override
@@ -385,21 +388,29 @@ public class AddDeviceFragment extends BaseFragment
                 Toast.makeText(getActivity(), "serial number is empty", Toast.LENGTH_SHORT).show();
             else {
                 this.mDeviceViewModel.getDeviceInfo(Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString())
-                        .observe(this, device -> {
-                            if (device != null)
-                                Toast.makeText(getActivity(), "serial number is redundant", Toast.LENGTH_SHORT).show();
-                            else {
-                                openProgressDialog(getContext(), null, "Saving ...");
+                        .observe(this, new Observer<Device>() {
+                            @Override
+                            public void onChanged(@Nullable Device device) {
+                                if (device != null)
+                                    Toast.makeText(getActivity(), "serial number is redundant", Toast.LENGTH_SHORT).show();
+                                else {
+                                    openProgressDialog(getContext(), null, "Saving ...");
 
-                                mTempDevice.setDeviceName(Objects.requireNonNull(tietDeviceNameDialogAddNewDevice.getText()).toString());
-                                mTempDevice.setDeviceSerialNumber(Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString());
-                                mTempDevice.setFavoriteStatus(chbDeviceFavoriteStatusDialogAddNewDevice.isChecked());
-                                mTempDevice.setDeviceMacAddress(mDevice.getMacAddress().toLowerCase());
+                                    mTempDevice.setDeviceName(Objects.requireNonNull(tietDeviceNameDialogAddNewDevice.getText()).toString());
+                                    mTempDevice.setDeviceSerialNumber(Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString());
+                                    mTempDevice.setFavoriteStatus(chbDeviceFavoriteStatusDialogAddNewDevice.isChecked());
+                                    mTempDevice.setDeviceMacAddress(mDevice.getMacAddress().toLowerCase());
 
-                                DeviceActivity.PERMISSION_READ_ALL_LOCAL_DEVICES = true;
-                                this.mDeviceViewModel.insertLocalDevice(this, new Device(mTempDevice));
+                                    DeviceActivity.PERMISSION_READ_ALL_LOCAL_DEVICES = true;
+                                    AddDeviceFragment.this.mDeviceViewModel.insertLocalDevice(
+                                            AddDeviceFragment.this, new Device(mTempDevice));
 
-                                saveDeviceAfterPaired = true;
+                                    saveDeviceAfterPaired = true;
+
+                                    AddDeviceFragment.this.mDeviceViewModel
+                                            .getDeviceInfo(Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString())
+                                            .removeObserver(this);
+                                }
                             }
                         });
             }
@@ -465,19 +476,24 @@ public class AddDeviceFragment extends BaseFragment
     }
 
     private List<ScannedDeviceModel> removeSavedDevicesFromDevicesList(List<ScannedDeviceModel> devices) {
-        List<ScannedDeviceModel> tempDevices = new ArrayList<>();
+        List<ScannedDeviceModel> devicesToRemove = new ArrayList<>();
 
         for (ScannedDeviceModel device : devices) {
-            tempDevices.add(device);
-            for (Device savedDevice : mAllDevices) {
-                if (device.getMacAddress().equals(savedDevice.getBleDeviceMacAddress())) {
-                    tempDevices.remove(device);
-                    break;
-                }
+            String[] tempList = device.getMacAddress().toLowerCase().split(":");
+            if (tempList.length == 0 || !tempList[0].equals("6e")) {
+                devicesToRemove.add(device);
+            } else {
+                for (Device localDevice : mAllDevices)
+                    if (device.getMacAddress().toLowerCase().equals(localDevice.getBleDeviceMacAddress().toLowerCase())) {
+                        devicesToRemove.add(device);
+                        break;
+                    }
             }
         }
 
-        return tempDevices;
+        devices.removeAll(devicesToRemove);
+
+        return devices;
     }
     //endregion Declare Methods
 }

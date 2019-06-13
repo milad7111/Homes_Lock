@@ -16,6 +16,7 @@ import com.projects.company.homes_lock.database.daos.UserLockDao;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.Notification;
 import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.database.tables.UserLock;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class LocalRepository {
         return mDeviceDao.getAllDevices();
     }
 
-    public Device getUserLockInfo(String objectId) {
+    public LiveData<UserLock> getUserLockInfo(String objectId) {
         return mLockUserDao.getUserLockInfo(objectId);
     }
 

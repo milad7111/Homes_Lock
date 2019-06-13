@@ -1,5 +1,6 @@
 package com.projects.company.homes_lock.database.daos;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;
 
@@ -11,14 +12,8 @@ import java.util.List;
 @Dao
 public abstract class LockUserDao {
 
-    public Device getUserLockInfo(String objectId) {
-
-        Device mDevice = getDevice(objectId);
-
-        if (getUserLock(objectId) != null)
-            mDevice.setUserLocks(getUserLock(objectId));
-
-        return mDevice;
+    public LiveData<UserLock> getUserLockInfo(String mDeviceObjectId) {
+        return getUserLock(mDeviceObjectId);
     }
 
     public List<Device> getAllUserLocks() {
@@ -40,5 +35,5 @@ public abstract class LockUserDao {
     abstract List<UserLock> getUserLocks(String mDeviceId);
 
     @Query("SELECT * FROM userLock WHERE deviceId = :mDeviceId")
-    abstract UserLock getUserLock(String mDeviceId);
+    abstract LiveData<UserLock> getUserLock(String mDeviceId);
 }

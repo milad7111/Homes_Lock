@@ -181,6 +181,8 @@ public class DeviceViewModel extends AndroidViewModel
         this.mBleDeviceManager = new BleDeviceManager(getApplication());
         this.mBleDeviceManager.setGattCallbacks(this);
         //endregion Initialize Objects
+
+        setRequestType("");
     }
     //endregion Constructor
 
@@ -189,12 +191,8 @@ public class DeviceViewModel extends AndroidViewModel
         return mLocalRepository.getAllDevices();
     }
 
-    public Device getUserLockInfo(String objectId) {
-        return mLocalRepository.getUserLockInfo(objectId);
-    }
-
-    public List<Device> getAllUserLocks() {
-        return mLocalRepository.getAllUserLocks();
+    public LiveData<UserLock> getUserLockInfo(String deviceObjectId) {
+        return mLocalRepository.getUserLockInfo(deviceObjectId);
     }
 
     public LiveData<Device> getDeviceInfo(String mActiveDeviceObjectId) {
@@ -388,6 +386,10 @@ public class DeviceViewModel extends AndroidViewModel
                     mILoginFragment.onInsertUserLockSuccessful((UserLock) response);
                 else if (mIManageMembersFragment != null)
                     mIManageMembersFragment.onInsertUserLockSuccessful((UserLock) response);
+            } else if (!((UserLock) response).getAdminStatus()) {
+                // this is when get access from user by admin in server
+                if (mILockPageFragment != null)
+                    mILockPageFragment.onRemoveAccessToDeviceForUser();
             }
         }
 //        else if (response instanceof User) {
@@ -1230,6 +1232,15 @@ public class DeviceViewModel extends AndroidViewModel
             mIGatewayPageFragment = (IGatewayPageFragment) fragment;
 
         mNetworkRepository.setListenerForDevice(this, mDevice);
+    }
+
+    public void setListenerForUser(Fragment fragment, String mUserDeviceObjectId) {
+        if (fragment instanceof LockPageFragment)
+            mILockPageFragment = (ILockPageFragment) fragment;
+        else if (fragment instanceof GatewayPageFragment)
+            mIGatewayPageFragment = (IGatewayPageFragment) fragment;
+
+        mNetworkRepository.setListenerForUser(this, mUserDeviceObjectId);
     }
 
     public void removeListenerForDevice(Device mDevice) {

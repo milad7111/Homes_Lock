@@ -287,6 +287,22 @@ public class NetworkRepository {
         });
     }
 
+    public void setListenerForUser(final NetworkListener.SingleNetworkListener<BaseModel> listener, String mUserDeviceObjectId) {
+        EventHandler<UserLock> userEventHandler = Backendless.Data.of(UserLock.class).rt();
+
+        userEventHandler.addDeleteListener(String.format("objectId='%s'", mUserDeviceObjectId), new AsyncCallback<UserLock>() {
+            @Override
+            public void handleResponse(UserLock response) {
+                listener.onResponse(response);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                listener.onSingleNetworkListenerFailure(new FailureModel(fault.getMessage()));
+            }
+        });
+    }
+
     public void removeListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
         final EventHandler<Map> lockObject = Backendless.Data.of("Device").rt();
         lockObject.removeUpdateListener(new AsyncCallback<Map>() {

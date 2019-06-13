@@ -16,4 +16,6 @@ public interface ILockPageFragment {
     void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
 
     void onDeviceDisconnectedSuccessfully();
+
+    void onRemoveAccessToDeviceForUser();
 }

@@ -2,6 +2,7 @@ package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +30,7 @@ import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseFragment;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Device;
+import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
@@ -118,8 +119,7 @@ public class LockPageFragment extends BaseFragment
 
     private Dialog mConnectedClientsListDialog;
     private Dialog disconnectClientDialog;
-
-    private Snackbar mInternetStatusSnackBar;
+    private Dialog loseAccessDialog;
     //endregion Declare Objects
 
     //region Constructor
@@ -227,8 +227,21 @@ public class LockPageFragment extends BaseFragment
 
         updateViewData(!isUserLoggedIn());
 
-        if (isUserLoggedIn())
-            this.mDeviceViewModel.setListenerForDevice(this, mDevice);
+        if (isUserLoggedIn()) {
+            Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() -> {
+                this.mDeviceViewModel.setListenerForDevice(this, mDevice);
+
+                this.mDeviceViewModel.getUserLockInfo(mDevice.getObjectId()).observe(this, new Observer<UserLock>() {
+                    @Override
+                    public void onChanged(@Nullable UserLock userLock) {
+                        if (userLock != null && !userLock.getAdminStatus()) {
+                            mDeviceViewModel.setListenerForUser(LockPageFragment.this, userLock.getObjectId());
+                            mDeviceViewModel.getUserLockInfo(mDevice.getObjectId()).removeObserver(this);
+                        }
+                    }
+                });
+            });
+        }
         //endregion init
     }
 
@@ -370,6 +383,11 @@ public class LockPageFragment extends BaseFragment
             this.mDeviceViewModel.getConnectedClients(this);
         } else
             handleConnectedClients();
+    }
+
+    @Override
+    public void onRemoveAccessToDeviceForUser() {
+        handleDialogLoseAccess();
     }
     //endregion BLE CallBacks
 
@@ -554,6 +572,7 @@ public class LockPageFragment extends BaseFragment
 
         imgManageMembersLockPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
         txvDeviceNameLockPage.setTextColor((!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
+
         txvDeviceNameLockPage.setText(mDevice.getBleDeviceName());
 
         txvBriefStatusLockPage.setText(
@@ -571,12 +590,35 @@ public class LockPageFragment extends BaseFragment
         if (isUserLoggedIn()) {
             if (!mDevice.getInternetStatus()) {
                 rllValidDataStatusLockPage.setVisibility(VISIBLE);
-                txvValidDataStatusLockPage.setText("Not connected to internet.\nLast update: " + new Date(mDevice.getUpdated()));
+                txvValidDataStatusLockPage.setText(
+                        (mDevice.getUpdated() != null
+                                ? String.format("Not connected to internet.\nLast update: %s", new Date(mDevice.getUpdated()))
+                                : "Please login again to see updated data.")
+                );
             } else {
                 rllValidDataStatusLockPage.setVisibility(GONE);
                 txvValidDataStatusLockPage.setText(null);
             }
         }
+    }
+
+    private void handleDialogLoseAccess() {
+        loseAccessDialog = new Dialog(Objects.requireNonNull(getContext()));
+        loseAccessDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        loseAccessDialog.setContentView(R.layout.dialog_lose_access);
+
+        Button btnOkDialogLoseAccess = loseAccessDialog.findViewById(R.id.btn_ok_dialog_lose_access);
+
+        btnOkDialogLoseAccess.setOnClickListener(v -> {
+            loseAccessDialog.dismiss();
+            loseAccessDialog = null;
+            Objects.requireNonNull(getActivity()).finish();
+        });
+
+        loseAccessDialog.setOnDismissListener(dialog -> Objects.requireNonNull(getActivity()).finish());
+
+        loseAccessDialog.show();
+        Objects.requireNonNull(loseAccessDialog.getWindow()).setAttributes(ViewHelper.getDialogLayoutParams(loseAccessDialog));
     }
 
     private void handleDeviceMembers() {
