@@ -48,6 +48,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
@@ -120,6 +123,8 @@ public class LockPageFragment extends BaseFragment
     private Dialog mConnectedClientsListDialog;
     private Dialog disconnectClientDialog;
     private Dialog loseAccessDialog;
+
+    private ScheduledFuture freeBleBuffer;
     //endregion Declare Objects
 
     //region Constructor
@@ -183,6 +188,7 @@ public class LockPageFragment extends BaseFragment
             } else
                 updateViewData(!isUserLoggedIn() && !isConnectedToBleDevice);
         });
+        this.mDeviceViewModel.getBleTimeOut().observe(this, this::handleBleBufferStatus);
         //endregion Initialize Objects
     }
 
@@ -606,6 +612,7 @@ public class LockPageFragment extends BaseFragment
         loseAccessDialog = new Dialog(Objects.requireNonNull(getContext()));
         loseAccessDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         loseAccessDialog.setContentView(R.layout.dialog_lose_access);
+        loseAccessDialog.setCancelable(false);
 
         Button btnOkDialogLoseAccess = loseAccessDialog.findViewById(R.id.btn_ok_dialog_lose_access);
 
@@ -651,6 +658,23 @@ public class LockPageFragment extends BaseFragment
         if (LockPageFragment.this.getActivity() != null)
             LockPageFragment.this.getActivity().runOnUiThread(() ->
                     Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
+    }
+
+    private void handleBleBufferStatus(Integer timeout) {
+        if (timeout != null) {
+            cancelSchedulerFreeBleBuffer();
+
+            if (timeout != -1)
+                //schedule a task to execute after timeout milliSeconds
+                freeBleBuffer = Executors.newScheduledThreadPool(1).schedule(() -> {
+                    mDeviceViewModel.setBleBufferStatus(true);
+                }, timeout, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private void cancelSchedulerFreeBleBuffer() {
+        if (freeBleBuffer != null)
+            freeBleBuffer.cancel(true);
     }
     //endregion Declare Methods
 }

@@ -341,5 +341,80 @@ public class BleHelper {
                 return "UNKNOWN";
         }
     }
+
+    public static int getBleTimeOutBaseOnBleCommandType(String command) {
+        switch (command) {
+            case BLE_COMMAND_TYP:
+            case BLE_COMMAND_FW:
+            case BLE_COMMAND_HW:
+            case BLE_COMMAND_PRD:
+            case BLE_COMMAND_SN:
+            case BLE_COMMAND_DID:
+
+            case BLE_COMMAND_BAT:
+            case BLE_COMMAND_RGH:
+            case BLE_COMMAND_BCQ:
+
+            case BLE_COMMAND_ISO:
+            case BLE_COMMAND_ISK:
+
+            case BLE_COMMAND_ISW:
+            case BLE_COMMAND_ISI:
+            case BLE_COMMAND_ISQ:
+            case BLE_COMMAND_ISR:
+            case BLE_COMMAND_RSS:
+
+            case BLE_COMMAND_BCL:
+            case BLE_COMMAND_BLL:
+            case BLE_COMMAND_BSL:
+            case BLE_COMMAND_WFL:
+
+            case BLE_COMMAND_SSD:
+            case BLE_COMMAND_PSK:
+            case BLE_COMMAND_SEC:
+
+            case BLE_COMMAND_CON:
+            case BLE_COMMAND_DIS:
+
+            case BLE_COMMAND_OPS:
+            case BLE_COMMAND_NPS:
+            case BLE_COMMAND_OPR:
+            case BLE_COMMAND_NPR:
+
+            case BLE_COMMAND_SET:
+
+            case BLE_COMMAND_PIL:
+            case BLE_COMMAND_PLT:
+            case BLE_COMMAND_PLK:
+            case BLE_COMMAND_CFG:
+
+            case BLE_COMMAND_DEM:
+            case BLE_COMMAND_DEP:
+            case BLE_COMMAND_DEO:
+
+            case BLE_COMMAND_RST:
+
+                return 1000;
+
+            case BLE_COMMAND_BCL + BLE_RESPONSE_PUBLIC_WAIT:
+            case BLE_COMMAND_BLL + BLE_RESPONSE_PUBLIC_WAIT:
+            case BLE_COMMAND_BSL + BLE_RESPONSE_PUBLIC_WAIT:
+
+            case BLE_COMMAND_NPR + BLE_RESPONSE_PUBLIC_WAIT:
+
+                return 5000;
+
+            case BLE_COMMAND_WFL + BLE_RESPONSE_PUBLIC_WAIT:
+                return 10000;
+
+            default:
+                return 1000;
+        }
+    }
     //endregion Declare Methods
+
+    //region Declare Enums
+    public enum BleCommandType {
+    }
+    //endregion Declare Enums
 }

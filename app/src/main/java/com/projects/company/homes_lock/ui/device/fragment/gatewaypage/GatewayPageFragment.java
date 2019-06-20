@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -54,6 +53,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.view.View.GONE;
@@ -127,7 +129,7 @@ public class GatewayPageFragment extends BaseFragment
     private Dialog connectToServerDialog;
     private Dialog disconnectDeviceDialog;
 
-    private Snackbar mInternetStatusSnackBar;
+    private ScheduledFuture freeBleBuffer;
     //endregion Declare Objects
 
     //region Constructor
@@ -191,6 +193,7 @@ public class GatewayPageFragment extends BaseFragment
             } else
                 updateViewData(!isUserLoggedIn() && !isConnectedToBleDevice);
         });
+        GatewayPageFragment.this.mDeviceViewModel.getBleTimeOut().observe(this, this::handleBleBufferStatus);
         //endregion Initialize Objects
     }
 
@@ -490,6 +493,7 @@ public class GatewayPageFragment extends BaseFragment
         connectedClientsListDialog = new Dialog(requireContext());
         connectedClientsListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         connectedClientsListDialog.setContentView(R.layout.dialog_connected_devices);
+        connectedClientsListDialog.setCancelable(false);
 
         if (mConnectedClientsAdapter == null) {
             mConnectedClientsAdapter = new ConnectedClientsAdapter(this,
@@ -543,6 +547,7 @@ public class GatewayPageFragment extends BaseFragment
         availableBleDevicesListDialog = new Dialog(requireContext());
         availableBleDevicesListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         availableBleDevicesListDialog.setContentView(R.layout.dialog_available_ble_devices);
+        availableBleDevicesListDialog.setCancelable(false);
 
         if (mAvailableBleDevicesAdapter == null) {
             mAvailableBleDevicesAdapter = new AvailableBleDevicesAdapter(this,
@@ -595,7 +600,7 @@ public class GatewayPageFragment extends BaseFragment
 
         disconnectDeviceDialog = new Dialog(requireContext());
         disconnectDeviceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        disconnectDeviceDialog.setContentView(R.layout.dialog_disconnect_device);
+        disconnectDeviceDialog.setCancelable(false);
 
         Button btnCancelDialogDisconnectClient =
                 disconnectDeviceDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
@@ -626,6 +631,7 @@ public class GatewayPageFragment extends BaseFragment
             disconnectDeviceDialog = new Dialog(requireContext());
             disconnectDeviceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             disconnectDeviceDialog.setContentView(R.layout.dialog_disconnect_device);
+            disconnectDeviceDialog.setCancelable(false);
 
             Button btnCancelDialogDisconnectClient =
                     disconnectDeviceDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
@@ -653,6 +659,7 @@ public class GatewayPageFragment extends BaseFragment
             connectToServerDialog = new Dialog(requireContext());
             connectToServerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             connectToServerDialog.setContentView(R.layout.dialog_connect_device);
+            connectToServerDialog.setCancelable(false);
 
             TextInputEditText tietSecurityCodeDialogConnectToServer =
                     connectToServerDialog.findViewById(R.id.tiet_security_code_dialog_connect_to_server);
@@ -747,10 +754,7 @@ public class GatewayPageFragment extends BaseFragment
         deviceWifiNetworkListDialog = new Dialog(requireContext());
         deviceWifiNetworkListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         deviceWifiNetworkListDialog.setContentView(R.layout.dialog_available_networks);
-//            deviceWifiNetworkListDialog.setOnDismissListener(dialog -> {
-//                mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-//                deviceWifiNetworkListDialog = null;
-//            });
+        deviceWifiNetworkListDialog.setCancelable(false);
 
         mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
 
@@ -792,6 +796,7 @@ public class GatewayPageFragment extends BaseFragment
             deviceWifiNetworkDialog = new Dialog(Objects.requireNonNull(getContext()));
             deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceWifiNetworkDialog.setContentView(R.layout.dialog_device_wifi_network_connect);
+            deviceWifiNetworkDialog.setCancelable(false);
 
             TextView txvTitleDialogGatewayWifiNetworkConnect =
                     deviceWifiNetworkDialog.findViewById(R.id.txv_title_dialog_gateway_wifi_network_connect);
@@ -965,6 +970,23 @@ public class GatewayPageFragment extends BaseFragment
             default:
                 return String.format("Gateway is connected to %d devices", connectedServersCount);
         }
+    }
+
+    private void handleBleBufferStatus(Integer timeout) {
+        if (timeout != null) {
+            cancelSchedulerFreeBleBuffer();
+
+            if (timeout != -1)
+                //schedule a task to execute after timeout milliSeconds
+                freeBleBuffer = Executors.newScheduledThreadPool(1).schedule(() -> {
+                    mDeviceViewModel.setBleBufferStatus(true);
+                }, timeout, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private void cancelSchedulerFreeBleBuffer() {
+        if (freeBleBuffer != null)
+            freeBleBuffer.cancel(true);
     }
     //endregion Declare Methods
 }
