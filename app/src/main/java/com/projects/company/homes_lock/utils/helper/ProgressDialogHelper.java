@@ -48,9 +48,9 @@ public class ProgressDialogHelper {
     //region NotUsed
     public static void handleEnableLocationDialog(Activity activity) {
         Dialog dialog = new Dialog(activity);
-
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_enable_location);
+        dialog.setCancelable(false);
 
         Button btnNoDialogEnableLocation = dialog.findViewById(R.id.btn_no_dialog_enable_location);
         Button btnYesDialogEnableLocation = dialog.findViewById(R.id.btn_yes_dialog_enable_location);

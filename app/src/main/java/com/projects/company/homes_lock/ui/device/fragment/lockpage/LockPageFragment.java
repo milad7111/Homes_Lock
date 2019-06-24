@@ -482,6 +482,7 @@ public class LockPageFragment extends BaseFragment
         mConnectedClientsListDialog = new Dialog(requireContext());
         mConnectedClientsListDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mConnectedClientsListDialog.setContentView(R.layout.dialog_connected_devices);
+        mConnectedClientsListDialog.setCancelable(false);
 
         if (mConnectedClientsAdapter == null) {
             mConnectedClientsAdapter = new ConnectedClientsAdapter(this,
@@ -535,6 +536,7 @@ public class LockPageFragment extends BaseFragment
         disconnectClientDialog = new Dialog(requireContext());
         disconnectClientDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         disconnectClientDialog.setContentView(R.layout.dialog_disconnect_device);
+        disconnectClientDialog.setCancelable(false);
 
         Button btnCancelDialogDisconnectClient =
                 disconnectClientDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);

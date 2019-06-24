@@ -371,6 +371,7 @@ public class ManageMembersFragment extends BaseFragment
             mAddLockMemberDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             mAddLockMemberDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mAddLockMemberDialog.setContentView(R.layout.dialog_add_member);
+            mAddLockMemberDialog.setCancelable(false);
 
             TextInputEditText tietEmailDialogAddMember =
                     mAddLockMemberDialog.findViewById(R.id.tiet_email_dialog_add_member);
@@ -453,6 +454,7 @@ public class ManageMembersFragment extends BaseFragment
             mRemoveLockMemberDialog = new Dialog(Objects.requireNonNull(mFragment.getContext()));
             mRemoveLockMemberDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mRemoveLockMemberDialog.setContentView(R.layout.dialog_remove_member);
+            mRemoveLockMemberDialog.setCancelable(false);
 
             CheckBox chbConfirmRemoveMemberDialogRemoveMember =
                     mRemoveLockMemberDialog.findViewById(R.id.chb_confirm_remove_member_dialog_remove_member);

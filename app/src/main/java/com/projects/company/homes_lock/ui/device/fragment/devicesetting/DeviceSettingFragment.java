@@ -543,6 +543,7 @@ public class DeviceSettingFragment extends BaseFragment
             mDoorInstallationDialog = new Dialog(requireNonNull(getContext()));
             mDoorInstallationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mDoorInstallationDialog.setContentView(R.layout.dialog_device_setting);
+            mDoorInstallationDialog.setCancelable(false);
 
             RadioGroup rdgDoorInstallationDialogDoorInstallation = mDoorInstallationDialog.findViewById(R.id.rdg_door_installation_dialog_door_installation);
 
@@ -577,6 +578,7 @@ public class DeviceSettingFragment extends BaseFragment
             mInitializeCalibrationLockDialog = new Dialog(requireNonNull(getContext()));
             mInitializeCalibrationLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mInitializeCalibrationLockDialog.setContentView(R.layout.dialog_initialize_calibration_lock_confirmation);
+            mInitializeCalibrationLockDialog.setCancelable(false);
 
             Button btnCancelDialogInitializeCalibrationLock = mInitializeCalibrationLockDialog.findViewById(R.id.btn_cancel_dialog_initialize_calibration_lock_confirmation);
             Button btnStartDialogInitializeCalibrationLock = mInitializeCalibrationLockDialog.findViewById(R.id.btn_start_dialog_initialize_calibration_lock_confirmation);
@@ -605,6 +607,7 @@ public class DeviceSettingFragment extends BaseFragment
             mCalibrationLockDialog = new Dialog(requireNonNull(mFragment.getContext()));
             mCalibrationLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mCalibrationLockDialog.setContentView(R.layout.dialog_calibration_lock);
+            mCalibrationLockDialog.setCancelable(false);
 
             ConstraintLayout ctlSetIdlePositionDialogCalibrationLock = mCalibrationLockDialog.findViewById(R.id.ctl_set_idle_position_dialog_calibration_lock);
             ConstraintLayout ctlSetLatchPositionDialogCalibrationLock = mCalibrationLockDialog.findViewById(R.id.ctl_set_latch_position_dialog_calibration_lock);
@@ -641,6 +644,7 @@ public class DeviceSettingFragment extends BaseFragment
             mLockPositionsDialog = new Dialog(requireNonNull(mFragment.getContext()));
             mLockPositionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mLockPositionsDialog.setContentView(R.layout.dialog_confirmation_lock_position);
+            mLockPositionsDialog.setCancelable(false);
 
             TextView txvMessageDialogConfirmationLockPosition = mLockPositionsDialog.findViewById(R.id.txv_message_dialog_confirmation_lock_position);
 
@@ -710,6 +714,7 @@ public class DeviceSettingFragment extends BaseFragment
         mResetLockDialog = new Dialog(requireNonNull(getContext()));
         mResetLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mResetLockDialog.setContentView(R.layout.dialog_reset_lock);
+        mResetLockDialog.setCancelable(false);
 
         Button btnCancelDialogResetLock =
                 mResetLockDialog.findViewById(R.id.btn_cancel_dialog_reset_lock);
@@ -735,6 +740,7 @@ public class DeviceSettingFragment extends BaseFragment
         mRemoveLockDialog = new Dialog(requireNonNull(getContext()));
         mRemoveLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mRemoveLockDialog.setContentView(R.layout.dialog_remove_device);
+        mRemoveLockDialog.setCancelable(false);
 
         //TODO when remove any device, must deleteDevice any members of that admin, but now any admin member deleteDevice all members but in future
         //TODO any admin just can deleteDevice his/her members
@@ -791,6 +797,7 @@ public class DeviceSettingFragment extends BaseFragment
             mChangeOnlinePasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangeOnlinePasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
+            mChangeOnlinePasswordDialog.setCancelable(false);
 
             TextInputEditText tietOldPasswordDialogChangeOnlinePassword =
                     mChangeOnlinePasswordDialog.findViewById(R.id.tiet_old_password_dialog_change_online_password);
@@ -825,6 +832,7 @@ public class DeviceSettingFragment extends BaseFragment
             mChangePairingPasswordDialog = new Dialog(requireNonNull(getContext()));
             mChangePairingPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mChangePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
+            mChangePairingPasswordDialog.setCancelable(false);
 
             TextInputEditText tietOldPasswordDialogChangePairingPassword =
                     mChangePairingPasswordDialog.findViewById(R.id.tiet_old_password_dialog_change_pairing_password);

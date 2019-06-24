@@ -325,6 +325,7 @@ public class AddDeviceFragment extends BaseFragment
             mListOfAvailableBleDevicesDialog = new Dialog(Objects.requireNonNull(getContext()));
             mListOfAvailableBleDevicesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mListOfAvailableBleDevicesDialog.setContentView(R.layout.dialog_available_ble_devices);
+            mListOfAvailableBleDevicesDialog.setCancelable(false);
 
             if (mBleDeviceAdapter == null)
                 mBleDeviceAdapter = new BleDeviceAdapter(this, devices);
@@ -362,9 +363,9 @@ public class AddDeviceFragment extends BaseFragment
         saveDeviceAfterPaired = false;
 
         mAddDeviceOfflineDialog = new Dialog(Objects.requireNonNull(getContext()));
-
         mAddDeviceOfflineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mAddDeviceOfflineDialog.setContentView(R.layout.dialog_add_new_device);
+        mAddDeviceOfflineDialog.setCancelable(false);
 
         mAddDeviceOfflineDialog.setOnDismissListener(mDialog -> {
             if (!saveDeviceAfterPaired)
@@ -426,6 +427,7 @@ public class AddDeviceFragment extends BaseFragment
 //
 //            mAddDeviceOnlineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //            mAddDeviceOnlineDialog.setContentView(R.layout.dialog_add_new_device);
+//            mAddDeviceOnlineDialog.setCancelable(false);
 //
 //            mAddDeviceOnlineDialog.setOnDismissListener(dialog -> mAddDeviceOnlineDialog = null);
 //
