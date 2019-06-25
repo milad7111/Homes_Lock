@@ -402,6 +402,10 @@ public class DeviceSettingFragment extends BaseFragment
     }
 
     @Override
+    public void onSendCalibrationLockSuccessful() {
+    }
+
+    @Override
     public void onSetIdlePositionSuccessful() {
         closeProgressDialog();
 

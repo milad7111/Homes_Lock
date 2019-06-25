@@ -9,13 +9,17 @@ import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceMode
 public interface ILockPageFragment {
     void onGetUpdatedDevice(Device response);
 
-    void onSendLockCommandSuccessful(String command);
-
-    void onSendLockCommandFailed(String error);
-
     void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
 
     void onDeviceDisconnectedSuccessfully();
 
     void onRemoveAccessToDeviceForUser();
+
+    void onSendLockCommandSuccessful(String command);
+
+    void onSendLockCommandFailed(String error);
+
+    void onDoLockCommandSuccessful(String command);
+
+    void onDoLockCommandFailed(String error);
 }

@@ -240,7 +240,8 @@ public class DeviceViewModel extends AndroidViewModel
         mBleCommandsPool.clear();
         mIsConnected.postValue(false);
         mIsSupported.postValue(false);
-        this.mBleTimeOut.postValue(-1);
+        mBleTimeOut.postValue(-1);
+        mBleCommandsPool.clear();
     }
 
     @Override
@@ -248,7 +249,8 @@ public class DeviceViewModel extends AndroidViewModel
         mBleCommandsPool.clear();
         mIsConnected.postValue(false);
         mIsSupported.postValue(false);
-        this.mBleTimeOut.postValue(-1);
+        mBleTimeOut.postValue(-1);
+        mBleCommandsPool.clear();
     }
 
     @Override
@@ -596,12 +598,26 @@ public class DeviceViewModel extends AndroidViewModel
                     Timber.e("Door knocked : %s", keyCommandJson.getString(keyCommand));
                     break;
                 case BLE_COMMAND_LOC:
-                    if (mILockPageFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
-                        mILockPageFragment.onSendLockCommandSuccessful("lock");
+                    if (mILockPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT)) {
+                            mILockPageFragment.onSendLockCommandSuccessful("lock");
+                            bleBufferStatus = false;
+                            Timber.e("Buffer is busy");
+                            this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_LOC + BLE_RESPONSE_PUBLIC_WAIT));
+                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            mILockPageFragment.onDoLockCommandSuccessful("lock");
+                        }
+                    }
                     break;
                 case BLE_COMMAND_ULC:
-                    if (mILockPageFragment != null && keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK))
+                    if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT)) {
                         mILockPageFragment.onSendLockCommandSuccessful("unlock");
+                        bleBufferStatus = false;
+                        Timber.e("Buffer is busy");
+                        this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_ULC + BLE_RESPONSE_PUBLIC_WAIT));
+                    } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                        mILockPageFragment.onDoLockCommandSuccessful("unlock");
+                    }
                     break;
                 case BLE_COMMAND_TYP:
                     Timber.e("type setting IS: %s", keyCommandJson.getString(keyCommand));
@@ -863,8 +879,14 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case BLE_COMMAND_SET:
                     if (mIDeviceSettingFragment != null) {
-                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
-                            Timber.i("Initialize calibration lock ...");
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT)) {
+                            Timber.i("Send Initialize calibration lock done ...");
+                            DeviceViewModel.this.mIDeviceSettingFragment.onSendCalibrationLockSuccessful();
+                            bleBufferStatus = false;
+                            Timber.e("Buffer is busy");
+                            this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_SET + BLE_RESPONSE_PUBLIC_WAIT));
+                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            Timber.i("Initialize calibration lock OK ...");
                             DeviceViewModel.this.mIDeviceSettingFragment.onInitializeCalibrationLockSuccessful();
                         }
                     }
@@ -963,15 +985,15 @@ public class DeviceViewModel extends AndroidViewModel
                             break;
                         case BLE_RESPONSE_ERR_CONFIG:
                             if (mILockPageFragment != null)
-                                mILockPageFragment.onSendLockCommandFailed(keyCommandJson.getString(keyCommand));
+                                mILockPageFragment.onDoLockCommandFailed(keyCommandJson.getString(keyCommand));
                             break;
                         case BLE_RESPONSE_ERR_LOCK:
                             if (mILockPageFragment != null)
-                                mILockPageFragment.onSendLockCommandFailed(keyCommandJson.getString(keyCommand));
+                                mILockPageFragment.onDoLockCommandFailed(keyCommandJson.getString(keyCommand));
                             break;
                         case BLE_RESPONSE_ERR_UNLOCK:
                             if (mILockPageFragment != null)
-                                mILockPageFragment.onSendLockCommandFailed(keyCommandJson.getString(keyCommand));
+                                mILockPageFragment.onDoLockCommandFailed(keyCommandJson.getString(keyCommand));
                             break;
                     }
                     break;

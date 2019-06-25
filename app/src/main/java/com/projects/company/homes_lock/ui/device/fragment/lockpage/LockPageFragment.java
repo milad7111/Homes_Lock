@@ -351,17 +351,7 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onSendLockCommandFailed(String error) {
-        switch (error) {
-            case BLE_RESPONSE_ERR_LOCK:
-                showToast("Not Lock");
-                break;
-            case BLE_RESPONSE_ERR_UNLOCK:
-                showToast("Not Unlock");
-                break;
-            case BLE_RESPONSE_ERR_CONFIG:
-                showToast("Please config lock in setting page.");
-                break;
-        }
+        imgIsLockedLockPage.setEnabled(true);
     }
 
     @Override
@@ -395,6 +385,28 @@ public class LockPageFragment extends BaseFragment
     public void onRemoveAccessToDeviceForUser() {
         handleDialogLoseAccess();
     }
+
+    @Override
+    public void onDoLockCommandSuccessful(String command) {
+        imgIsLockedLockPage.setEnabled(true);
+    }
+
+    @Override
+    public void onDoLockCommandFailed(String error) {
+        imgIsLockedLockPage.setEnabled(true);
+        switch (error) {
+            case BLE_RESPONSE_ERR_LOCK:
+                showToast("Not Lock");
+                break;
+            case BLE_RESPONSE_ERR_UNLOCK:
+                showToast("Not Unlock");
+                break;
+            case BLE_RESPONSE_ERR_CONFIG:
+                showToast("Please config lock in setting page.");
+                break;
+        }
+    }
+
     //endregion BLE CallBacks
 
     //region Declare BLE Methods
@@ -457,6 +469,7 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
+        imgIsLockedLockPage.setEnabled(false);
         this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
     }
 

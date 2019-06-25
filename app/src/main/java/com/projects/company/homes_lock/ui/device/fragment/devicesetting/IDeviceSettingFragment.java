@@ -51,4 +51,6 @@ public interface IDeviceSettingFragment {
     void onCheckOldOnlinePasswordFailed(String string);
 
     void onChangeOnlinePasswordFailed(String string);
+
+    void onSendCalibrationLockSuccessful();
 }

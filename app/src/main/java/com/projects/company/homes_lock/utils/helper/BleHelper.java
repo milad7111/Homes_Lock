@@ -396,6 +396,10 @@ public class BleHelper {
 
                 return 1000;
 
+            case BLE_COMMAND_SET + BLE_RESPONSE_PUBLIC_WAIT:
+            case BLE_COMMAND_LOC + BLE_RESPONSE_PUBLIC_WAIT:
+            case BLE_COMMAND_ULC + BLE_RESPONSE_PUBLIC_WAIT:
+
             case BLE_COMMAND_BCL + BLE_RESPONSE_PUBLIC_WAIT:
             case BLE_COMMAND_BLL + BLE_RESPONSE_PUBLIC_WAIT:
             case BLE_COMMAND_BSL + BLE_RESPONSE_PUBLIC_WAIT:
