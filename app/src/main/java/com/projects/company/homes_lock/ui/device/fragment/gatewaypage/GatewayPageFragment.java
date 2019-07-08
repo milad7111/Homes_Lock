@@ -76,6 +76,7 @@ import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleConn
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleMoreInfoImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setConnectedClientsStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setGatewayInternetConnectionStatusImage;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setTypeface;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -247,19 +248,18 @@ public class GatewayPageFragment extends BaseFragment
     @Override
     public void onPause() {
         super.onPause();
-
-        if (isUserLoggedIn()) {
-            this.mDeviceViewModel.disconnectMQTT();
-            this.mDeviceViewModel.removeListenerForDevice(mDevice);
-        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
+        if (isUserLoggedIn()) {
+            GatewayPageFragment.this.mDeviceViewModel.disconnectMQTT();
+            GatewayPageFragment.this.mDeviceViewModel.removeListenerForDevice(this, mDevice);
+        }
+
         GatewayPageFragment.this.mDeviceViewModel.disconnect();
-        GatewayPageFragment.this.mDeviceViewModel.disconnectMQTT();
 
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
@@ -495,6 +495,8 @@ public class GatewayPageFragment extends BaseFragment
         connectedClientsListDialog.setContentView(R.layout.dialog_connected_devices);
         connectedClientsListDialog.setCancelable(false);
 
+        setTypeface((TextView) connectedClientsListDialog.findViewById(R.id.txv_title_dialog_connected_devices), "roboto_medium");
+
         if (mConnectedClientsAdapter == null) {
             mConnectedClientsAdapter = new ConnectedClientsAdapter(this,
                     Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
@@ -549,6 +551,8 @@ public class GatewayPageFragment extends BaseFragment
         availableBleDevicesListDialog.setContentView(R.layout.dialog_available_ble_devices);
         availableBleDevicesListDialog.setCancelable(false);
 
+        setTypeface((TextView) availableBleDevicesListDialog.findViewById(R.id.txv_title_dialog_available_ble_devices), "roboto_medium");
+
         if (mAvailableBleDevicesAdapter == null) {
             mAvailableBleDevicesAdapter = new AvailableBleDevicesAdapter(this,
                     Collections.singletonList(new AvailableBleDeviceModel(SEARCHING_SCAN_MODE)));
@@ -600,7 +604,10 @@ public class GatewayPageFragment extends BaseFragment
 
         disconnectDeviceDialog = new Dialog(requireContext());
         disconnectDeviceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        disconnectDeviceDialog.setContentView(R.layout.dialog_disconnect_device);
         disconnectDeviceDialog.setCancelable(false);
+
+        setTypeface((TextView) disconnectDeviceDialog.findViewById(R.id.txv_title_dialog_disconnect_device), "roboto_medium");
 
         Button btnCancelDialogDisconnectClient =
                 disconnectDeviceDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
@@ -633,6 +640,8 @@ public class GatewayPageFragment extends BaseFragment
             disconnectDeviceDialog.setContentView(R.layout.dialog_disconnect_device);
             disconnectDeviceDialog.setCancelable(false);
 
+            setTypeface((TextView) disconnectDeviceDialog.findViewById(R.id.txv_title_dialog_disconnect_device), "roboto_medium");
+
             Button btnCancelDialogDisconnectClient =
                     disconnectDeviceDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
             Button btnDisconnectDialogDisconnectClient =
@@ -660,6 +669,8 @@ public class GatewayPageFragment extends BaseFragment
             connectToServerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             connectToServerDialog.setContentView(R.layout.dialog_connect_device);
             connectToServerDialog.setCancelable(false);
+
+            setTypeface((TextView) connectToServerDialog.findViewById(R.id.txv_title_dialog_connect_to_server), "roboto_medium");
 
             TextInputEditText tietSecurityCodeDialogConnectToServer =
                     connectToServerDialog.findViewById(R.id.tiet_security_code_dialog_connect_to_server);
@@ -756,6 +767,8 @@ public class GatewayPageFragment extends BaseFragment
         deviceWifiNetworkListDialog.setContentView(R.layout.dialog_available_networks);
         deviceWifiNetworkListDialog.setCancelable(false);
 
+        setTypeface((TextView) deviceWifiNetworkListDialog.findViewById(R.id.txv_title_dialog_available_networks), "roboto_medium");
+
         mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
 
         RecyclerView rcvDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.rcv_dialog_available_networks);
@@ -797,6 +810,8 @@ public class GatewayPageFragment extends BaseFragment
             deviceWifiNetworkDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             deviceWifiNetworkDialog.setContentView(R.layout.dialog_device_wifi_network_connect);
             deviceWifiNetworkDialog.setCancelable(false);
+
+            setTypeface((TextView) deviceWifiNetworkDialog.findViewById(R.id.txv_title_dialog_gateway_wifi_network_connect), "roboto_medium");
 
             TextView txvTitleDialogGatewayWifiNetworkConnect =
                     deviceWifiNetworkDialog.findViewById(R.id.txv_title_dialog_gateway_wifi_network_connect);

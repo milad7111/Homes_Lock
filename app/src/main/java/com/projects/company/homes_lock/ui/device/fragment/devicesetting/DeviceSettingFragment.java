@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +36,7 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_ONL
 import static com.projects.company.homes_lock.utils.helper.DataHelper.CHANGE_PAIRING_PASSWORD;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setTypeface;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -549,12 +549,14 @@ public class DeviceSettingFragment extends BaseFragment
             mDoorInstallationDialog.setContentView(R.layout.dialog_device_setting);
             mDoorInstallationDialog.setCancelable(false);
 
-            RadioGroup rdgDoorInstallationDialogDoorInstallation = mDoorInstallationDialog.findViewById(R.id.rdg_door_installation_dialog_door_installation);
+            setTypeface((TextView) mDoorInstallationDialog.findViewById(R.id.txv_title_door_installation_dialog_device_setting), "roboto_medium");
+
+            RadioGroup rdgDoorInstallationDialogDoorInstallation = mDoorInstallationDialog.findViewById(R.id.rdg_door_installation_dialog_device_setting);
 
             ((RadioButton) rdgDoorInstallationDialogDoorInstallation.getChildAt(mDevice.getDoorInstallation() ? 0 : 1)).setChecked(true);
 
-            Button btnCancelDialogDoorInstallation = mDoorInstallationDialog.findViewById(R.id.btn_cancel_dialog_door_installation);
-            Button btnApplyDialogDoorInstallation = mDoorInstallationDialog.findViewById(R.id.btn_apply_dialog_door_installation);
+            Button btnCancelDialogDoorInstallation = mDoorInstallationDialog.findViewById(R.id.btn_cancel_dialog_device_setting);
+            Button btnApplyDialogDoorInstallation = mDoorInstallationDialog.findViewById(R.id.btn_apply_dialog_device_setting);
 
             btnCancelDialogDoorInstallation.setOnClickListener(v -> {
                 mDoorInstallationDialog.dismiss();
@@ -584,6 +586,8 @@ public class DeviceSettingFragment extends BaseFragment
             mInitializeCalibrationLockDialog.setContentView(R.layout.dialog_initialize_calibration_lock_confirmation);
             mInitializeCalibrationLockDialog.setCancelable(false);
 
+            setTypeface((TextView) mInitializeCalibrationLockDialog.findViewById(R.id.txv_title_dialog_initialize_calibration_lock_confirmation), "roboto_medium");
+
             Button btnCancelDialogInitializeCalibrationLock = mInitializeCalibrationLockDialog.findViewById(R.id.btn_cancel_dialog_initialize_calibration_lock_confirmation);
             Button btnStartDialogInitializeCalibrationLock = mInitializeCalibrationLockDialog.findViewById(R.id.btn_start_dialog_initialize_calibration_lock_confirmation);
 
@@ -612,6 +616,8 @@ public class DeviceSettingFragment extends BaseFragment
             mCalibrationLockDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mCalibrationLockDialog.setContentView(R.layout.dialog_calibration_lock);
             mCalibrationLockDialog.setCancelable(false);
+
+            setTypeface((TextView) mCalibrationLockDialog.findViewById(R.id.txv_title_dialog_calibration_lock), "roboto_medium");
 
             ConstraintLayout ctlSetIdlePositionDialogCalibrationLock = mCalibrationLockDialog.findViewById(R.id.ctl_set_idle_position_dialog_calibration_lock);
             ConstraintLayout ctlSetLatchPositionDialogCalibrationLock = mCalibrationLockDialog.findViewById(R.id.ctl_set_latch_position_dialog_calibration_lock);
@@ -649,6 +655,8 @@ public class DeviceSettingFragment extends BaseFragment
             mLockPositionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mLockPositionsDialog.setContentView(R.layout.dialog_confirmation_lock_position);
             mLockPositionsDialog.setCancelable(false);
+
+            setTypeface((TextView) mLockPositionsDialog.findViewById(R.id.txv_title_dialog_calibration_lock), "roboto_medium");
 
             TextView txvMessageDialogConfirmationLockPosition = mLockPositionsDialog.findViewById(R.id.txv_message_dialog_confirmation_lock_position);
 
@@ -720,6 +728,8 @@ public class DeviceSettingFragment extends BaseFragment
         mResetLockDialog.setContentView(R.layout.dialog_reset_lock);
         mResetLockDialog.setCancelable(false);
 
+        setTypeface((TextView) mResetLockDialog.findViewById(R.id.txv_title_dialog_reset_lock), "roboto_medium");
+
         Button btnCancelDialogResetLock =
                 mResetLockDialog.findViewById(R.id.btn_cancel_dialog_reset_lock);
         Button btnResetDialogResetLock =
@@ -746,6 +756,8 @@ public class DeviceSettingFragment extends BaseFragment
         mRemoveLockDialog.setContentView(R.layout.dialog_remove_device);
         mRemoveLockDialog.setCancelable(false);
 
+        setTypeface((TextView) mRemoveLockDialog.findViewById(R.id.txv_title_dialog_remove_device), "roboto_medium");
+
         //TODO when remove any device, must deleteDevice any members of that admin, but now any admin member deleteDevice all members but in future
         //TODO any admin just can deleteDevice his/her members
 
@@ -763,9 +775,9 @@ public class DeviceSettingFragment extends BaseFragment
 //            }
 
         Button btnCancelDialogRemoveLock =
-                mRemoveLockDialog.findViewById(R.id.btn_cancel_dialog_remove_lock);
+                mRemoveLockDialog.findViewById(R.id.btn_cancel_dialog_remove_device);
         Button btnRemoveDialogRemoveLock =
-                mRemoveLockDialog.findViewById(R.id.btn_remove_dialog_remove_lock);
+                mRemoveLockDialog.findViewById(R.id.btn_remove_dialog_remove_device);
 
         btnCancelDialogRemoveLock.setOnClickListener(v -> {
             mRemoveLockDialog.dismiss();
@@ -803,6 +815,8 @@ public class DeviceSettingFragment extends BaseFragment
             mChangeOnlinePasswordDialog.setContentView(R.layout.dialog_change_online_password);
             mChangeOnlinePasswordDialog.setCancelable(false);
 
+            setTypeface((TextView) mChangeOnlinePasswordDialog.findViewById(R.id.txv_title_dialog_change_online_password), "roboto_medium");
+
             TextInputEditText tietOldPasswordDialogChangeOnlinePassword =
                     mChangeOnlinePasswordDialog.findViewById(R.id.tiet_old_password_dialog_change_online_password);
             TextInputEditText tietNewPasswordDialogChangeOnlinePassword =
@@ -838,6 +852,8 @@ public class DeviceSettingFragment extends BaseFragment
             mChangePairingPasswordDialog.setContentView(R.layout.dialog_change_pairing_password);
             mChangePairingPasswordDialog.setCancelable(false);
 
+            setTypeface((TextView) mChangePairingPasswordDialog.findViewById(R.id.txv_title_dialog_change_pairing_password), "roboto_medium");
+
             TextInputEditText tietOldPasswordDialogChangePairingPassword =
                     mChangePairingPasswordDialog.findViewById(R.id.tiet_old_password_dialog_change_pairing_password);
             TextInputEditText tietNewPasswordDialogChangePairingPassword =
@@ -868,9 +884,9 @@ public class DeviceSettingFragment extends BaseFragment
 
     private boolean findSelectedDoorInstallationOption(RadioGroup radioGroup) {
         switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.rdb_right_handed_dialog_door_installation:
+            case R.id.rdb_right_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_RIGHT_HANDED;
-            case R.id.rdb_left_handed_dialog_door_installation:
+            case R.id.rdb_left_handed_dialog_device_setting:
                 return DOOR_INSTALLATION_SETTING_LEFT_HANDED;
             default:
                 return true;
@@ -885,7 +901,7 @@ public class DeviceSettingFragment extends BaseFragment
                 mDoorInstallationDialog = null;
             }
             mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice(this);
-            Log.i("Set Setting", "Done");
+            Timber.i("Done");
         }
     }
 

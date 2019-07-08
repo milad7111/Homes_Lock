@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -161,6 +160,8 @@ public class LoginFragment extends BaseFragment
         rpvSignUpLoginFragment.setOnClickListener(this);
         rpvForgetPasswordLoginFragment.setOnClickListener(this);
         //endregion Setup Views
+
+        tietEmailLoginFragment.getBackground().clearColorFilter();
     }
 
     @Override
@@ -211,14 +212,17 @@ public class LoginFragment extends BaseFragment
         logUserCrashesInFabric();
         logAuthEvent();
 
+        List<Device> tempList = new ArrayList<>();
+
         for (Device localDevice : notSavedDevices) {
             for (UserLock userLock : user.getRelatedUserLocks()) {
                 if (userLock.getRelatedDevice().getSerialNumber().equals(localDevice.getSerialNumber())) {
-                    notSavedDevices.remove(localDevice);
+                    tempList.add(localDevice);
                     break;
                 }
             }
         }
+        notSavedDevices.removeAll(tempList);
 
         if (notSavedDevices.size() != 0) {
             openProgressDialog(getContext(), "Login process", "Syncing database");
@@ -316,7 +320,6 @@ public class LoginFragment extends BaseFragment
 
     @Override
     public void onDeviceRegistrationForPushNotificationFailed(ResponseBodyFailureModel response) {
-
     }
 
     @Override
@@ -353,7 +356,9 @@ public class LoginFragment extends BaseFragment
     }
 
     private void saveNotSavedLocalDevicesToServer() {
-        this.deviceSerialNumber = notSavedDevices.get(savedDevicesIndex).getSerialNumber();
+        if (notSavedDevices.get(savedDevicesIndex).getDeviceType().equals("GTWY"))
+            this.deviceSerialNumber = notSavedDevices.get(savedDevicesIndex).getSerialNumber();
+
         this.mDeviceViewModel.validateLockInOnlineDatabase(this, notSavedDevices.get(savedDevicesIndex).getSerialNumber());
     }
 

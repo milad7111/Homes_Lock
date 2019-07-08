@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:drawableTint="@color/check_box_tint_color"
+        android:drawableTint="@color/dialog_secondary_color"
         android:focusable="true"
         android:nextFocusDown="@+id/btn_remove_dialog_remove_member"
         android:text="@string/dialog_check_box_remove_member"

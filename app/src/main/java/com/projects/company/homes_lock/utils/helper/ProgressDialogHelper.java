@@ -7,10 +7,13 @@ import android.content.Context;
 import android.os.Handler;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 
 import java.util.Objects;
+
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setTypeface;
 
 public class ProgressDialogHelper {
 
@@ -51,6 +54,8 @@ public class ProgressDialogHelper {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_enable_location);
         dialog.setCancelable(false);
+
+        setTypeface((TextView) dialog.findViewById(R.id.txv_title_dialog_enable_location), "roboto_medium");
 
         Button btnNoDialogEnableLocation = dialog.findViewById(R.id.btn_no_dialog_enable_location);
         Button btnYesDialogEnableLocation = dialog.findViewById(R.id.btn_yes_dialog_enable_location);

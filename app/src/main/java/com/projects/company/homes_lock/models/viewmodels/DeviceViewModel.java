@@ -610,13 +610,16 @@ public class DeviceViewModel extends AndroidViewModel
                     }
                     break;
                 case BLE_COMMAND_ULC:
-                    if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT)) {
-                        mILockPageFragment.onSendLockCommandSuccessful("unlock");
-                        bleBufferStatus = false;
-                        Timber.e("Buffer is busy");
-                        this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_ULC + BLE_RESPONSE_PUBLIC_WAIT));
-                    } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
-                        mILockPageFragment.onDoLockCommandSuccessful("unlock");
+                    if (mILockPageFragment != null) {
+                        if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_WAIT)) {
+                            mILockPageFragment.onSendLockCommandSuccessful("unlock");
+
+                            bleBufferStatus = false;
+                            Timber.e("Buffer is busy");
+                            this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_ULC + BLE_RESPONSE_PUBLIC_WAIT));
+                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
+                            mILockPageFragment.onDoLockCommandSuccessful("unlock");
+                        }
                     }
                     break;
                 case BLE_COMMAND_TYP:
@@ -1008,6 +1011,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void sendLockCommand(Fragment parentFragment, String serialNumber, boolean lockCommand) {
         mILockPageFragment = (ILockPageFragment) parentFragment;
+
         if (isUserLoggedIn())
             (new MQTTHandler()).sendLockCommand(this, serialNumber,
                     createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC));
@@ -1287,6 +1291,15 @@ public class DeviceViewModel extends AndroidViewModel
         mNetworkRepository.setListenerForDevice(this, mDevice);
     }
 
+    public void removeListenerForDevice(Fragment fragment, Device mDevice) {
+        if (fragment instanceof LockPageFragment)
+            mILockPageFragment = (ILockPageFragment) fragment;
+        else if (fragment instanceof GatewayPageFragment)
+            mIGatewayPageFragment = (IGatewayPageFragment) fragment;
+
+        mNetworkRepository.removeListenerForDevice(this, mDevice);
+    }
+
     public void setListenerForUser(Fragment fragment, String mUserDeviceObjectId) {
         if (fragment instanceof LockPageFragment)
             mILockPageFragment = (ILockPageFragment) fragment;
@@ -1294,10 +1307,6 @@ public class DeviceViewModel extends AndroidViewModel
             mIGatewayPageFragment = (IGatewayPageFragment) fragment;
 
         mNetworkRepository.setListenerForUser(this, mUserDeviceObjectId);
-    }
-
-    public void removeListenerForDevice(Device mDevice) {
-        mNetworkRepository.removeListenerForDevice(this, mDevice);
     }
 
     public void enablePushNotification(String serialNumber) {

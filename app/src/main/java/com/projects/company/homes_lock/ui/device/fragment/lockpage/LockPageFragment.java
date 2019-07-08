@@ -76,6 +76,7 @@ import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleConn
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleMoreInfoImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setConnectedClientsStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setIsLockedImage;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setTypeface;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -254,8 +255,6 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onPause() {
         super.onPause();
-
-        this.mDeviceViewModel.removeListenerForDevice(mDevice);
     }
 
     @Override
@@ -263,7 +262,7 @@ public class LockPageFragment extends BaseFragment
         super.onDestroy();
 
         this.mDeviceViewModel.disconnect();
-        this.mDeviceViewModel.removeListenerForDevice(mDevice);
+        this.mDeviceViewModel.removeListenerForDevice(this, mDevice);
 
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
@@ -345,13 +344,15 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onSendLockCommandSuccessful(String command) {
-        showToast(String.format("%s command received by LOCK.", command));
+        showToast(String.format("%s command sent.", command));
         Timber.d("Command : %s , received by device successfully.", command);
     }
 
     @Override
     public void onSendLockCommandFailed(String error) {
-        imgIsLockedLockPage.setEnabled(true);
+        showToast(String.format("%s failed: ", error));
+
+//        Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() -> imgIsLockedLockPage.setEnabled(true));
     }
 
     @Override
@@ -388,12 +389,15 @@ public class LockPageFragment extends BaseFragment
 
     @Override
     public void onDoLockCommandSuccessful(String command) {
-        imgIsLockedLockPage.setEnabled(true);
+        showToast(String.format("%s done.: ", command));
+
+//        Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() -> imgIsLockedLockPage.setEnabled(true));
     }
 
     @Override
     public void onDoLockCommandFailed(String error) {
-        imgIsLockedLockPage.setEnabled(true);
+//        Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() -> imgIsLockedLockPage.setEnabled(true));
+
         switch (error) {
             case BLE_RESPONSE_ERR_LOCK:
                 showToast("Not Lock");
@@ -469,7 +473,7 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
-        imgIsLockedLockPage.setEnabled(false);
+//        imgIsLockedLockPage.setEnabled(false);
         this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
     }
 
@@ -503,6 +507,8 @@ public class LockPageFragment extends BaseFragment
         }
 
         mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+
+        setTypeface((TextView) mConnectedClientsListDialog.findViewById(R.id.txv_title_dialog_add_member), "roboto_medium");
 
         RecyclerView rcvDialogConnectedClients = mConnectedClientsListDialog.findViewById(R.id.rcv_dialog_connected_devices);
         Button btnCancelDialogConnectedClients = mConnectedClientsListDialog.findViewById(R.id.btn_cancel_dialog_connected_devices);
@@ -550,6 +556,8 @@ public class LockPageFragment extends BaseFragment
         disconnectClientDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         disconnectClientDialog.setContentView(R.layout.dialog_disconnect_device);
         disconnectClientDialog.setCancelable(false);
+
+        setTypeface((TextView) disconnectClientDialog.findViewById(R.id.txv_title_dialog_disconnect_device), "roboto_medium");
 
         Button btnCancelDialogDisconnectClient =
                 disconnectClientDialog.findViewById(R.id.btn_cancel_dialog_disconnect_device);
@@ -628,6 +636,8 @@ public class LockPageFragment extends BaseFragment
         loseAccessDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         loseAccessDialog.setContentView(R.layout.dialog_lose_access);
         loseAccessDialog.setCancelable(false);
+
+        setTypeface((TextView) loseAccessDialog.findViewById(R.id.txv_title_dialog_lose_access), "roboto_medium");
 
         Button btnOkDialogLoseAccess = loseAccessDialog.findViewById(R.id.btn_ok_dialog_lose_access);
 

@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/txv_title_door_installation_dialog_door_installation"
+            android:id="@+id/txv_title_door_installation_dialog_device_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -31,20 +31,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RadioGroup
-            android:id="@+id/rdg_door_installation_dialog_door_installation"
+            android:id="@+id/rdg_door_installation_dialog_device_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:focusable="true"
-            android:nextFocusDown="@+id/btn_apply_dialog_door_installation"
+            android:nextFocusDown="@+id/btn_apply_dialog_device_setting"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txv_title_door_installation_dialog_door_installation">
+            app:layout_constraintTop_toBottomOf="@+id/txv_title_door_installation_dialog_device_setting">
 
             <requestFocus />
 
             <android.support.v7.widget.AppCompatRadioButton
-                android:id="@+id/rdb_right_handed_dialog_door_installation"
+                android:id="@+id/rdb_right_handed_dialog_device_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -53,7 +53,7 @@
                 android:textColor="@color/md_white_1000" />
 
             <android.support.v7.widget.AppCompatRadioButton
-                android:id="@+id/rdb_left_handed_dialog_door_installation"
+                android:id="@+id/rdb_left_handed_dialog_device_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_radio_button_left_handed"
@@ -62,21 +62,21 @@
         </RadioGroup>
 
         <Button
-            android:id="@+id/btn_apply_dialog_door_installation"
+            android:id="@+id/btn_apply_dialog_device_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@color/transparent"
             android:focusable="true"
-            android:nextFocusDown="@+id/btn_cancel_dialog_door_installation"
+            android:nextFocusDown="@+id/btn_cancel_dialog_device_setting"
             android:text="@string/dialog_button_apply"
             android:textColor="@color/md_white_1000"
-            app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_door_installation"
-            app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_door_installation" />
+            app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_device_setting"
+            app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_device_setting" />
 
         <Button
-            android:id="@+id/btn_cancel_dialog_door_installation"
+            android:id="@+id/btn_cancel_dialog_device_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -84,11 +84,11 @@
             android:layout_marginEnd="8dp"
             android:background="@color/transparent"
             android:focusable="true"
-            android:nextFocusDown="@+id/rdg_door_installation_dialog_door_installation"
+            android:nextFocusDown="@+id/rdg_door_installation_dialog_device_setting"
             android:text="@string/dialog_button_cancel"
             android:textColor="@color/md_white_1000"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_door_installation" />
+            app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_device_setting" />
 
     </android.support.constraint.ConstraintLayout>
 

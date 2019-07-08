@@ -3,6 +3,7 @@ package com.projects.company.homes_lock.ui.device.fragment.managemembers;
 
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.projects.company.homes_lock.R;
@@ -42,6 +44,7 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
+import static android.support.v4.content.res.ResourcesCompat.getColor;
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserEmail;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.LOCK_MEMBERS_SYNCING_MODE;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.MEMBER_STATUS_NOT_ADMIN;
@@ -57,6 +60,7 @@ import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALI
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.VALIDATION_OK;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateDeviceNameForUser;
 import static com.projects.company.homes_lock.utils.helper.ValidationHelper.validateUserEmail;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setTypeface;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -76,7 +80,7 @@ public class ManageMembersFragment extends BaseFragment
     //region Declare Views
     private SwipeRefreshLayout srlManageMembersFragment;
     private RecyclerView rcvManageMembersFragment;
-//    private FloatingActionButton fabSyncManageMembersFragment;
+    //    private FloatingActionButton fabSyncManageMembersFragment;
     private FloatingActionButton fabAddManageMembersFragment;
     //endregion Declare Views
 
@@ -373,6 +377,8 @@ public class ManageMembersFragment extends BaseFragment
             mAddLockMemberDialog.setContentView(R.layout.dialog_add_member);
             mAddLockMemberDialog.setCancelable(false);
 
+            setTypeface((TextView) mAddLockMemberDialog.findViewById(R.id.txv_title_dialog_add_member), "roboto_medium");
+
             TextInputEditText tietEmailDialogAddMember =
                     mAddLockMemberDialog.findViewById(R.id.tiet_email_dialog_add_member);
             tietLockNameDialogAddMember =
@@ -387,6 +393,11 @@ public class ManageMembersFragment extends BaseFragment
                     mAddLockMemberDialog.findViewById(R.id.btn_cancel_dialog_add_member);
             Button btnAddDialogAddMember =
                     mAddLockMemberDialog.findViewById(R.id.btn_add_dialog_add_member);
+
+            tietEmailDialogAddMember.getBackground().setColorFilter(
+                    getColor(getResources(), R.color.underline_text, getContext().getTheme()), PorterDuff.Mode.SRC_IN);
+            tietLockNameDialogAddMember.getBackground().setColorFilter(
+                    getColor(getResources(), R.color.underline_text, getContext().getTheme()), PorterDuff.Mode.SRC_IN);
 
             btnCancelDialogAddMember.setOnClickListener(v -> {
                 mAddLockMemberDialog.dismiss();
@@ -455,6 +466,8 @@ public class ManageMembersFragment extends BaseFragment
             mRemoveLockMemberDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mRemoveLockMemberDialog.setContentView(R.layout.dialog_remove_member);
             mRemoveLockMemberDialog.setCancelable(false);
+
+            setTypeface((TextView) mRemoveLockMemberDialog.findViewById(R.id.txv_title_dialog_remove_member), "roboto_medium");
 
             CheckBox chbConfirmRemoveMemberDialogRemoveMember =
                     mRemoveLockMemberDialog.findViewById(R.id.chb_confirm_remove_member_dialog_remove_member);

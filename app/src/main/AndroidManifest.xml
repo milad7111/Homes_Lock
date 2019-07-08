@@ -42,9 +42,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".base.BaseActivity" />
+        <activity android:screenOrientation="portrait" android:name=".base.BaseActivity" />
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.splash.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -56,19 +57,35 @@
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.device.activity.DeviceActivity"
             android:theme="@style/AppTheme.ActionBar.Transparent" />
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.aboutus.AboutUsActivity"
             android:label="AboutUs"
             android:theme="@style/Base.Theme.AppCompat.Light"/>
-        <activity android:name=".ui.login.activity.LoginActivity" />
-        <activity android:name=".ui.proservices.activity.ProServicesActivity" />
 
-        <activity android:name=".ui.support.SupportActivity" />
-        <activity android:name=".ui.notification.NotificationActivity" />
-        <activity android:name=".ui.setting.SettingActivity" />
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.login.activity.LoginActivity" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.proservices.activity.ProServicesActivity" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.support.SupportActivity" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.notification.NotificationActivity" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.setting.SettingActivity" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 

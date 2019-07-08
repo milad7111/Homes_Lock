@@ -3,6 +3,7 @@ package com.projects.company.homes_lock.utils.helper;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 
@@ -187,6 +190,14 @@ public class ViewHelper {
             view = new View(activity);
 
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static void setTypeface(TextView view, String font) {
+        view.setTypeface(Typeface.createFromAsset(view.getContext().getAssets(), String.format("fonts/%s.ttf", font)));
+    }
+
+    public static void setTypeface(Button view, String font) {
+        view.setTypeface(Typeface.createFromAsset(view.getContext().getAssets(), String.format("fonts/%s.ttf", font)));
     }
     //endregion Declare Methods
 }

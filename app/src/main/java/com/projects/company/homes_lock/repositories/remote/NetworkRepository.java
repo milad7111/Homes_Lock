@@ -30,6 +30,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import timber.log.Timber;
 
 public class NetworkRepository {
 
@@ -287,6 +288,36 @@ public class NetworkRepository {
         });
     }
 
+    public void removeListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
+        Backendless.Data.of("Device").rt().removeBulkUpdateListener(
+                String.format("sn='%s'", mDevice.getSerialNumber()), new AsyncCallback<BulkEvent>() {
+                    @Override
+                    public void handleResponse(BulkEvent response) {
+                        Timber.d("removeListenerForDevice1 done!");
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        Timber.d("removeListenerForDevice1 done!");
+                    }
+                });
+        Backendless.Data.of("Device").rt().removeUpdateListener(
+                String.format("objectId='%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
+                    @Override
+                    public void handleResponse(Map response) {
+                        Timber.d("removeListenerForDevice2 done!");
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        Timber.d("removeListenerForDevice2 done!");
+                    }
+                });
+
+//        Backendless.Data.of("Device").rt().removeUpdateListeners();
+//        Backendless.Data.of("Device").rt().removeBulkUpdateListeners();
+    }
+
     public void setListenerForUser(final NetworkListener.SingleNetworkListener<BaseModel> listener, String mUserDeviceObjectId) {
         EventHandler<UserLock> userEventHandler = Backendless.Data.of(UserLock.class).rt();
 
@@ -294,21 +325,6 @@ public class NetworkRepository {
             @Override
             public void handleResponse(UserLock response) {
                 listener.onResponse(response);
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                listener.onSingleNetworkListenerFailure(new FailureModel(fault.getMessage()));
-            }
-        });
-    }
-
-    public void removeListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
-        final EventHandler<Map> lockObject = Backendless.Data.of("Device").rt();
-        lockObject.removeUpdateListener(new AsyncCallback<Map>() {
-            @Override
-            public void handleResponse(Map response) {
-                //TODO
             }
 
             @Override

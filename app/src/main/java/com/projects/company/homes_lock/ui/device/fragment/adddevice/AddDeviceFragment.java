@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
@@ -48,6 +49,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPerm
 import static com.projects.company.homes_lock.utils.helper.DataHelper.getRandomPercentNumber;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.setTypeface;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -327,6 +329,8 @@ public class AddDeviceFragment extends BaseFragment
             mListOfAvailableBleDevicesDialog.setContentView(R.layout.dialog_available_ble_devices);
             mListOfAvailableBleDevicesDialog.setCancelable(false);
 
+            setTypeface((TextView) mListOfAvailableBleDevicesDialog.findViewById(R.id.txv_title_dialog_available_ble_devices), "roboto_medium");
+
             if (mBleDeviceAdapter == null)
                 mBleDeviceAdapter = new BleDeviceAdapter(this, devices);
 
@@ -366,6 +370,8 @@ public class AddDeviceFragment extends BaseFragment
         mAddDeviceOfflineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mAddDeviceOfflineDialog.setContentView(R.layout.dialog_add_new_device);
         mAddDeviceOfflineDialog.setCancelable(false);
+
+        setTypeface((TextView) mAddDeviceOfflineDialog.findViewById(R.id.txv_title_dialog_add_new_device), "roboto_medium");
 
         mAddDeviceOfflineDialog.setOnDismissListener(mDialog -> {
             if (!saveDeviceAfterPaired)
@@ -428,6 +434,8 @@ public class AddDeviceFragment extends BaseFragment
 //            mAddDeviceOnlineDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //            mAddDeviceOnlineDialog.setContentView(R.layout.dialog_add_new_device);
 //            mAddDeviceOnlineDialog.setCancelable(false);
+
+//            setTypeface((TextView) mAddDeviceOnlineDialog.findViewById(R.id.txv_title_dialog_add_new_device), "roboto_medium");
 //
 //            mAddDeviceOnlineDialog.setOnDismissListener(dialog -> mAddDeviceOnlineDialog = null);
 //

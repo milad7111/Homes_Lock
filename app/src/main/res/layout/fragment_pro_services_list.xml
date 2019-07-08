@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:background="@color/background_main"
     android:focusable="true"
     tools:context="com.projects.company.homes_lock.ui.proservices.fragment.ProServicesList.ProServicesListFragment">
 
