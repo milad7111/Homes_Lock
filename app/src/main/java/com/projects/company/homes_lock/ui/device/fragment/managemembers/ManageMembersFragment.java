@@ -353,10 +353,6 @@ public class ManageMembersFragment extends BaseFragment
     //region Declare Methods
     private void syncLockMembersWithServer() {
         srlManageMembersFragment.setRefreshing(true);
-//        openProgressDialog(mFragment.getContext(), null, "Sync Lock members ...");
-
-//        fabSyncManageMembersFragment.setClickable(false);
-
         mLockUserAdapter = new LockUserAdapter(this,
                 Collections.singletonList(new MemberModel(NOT_DEFINED_INTEGER_NUMBER, "", LOCK_MEMBERS_SYNCING_MODE, "")));
         rcvManageMembersFragment.setLayoutManager(new LinearLayoutManager(getContext()));

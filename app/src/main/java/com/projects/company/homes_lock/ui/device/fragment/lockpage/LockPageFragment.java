@@ -275,7 +275,7 @@ public class LockPageFragment extends BaseFragment
                 if (isConnectedToBleDevice)
                     sendLockCommand(!mDevice.getIsLocked());
                 else if (isUserLoggedIn()) {
-                    if (mDevice.getMQTTServerStatus())
+                    if (mDevice.getInternetStatus())
                         sendLockCommand(!mDevice.getIsLocked());
                     else
                         showToast("Device is not connected to internet");

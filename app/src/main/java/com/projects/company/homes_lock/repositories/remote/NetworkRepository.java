@@ -256,9 +256,9 @@ public class NetworkRepository {
         });
     }
 
-    public void setListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
-        final EventHandler<Map> lockObjectUpdate = Backendless.Data.of("Device").rt();
-        lockObjectUpdate.addUpdateListener(String.format("objectId='%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
+    public EventHandler<Map> setListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
+        final EventHandler<Map> deviceEventHandler = Backendless.Data.of("Device").rt();
+        deviceEventHandler.addUpdateListener(String.format("objectId='%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
             @Override
             public void handleResponse(Map updatedLock) {
                 updatedLock.put("bleDeviceName", mDevice.getBleDeviceName());
@@ -272,8 +272,7 @@ public class NetworkRepository {
             }
         });
 
-        final EventHandler<Map> lockObjectBulkUpdate = Backendless.Data.of("Device").rt();
-        lockObjectBulkUpdate.addBulkUpdateListener(String.format("sn='%s'", mDevice.getSerialNumber()), new AsyncCallback<BulkEvent>() {
+        deviceEventHandler.addBulkUpdateListener(String.format("sn='%s'", mDevice.getSerialNumber()), new AsyncCallback<BulkEvent>() {
             @Override
             public void handleResponse(BulkEvent response) {
                 if (response.getCount() >= 1) {
@@ -286,10 +285,12 @@ public class NetworkRepository {
                 listener.onSingleNetworkListenerFailure(new FailureModel(fault.getMessage()));
             }
         });
+
+        return deviceEventHandler;
     }
 
-    public void removeListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice) {
-        Backendless.Data.of("Device").rt().removeBulkUpdateListener(
+    public void removeListenerForDevice(final NetworkListener.SingleNetworkListener<BaseModel> listener, Device mDevice, EventHandler<Map> deviceEventHandler) {
+        deviceEventHandler.removeBulkUpdateListener(
                 String.format("sn='%s'", mDevice.getSerialNumber()), new AsyncCallback<BulkEvent>() {
                     @Override
                     public void handleResponse(BulkEvent response) {
@@ -301,7 +302,8 @@ public class NetworkRepository {
                         Timber.d("removeListenerForDevice1 done!");
                     }
                 });
-        Backendless.Data.of("Device").rt().removeUpdateListener(
+
+        deviceEventHandler.removeUpdateListener(
                 String.format("objectId='%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
                     @Override
                     public void handleResponse(Map response) {
@@ -313,9 +315,6 @@ public class NetworkRepository {
                         Timber.d("removeListenerForDevice2 done!");
                     }
                 });
-
-//        Backendless.Data.of("Device").rt().removeUpdateListeners();
-//        Backendless.Data.of("Device").rt().removeBulkUpdateListeners();
     }
 
     public void setListenerForUser(final NetworkListener.SingleNetworkListener<BaseModel> listener, String mUserDeviceObjectId) {

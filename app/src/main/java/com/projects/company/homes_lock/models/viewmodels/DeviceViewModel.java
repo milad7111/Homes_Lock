@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import com.backendless.rt.data.EventHandler;
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.UserLock;
@@ -48,6 +49,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import no.nordicsemi.android.log.LogSession;
@@ -116,6 +118,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERIS
 import static com.projects.company.homes_lock.utils.helper.BleHelper.CHARACTERISTIC_UUID_TX;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createBleReadMessage;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.createJSONObjectWithKeyValue;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.getBleCommandPart;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getBleTimeOutBaseOnBleCommandType;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.isInstanceOfList;
 import static com.projects.company.homes_lock.utils.helper.DataHelper.subArrayByte;
@@ -169,6 +172,7 @@ public class DeviceViewModel extends AndroidViewModel
     private AvailableBleDeviceModel mSelectedAvailableBleServer = new AvailableBleDeviceModel(0);
 
     private Device lastDeletedDevice = new Device();
+    private EventHandler deviceEventHandler = null;
     //endregion Declare Objects
 
     //region Constructor
@@ -1012,9 +1016,10 @@ public class DeviceViewModel extends AndroidViewModel
     public void sendLockCommand(Fragment parentFragment, String serialNumber, boolean lockCommand) {
         mILockPageFragment = (ILockPageFragment) parentFragment;
 
-        if (isUserLoggedIn())
+        if (isUserLoggedIn()) {
             (new MQTTHandler()).sendLockCommand(this, serialNumber,
-                    createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC));
+                    getBleCommandPart(createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC), 0, 0));
+        }
         else
             addNewCommandToBlePool(
                     new BleCommand(
@@ -1288,7 +1293,7 @@ public class DeviceViewModel extends AndroidViewModel
         else if (fragment instanceof GatewayPageFragment)
             mIGatewayPageFragment = (IGatewayPageFragment) fragment;
 
-        mNetworkRepository.setListenerForDevice(this, mDevice);
+        deviceEventHandler = mNetworkRepository.setListenerForDevice(this, mDevice);
     }
 
     public void removeListenerForDevice(Fragment fragment, Device mDevice) {
@@ -1297,7 +1302,8 @@ public class DeviceViewModel extends AndroidViewModel
         else if (fragment instanceof GatewayPageFragment)
             mIGatewayPageFragment = (IGatewayPageFragment) fragment;
 
-        mNetworkRepository.removeListenerForDevice(this, mDevice);
+        if (deviceEventHandler != null)
+            mNetworkRepository.removeListenerForDevice(this, mDevice, deviceEventHandler);
     }
 
     public void setListenerForUser(Fragment fragment, String mUserDeviceObjectId) {

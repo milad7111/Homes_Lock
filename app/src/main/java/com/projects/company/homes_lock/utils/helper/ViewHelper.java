@@ -193,7 +193,7 @@ public class ViewHelper {
     }
 
     public static void setTypeface(TextView view, String font) {
-        view.setTypeface(Typeface.createFromAsset(view.getContext().getAssets(), String.format("fonts/%s.ttf", font)));
+//        view.setTypeface(Typeface.createFromAsset(view.getContext().getAssets(), String.format("fonts/%s.ttf", font)));
     }
 
     public static void setTypeface(Button view, String font) {
