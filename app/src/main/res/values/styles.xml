@@ -6,6 +6,31 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorControlNormal">@color/underline_edit_text</item>
+        <!--<item name="colorControlActivated">@color/activated_edit_text</item>-->
+        <!--<item name="colorControlHighlight">#2196F3</item>-->
+    </style>
+
+    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="TextInputLayoutStyle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">@dimen/edit_text_size</item>
+        <item name="hintTextAppearance">@style/TextAppearance.App.TextInputLayout</item>
+        <item name="android:textColorHint">@color/hintColor</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextButtonStyle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@color/transparent</item>
     </style>
 
     <style name="AppTheme.ActionBar.Transparent" parent="AppTheme">

@@ -8,8 +8,7 @@
     android:clickable="true"
     android:fillViewport="true"
     android:focusable="true"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp">
+    android:padding="24dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -40,6 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_available_ble_devices"
+            tools:itemCount="3"
             tools:listitem="@layout/item_available_ble_devices">
 
             <requestFocus />
@@ -48,33 +48,21 @@
 
         <Button
             android:id="@+id/btn_scan_dialog_available_ble_devices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/rcv_dialog_available_ble_devices"
-            android:layout_alignParentEnd="true"
+            style="@style/TextButtonStyle"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/transparent"
-            android:focusable="true"
             android:nextFocusDown="@+id/btn_cancel_dialog_available_ble_devices"
             android:text="@string/dialog_button_scan"
-            android:textColor="@color/md_white_1000"
             app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_available_ble_devices"
             app:layout_constraintTop_toBottomOf="@+id/rcv_dialog_available_ble_devices" />
 
         <Button
             android:id="@+id/btn_cancel_dialog_available_ble_devices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/rcv_dialog_available_ble_devices"
-            android:layout_alignParentEnd="true"
+            style="@style/TextButtonStyle"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/transparent"
-            android:focusable="true"
             android:nextFocusDown="@+id/btn_scan_dialog_available_ble_devices"
             android:text="@string/dialog_button_cancel"
-            android:textColor="@color/md_white_1000"
             app:layout_constraintEnd_toEndOf="@+id/rcv_dialog_available_ble_devices"
             app:layout_constraintTop_toBottomOf="@+id/rcv_dialog_available_ble_devices" />
 

@@ -5,16 +5,12 @@
     android:background="@color/background_main"
     android:clickable="true"
     android:focusable="true"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp">
+    android:padding="16dp">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_email_register_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:textColorHint="@color/hintColor"
+        style="@style/TextInputLayoutStyle"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,17 +23,15 @@
             android:hint="@string/fragment_hint_email"
             android:inputType="textEmailAddress"
             android:nextFocusDown="@+id/tiet_user_name_register_fragment"
-            android:textColor="@color/hintColor"
+            android:textColor="@color/edit_text_color"
             android:textColorHint="@color/hintColor" />
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_user_name_register_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextInputLayoutStyle"
         android:layout_marginTop="8dp"
-        android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txil_email_register_fragment">
@@ -50,17 +44,15 @@
             android:hint="@string/fragment_hint_name"
             android:inputType="text"
             android:nextFocusDown="@+id/tiet_mobile_number_register_fragment"
-            android:textColor="@color/hintColor"
+            android:textColor="@color/edit_text_color"
             android:textColorHint="@color/hintColor" />
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_mobile_number_register_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextInputLayoutStyle"
         android:layout_marginTop="8dp"
-        android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txil_user_name_register_fragment">
@@ -73,17 +65,15 @@
             android:hint="@string/fragment_hint_mobile_number"
             android:inputType="phone"
             android:nextFocusDown="@+id/tiet_password_register_fragment"
-            android:textColor="@color/hintColor"
+            android:textColor="@color/edit_text_color"
             android:textColorHint="@color/hintColor" />
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_password_register_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextInputLayoutStyle"
         android:layout_marginTop="8dp"
-        android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txil_mobile_number_register_fragment"
@@ -98,17 +88,15 @@
             android:hint="@string/fragment_hint_password"
             android:inputType="textPassword"
             android:nextFocusDown="@+id/tiet_confirm_password_register_fragment"
-            android:textColor="@color/hintColor"
+            android:textColor="@color/edit_text_color"
             android:textColorHint="@color/hintColor" />
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_confirm_password_register_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/TextInputLayoutStyle"
         android:layout_marginTop="8dp"
-        android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txil_password_register_fragment"
@@ -128,19 +116,32 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_sign_up_register_fragment"
-        android:layout_width="250dp"
+    <com.andexert.library.RippleView
+        android:id="@+id/rpv_login_login_fragment"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="24dp"
-        android:background="@color/button_back_color"
-        android:focusable="true"
-        android:nextFocusDown="@+id/txv_login_register_fragment"
-        android:text="@string/fragment_button_sign_up"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/txil_confirm_password_register_fragment"
-        app:layout_constraintStart_toStartOf="@+id/txil_confirm_password_register_fragment"
-        app:layout_constraintTop_toBottomOf="@+id/txil_confirm_password_register_fragment" />
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="8dp"
+        android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txil_confirm_password_register_fragment"
+        app:rv_centered="true">
+
+        <Button
+            android:id="@+id/btn_sign_up_register_fragment"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@color/button_back_color"
+            android:focusable="true"
+            android:nextFocusDown="@+id/txv_login_register_fragment"
+            android:text="@string/fragment_button_sign_up"
+            android:textColor="@color/button_text_color"
+            android:textSize="@dimen/button_text_size" />
+
+    </com.andexert.library.RippleView>
 
     <TextView
         android:id="@+id/txv_login_register_fragment"
@@ -151,10 +152,10 @@
         android:focusable="true"
         android:nextFocusDown="@+id/tiet_email_register_fragment"
         android:text="@string/fragment_text_view_login"
-        android:textColor="@color/md_white_1000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/btn_sign_up_register_fragment"
-        app:layout_constraintStart_toStartOf="@+id/btn_sign_up_register_fragment"
-        app:layout_constraintTop_toBottomOf="@+id/btn_sign_up_register_fragment" />
+        android:textColor="@color/text_view_color"
+        android:textSize="@dimen/text_view_size"
+        app:layout_constraintEnd_toEndOf="@+id/rpv_login_login_fragment"
+        app:layout_constraintStart_toStartOf="@+id/rpv_login_login_fragment"
+        app:layout_constraintTop_toBottomOf="@+id/rpv_login_login_fragment" />
 
 </android.support.constraint.ConstraintLayout>

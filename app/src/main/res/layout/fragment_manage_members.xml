@@ -19,7 +19,7 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/md_black_1000">
+            android:background="@color/background_main">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcv_manage_members_fragment"
@@ -30,6 +30,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="3"
                 tools:listitem="@layout/item_member_list" />
 
             <!--<android.support.design.widget.FloatingActionButton-->

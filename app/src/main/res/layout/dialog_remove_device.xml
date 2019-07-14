@@ -4,15 +4,14 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_layout_border"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:padding="24dp">
 
     <TextView
         android:id="@+id/txv_title_dialog_remove_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:focusable="false"
         android:gravity="start|center_vertical"
         android:text="@string/dialog_title_remove_device"
@@ -26,9 +25,7 @@
         android:id="@+id/txv_message_dialog_remove_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:focusable="false"
         android:gravity="start|center_vertical"
         android:text="@string/dialog_text_view_sure"
@@ -58,29 +55,21 @@
 
     <Button
         android:id="@+id/btn_remove_dialog_remove_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextButtonStyle"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:focusable="true"
         android:nextFocusDown="@+id/btn_cancel_dialog_remove_device"
         android:text="@string/dialog_button_remove"
-        android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_remove_device"
         app:layout_constraintTop_toTopOf="@+id/txv_message_dialog_remove_device" />
 
     <Button
         android:id="@+id/btn_cancel_dialog_remove_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextButtonStyle"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:focusable="true"
         android:text="@string/dialog_button_cancel"
-        android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txv_message_dialog_remove_device" />
 

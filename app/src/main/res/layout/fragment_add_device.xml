@@ -7,39 +7,70 @@
     android:focusable="true">
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline"
+        android:id="@+id/guideline_08"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.8" />
 
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_07"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
     <ImageView
         android:id="@+id/img_add_new_device_screen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="8dp"
         android:contentDescription="@string/content_description_new_device_screen_add_device_fragment"
         android:focusable="false"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_07"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_homes_lock_idle" />
 
-    <Button
-        android:id="@+id/btn_add_new_device"
-        android:layout_width="250dp"
+    <TextView
+        android:id="@+id/txv_login_login_fragment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/button_back_color"
-        android:focusable="true"
-        android:text="@string/fragment_button_add_new_device"
+        android:text="@string/fragment_text_view_there_is_no_lock"
+        android:textColor="#707070"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline">
+        app:layout_constraintTop_toBottomOf="@+id/guideline_08" />
 
-        <requestFocus />
+    <com.andexert.library.RippleView
+        android:id="@+id/rpv_add_new_device_new_device_fragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txv_login_login_fragment"
+        app:rv_centered="true">
 
-    </Button>
+        <Button
+            android:id="@+id/btn_add_new_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/button_back_color"
+            android:focusable="true"
+            android:text="@string/fragment_button_add_new_device"
+            android:textColor="@color/button_text_color"
+            android:textSize="@dimen/button_text_size">
+
+            <requestFocus />
+
+        </Button>
+
+    </com.andexert.library.RippleView>
 
 </android.support.constraint.ConstraintLayout>

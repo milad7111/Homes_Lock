@@ -5,7 +5,7 @@
     android:background="@drawable/background_layout_border"
     android:clickable="true"
     android:focusable="true"
-    android:padding="8dp">
+    android:padding="24dp">
 
     <TextView
         android:id="@+id/txv_title_dialog_pair_with_ble_device"
@@ -23,12 +23,10 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_security_code_dialog_pair_with_ble_device"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColorHint="@color/hintColor"
-        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/TextInputLayoutStyle"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_pair_with_ble_device"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/password_eye_color">
@@ -52,31 +50,22 @@
 
     <Button
         android:id="@+id/btn_pair_dialog_pair_with_ble_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextButtonStyle"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@id/btn_cancel_dialog_pair_with_ble_device"
-        android:background="@color/transparent"
-        android:focusable="true"
         android:nextFocusDown="@+id/btn_cancel_dialog_pair_with_ble_device"
         android:text="@string/dialog_button_pair"
-        android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_pair_with_ble_device"
         app:layout_constraintTop_toBottomOf="@+id/txil_security_code_dialog_pair_with_ble_device" />
 
     <Button
         android:id="@+id/btn_cancel_dialog_pair_with_ble_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        style="@style/TextButtonStyle"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:focusable="true"
         android:nextFocusDown="@+id/tiet_security_code_dialog_pair_with_ble_device"
         android:text="@string/dialog_button_cancel"
-        android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txil_security_code_dialog_pair_with_ble_device" />
 

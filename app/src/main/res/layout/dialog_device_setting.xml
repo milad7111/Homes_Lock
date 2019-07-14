@@ -6,8 +6,7 @@
     android:clickable="true"
     android:fillViewport="true"
     android:focusable="true"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp">
+    android:padding="24dp">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,9 +17,7 @@
             android:id="@+id/txv_title_door_installation_dialog_device_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:focusable="false"
             android:gravity="start|center_vertical"
             android:text="@string/dialog_title_door_installation_door_installation"
@@ -34,7 +31,6 @@
             android:id="@+id/rdg_door_installation_dialog_device_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:focusable="true"
             android:nextFocusDown="@+id/btn_apply_dialog_device_setting"
@@ -63,30 +59,21 @@
 
         <Button
             android:id="@+id/btn_apply_dialog_device_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextButtonStyle"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/transparent"
-            android:focusable="true"
             android:nextFocusDown="@+id/btn_cancel_dialog_device_setting"
             android:text="@string/dialog_button_apply"
-            android:textColor="@color/md_white_1000"
             app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_device_setting"
             app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_device_setting" />
 
         <Button
             android:id="@+id/btn_cancel_dialog_device_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            style="@style/TextButtonStyle"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/transparent"
-            android:focusable="true"
             android:nextFocusDown="@+id/rdg_door_installation_dialog_device_setting"
             android:text="@string/dialog_button_cancel"
-            android:textColor="@color/md_white_1000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_device_setting" />
 

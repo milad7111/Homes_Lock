@@ -4,15 +4,14 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_layout_border"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:padding="24dp">
 
     <TextView
         android:id="@+id/txv_title_dialog_gateway_wifi_network_connect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:focusable="false"
         android:gravity="start|center_vertical"
         android:text="@string/dialog_title_gateway_wifi_network_connect"
@@ -24,12 +23,8 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txil_wifi_password_dialog_gateway_wifi_network_connect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        style="@style/TextInputLayoutStyle"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textColorHint="@color/hintColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_gateway_wifi_network_connect"
@@ -71,30 +66,21 @@
 
     <Button
         android:id="@+id/btn_connect_dialog_gateway_wifi_network_connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextButtonStyle"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:focusable="true"
         android:nextFocusDown="@+id/btn_cancel_dialog_gateway_wifi_network_connect"
         android:text="@string/dialog_button_connect"
-        android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_gateway_wifi_network_connect"
         app:layout_constraintTop_toBottomOf="@+id/spn_wifi_type_dialog_gateway_wifi_network_connect" />
 
     <Button
         android:id="@+id/btn_cancel_dialog_gateway_wifi_network_connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        style="@style/TextButtonStyle"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:focusable="true"
         android:nextFocusDown="@+id/tiet_wifi_password_dialog_gateway_wifi_network_connect"
         android:text="@string/dialog_button_cancel"
-        android:textColor="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spn_wifi_type_dialog_gateway_wifi_network_connect" />
 

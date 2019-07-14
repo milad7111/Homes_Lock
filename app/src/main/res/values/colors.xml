@@ -12,12 +12,16 @@
     <color name="dialog_secondary_color">#BBBDBF</color>
     <color name="button_back_color">#0741AD</color>
     <color name="button_text_color">#fff</color>
+    <color name="text_view_color">#fff</color>
+    <color name="edit_text_color">#fff</color>
     <color name="password_eye_color">#0741AD</color>
 
     <color name="ic_launcher_background">#26A69A</color>
     <color name="transparent">#00000000</color>
     <color name="background_dialog">#1A2127</color>
     <color name="background_list_items">#A2A2A2</color>
+    <color name="underline_edit_text">#26FFFFFF</color>
+    <color name="activated_edit_text">#fff</color>
 
     <color name="activity_transparent_bg">#80FFFFFF</color>
 

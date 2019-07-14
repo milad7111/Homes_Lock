@@ -216,6 +216,7 @@
     <string name="adapter_empty_scanning">Scanning …</string>
     <string name="adapter_empty_try_again">Try again …</string>
     <string name="dialog_text_view_lose_access">You lose your access to this DEVICE, to update status; login again.</string>
+    <string name="fragment_text_view_there_is_no_lock">There is no device</string>
     <!--//endregion Adapter Empty-->
 
 </resources>

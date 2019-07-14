@@ -38,11 +38,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txil_email_login_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:textColorHint="@color/hintColor"
-            android:background="@drawable/bg_edit_text"
+            style="@style/TextInputLayoutStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/txil_password_login_fragment">
 
             <android.support.design.widget.TextInputEditText
@@ -53,17 +52,17 @@
                 android:hint="@string/fragment_hint_email"
                 android:inputType="textEmailAddress"
                 android:nextFocusDown="@+id/tiet_password_login_fragment"
-                android:textColor="@color/hintColor"
+                android:textColor="@color/edit_text_color"
                 android:textColorHint="@color/hintColor" />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txil_password_login_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:textColorHint="@color/hintColor"
+            style="@style/TextInputLayoutStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/rpv_login_login_fragment"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="#fff">
@@ -76,16 +75,20 @@
                 android:hint="@string/fragment_hint_password"
                 android:inputType="textPassword"
                 android:nextFocusDown="@+id/btn_login_login_fragment"
-                android:textColor="@color/hintColor"
+                android:textColor="@color/edit_text_color"
                 android:textColorHint="@color/hintColor" />
 
         </android.support.design.widget.TextInputLayout>
 
         <com.andexert.library.RippleView
             android:id="@+id/rpv_login_login_fragment"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginEnd="64dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
             app:layout_constraintBottom_toTopOf="@+id/rpv_direct_connect_login_fragment"
             app:rv_centered="true">
@@ -98,7 +101,7 @@
                 android:background="@color/button_back_color"
                 android:focusable="true"
                 android:text="@string/fragment_button_login"
-                android:textSize="18sp" />
+                android:textSize="@dimen/button_text_size" />
 
         </com.andexert.library.RippleView>
 
@@ -122,8 +125,8 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/fragment_text_view_direct_connect"
-                android:textColor="@color/hintColor"
-                android:textSize="18sp" />
+                android:textColor="@color/text_view_color"
+                android:textSize="@dimen/text_view_size" />
 
         </com.andexert.library.RippleView>
 
@@ -147,8 +150,8 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/fragment_text_view_sign_up"
-                android:textColor="@color/hintColor"
-                android:textSize="18sp" />
+                android:textColor="@color/text_view_color"
+                android:textSize="@dimen/text_view_size" />
 
         </com.andexert.library.RippleView>
 
@@ -174,8 +177,8 @@
                 android:gravity="center"
                 android:paddingBottom="4dp"
                 android:text="@string/fragment_text_view_forget_password"
-                android:textColor="@color/hintColor"
-                android:textSize="18sp" />
+                android:textColor="@color/text_view_color"
+                android:textSize="@dimen/text_view_size" />
 
         </com.andexert.library.RippleView>
 
