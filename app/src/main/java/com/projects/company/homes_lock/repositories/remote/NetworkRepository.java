@@ -286,6 +286,21 @@ public class NetworkRepository {
             }
         });
 
+        if (mDevice.getGateWayId() != null && !mDevice.getGateWayId().equals(""))
+            deviceEventHandler.addBulkUpdateListener(String.format("gti='%s'", mDevice.getGateWayId()), new AsyncCallback<BulkEvent>() {
+                @Override
+                public void handleResponse(BulkEvent response) {
+                    if (response.getCount() >= 1) {
+                        listener.onResponse(new TempDeviceModel(mDevice.getObjectId()));
+                    }
+                }
+
+                @Override
+                public void handleFault(BackendlessFault fault) {
+                    listener.onSingleNetworkListenerFailure(new FailureModel(fault.getMessage()));
+                }
+            });
+
         return deviceEventHandler;
     }
 
@@ -294,25 +309,37 @@ public class NetworkRepository {
                 String.format("sn='%s'", mDevice.getSerialNumber()), new AsyncCallback<BulkEvent>() {
                     @Override
                     public void handleResponse(BulkEvent response) {
-                        Timber.d("removeListenerForDevice1 done!");
+                        Timber.d("removeBulkUpdateListener by SN done!");
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Timber.d("removeListenerForDevice1 done!");
+                        Timber.d("removeBulkUpdateListener by SN failed!");
                     }
                 });
+
+        deviceEventHandler.removeBulkUpdateListener(String.format("gti='%s'", mDevice.getGateWayId()), new AsyncCallback<BulkEvent>() {
+            @Override
+            public void handleResponse(BulkEvent response) {
+                Timber.d("removeBulkUpdateListener by GTI done!");
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Timber.d("removeBulkUpdateListener by GTI failed!");
+            }
+        });
 
         deviceEventHandler.removeUpdateListener(
                 String.format("objectId='%s'", mDevice.getObjectId()), new AsyncCallback<Map>() {
                     @Override
                     public void handleResponse(Map response) {
-                        Timber.d("removeListenerForDevice2 done!");
+                        Timber.d("removeBulkUpdateListener by OBJECT_ID done!");
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Timber.d("removeListenerForDevice2 done!");
+                        Timber.d("removeBulkUpdateListener by OBJECT_ID failed!");
                     }
                 });
     }

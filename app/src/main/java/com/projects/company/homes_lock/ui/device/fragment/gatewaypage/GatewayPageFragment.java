@@ -57,6 +57,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import timber.log.Timber;
+
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -863,38 +865,42 @@ public class GatewayPageFragment extends BaseFragment
 
     //region Declare Methods
     private void updateViewData(boolean setDefault) {
-        setBleMoreInfoImage(imgMoreInfoGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
-        setAvailableBleDevicesStatusImage(imgAvailableBleDevicesGatewayPage, mDevice.getConnectedServersCount(), (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
+        try{
+            setBleMoreInfoImage(imgMoreInfoGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
+            setAvailableBleDevicesStatusImage(imgAvailableBleDevicesGatewayPage, mDevice.getConnectedServersCount(), (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
 
-        setGatewayInternetConnectionStatusImage(
-                imgConnectionStatusGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
-        setConnectedClientsStatusImage(
-                imgConnectedClientsGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getConnectedClientsCount());
+            setGatewayInternetConnectionStatusImage(
+                    imgConnectionStatusGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+            setConnectedClientsStatusImage(
+                    imgConnectedClientsGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getConnectedClientsCount());
 
-        imgManageMembersGatewayPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
-        txvDeviceNameGatewayPage.setTextColor((!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
-        txvDeviceNameGatewayPage.setText(mDevice.getBleDeviceName());
+            imgManageMembersGatewayPage.setImageResource(isUserLoggedIn() ? R.drawable.ic_manage_members_enable : R.drawable.ic_manage_members_disable);
+            txvDeviceNameGatewayPage.setTextColor((!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) : getColor(mContext, R.color.md_white_1000));
+            txvDeviceNameGatewayPage.setText(mDevice.getBleDeviceName());
 
-        txvBriefStatusGatewayPage.setText(
-                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ?
-                        getString(R.string.fragment_text_view_data_not_synced) :
-                        getGatewayBriefStatusText(mDevice.getInternetStatus(), mDevice.getWifiStatus()));
-        txvBriefStatusGatewayPage.setTextColor(
-                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) :
-                        getColor(mContext, getGatewayBriefStatusColor(mDevice.getInternetStatus(), mDevice.getWifiStatus())));
+            txvBriefStatusGatewayPage.setText(
+                    (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ?
+                            getString(R.string.fragment_text_view_data_not_synced) :
+                            getGatewayBriefStatusText(mDevice.getInternetStatus(), mDevice.getWifiStatus()));
+            txvBriefStatusGatewayPage.setTextColor(
+                    (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) :
+                            getColor(mContext, getGatewayBriefStatusColor(mDevice.getInternetStatus(), mDevice.getWifiStatus())));
 
-        txvNewUpdateGatewayPage.setText(null);
+            txvNewUpdateGatewayPage.setText(null);
 
-        closeProgressDialog();
+            closeProgressDialog();
 
-        if (isUserLoggedIn()) {
-            if (!mDevice.getInternetStatus()) {
-                rllValidDataStatusGatewayPage.setVisibility(VISIBLE);
-                txvValidDataStatusGatewayPage.setText("Not connected to internet.\nLast update: " + new Date(mDevice.getUpdated()));
-            } else {
-                rllValidDataStatusGatewayPage.setVisibility(GONE);
-                txvValidDataStatusGatewayPage.setText(null);
+            if (isUserLoggedIn()) {
+                if (!mDevice.getInternetStatus()) {
+                    rllValidDataStatusGatewayPage.setVisibility(VISIBLE);
+                    txvValidDataStatusGatewayPage.setText("Not connected to internet.\nLast update: " + new Date(mDevice.getUpdated()));
+                } else {
+                    rllValidDataStatusGatewayPage.setVisibility(GONE);
+                    txvValidDataStatusGatewayPage.setText(null);
+                }
             }
+        } catch (Exception e){
+            Timber.e(e.getCause());
         }
     }
 

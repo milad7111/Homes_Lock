@@ -48,8 +48,8 @@ public class Device extends BaseModel {
     @SerializedName("mac")
     private String mBleDeviceMacAddress;
 
-    @ColumnInfo(name = "gwi")
-    @SerializedName("gwi")
+    @ColumnInfo(name = "gti")
+    @SerializedName("gti")
     private String mGateWayId;
 
     @ColumnInfo(name = "bcq")
