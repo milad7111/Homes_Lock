@@ -24,6 +24,18 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="DialogMainStyle" parent="@android:style/TextAppearance">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/background_layout_border</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">24dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
     <style name="TextButtonStyle" parent="@android:style/TextAppearance">
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:textColor">@color/button_text_color</item>
@@ -56,12 +68,10 @@
     <style name="DialogTitle">
         <item name="android:layout_width">@dimen/zero</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:textColor">@color/text_view_color</item>
         <item name="android:textSize">@dimen/dialog_title</item>
         <item name="android:focusable">false</item>
         <item name="android:layout_marginTop">@dimen/medium_distance</item>
-        <item name="android:layout_marginStart">@dimen/medium_distance</item>
-        <item name="android:layout_marginEnd">@dimen/medium_distance</item>
         <item name="android:gravity">start|center_vertical</item>
     </style>
 

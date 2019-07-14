@@ -2,13 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_layout_border"
-    android:clickable="true"
-    android:fillViewport="true"
-    android:focusable="true"
-    android:padding="24dp">
+    style="@style/DialogMainStyle"
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,14 +11,8 @@
 
         <TextView
             android:id="@+id/txv_title_dialog_available_networks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:focusable="false"
-            android:gravity="start|center_vertical"
+            style="@style/DialogTitle"
             android:text="@string/dialog_title_available_networks"
-            android:textColor="@color/md_white_1000"
-            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,7 +47,6 @@
             android:id="@+id/btn_cancel_dialog_available_networks"
             style="@style/TextButtonStyle"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:nextFocusDown="@+id/btn_scan_dialog_available_networks"
             android:text="@string/dialog_button_cancel"
             app:layout_constraintEnd_toEndOf="@+id/rcv_dialog_available_networks"

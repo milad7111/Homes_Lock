@@ -1,22 +1,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_layout_border"
-    android:clickable="true"
-    android:focusable="true"
-    android:padding="24dp">
+    style="@style/DialogMainStyle">
 
     <TextView
         android:id="@+id/txv_title_dialog_lose_access"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:focusable="false"
-        android:gravity="start|center_vertical"
+        style="@style/DialogTitle"
         android:text="@string/dialog_title_lose_access"
-        android:textColor="@color/md_white_1000"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +17,7 @@
         android:layout_marginTop="8dp"
         android:focusable="false"
         android:gravity="start|center_vertical"
-        android:text="@string/dialog_text_view_lose_access"
+        android:text="@string/dialog_text_view_lost_access"
         android:textColor="@color/md_white_1000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +28,6 @@
         android:id="@+id/btn_ok_dialog_lose_access"
         style="@style/TextButtonStyle"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:text="@string/dialog_button_ok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_message_dialog_lose_access" />

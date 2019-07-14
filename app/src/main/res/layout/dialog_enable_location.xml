@@ -1,22 +1,13 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_layout_border"
-    android:clickable="true"
-    android:focusable="true"
-    android:padding="24dp">
+    style="@style/DialogMainStyle">
 
     <TextView
         android:id="@+id/txv_title_dialog_enable_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:focusable="false"
-        android:gravity="start|center_vertical"
+        style="@style/DialogTitle"
         android:text="Enable location status"
-        android:textColor="@color/md_white_1000"
-        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button

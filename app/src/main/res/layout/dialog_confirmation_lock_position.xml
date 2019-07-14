@@ -1,24 +1,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_layout_border"
-    android:clickable="true"
-    android:focusable="true"
-    android:padding="24dp">
+    style="@style/DialogMainStyle">
 
     <TextView
         android:id="@+id/txv_title_dialog_confirmation_lock_position"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:focusable="false"
-        android:gravity="start|center_vertical"
+        style="@style/DialogTitle"
         android:text="@string/dialog_title_confirmation_lock_position"
-        android:textColor="@color/md_white_1000"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,9 +14,7 @@
         android:id="@+id/txv_message_dialog_confirmation_lock_position"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:focusable="false"
         android:gravity="start|center_vertical"
         android:text="@string/dialog_text_view_message_confirmation_lock_position_idle"
@@ -42,6 +27,7 @@
     <Button
         android:id="@+id/btn_apply_dialog_confirmation_lock_position"
         style="@style/TextButtonStyle"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:nextFocusDown="@+id/btn_cancel_dialog_confirmation_lock_position"
         android:text="@string/dialog_button_apply"
@@ -51,7 +37,7 @@
     <Button
         android:id="@+id/btn_cancel_dialog_confirmation_lock_position"
         style="@style/TextButtonStyle"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/dialog_button_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_message_dialog_confirmation_lock_position">
