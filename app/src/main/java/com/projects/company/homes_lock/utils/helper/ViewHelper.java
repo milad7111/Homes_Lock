@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,6 +21,8 @@ import com.projects.company.homes_lock.R;
 
 import java.util.Objects;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 
@@ -27,7 +31,6 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_T
  */
 
 public class ViewHelper {
-
     //region Declare Constants
     //endregion Declare Constants
 
@@ -36,6 +39,8 @@ public class ViewHelper {
 
     //region Declare Objects
     private static Context mContext;
+    private static Animation ringImageViewAnimation = null;
+    public static boolean changeLockStatus = false;
     //endregion Declare Objects
 
     //region Declare Views
@@ -56,18 +61,77 @@ public class ViewHelper {
         mTransaction.commit();
     }
 
-    public static void setIsLockedImage(ImageView imageViewIsLocked, int isLocked) {
+//    public static void setIsLockedImage(ImageView imageViewIsLocked, int isLocked) {
+//        switch (isLocked) {
+//            case 0:
+//                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_open);
+//                break;
+//            case 1:
+//                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_close);
+//                break;
+//            case 2:
+//                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_idle);
+//                break;
+//        }
+//    }
+
+    public static void setIsLockedImage(ImageView imageViewCenter, ImageView imageViewRing, ImageView imageViewIsLocked, int isLocked) {
         switch (isLocked) {
             case 0:
                 imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_open);
+                imageViewCenter.setImageResource(R.drawable.ic_lock_open);
+                imageViewRing.setImageResource(R.drawable.ic_ring_unlock);
+
+                imageViewCenter.setVisibility(VISIBLE);
+                imageViewRing.setVisibility(VISIBLE);
+
+                if (changeLockStatus)
+                    disableLockCommandRingImageView(imageViewRing);
                 break;
             case 1:
                 imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_close);
+                imageViewCenter.setImageResource(R.drawable.ic_lock_close);
+                imageViewRing.setImageResource(R.drawable.ic_ring_lock);
+
+                imageViewCenter.setVisibility(VISIBLE);
+                imageViewRing.setVisibility(VISIBLE);
+
+                if (changeLockStatus)
+                    disableLockCommandRingImageView(imageViewRing);
                 break;
             case 2:
                 imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_idle);
+                imageViewCenter.setVisibility(GONE);
+                imageViewRing.setVisibility(GONE);
                 break;
         }
+    }
+
+    public static void enableLockCommandRingImageView(Activity activity, ImageView imageViewRing, int lockCommand) {
+        switch (lockCommand) {
+            case 0:
+                rotateImageView(activity, imageViewRing);
+                break;
+            case 1:
+                rotateImageView(activity, imageViewRing);
+                break;
+        }
+    }
+
+    public static void disableLockCommandRingImageView(ImageView imgIsLockedLockPageRing) {
+        if (ringImageViewAnimation != null) {
+            ringImageViewAnimation.cancel();
+            ringImageViewAnimation.reset();
+            ringImageViewAnimation = null;
+            imgIsLockedLockPageRing.clearAnimation();
+            imgIsLockedLockPageRing.setAnimation(null);
+            changeLockStatus = false;
+        }
+    }
+
+    private static void rotateImageView(Activity activity, ImageView imageView) {
+        ringImageViewAnimation = AnimationUtils.loadAnimation(activity, R.anim.rotate);
+        imageView.startAnimation(ringImageViewAnimation);
     }
 
     public static void setAvailableBleDevicesStatusImage(ImageView imageViewConnectedClients, int connectedClientsCount, boolean setDefault) {

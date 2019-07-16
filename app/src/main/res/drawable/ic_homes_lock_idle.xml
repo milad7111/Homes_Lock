@@ -43,7 +43,7 @@
     <path
         android:fillAlpha="0.15"
         android:pathData="M375,628.5a253.5,253.5 0,1 1,179.25 -74.25A251.84,251.84 0,0 1,375 628.5Z"
-        android:strokeAlpha="0.15"></path>
+        android:strokeAlpha="0.15"/>
     <path
         android:fillAlpha="0.15"
         android:fillColor="#686868"

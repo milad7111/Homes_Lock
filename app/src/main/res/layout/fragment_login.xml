@@ -14,6 +14,7 @@
         android:padding="16dp">
 
         <com.andexert.library.RippleView
+            android:id="@+id/rpl_login_screen_login_fragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/txil_email_login_fragment"

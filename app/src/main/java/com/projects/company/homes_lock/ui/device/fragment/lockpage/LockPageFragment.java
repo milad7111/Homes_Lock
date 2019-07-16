@@ -70,6 +70,8 @@ import static com.projects.company.homes_lock.utils.helper.DataHelper.getLockBri
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.disableLockCommandRingImageView;
+import static com.projects.company.homes_lock.utils.helper.ViewHelper.enableLockCommandRingImageView;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.getDialogLayoutParams;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBatteryStatusImage;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.setBleConnectionStatusImage;
@@ -92,6 +94,8 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare Views
     private ImageView imgIsLockedLockPage;
+    private ImageView imgIsLockedLockPageCenter;
+    private ImageView imgIsLockedLockPageRing = null;
     private ImageView imgBatteryStatusLockPage;
     private ImageView imgConnectedClientsLockPage;
     private ImageView imgBleLockPage;
@@ -204,6 +208,8 @@ public class LockPageFragment extends BaseFragment
 
         //region Initialize Views
         imgIsLockedLockPage = view.findViewById(R.id.img_lock_status_lock_page);
+        imgIsLockedLockPageCenter = view.findViewById(R.id.img_lock_status_lock_page_center);
+        imgIsLockedLockPageRing = view.findViewById(R.id.img_lock_status_lock_page_ring);
         imgBatteryStatusLockPage = view.findViewById(R.id.img_battery_status_lock_page);
         imgConnectedClientsLockPage = view.findViewById(R.id.img_connected_devices_lock_page);
         imgBleLockPage = view.findViewById(R.id.img_ble_lock_page);
@@ -390,13 +396,12 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onDoLockCommandSuccessful(String command) {
         showToast(String.format("%s done.: ", command));
-
-//        Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() -> imgIsLockedLockPage.setEnabled(true));
+        ViewHelper.changeLockStatus = true;
     }
 
     @Override
     public void onDoLockCommandFailed(String error) {
-//        Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() -> imgIsLockedLockPage.setEnabled(true));
+        disableLockCommandRingImageView(imgIsLockedLockPageRing);
 
         switch (error) {
             case BLE_RESPONSE_ERR_LOCK:
@@ -473,6 +478,7 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
+        enableLockCommandRingImageView(getActivity(), imgIsLockedLockPageRing, lockCommand ? 0 : 1);
 //        imgIsLockedLockPage.setEnabled(false);
         this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
     }
@@ -592,7 +598,7 @@ public class LockPageFragment extends BaseFragment
 
         txvDeviceTypeLockPage.setText(mDevice.getDeviceType());
 
-        setIsLockedImage(imgIsLockedLockPage,
+        setIsLockedImage(imgIsLockedLockPageCenter, imgIsLockedLockPageRing, imgIsLockedLockPage,
                 (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? 2 : (mDevice.getIsLocked() ? 1 : 0));
 
         setBatteryStatusImage((!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, imgBatteryStatusLockPage, mDevice.getBatteryPercentage());

@@ -8,6 +8,7 @@
     android:focusable="true">
 
     <com.andexert.library.RippleView
+        android:id="@+id/rpl_lock_status_lock_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -26,9 +27,36 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/content_description_lock_status_symbol_lock_page"
             android:focusable="false"
-            app:srcCompat="@drawable/ic_homes_lock_idle" />
+            app:srcCompat="@drawable/ic_homes_lock_open" />
 
     </com.andexert.library.RippleView>
+
+    <ImageView
+        android:id="@+id/img_lock_status_lock_page_ring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintEnd_toEndOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintTop_toTopOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintBottom_toBottomOf="@+id/rpl_lock_status_lock_page"
+        android:contentDescription="@string/content_description_login_screen_login_fragment"
+        android:focusable="false"
+        app:srcCompat="@drawable/ic_ring_unlock" />
+
+    <ImageView
+        android:id="@+id/img_lock_status_lock_page_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintEnd_toEndOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintTop_toTopOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintBottom_toBottomOf="@+id/rpl_lock_status_lock_page"
+        android:contentDescription="@string/content_description_login_screen_login_fragment"
+        android:focusable="false"
+        app:srcCompat="@drawable/ic_lock_open" />
 
     <RelativeLayout
         android:id="@+id/rll_valid_data_status_lock_page"
