@@ -74,11 +74,11 @@ public class AndroidImmediatePush {
     @Expose
     private Object customHeaders;
 
-    public String getJsonclass() {
+    public String getJsonClass() {
         return jsonclass;
     }
 
-    public void setJsonclass(String jsonclass) {
+    public void setJsonClass(String jsonclass) {
         this.jsonclass = jsonclass;
     }
 

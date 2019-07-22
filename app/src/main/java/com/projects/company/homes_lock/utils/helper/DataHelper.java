@@ -9,6 +9,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.SecurityAlarm;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -210,6 +211,39 @@ public class DataHelper {
 
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
+    }
+
+    public static String dateDifference(Date date) {
+        Date currentDate = new Date();
+
+        //in milliseconds
+        long diff = currentDate.getTime() - date.getTime();
+
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+
+        String result = "";
+
+        if (diffDays != 0)
+            result = String.format("%dD:%dH:%dM:%dS", diffDays, diffHours, diffMinutes, diffSeconds);
+        else {
+            if (diffHours != 0)
+                result = String.format("%dH:%dM:%dS", diffHours, diffMinutes, diffSeconds);
+            else {
+                if (diffMinutes != 0)
+                    result = String.format("%dM:%dS", diffMinutes, diffSeconds);
+                else {
+                    if (diffSeconds > 20)
+                        result = String.format("%dS", diffSeconds);
+                    else
+                        result = "Just Now";
+                }
+            }
+        }
+
+        return result;
     }
     //endregion Declare Methods
 }

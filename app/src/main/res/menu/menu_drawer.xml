@@ -6,34 +6,34 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_locks"
-            android:icon="@drawable/ic_drawer_locks"
-            android:title="Locks" />
+            android:id="@+id/nav_devices"
+            android:icon="@drawable/ic_drawer_devices"
+            android:title="@string/drawer_menu_item_devices" />
 
         <item
             android:id="@+id/nav_notifications"
             android:icon="@drawable/ic_drawer_notifications"
-            android:title="Notifications" />
+            android:title="@string/drawer_menu_item_notifications" />
 
-        <item
-            android:id="@+id/nav_store"
-            android:icon="@drawable/ic_drawer_store"
-            android:title="Store" />
+        <!--<item-->
+            <!--android:id="@+id/nav_store"-->
+            <!--android:icon="@drawable/ic_drawer_store"-->
+            <!--android:title="@string/drawer_menu_item_store" />-->
 
         <item
             android:id="@+id/nav_support"
             android:icon="@drawable/ic_drawer_support"
-            android:title="Support" />
+            android:title="@string/drawer_menu_item_support" />
 
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_drawer_settings"
-            android:title="Settings" />
+        <!--<item-->
+            <!--android:id="@+id/nav_settings"-->
+            <!--android:icon="@drawable/ic_drawer_settings"-->
+            <!--android:title="@string/drawer_menu_item_settings" />-->
 
         <item
             android:id="@+id/nav_about_us"
             android:icon="@drawable/ic_drawer_about_us"
-            android:title="About us" />
+            android:title="@string/drawer_menu_item_about_us" />
 
     </group>
 

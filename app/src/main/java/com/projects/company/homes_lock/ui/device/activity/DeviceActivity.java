@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -112,6 +114,7 @@ public class DeviceActivity extends BaseActivity
 
         //region Setup Views
         setSupportActionBar(appBarLockToolbar);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#111219")));
 
         activityLockDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
@@ -142,7 +145,7 @@ public class DeviceActivity extends BaseActivity
                     });
 
             View mSnackBarView = mSnackBar.getView();
-            TextView textView = mSnackBarView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = mSnackBarView.findViewById(R.id.snackbar_text);
             textView.setMaxLines(5);
 
             mSnackBar.show();
@@ -198,27 +201,7 @@ public class DeviceActivity extends BaseActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_locks:
-                handleNavigationItemSelected(R.id.nav_locks);
-                break;
-            case R.id.nav_notifications:
-                handleNavigationItemSelected(R.id.nav_notifications);
-                break;
-            case R.id.nav_store:
-                handleNavigationItemSelected(R.id.nav_store);
-                break;
-            case R.id.nav_support:
-                handleNavigationItemSelected(R.id.nav_support);
-                break;
-            case R.id.nav_settings:
-                handleNavigationItemSelected(R.id.nav_settings);
-                break;
-            case R.id.nav_about_us:
-                handleNavigationItemSelected(R.id.nav_about_us);
-                break;
-        }
-
+        handleNavigationItemSelected(item.getItemId());
         activityLockDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -238,7 +221,7 @@ public class DeviceActivity extends BaseActivity
     //region Declare Methods
     private void handleNavigationItemSelected(int itemId) {
         switch (itemId) {
-            case R.id.nav_locks:
+            case R.id.nav_devices:
                 if (!getTopActivityClassName().equals(DeviceActivity.class.getName()))
                     startActivity(new Intent(DeviceActivity.this, DeviceActivity.class));
                 break;
@@ -246,18 +229,18 @@ public class DeviceActivity extends BaseActivity
                 if (!getTopActivityClassName().equals(NotificationActivity.class.getName()))
                     startActivity(new Intent(DeviceActivity.this, NotificationActivity.class));
                 break;
-            case R.id.nav_store:
-                if (!getTopActivityClassName().equals(ProServicesActivity.class.getName()))
-                    startActivity(new Intent(DeviceActivity.this, ProServicesActivity.class));
-                break;
+//            case R.id.nav_store:
+//                if (!getTopActivityClassName().equals(ProServicesActivity.class.getName()))
+//                    startActivity(new Intent(DeviceActivity.this, ProServicesActivity.class));
+//                break;
             case R.id.nav_support:
                 if (!getTopActivityClassName().equals(SupportActivity.class.getName()))
                     startActivity(new Intent(DeviceActivity.this, SupportActivity.class));
                 break;
-            case R.id.nav_settings:
-                if (!getTopActivityClassName().equals(SettingActivity.class.getName()))
-                    startActivity(new Intent(DeviceActivity.this, SettingActivity.class));
-                break;
+//            case R.id.nav_settings:
+//                if (!getTopActivityClassName().equals(SettingActivity.class.getName()))
+//                    startActivity(new Intent(DeviceActivity.this, SettingActivity.class));
+//                break;
             case R.id.nav_about_us:
                 if (!getTopActivityClassName().equals(AboutUsActivity.class.getName()))
                     startActivity(new Intent(DeviceActivity.this, AboutUsActivity.class));

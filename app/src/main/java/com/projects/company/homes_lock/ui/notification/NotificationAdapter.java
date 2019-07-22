@@ -6,14 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.database.tables.Notification;
 
-import java.util.Date;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationAdapterViewHolder> {
@@ -41,10 +39,24 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull NotificationAdapterViewHolder notificationsAdapterViewHolder, final int i) {
         if (mNotificationList != null) {
+            switch (mNotificationList.get(i).getContentTitle()) {
+                case "Device Connection":
+                    notificationsAdapterViewHolder.imgNotificationType.setImageResource(R.drawable.ic_notification_internet_connection);
+                    break;
+                case "Manually Open":
+                    notificationsAdapterViewHolder.imgNotificationType.setImageResource(R.drawable.ic_notification_manual_opening);
+                    break;
+                case "Abnormal Behaviour":
+                    notificationsAdapterViewHolder.imgNotificationType.setImageResource(R.drawable.ic_notification_danger);
+                    break;
+                case "Battery Charge":
+                    notificationsAdapterViewHolder.imgNotificationType.setImageResource(R.drawable.ic_notification_battery);
+                    break;
+            }
             notificationsAdapterViewHolder.txvNotificationTitle.setText(mNotificationList.get(i).getContentTitle());
-            notificationsAdapterViewHolder.txvNotificationSubtitle.setText(mNotificationList.get(i).getSummarySubText());
+            notificationsAdapterViewHolder.txvNotificationTicker.setText(mNotificationList.get(i).getTicker());
             notificationsAdapterViewHolder.txvNotificationMessage.setText(mNotificationList.get(i).getMessage());
-            notificationsAdapterViewHolder.txvNotificationTime.setText(new Date(mNotificationList.get(i).getSentTime()).toString());
+            notificationsAdapterViewHolder.txvNotificationTime.setText(mNotificationList.get(i).getCustomSentTime());
 
             notificationsAdapterViewHolder.itemView.setOnClickListener(v -> {
             });
@@ -61,20 +73,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     //region Declare Classes & Interfaces
     class NotificationAdapterViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgNotificationPriority;
-        CheckBox imgNotificationStatus;
+        ImageView imgNotificationType;
         TextView txvNotificationTitle;
-        TextView txvNotificationSubtitle;
+        TextView txvNotificationTicker;
         TextView txvNotificationMessage;
         TextView txvNotificationTime;
 
         private NotificationAdapterViewHolder(View itemView) {
             super(itemView);
 
-            imgNotificationPriority = itemView.findViewById(R.id.img_notification_priority);
-            imgNotificationStatus = itemView.findViewById(R.id.chb_notification_status);
+            imgNotificationType = itemView.findViewById(R.id.img_notification_type);
             txvNotificationTitle = itemView.findViewById(R.id.txv_notification_title);
-            txvNotificationSubtitle = itemView.findViewById(R.id.txv_notification_subtitle);
+            txvNotificationTicker = itemView.findViewById(R.id.txv_notification_ticker);
             txvNotificationMessage = itemView.findViewById(R.id.txv_notification_message);
             txvNotificationTime = itemView.findViewById(R.id.txv_notification_time);
         }

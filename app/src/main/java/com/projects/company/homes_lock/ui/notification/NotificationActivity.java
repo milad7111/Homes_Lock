@@ -2,7 +2,9 @@ package com.projects.company.homes_lock.ui.notification;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 
 import com.projects.company.homes_lock.R;
@@ -27,6 +29,8 @@ public class NotificationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //region Initialize Objects
         mAdapter = new NotificationAdapter(this, new ArrayList<>());
         this.mNotificationViewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
@@ -36,6 +40,10 @@ public class NotificationActivity extends BaseActivity {
         rcvNotificationActivity = findViewById(R.id.rcv_notification_activity);
         rcvNotificationActivity.setItemAnimator(new DefaultItemAnimator());
         rcvNotificationActivity.setAdapter(mAdapter);
+
+        DividerItemDecoration verticalDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        verticalDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.recycler_view_vertical_divider));
+        rcvNotificationActivity.addItemDecoration(verticalDecoration);
         //endregion Initialize Views
 
         //region init

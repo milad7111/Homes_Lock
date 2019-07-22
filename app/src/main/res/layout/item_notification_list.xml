@@ -4,88 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@color/background_main"
     android:clickable="true"
     android:focusable="true"
-    android:paddingBottom="16dp"
-    android:paddingStart="32dp"
-    android:paddingEnd="32dp">
+    android:padding="8dp">
 
     <ImageView
-        android:id="@+id/img_notification_priority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/img_notification_type"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/content_description_notification_list_item_img_priority"
         android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_notification_priority_normal" />
+        app:srcCompat="@drawable/ic_notification_danger" />
 
     <TextView
         android:id="@+id/txv_notification_title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:focusable="false"
-        android:gravity="center"
-        android:textColor="@color/list_item_text_color"
+        android:gravity="start"
+        android:textColor="@color/md_white_1000"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/chb_notification_status"
-        app:layout_constraintStart_toEndOf="@id/img_notification_priority"
+        app:layout_constraintStart_toEndOf="@+id/img_notification_type"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="notification 1" />
 
-    <CheckBox
-        android:id="@+id/chb_notification_status"
+    <TextView
+        android:id="@+id/txv_notification_ticker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
         android:focusable="false"
-        android:checked="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/txv_notification_subtitle"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txv_notification_subtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:focusable="false"
-        android:gravity="center"
         android:textColor="@color/list_item_text_color"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/img_notification_priority"
+        app:layout_constraintStart_toEndOf="@+id/img_notification_type"
         app:layout_constraintTop_toBottomOf="@+id/txv_notification_title"
         tools:text="this is subtitle" />
 
     <TextView
         android:id="@+id/txv_notification_message"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
         android:focusable="false"
         android:gravity="start"
         android:textColor="@color/list_item_text_color"
         android:textSize="14sp"
         android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_notification_subtitle"
+        app:layout_constraintStart_toEndOf="@+id/img_notification_type"
+        app:layout_constraintTop_toBottomOf="@+id/txv_notification_ticker"
         tools:text="this is message" />
 
     <TextView
@@ -93,15 +69,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:focusable="false"
-        android:gravity="start"
-        android:textColor="@color/list_item_text_color"
-        android:textSize="14sp"
+        android:gravity="end"
+        android:textColor="@color/md_yellow_500"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_notification_message"
-        tools:text="this is time" />
+        app:layout_constraintStart_toEndOf="@+id/txv_notification_title"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="3D:2H:1M:10S" />
 
 </android.support.constraint.ConstraintLayout>

@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.backendless.push.BackendlessFCMService;
-import com.google.gson.Gson;
-import com.projects.company.homes_lock.BuildConfig;
 import com.projects.company.homes_lock.database.tables.Notification;
-import com.projects.company.homes_lock.models.datamodels.notification.AndroidImmediatePush;
 import com.projects.company.homes_lock.repositories.local.ILocalRepository;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
+
+import java.util.Date;
 
 public class NotificationService extends BackendlessFCMService implements ILocalRepository {
 
@@ -33,19 +32,32 @@ public class NotificationService extends BackendlessFCMService implements ILocal
         Log.i("NotificationService", "Notification Received");
 
         try {
-            AndroidImmediatePush mAndroidImmediatePush = new Gson()
-                    .fromJson(msgIntent.getStringExtra("android_immediate_push"), AndroidImmediatePush.class);
+//            AndroidImmediatePush mAndroidImmediatePush = new Gson()
+//                    .fromJson(msgIntent.getStringExtra("android_immediate_push"), AndroidImmediatePush.class);
+//
+//            LocalRepository mLocalRepository = new LocalRepository(getApplication());
+//            mLocalRepository.insertNotification(
+//                    this, new Notification(
+//                            msgIntent.getStringExtra("messageId"),
+//                            msgIntent.getStringExtra("message"),
+//                            msgIntent.getStringExtra("google.delivered_priority"),
+//                            msgIntent.getStringExtra("google.original_priority"),
+//                            msgIntent.getLongExtra("google.sent_time", 0),
+//                            mAndroidImmediatePush.getContentTitle(),
+//                            mAndroidImmediatePush.getSummarySubText()
+//                    )
+//            );
 
             LocalRepository mLocalRepository = new LocalRepository(getApplication());
-            mLocalRepository.insertNotification(
-                    this, new Notification(
+            mLocalRepository.insertNotification(this,
+                    new Notification(
                             msgIntent.getStringExtra("messageId"),
+                            msgIntent.getStringExtra("android-ticker-text"),
                             msgIntent.getStringExtra("message"),
                             msgIntent.getStringExtra("google.delivered_priority"),
                             msgIntent.getStringExtra("google.original_priority"),
-                            msgIntent.getLongExtra("google.sent_time", 0),
-                            mAndroidImmediatePush.getContentTitle(),
-                            mAndroidImmediatePush.getSummarySubText()
+                            msgIntent.getStringExtra("android-content-title"),
+                            msgIntent.getLongExtra("google.sent_time", 0)
                     )
             );
         } catch (Exception e) {

@@ -26,6 +26,7 @@
     <color name="activity_transparent_bg">#80FFFFFF</color>
 
     <color name="background_main">#111219</color>
+    <color name="notification_list_item_image_color">#fff</color>
 
     <color name="background_dialogs">#1A2127</color>
     <color name="border_dialogs">#515151</color>
