@@ -78,9 +78,17 @@ public class ViewHelper {
     public static void setIsLockedImage(ImageView imageViewCenter, ImageView imageViewRing, ImageView imageViewIsLocked, int isLocked) {
         switch (isLocked) {
             case 0:
-                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_open);
-                imageViewCenter.setImageResource(R.drawable.ic_lock_open);
-                imageViewRing.setImageResource(R.drawable.ic_ring_unlock);
+                animatedImageResourceChange(
+                        imageViewCenter,
+                        imageViewRing,
+                        imageViewIsLocked,
+                        R.drawable.ic_lock_open,
+                        R.drawable.ic_ring_unlock,
+                        R.drawable.ic_homes_lock_open
+                );
+//                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_open);
+//                imageViewCenter.setImageResource(R.drawable.ic_lock_open);
+//                imageViewRing.setImageResource(R.drawable.ic_ring_unlock);
 
                 imageViewCenter.setVisibility(VISIBLE);
                 imageViewRing.setVisibility(VISIBLE);
@@ -89,9 +97,18 @@ public class ViewHelper {
                     disableLockCommandRingImageView(imageViewRing);
                 break;
             case 1:
-                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_close);
-                imageViewCenter.setImageResource(R.drawable.ic_lock_close);
-                imageViewRing.setImageResource(R.drawable.ic_ring_lock);
+                animatedImageResourceChange(
+                        imageViewCenter,
+                        imageViewRing,
+                        imageViewIsLocked,
+                        R.drawable.ic_lock_close,
+                        R.drawable.ic_ring_lock,
+                        R.drawable.ic_homes_lock_close
+                );
+
+//                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_close);
+//                imageViewCenter.setImageResource(R.drawable.ic_lock_close);
+//                imageViewRing.setImageResource(R.drawable.ic_ring_lock);
 
                 imageViewCenter.setVisibility(VISIBLE);
                 imageViewRing.setVisibility(VISIBLE);
@@ -109,11 +126,11 @@ public class ViewHelper {
 
     public static void enableLockCommandRingImageView(Activity activity, ImageView imageViewRing, int lockCommand) {
         switch (lockCommand) {
-            case 0:
-                rotateImageView(activity, imageViewRing);
+            case 0: // UNLOCK
+                rotateImageView(activity, imageViewRing, false);
                 break;
-            case 1:
-                rotateImageView(activity, imageViewRing);
+            case 1: //LOCK
+                rotateImageView(activity, imageViewRing, true);
                 break;
         }
     }
@@ -129,8 +146,8 @@ public class ViewHelper {
         }
     }
 
-    private static void rotateImageView(Activity activity, ImageView imageView) {
-        ringImageViewAnimation = AnimationUtils.loadAnimation(activity, R.anim.rotate);
+    private static void rotateImageView(Activity activity, ImageView imageView, boolean clockWise) {
+        ringImageViewAnimation = AnimationUtils.loadAnimation(activity, clockWise ? R.anim.rotate_clock_wise : R.anim.rotate_counter_clock_wise);
         imageView.startAnimation(ringImageViewAnimation);
     }
 
@@ -262,6 +279,72 @@ public class ViewHelper {
 
     public static void setTypeface(Button view, String font) {
         view.setTypeface(Typeface.createFromAsset(view.getContext().getAssets(), String.format("fonts/%s.ttf", font)));
+    }
+
+    public static void animatedImageResourceChange(
+            ImageView imageViewCenter, ImageView imageViewRing, ImageView imageViewIsLocked,
+            int imageViewCenterResource, int imageViewRingResource, int imageViewIsLockedResource) {
+
+        Animation anim_out_imageViewCenter = AnimationUtils.loadAnimation(imageViewCenter.getContext(), android.R.anim.fade_out);
+        Animation anim_in_imageViewCenter = AnimationUtils.loadAnimation(imageViewCenter.getContext(), android.R.anim.fade_in);
+
+        anim_out_imageViewCenter.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imageViewCenter.setImageResource(imageViewCenterResource);
+                imageViewCenter.startAnimation(anim_in_imageViewCenter);
+            }
+        });
+
+        Animation anim_out_imageViewRing = AnimationUtils.loadAnimation(imageViewRing.getContext(), android.R.anim.fade_out);
+        Animation anim_in_imageViewRing = AnimationUtils.loadAnimation(imageViewRing.getContext(), android.R.anim.fade_in);
+
+        anim_out_imageViewRing.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imageViewRing.setImageResource(imageViewRingResource);
+                imageViewRing.startAnimation(anim_in_imageViewRing);
+            }
+        });
+
+        Animation anim_out_imageViewIsLocked = AnimationUtils.loadAnimation(imageViewIsLocked.getContext(), android.R.anim.fade_out);
+        Animation anim_in_imageViewIsLocked = AnimationUtils.loadAnimation(imageViewIsLocked.getContext(), android.R.anim.fade_in);
+
+        anim_out_imageViewIsLocked.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imageViewIsLocked.setImageResource(imageViewIsLockedResource);
+                imageViewIsLocked.startAnimation(anim_in_imageViewIsLocked);
+            }
+        });
+
+        imageViewCenter.startAnimation(anim_out_imageViewCenter);
+        imageViewRing.startAnimation(anim_out_imageViewRing);
+        imageViewIsLocked.startAnimation(anim_out_imageViewIsLocked);
     }
     //endregion Declare Methods
 }

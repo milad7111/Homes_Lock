@@ -28,7 +28,7 @@
             android:hint="@string/dialog_hint_wifi_password"
             android:inputType="textPassword"
             android:nextFocusDown="@+id/spn_wifi_type_dialog_gateway_wifi_network_connect"
-            android:textColor="@color/hintColor"
+            android:textColor="@color/edit_text_color"
             android:textColorHint="@color/hintColor">
 
             <requestFocus />
@@ -58,7 +58,7 @@
         android:layout_marginEnd="8dp"
         android:nextFocusDown="@+id/btn_cancel_dialog_gateway_wifi_network_connect"
         android:text="@string/dialog_button_connect"
-        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_gateway_wifi_network_connect"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spn_wifi_type_dialog_gateway_wifi_network_connect" />
 
     <Button
@@ -67,7 +67,7 @@
         android:layout_marginTop="8dp"
         android:nextFocusDown="@+id/tiet_wifi_password_dialog_gateway_wifi_network_connect"
         android:text="@string/dialog_button_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spn_wifi_type_dialog_gateway_wifi_network_connect" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_connect_dialog_gateway_wifi_network_connect"
+        app:layout_constraintTop_toBottomOf="@+id/spn_wifi_type_dialog_gateway_wifi_network_connect"/>
 
 </android.support.constraint.ConstraintLayout>

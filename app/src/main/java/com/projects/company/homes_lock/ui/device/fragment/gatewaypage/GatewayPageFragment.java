@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -110,11 +111,8 @@ public class GatewayPageFragment extends BaseFragment
 
     //region Declare Variables
     private boolean isConnectedToBleDevice;
+    private boolean setConnectionStatusPermission = true;
     //endregion Declare Variables
-
-    //region Declare Arrays & Lists
-    private List<WifiNetworksModel> mWifiNetworkList = new ArrayList<>();
-    //endregion Declare Arrays & Lists
 
     //region Declare Objects
     private Context mContext;
@@ -179,7 +177,8 @@ public class GatewayPageFragment extends BaseFragment
                     GatewayPageFragment.this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice(this);
                     updateViewData(false);
                 } else if (!isUserLoggedIn()) {
-                    updateViewData(true);
+                    setConnectionStatusPermission = true;
+                    handleWifiProgressAnimation(false);
 
                     if (mBluetoothLEHelper != null)
                         mBluetoothLEHelper.disconnect();
@@ -353,7 +352,7 @@ public class GatewayPageFragment extends BaseFragment
 
     @Override
     public void onSetDeviceWifiNetworkSuccessful() {
-        Log.d("SetDeviceWifiSuccessful", "We're working on it.");
+        Timber.d("We're working on it.");
         closeProgressDialog();
         closeDialogHandleDeviceWifiNetwork();
     }
@@ -442,6 +441,16 @@ public class GatewayPageFragment extends BaseFragment
     public void onConnectToServerSuccessful(boolean isrState, boolean isqState) {
         if (isrState && isqState)
             showToast("Connect to server successfully.");
+    }
+
+    @Override
+    public void onWifiStatusChange(boolean iswStatus) {
+        if (iswStatus) setConnectionStatusPermission = true;
+    }
+
+    @Override
+    public void onInternetStatusChange(boolean isiState) {
+        if (isiState) setConnectionStatusPermission = true;
     }
 
     @Override
@@ -740,12 +749,15 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices) {
-        for (ScannedDeviceModel device : listOfScannedDevices) {
-            if (device.getMacAddress().toLowerCase().equals(mDevice.getBleDeviceMacAddress().toLowerCase())) {
-                GatewayPageFragment.this.mDeviceViewModel.connect(this, device);
-                return true;
+        if (mDevice.getBleDeviceMacAddress() != null)
+            for (ScannedDeviceModel device : listOfScannedDevices) {
+                if (device.getMacAddress().toLowerCase().equals(mDevice.getBleDeviceMacAddress().toLowerCase())) {
+                    GatewayPageFragment.this.mDeviceViewModel.connect(this, device);
+                    return true;
+                }
             }
-        }
+        else
+            Timber.e("mDevice.getBleDeviceMacAddress() is null");
 
         return false;
     }
@@ -785,6 +797,8 @@ public class GatewayPageFragment extends BaseFragment
             mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
             deviceWifiNetworkListDialog.dismiss();
             deviceWifiNetworkListDialog = null;
+            setConnectionStatusPermission = true;
+            handleWifiProgressAnimation(false);
         });
 
         btnScanDialogAvailableNetworks.setOnClickListener(v -> {
@@ -793,12 +807,6 @@ public class GatewayPageFragment extends BaseFragment
         });
 
         GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this);
-//    else
-//
-//    {
-//        mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
-//        mWifiNetworksAdapter.setAvailableNetworks(mWifiNetworkList);
-//    }
 
         if (!deviceWifiNetworkListDialog.isShowing()) {
             deviceWifiNetworkListDialog.show();
@@ -865,12 +873,14 @@ public class GatewayPageFragment extends BaseFragment
 
     //region Declare Methods
     private void updateViewData(boolean setDefault) {
-        try{
+        try {
             setBleMoreInfoImage(imgMoreInfoGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
             setAvailableBleDevicesStatusImage(imgAvailableBleDevicesGatewayPage, mDevice.getConnectedServersCount(), (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault);
 
-            setGatewayInternetConnectionStatusImage(
-                    imgConnectionStatusGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+            if (setConnectionStatusPermission)
+                setGatewayInternetConnectionStatusImage(
+                        imgConnectionStatusGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getWifiStatus(), mDevice.getInternetStatus(), mDevice.getWifiStrength());
+
             setConnectedClientsStatusImage(
                     imgConnectedClientsGatewayPage, (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, mDevice.getConnectedClientsCount());
 
@@ -899,7 +909,7 @@ public class GatewayPageFragment extends BaseFragment
                     txvValidDataStatusGatewayPage.setText(null);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Timber.e(e.getCause());
         }
     }
@@ -911,8 +921,11 @@ public class GatewayPageFragment extends BaseFragment
             if (mDevice.getWifiStatus()) {
                 openProgressDialog(getContext(), null, "Disconnect Internet Connection ...");
                 GatewayPageFragment.this.mDeviceViewModel.disconnectGatewayWifiNetwork(this);
-            } else
+            } else {
+                setConnectionStatusPermission = false;
+                handleWifiProgressAnimation(true);
                 handleDialogListOfAvailableWifiNetworksAroundDevice();
+            }
     }
 
     private void closeDialogHandleDeviceWifiNetwork() {
@@ -1008,6 +1021,19 @@ public class GatewayPageFragment extends BaseFragment
     private void cancelSchedulerFreeBleBuffer() {
         if (freeBleBuffer != null)
             freeBleBuffer.cancel(true);
+    }
+
+    private void handleWifiProgressAnimation(Boolean status) {
+        imgConnectionStatusGatewayPage.setEnabled(!status);
+
+        if (status) {
+            imgConnectionStatusGatewayPage.setImageResource(R.drawable.wifi_progress);
+            ((AnimationDrawable) imgConnectionStatusGatewayPage.getDrawable()).start();
+        } else {
+            if (imgConnectionStatusGatewayPage.getDrawable() instanceof AnimationDrawable)
+                ((AnimationDrawable) imgConnectionStatusGatewayPage.getDrawable()).stop();
+            updateViewData(false);
+        }
     }
     //endregion Declare Methods
 }

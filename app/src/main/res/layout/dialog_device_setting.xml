@@ -53,7 +53,7 @@
             android:layout_marginEnd="8dp"
             android:nextFocusDown="@+id/btn_cancel_dialog_device_setting"
             android:text="@string/dialog_button_apply"
-            app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_device_setting"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_device_setting" />
 
         <Button
@@ -62,7 +62,7 @@
             android:layout_marginTop="8dp"
             android:nextFocusDown="@+id/rdg_door_installation_dialog_device_setting"
             android:text="@string/dialog_button_cancel"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_apply_dialog_device_setting"
             app:layout_constraintTop_toBottomOf="@+id/rdg_door_installation_dialog_device_setting" />
 
     </android.support.constraint.ConstraintLayout>

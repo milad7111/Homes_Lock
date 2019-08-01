@@ -45,7 +45,7 @@
         android:layout_toStartOf="@id/btn_cancel_dialog_connect_to_server"
         android:nextFocusDown="@+id/btn_cancel_dialog_connect_to_server"
         android:text="@string/dialog_button_connect"
-        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_connect_to_server"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txil_security_code_dialog_connect_to_server" />
 
     <Button
@@ -54,7 +54,7 @@
         android:layout_marginTop="8dp"
         android:nextFocusDown="@+id/tiet_security_code_dialog_connect_to_server"
         android:text="@string/dialog_button_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_connect_dialog_connect_to_server"
         app:layout_constraintTop_toBottomOf="@+id/txil_security_code_dialog_connect_to_server" />
 
 </android.support.constraint.ConstraintLayout>

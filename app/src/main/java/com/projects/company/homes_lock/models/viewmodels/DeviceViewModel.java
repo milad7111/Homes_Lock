@@ -49,7 +49,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import no.nordicsemi.android.log.LogSession;
@@ -738,6 +737,7 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case BLE_COMMAND_ISW:
                     if (mIGatewayPageFragment != null) {
+                        mIGatewayPageFragment.onWifiStatusChange(keyCommandJson.getBoolean(keyCommand));
                         mLocalRepository.updateDeviceWifiStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     }
@@ -750,6 +750,7 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case BLE_COMMAND_ISI:
                     if (mIGatewayPageFragment != null) {
+                        mIGatewayPageFragment.onInternetStatusChange(keyCommandJson.getBoolean(keyCommand));
                         mLocalRepository.updateDeviceInternetStatus(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     }
@@ -1019,8 +1020,7 @@ public class DeviceViewModel extends AndroidViewModel
         if (isUserLoggedIn()) {
             (new MQTTHandler()).sendLockCommand(this, serialNumber,
                     getBleCommandPart(createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC), 0, 0));
-        }
-        else
+        } else
             addNewCommandToBlePool(
                     new BleCommand(
                             createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC),

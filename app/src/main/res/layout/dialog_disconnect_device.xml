@@ -18,7 +18,7 @@
         android:layout_toStartOf="@id/btn_cancel_dialog_disconnect_device"
         android:nextFocusDown="@+id/btn_cancel_dialog_disconnect_device"
         android:text="@string/dialog_button_disconnect"
-        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_disconnect_device"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_disconnect_device" />
 
     <Button
@@ -27,7 +27,7 @@
         android:layout_marginTop="8dp"
         android:nextFocusDown="@+id/btn_disconnect_dialog_disconnect_device"
         android:text="@string/dialog_button_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_disconnect_dialog_disconnect_device"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_disconnect_device" />
 
 </android.support.constraint.ConstraintLayout>

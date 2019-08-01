@@ -31,7 +31,7 @@
         android:layout_marginEnd="8dp"
         android:nextFocusDown="@+id/btn_cancel_dialog_initialize_calibration_lock_confirmation"
         android:text="@string/dialog_button_start"
-        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_dialog_initialize_calibration_lock_confirmation"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_message_dialog_initialize_calibration_lock_confirmation" />
 
     <Button
@@ -39,7 +39,7 @@
         style="@style/TextButtonStyle"
         android:layout_marginTop="8dp"
         android:text="@string/dialog_button_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_start_dialog_initialize_calibration_lock_confirmation"
         app:layout_constraintTop_toBottomOf="@+id/txv_message_dialog_initialize_calibration_lock_confirmation">
 
         <requestFocus />

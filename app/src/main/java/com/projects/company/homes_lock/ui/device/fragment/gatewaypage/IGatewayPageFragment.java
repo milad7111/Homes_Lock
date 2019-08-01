@@ -46,4 +46,8 @@ public interface IGatewayPageFragment {
     void onConnectToServerSuccessful(boolean isrState, boolean isqState);
 
     void onConnectToMqttServerSuccessful(boolean isrState, boolean isqState);
+
+    void onInternetStatusChange(boolean isiState);
+
+    void onWifiStatusChange(boolean iswStatus);
 }

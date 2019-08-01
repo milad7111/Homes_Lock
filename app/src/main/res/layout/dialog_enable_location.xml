@@ -18,7 +18,7 @@
         android:layout_toStartOf="@id/btn_no_dialog_enable_location"
         android:nextFocusDown="@+id/btn_no_dialog_enable_location"
         android:text="YES"
-        app:layout_constraintEnd_toStartOf="@+id/btn_no_dialog_enable_location"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location" />
 
     <Button
@@ -27,7 +27,7 @@
         android:layout_marginTop="8dp"
         android:nextFocusDown="@+id/btn_yes_dialog_enable_location"
         android:text="NO"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_yes_dialog_enable_location"
         app:layout_constraintTop_toBottomOf="@+id/txv_title_dialog_enable_location" />
 
 </android.support.constraint.ConstraintLayout>
