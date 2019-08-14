@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ import timber.log.Timber;
 
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
@@ -323,6 +325,9 @@ public class GatewayPageFragment extends BaseFragment
 
     @Override
     public void onFindNewNetworkAroundDevice(WifiNetworksModel mWifiNetworksModel) {
+        if (deviceWifiNetworkListDialog != null)
+            deviceWifiNetworkListDialog.findViewById(R.id.prg_top_dialog_available_networks).setVisibility(INVISIBLE);
+
         mWifiNetworksAdapter.addWifiNetwork(mWifiNetworksModel);
     }
 
@@ -785,6 +790,7 @@ public class GatewayPageFragment extends BaseFragment
 
         mWifiNetworksAdapter = new WifiNetworksAdapter(this, Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
 
+        ProgressBar prgTopDialogAvailableBleDevices = deviceWifiNetworkListDialog.findViewById(R.id.prg_top_dialog_available_networks);
         RecyclerView rcvDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.rcv_dialog_available_networks);
         Button btnCancelDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_cancel_dialog_available_networks);
         Button btnScanDialogAvailableNetworks = deviceWifiNetworkListDialog.findViewById(R.id.btn_scan_dialog_available_networks);
@@ -794,6 +800,7 @@ public class GatewayPageFragment extends BaseFragment
         rcvDialogAvailableNetworks.setAdapter(mWifiNetworksAdapter);
 
         btnCancelDialogAvailableNetworks.setOnClickListener(v -> {
+            prgTopDialogAvailableBleDevices.setVisibility(VISIBLE);
             mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
             deviceWifiNetworkListDialog.dismiss();
             deviceWifiNetworkListDialog = null;
@@ -802,6 +809,7 @@ public class GatewayPageFragment extends BaseFragment
         });
 
         btnScanDialogAvailableNetworks.setOnClickListener(v -> {
+            prgTopDialogAvailableBleDevices.setVisibility(VISIBLE);
             mWifiNetworksAdapter.setAvailableNetworks(Collections.singletonList(new WifiNetworksModel(SEARCHING_SCAN_MODE)));
             GatewayPageFragment.this.mDeviceViewModel.getAvailableWifiNetworksAroundDevice(this);
         });

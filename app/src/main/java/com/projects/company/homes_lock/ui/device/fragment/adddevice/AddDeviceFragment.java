@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices;
@@ -334,6 +337,7 @@ public class AddDeviceFragment extends BaseFragment
             if (mBleDeviceAdapter == null)
                 mBleDeviceAdapter = new BleDeviceAdapter(this, devices);
 
+            ProgressBar prgTopDialogAvailableBleDevices = mListOfAvailableBleDevicesDialog.findViewById(R.id.prg_top_dialog_available_ble_devices);
             RecyclerView rcvDialogAvailableDevices = mListOfAvailableBleDevicesDialog.findViewById(R.id.rcv_dialog_available_ble_devices);
             Button btnCancelDialogAvailableDevices = mListOfAvailableBleDevicesDialog.findViewById(R.id.btn_cancel_dialog_available_ble_devices);
             Button btnScanDialogAvailableDevices = mListOfAvailableBleDevicesDialog.findViewById(R.id.btn_scan_dialog_available_ble_devices);
@@ -343,19 +347,23 @@ public class AddDeviceFragment extends BaseFragment
             rcvDialogAvailableDevices.setAdapter(mBleDeviceAdapter);
 
             btnCancelDialogAvailableDevices.setOnClickListener(v -> {
+                prgTopDialogAvailableBleDevices.setVisibility(VISIBLE);
                 mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
                 mListOfAvailableBleDevicesDialog.dismiss();
                 mListOfAvailableBleDevicesDialog = null;
             });
 
             btnScanDialogAvailableDevices.setOnClickListener(v -> {
+                prgTopDialogAvailableBleDevices.setVisibility(VISIBLE);
                 mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
                 findDevices(this, mBluetoothLEHelper);
             });
 
             findDevices(this, mBluetoothLEHelper);
-        } else
+        } else {
+            mListOfAvailableBleDevicesDialog.findViewById(R.id.prg_top_dialog_available_ble_devices).setVisibility(INVISIBLE);
             mBleDeviceAdapter.setBleDevices(devices);
+        }
 
         if (!mListOfAvailableBleDevicesDialog.isShowing())
             mListOfAvailableBleDevicesDialog.show();

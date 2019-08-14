@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/bg_nav_bar"
@@ -18,27 +19,28 @@
         android:layout_height="72dp"
         android:contentDescription="@string/content_description_nav_header_img_avatar"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:scaleType="centerCrop"
         app:civ_border_color="#EEEEEE"
         app:civ_border_width="1dp"
         app:civ_shadow="true"
         app:civ_shadow_color="#8BC34A"
         app:civ_shadow_radius="0"
-        app:srcCompat="@drawable/ic_default_user_avatar" />
+        tools:srcCompat="@drawable/ic_default_user_avatar" />
 
     <TextView
         android:id="@+id/nav_header_txv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/nav_header_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/color_nav_header_title" />
+        android:textColor="@color/color_nav_header_title"
+        tools:text="@string/nav_header_title" />
 
     <TextView
         android:id="@+id/nav_header_txv_subTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle"
-        android:textColor="@color/color_nav_header_sub_title" />
+        android:textColor="@color/color_nav_header_sub_title"
+        tools:text="@string/nav_header_subtitle" />
 
 </LinearLayout>

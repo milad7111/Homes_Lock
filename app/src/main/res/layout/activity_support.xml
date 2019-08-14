@@ -1,116 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_main"
-    android:clickable="true"
-    android:focusable="true"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    tools:context=".ui.support.SupportActivity">
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/txv_title_activity_support"
-        android:layout_width="@dimen/zero"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_distance"
-        android:focusable="false"
-        android:gravity="start|center_vertical"
-        android:text="@string/activity_title_send_ticket"
-        android:textColor="@color/text_view_color"
-        android:textSize="@dimen/dialog_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        tools:context=".ui.support.SupportActivity">
 
-    <TextView
-        android:id="@+id/txv_description_activity_support"
-        android:layout_width="@dimen/zero"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:focusable="false"
-        android:singleLine="false"
-        android:text="@string/activity_description_send_ticket"
-        android:textColor="@color/text_view_color"
-        android:textSize="@dimen/text_view_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_title_activity_support" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/tit_ticket_title_activity_support"
-        style="@style/TextInputLayoutStyle"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txv_description_activity_support">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_ticket_title_activity_support"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            android:hint="@string/fragment_hint_ticket_title"
-            android:inputType="text"
-            android:nextFocusDown="@+id/tiet_ticket_text_activity_support"
-            android:textColor="@color/edit_text_color"
-            android:textColorHint="@color/hintColor">
-
-            <requestFocus />
-
-        </android.support.design.widget.TextInputEditText>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/tit_ticket_text_activity_support"
-        style="@style/TextInputLayoutStyle"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tit_ticket_title_activity_support">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/tiet_ticket_text_activity_support"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:focusable="true"
-            android:gravity="start|top"
-            android:hint="@string/fragment_hint_ticket_text"
-            android:inputType="text"
-            android:nextFocusDown="@+id/tiet_ticket_title_activity_support"
-            android:singleLine="false"
-            android:textColor="@color/edit_text_color"
-            android:textColorHint="@color/hintColor" />
-
-    </android.support.design.widget.TextInputLayout>
-
-    <com.andexert.library.RippleView
-        android:id="@+id/rpv_submit_activity_support"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginBottom="8dp"
-        android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tit_ticket_text_activity_support"
-        app:rv_centered="true">
-
-        <Button
-            android:id="@+id/btn_submit_activity_support"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/txv_title_activity_support"
+            android:layout_width="@dimen/zero"
             android:layout_height="wrap_content"
-            android:background="@color/button_back_color"
-            android:focusable="true"
-            android:text="@string/fragment_button_submit"
-            android:textColor="@color/button_text_color"
-            android:textSize="@dimen/button_text_size" />
+            android:layout_marginTop="@dimen/medium_distance"
+            android:focusable="false"
+            android:gravity="start|center_vertical"
+            android:text="@string/activity_title_send_ticket"
+            android:textColor="@color/text_view_color"
+            android:textSize="@dimen/dialog_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </com.andexert.library.RippleView>
+        <TextView
+            android:id="@+id/txv_description_activity_support"
+            android:layout_width="@dimen/zero"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:focusable="false"
+            android:singleLine="false"
+            android:text="@string/activity_description_send_ticket"
+            android:textColor="@color/text_view_color"
+            android:textSize="@dimen/text_view_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txv_title_activity_support" />
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tit_ticket_title_activity_support"
+            style="@style/TextInputLayoutStyle"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txv_description_activity_support">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/tiet_ticket_title_activity_support"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:hint="@string/fragment_hint_ticket_title"
+                android:inputType="text"
+                android:nextFocusDown="@+id/tiet_ticket_text_activity_support"
+                android:textColor="@color/edit_text_color"
+                android:textColorHint="@color/hintColor">
+
+                <requestFocus />
+
+            </android.support.design.widget.TextInputEditText>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tit_ticket_text_activity_support"
+            style="@style/TextInputLayoutStyle"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tit_ticket_title_activity_support">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/tiet_ticket_text_activity_support"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:focusable="true"
+                android:gravity="start|top"
+                android:hint="@string/fragment_hint_ticket_text"
+                android:inputType="text"
+                android:lines="10"
+                android:nextFocusDown="@+id/tiet_ticket_title_activity_support"
+                android:singleLine="false"
+                android:textColor="@color/edit_text_color"
+                android:textColorHint="@color/hintColor" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rpv_submit_activity_support"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="64dp"
+            android:layout_marginBottom="32dp"
+            android:nextFocusDown="@+id/txv_direct_connect_login_fragment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tit_ticket_text_activity_support"
+            app:rv_centered="true">
+
+            <Button
+                android:id="@+id/btn_submit_activity_support"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/button_back_color"
+                android:focusable="true"
+                android:text="@string/fragment_button_submit"
+                android:textColor="@color/button_text_color"
+                android:textSize="@dimen/button_text_size" />
+
+        </com.andexert.library.RippleView>
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
