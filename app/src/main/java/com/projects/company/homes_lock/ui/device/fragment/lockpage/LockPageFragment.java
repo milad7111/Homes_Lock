@@ -306,7 +306,7 @@ public class LockPageFragment extends BaseFragment
             case R.id.img_more_info_lock_page:
                 if (isUserLoggedIn() || isConnectedToBleDevice)
                     addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
-                            R.id.frg_device_activity,
+                            R.id.frl_device_activity,
                             DeviceSettingFragment.newInstance(mDevice, "LOCK", mDeviceViewModel));
                 break;
         }
@@ -665,7 +665,7 @@ public class LockPageFragment extends BaseFragment
         if (isUserLoggedIn()) {
             if (mDevice.getMemberAdminStatus())
                 addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()),
-                        R.id.frg_device_activity, ManageMembersFragment.newInstance(mDevice));
+                        R.id.frl_device_activity, ManageMembersFragment.newInstance(mDevice));
             else
                 showToast("Access Denied");
         } else
@@ -685,12 +685,6 @@ public class LockPageFragment extends BaseFragment
 
         if (!isUserLoggedIn())
             closeProgressDialog();
-    }
-
-    private void showToast(String message) {
-        if (LockPageFragment.this.getActivity() != null)
-            LockPageFragment.this.getActivity().runOnUiThread(() ->
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
     }
 
     private void handleBleBufferStatus(Integer timeout) {

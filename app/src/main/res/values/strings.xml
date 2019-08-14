@@ -3,6 +3,7 @@
     <!--//region Main-->
     <string name="app_name" translatable="false">Neurnet</string>
     <string name="about_us_description">We create engaging brand assets and trusted content for your site, and then market it to authoritative sites across the web. Clients also get consulting from Jim Boykin and Ann Smarty. We\'ve been trusted since 1999. Peace and Love.</string>
+    <string name="activity_description_send_ticket">Customers who are looking for help are often stressed and frustrated, and when they can only communicate with you through text chats or emails. It’s easy for them to feel unimportant or ignored. In my career, I’ve heard versions of “I want to talk to a real person, not a robot!” from customers many times.</string>
     <!--//endregion Main-->
 
     <!--//region Content Description-->
@@ -38,6 +39,7 @@
     <!--//endregion Content Description-->
 
     <!--//region Activity and Fragment Titles-->
+    <string name="activity_title_send_ticket">Send your Feedback</string>
     <!--//endregion Activity and Fragment Titles-->
 
     <!--//region Fragment Buttons-->
@@ -54,6 +56,8 @@
     <string name="fragment_hint_mobile_number">Mobile number</string>
     <string name="fragment_hint_password_old">Old password</string>
     <string name="fragment_hint_password_new">New password</string>
+    <string name="fragment_hint_ticket_title">Title</string>
+    <string name="fragment_hint_ticket_text">Write your feedback</string>
     <!--//endregion Fragment Hints-->
 
     <!--//region Fragment TextViews-->
@@ -93,6 +97,7 @@
     <string name="fragment_text_view_device_type_gateway_page">GATEWAY</string>
     <string name="fragment_text_view_calibration_description">Calibration</string>
     <string name="fragment_text_view_calibration">Calibration</string>
+    <string name="dialog_text_view_lost_access">You lost your access to this DEVICE, to update status; login again.</string>
     <!--//endregion Fragment TextViews-->
 
     <!--//region Dialog Titles-->
@@ -186,7 +191,22 @@
     <!--//region Fragment Buttons-->
     <string name="fragment_button_sync">SYNC</string>
     <string name="fragment_button_add">ADD</string>
+    <string name="fragment_button_submit">Submit</string>
     <!--//endregion Fragment Buttons-->
+
+    <!--//region Fragment TextViews-->
+    <string name="fragment_text_view_there_is_no_lock">There is no device</string>
+    <string name="fragment_text_view_lock_not_config">Lock not config</string>
+    <!--//endregion Fragment TextViews-->
+
+    <!--//region Drawer Menu Items-->
+    <string name="drawer_menu_item_devices">Devices</string>
+    <string name="drawer_menu_item_notifications">Notifications</string>
+    <string name="drawer_menu_item_store">Store</string>
+    <string name="drawer_menu_item_support">Support</string>
+    <string name="drawer_menu_item_settings">Settings</string>
+    <string name="drawer_menu_item_about_us">About us</string>
+    <!--//endregion Drawer Menu Items-->
 
     <!--//region EditText Hints-->
     <!--//endregion EditText Hints-->
@@ -215,22 +235,6 @@
     <string name="adapter_empty_syncing">Syncing …</string>
     <string name="adapter_empty_scanning">Scanning …</string>
     <string name="adapter_empty_try_again">Try again …</string>
-    <string name="dialog_text_view_lost_access">You lost your access to this DEVICE, to update status; login again.</string>
-    <string name="fragment_text_view_there_is_no_lock">There is no device</string>
-    <string name="drawer_menu_item_devices">Devices</string>
-    <string name="drawer_menu_item_notifications">Notifications</string>
-    <string name="drawer_menu_item_store">Store</string>
-    <string name="drawer_menu_item_support">Support</string>
-    <string name="drawer_menu_item_settings">Settings</string>
-    <string name="drawer_menu_item_about_us">About us</string>
-    <string name="fragment_text_view_lock_not_config">Lock not config</string>
-    <string name="activity_title_send_ticket">Send your Feedback</string>
-    <string name="fragment_hint_ticket_title">Title</string>
-    <string name="fragment_hint_ticket_text">Write your feedback</string>
-    <string name="fragment_button_submit">Submit</string>
-    <string name="activity_description_send_ticket">support support support support support support support support
-        support support support support support support support support support support support
-        support support support support support support support support support support support</string>
     <!--//endregion Adapter Empty-->
 
 </resources>

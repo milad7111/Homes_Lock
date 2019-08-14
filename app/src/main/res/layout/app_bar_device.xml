@@ -20,6 +20,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_lock" />
+    <include layout="@layout/content_device" />
 
 </android.support.design.widget.CoordinatorLayout>

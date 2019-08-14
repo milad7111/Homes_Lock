@@ -6,6 +6,7 @@ package com.projects.company.homes_lock.base;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 
@@ -26,5 +27,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         closeProgressDialog();
+    }
+
+    public void showToast(String message) {
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
     }
 }

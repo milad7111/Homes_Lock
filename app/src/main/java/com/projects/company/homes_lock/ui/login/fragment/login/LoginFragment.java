@@ -364,10 +364,5 @@ public class LoginFragment extends BaseFragment
 
         this.mDeviceViewModel.validateLockInOnlineDatabase(this, notSavedDevices.get(savedDevicesIndex).getSerialNumber());
     }
-
-    private void showToast(String message) {
-        Objects.requireNonNull(LoginFragment.this.getActivity()).runOnUiThread(() ->
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-    }
     //endregion Declare Methods
 }

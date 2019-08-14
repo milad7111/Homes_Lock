@@ -17,12 +17,12 @@
         android:layout_height="match_parent" />
 
     <FrameLayout
-        android:id="@+id/frg_device_activity"
+        android:id="@+id/frl_device_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/activityLock_navigation_view"
+        android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

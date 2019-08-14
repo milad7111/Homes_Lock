@@ -234,10 +234,5 @@ public class RegisterFragment extends BaseFragment
 
         return true;
     }
-
-    private void showToast(String message) {
-        Objects.requireNonNull(RegisterFragment.this.getActivity()).runOnUiThread(() ->
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-    }
     //endregion Declare Methods
 }

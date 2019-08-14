@@ -43,7 +43,6 @@
         android:id="@+id/tit_ticket_title_activity_support"
         style="@style/TextInputLayoutStyle"
         android:layout_marginTop="32dp"
-        android:background="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txv_description_activity_support">
@@ -55,9 +54,13 @@
             android:focusable="true"
             android:hint="@string/fragment_hint_ticket_title"
             android:inputType="text"
-            android:nextFocusDown="@+id/tiet_password_login_fragment"
+            android:nextFocusDown="@+id/tiet_ticket_text_activity_support"
             android:textColor="@color/edit_text_color"
-            android:textColorHint="@color/hintColor" />
+            android:textColorHint="@color/hintColor">
+
+            <requestFocus />
+
+        </android.support.design.widget.TextInputEditText>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -65,7 +68,6 @@
         android:id="@+id/tit_ticket_text_activity_support"
         style="@style/TextInputLayoutStyle"
         android:layout_marginTop="16dp"
-        android:background="@color/md_white_1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tit_ticket_title_activity_support">
@@ -78,7 +80,8 @@
             android:gravity="start|top"
             android:hint="@string/fragment_hint_ticket_text"
             android:inputType="text"
-            android:nextFocusDown="@+id/tiet_password_login_fragment"
+            android:nextFocusDown="@+id/tiet_ticket_title_activity_support"
+            android:singleLine="false"
             android:textColor="@color/edit_text_color"
             android:textColorHint="@color/hintColor" />
 
@@ -99,7 +102,7 @@
         app:rv_centered="true">
 
         <Button
-            android:id="@+id/btn_login_login_fragment"
+            android:id="@+id/btn_submit_activity_support"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/button_back_color"

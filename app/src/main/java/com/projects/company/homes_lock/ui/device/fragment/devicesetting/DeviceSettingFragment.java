@@ -912,11 +912,6 @@ public class DeviceSettingFragment extends BaseFragment
         });
     }
 
-    private void showToast(String message) {
-        requireNonNull(DeviceSettingFragment.this.getActivity()).runOnUiThread(() ->
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-    }
-
     private void dismissAllConfigDialogs() {
         if (mInitializeCalibrationLockDialog != null) {
             mInitializeCalibrationLockDialog.dismiss();

@@ -32,8 +32,6 @@ import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSe
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.ui.notification.NotificationActivity;
-import com.projects.company.homes_lock.ui.proservices.activity.ProServicesActivity;
-import com.projects.company.homes_lock.ui.setting.SettingActivity;
 import com.projects.company.homes_lock.ui.support.SupportActivity;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
@@ -75,7 +73,7 @@ public class DeviceActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_lock);
+        setContentView(R.layout.activity_device);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -87,7 +85,7 @@ public class DeviceActivity extends BaseActivity
 
         //region Declare Local Views
         Toolbar appBarLockToolbar = findViewById(R.id.appBarLock_toolbar);
-        NavigationView activityLockNavigationView = findViewById(R.id.activityLock_navigation_view);
+        NavigationView activityLockNavigationView = findViewById(R.id.navigation_view);
         //endregion Declare Local Views
 
         //region Initialize Views
@@ -168,7 +166,7 @@ public class DeviceActivity extends BaseActivity
         if (activityLockDrawerLayout.isDrawerOpen(GravityCompat.START))
             activityLockDrawerLayout.closeDrawer(GravityCompat.START);
         else {
-            Fragment mFragment = getSupportFragmentManager().findFragmentById(R.id.frg_device_activity);
+            Fragment mFragment = getSupportFragmentManager().findFragmentById(R.id.frl_device_activity);
 
             if (mFragment instanceof ManageMembersFragment)
                 getSupportFragmentManager().popBackStackImmediate();

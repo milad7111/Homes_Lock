@@ -291,7 +291,7 @@ public class GatewayPageFragment extends BaseFragment
                 if (isUserLoggedIn() || isConnectedToBleDevice)
                     addFragment(
                             (AppCompatActivity) Objects.requireNonNull(getActivity()),
-                            R.id.frg_device_activity,
+                            R.id.frl_device_activity,
                             DeviceSettingFragment.newInstance(mDevice, "GTWY", GatewayPageFragment.this.mDeviceViewModel));
                 break;
         }
@@ -940,7 +940,7 @@ public class GatewayPageFragment extends BaseFragment
     private void handleDeviceMembers() {
         if (isUserLoggedIn())
             if (mDevice.getMemberAdminStatus())
-                addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frg_device_activity, ManageMembersFragment.newInstance(mDevice));
+                addFragment((AppCompatActivity) Objects.requireNonNull(getActivity()), R.id.frl_device_activity, ManageMembersFragment.newInstance(mDevice));
             else
                 showToast("Access Denied");
         else
@@ -975,11 +975,6 @@ public class GatewayPageFragment extends BaseFragment
 
         if (!isUserLoggedIn())
             closeProgressDialog();
-    }
-
-    private void showToast(String message) {
-        Objects.requireNonNull(GatewayPageFragment.this.getActivity()).runOnUiThread(() ->
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
     }
 
     @SuppressLint("DefaultLocale")
