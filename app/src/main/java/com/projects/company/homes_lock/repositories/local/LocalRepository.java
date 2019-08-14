@@ -161,6 +161,10 @@ public class LocalRepository {
         mDeviceDao.setDoorInstallation(mDeviceObjectId, doorInstallation);
     }
 
+    public void updateDeviceConfigStatus(String mDeviceObjectId, boolean configStatus) {
+        mDeviceDao.setConfigStatus(mDeviceObjectId, configStatus);
+    }
+
     public void updateDevice(Device device) {
         new updateDeviceAsyncTask(mDeviceDao).execute(device);
     }

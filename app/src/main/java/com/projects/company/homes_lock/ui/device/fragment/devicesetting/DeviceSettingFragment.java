@@ -933,5 +933,9 @@ public class DeviceSettingFragment extends BaseFragment
             mLockPositionsDialog = null;
         }
     }
+
+    public Device getDevice() {
+        return mDevice;
+    }
     //endregion Declare Methods
 }

@@ -176,6 +176,9 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "userDeviceObjectId")
     private String mUserDeviceObjectId = "NOT_SET";
+
+    @ColumnInfo(name = "cfg")
+    private Boolean mConfigStatus = false;
     //endregion Not Server Attributes
 
     //region Constructor
@@ -691,5 +694,13 @@ public class Device extends BaseModel {
 
     public void setUserDeviceObjectId(String mUserDeviceObjectId) {
         this.mUserDeviceObjectId = mUserDeviceObjectId;
+    }
+
+    public Boolean getConfigStatus() {
+        return mConfigStatus;
+    }
+
+    public void setConfigStatus(Boolean mConfigStatus) {
+        this.mConfigStatus = mConfigStatus;
     }
 }

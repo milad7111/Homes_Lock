@@ -599,7 +599,7 @@ public class LockPageFragment extends BaseFragment
         txvDeviceTypeLockPage.setText(mDevice.getDeviceType());
 
         setIsLockedImage(imgIsLockedLockPageCenter, imgIsLockedLockPageRing, imgIsLockedLockPage,
-                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? 2 : (mDevice.getIsLocked() ? 1 : 0));
+                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault || !mDevice.getConfigStatus() ? 2 : (mDevice.getIsLocked() ? 1 : 0));
 
         setBatteryStatusImage((!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault, imgBatteryStatusLockPage, mDevice.getBatteryPercentage());
         setConnectedClientsStatusImage(
@@ -613,10 +613,12 @@ public class LockPageFragment extends BaseFragment
         txvBriefStatusLockPage.setText(
                 (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ?
                         getString(R.string.fragment_text_view_data_not_synced) :
-                        getLockBriefStatusText(mDevice.getIsLocked(), mDevice.getIsDoorClosed()));
+                        (!mDevice.getConfigStatus() ? getString(R.string.fragment_text_view_lock_not_config) :
+                                getLockBriefStatusText(mDevice.getIsLocked(), mDevice.getIsDoorClosed())));
         txvBriefStatusLockPage.setTextColor(
                 (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) :
-                        getColor(mContext, getLockBriefStatusColor(mDevice.getIsLocked(), mDevice.getIsDoorClosed())));
+                        (!mDevice.getConfigStatus() ? getColor(mContext, R.color.md_red_700) :
+                                getColor(mContext, getLockBriefStatusColor(mDevice.getIsLocked(), mDevice.getIsDoorClosed()))));
 
         txvNewUpdateLockPage.setText(null);
 

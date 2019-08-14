@@ -223,6 +223,14 @@
     <string name="drawer_menu_item_support">Support</string>
     <string name="drawer_menu_item_settings">Settings</string>
     <string name="drawer_menu_item_about_us">About us</string>
+    <string name="fragment_text_view_lock_not_config">Lock not config</string>
+    <string name="activity_title_send_ticket">Send your Feedback</string>
+    <string name="fragment_hint_ticket_title">Title</string>
+    <string name="fragment_hint_ticket_text">Write your feedback</string>
+    <string name="fragment_button_submit">Submit</string>
+    <string name="activity_description_send_ticket">support support support support support support support support
+        support support support support support support support support support support support
+        support support support support support support support support support support support</string>
     <!--//endregion Adapter Empty-->
 
 </resources>

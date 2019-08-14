@@ -86,12 +86,6 @@ public class ViewHelper {
                         R.drawable.ic_ring_unlock,
                         R.drawable.ic_homes_lock_open
                 );
-//                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_open);
-//                imageViewCenter.setImageResource(R.drawable.ic_lock_open);
-//                imageViewRing.setImageResource(R.drawable.ic_ring_unlock);
-
-                imageViewCenter.setVisibility(VISIBLE);
-                imageViewRing.setVisibility(VISIBLE);
 
                 if (changeLockStatus)
                     disableLockCommandRingImageView(imageViewRing);
@@ -106,20 +100,13 @@ public class ViewHelper {
                         R.drawable.ic_homes_lock_close
                 );
 
-//                imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_close);
-//                imageViewCenter.setImageResource(R.drawable.ic_lock_close);
-//                imageViewRing.setImageResource(R.drawable.ic_ring_lock);
-
-                imageViewCenter.setVisibility(VISIBLE);
-                imageViewRing.setVisibility(VISIBLE);
-
                 if (changeLockStatus)
                     disableLockCommandRingImageView(imageViewRing);
                 break;
             case 2:
                 imageViewIsLocked.setImageResource(R.drawable.ic_homes_lock_idle);
-                imageViewCenter.setVisibility(GONE);
-                imageViewRing.setVisibility(GONE);
+                imageViewCenter.setImageResource(R.drawable.ic_lock_idle);
+                imageViewRing.setImageResource(R.drawable.ic_ring_idle);
                 break;
         }
     }
@@ -281,7 +268,7 @@ public class ViewHelper {
         view.setTypeface(Typeface.createFromAsset(view.getContext().getAssets(), String.format("fonts/%s.ttf", font)));
     }
 
-    public static void animatedImageResourceChange(
+    private static void animatedImageResourceChange(
             ImageView imageViewCenter, ImageView imageViewRing, ImageView imageViewIsLocked,
             int imageViewCenterResource, int imageViewRingResource, int imageViewIsLockedResource) {
 

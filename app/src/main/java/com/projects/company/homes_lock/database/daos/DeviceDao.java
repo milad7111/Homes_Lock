@@ -86,6 +86,9 @@ public interface DeviceDao extends BaseDao<Device> {
     @Query("UPDATE device SET rgh = :doorInstallation  WHERE objectId = :mDeviceObjectId")
     void setDoorInstallation(String mDeviceObjectId, Boolean doorInstallation);
 
+    @Query("UPDATE device SET cfg = :configStatus  WHERE objectId = :mDeviceObjectId")
+    void setConfigStatus(String mDeviceObjectId, boolean configStatus);
+
     @Query("DELETE FROM device")
     void clearAllData();
 }

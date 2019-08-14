@@ -29,6 +29,7 @@ import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
 import com.projects.company.homes_lock.ui.device.fragment.adddevice.IAddDeviceFragment;
+import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.IDeviceSettingFragment;
 import com.projects.company.homes_lock.ui.device.fragment.gatewaypage.GatewayPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.gatewaypage.IGatewayPageFragment;
@@ -926,9 +927,15 @@ public class DeviceViewModel extends AndroidViewModel
                 case BLE_COMMAND_CFG:
                     if (mIDeviceSettingFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
-                            Timber.i("Set Config done.");
+                            Timber.i("Config done.");
                             DeviceViewModel.this.mIDeviceSettingFragment.onSetConfigSuccessful();
+                            mLocalRepository.updateDeviceConfigStatus(((DeviceSettingFragment) mIDeviceSettingFragment).getDevice().getObjectId(),
+                                    true);
+
                         }
+                    } else if (mILockPageFragment != null) {
+                        mLocalRepository.updateDeviceConfigStatus(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
                 case BLE_COMMAND_DEM:
@@ -1045,9 +1052,10 @@ public class DeviceViewModel extends AndroidViewModel
     }
 
     public void getLockSpecifiedSettingInfoFromBleDevice(Fragment parentFragment) {
-        if (parentFragment instanceof ILockPageFragment)
+        if (parentFragment instanceof ILockPageFragment) {
             this.mILockPageFragment = (ILockPageFragment) parentFragment;
-        else if (parentFragment instanceof IDeviceSettingFragment)
+            addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_CFG), BLE_COMMAND_CFG));
+        } else if (parentFragment instanceof IDeviceSettingFragment)
             this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
 
         addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_RGH), BLE_COMMAND_RGH));

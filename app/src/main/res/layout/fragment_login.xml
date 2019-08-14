@@ -15,8 +15,8 @@
 
         <com.andexert.library.RippleView
             android:id="@+id/rpl_login_screen_login_fragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
             app:layout_constraintBottom_toTopOf="@+id/txil_email_login_fragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
                 android:layout_marginBottom="8dp"
                 android:contentDescription="@string/content_description_login_screen_login_fragment"
                 android:focusable="false"
-                app:srcCompat="@drawable/ic_homes_lock_idle" />
+                app:srcCompat="@drawable/ic_logo" />
 
         </com.andexert.library.RippleView>
 
