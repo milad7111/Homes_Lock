@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#0741AD</color>
+    <color name="colorPrimary">#F79410</color>
+    <color name="colorPrimaryDark">#111219</color>
+    <color name="colorAccent">#F77943</color>
 
     <color name="hintColor">#717579</color>
     <color name="list_item_text_color">#B5B7B8</color>
@@ -10,7 +10,7 @@
     <color name="remove_device_color">#F44336</color>
     <color name="check_box_text_color">#BABCBE</color>
     <color name="dialog_secondary_color">#BBBDBF</color>
-    <color name="button_back_color">#0741AD</color>
+    <color name="button_back_color">#F77943</color>
     <color name="button_text_color">#fff</color>
     <color name="text_view_color">#fff</color>
     <color name="edit_text_color">#fff</color>

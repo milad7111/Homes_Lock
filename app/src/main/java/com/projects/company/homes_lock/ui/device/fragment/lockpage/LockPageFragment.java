@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +45,6 @@ import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -56,12 +56,12 @@ import timber.log.Timber;
 
 import static android.support.v4.content.ContextCompat.getColor;
 import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_CONFIG;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_LOCK;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_UNLOCK;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.TIMES_TO_SCAN_BLE_DEVICES;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.isMyPhone;
@@ -382,7 +382,8 @@ public class LockPageFragment extends BaseFragment
             if (!mConnectedClientsListDialog.isShowing())
                 mConnectedClientsListDialog.show();
 
-            mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+//            mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            mConnectedClientsAdapter.setConnectedClients(new ArrayList<>());
             this.mDeviceViewModel.getConnectedClients(this);
         } else
             handleConnectedClients();
@@ -416,6 +417,13 @@ public class LockPageFragment extends BaseFragment
         }
     }
 
+    @Override
+    public void onGetConnectedDevicesEnd() {
+        getActivity().runOnUiThread(() -> {
+            if (mConnectedClientsListDialog != null)
+                mConnectedClientsListDialog.findViewById(R.id.prg_top_dialog_connected_device).setVisibility(INVISIBLE);
+        });
+    }
     //endregion BLE CallBacks
 
     //region Declare BLE Methods
@@ -508,14 +516,16 @@ public class LockPageFragment extends BaseFragment
         mConnectedClientsListDialog.setCancelable(false);
 
         if (mConnectedClientsAdapter == null) {
-            mConnectedClientsAdapter = new ConnectedClientsAdapter(this,
-                    Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            mConnectedClientsAdapter = new ConnectedClientsAdapter(this, new ArrayList<>());
+//                    Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
         }
 
-        mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+//        mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+        mConnectedClientsAdapter.setConnectedClients(new ArrayList<>());
 
         setTypeface((TextView) mConnectedClientsListDialog.findViewById(R.id.txv_title_dialog_add_member), "roboto_medium");
 
+        ProgressBar prgDialogConnectedClients = mConnectedClientsListDialog.findViewById(R.id.prg_top_dialog_connected_device);
         RecyclerView rcvDialogConnectedClients = mConnectedClientsListDialog.findViewById(R.id.rcv_dialog_connected_devices);
         Button btnCancelDialogConnectedClients = mConnectedClientsListDialog.findViewById(R.id.btn_cancel_dialog_connected_devices);
         Button btnScanDialogConnectedClients = mConnectedClientsListDialog.findViewById(R.id.btn_scan_dialog_connected_devices);
@@ -525,13 +535,16 @@ public class LockPageFragment extends BaseFragment
         rcvDialogConnectedClients.setAdapter(mConnectedClientsAdapter);
 
         btnCancelDialogConnectedClients.setOnClickListener(v -> {
-            mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+//            mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            mConnectedClientsAdapter.setConnectedClients(new ArrayList<>());
             mConnectedClientsListDialog.dismiss();
             mConnectedClientsListDialog = null;
         });
 
         btnScanDialogConnectedClients.setOnClickListener(v -> {
-            mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            prgDialogConnectedClients.setVisibility(VISIBLE);
+//            mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+            mConnectedClientsAdapter.setConnectedClients(new ArrayList<>());
             mDeviceViewModel.getConnectedClients(this);
         });
 
@@ -542,7 +555,8 @@ public class LockPageFragment extends BaseFragment
             }
         });
 
-        mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+//        mConnectedClientsAdapter.setConnectedClients(Collections.singletonList(new ConnectedDeviceModel(SEARCHING_SCAN_MODE)));
+        mConnectedClientsAdapter.setConnectedClients(new ArrayList<>());
         LockPageFragment.this.mDeviceViewModel.getConnectedClients(this);
 
         if (!mConnectedClientsListDialog.isShowing()) {

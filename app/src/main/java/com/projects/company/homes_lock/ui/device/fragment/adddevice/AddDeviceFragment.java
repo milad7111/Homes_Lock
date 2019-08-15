@@ -45,7 +45,6 @@ import java.util.Objects;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.getScanPermission;
@@ -322,7 +321,8 @@ public class AddDeviceFragment extends BaseFragment
         mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
         mTempDevice = new TempDeviceModel();
         if (getScanPermission(this))
-            handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
+//            handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
+            handleDialogListOfAvailableBleDevices(new ArrayList<>()); // Means user clicked Direct Connect
     }
 
     private void handleDialogListOfAvailableBleDevices(List<ScannedDeviceModel> devices) {
@@ -348,21 +348,27 @@ public class AddDeviceFragment extends BaseFragment
 
             btnCancelDialogAvailableDevices.setOnClickListener(v -> {
                 prgTopDialogAvailableBleDevices.setVisibility(VISIBLE);
-                mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
+//                mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
+                mBleDeviceAdapter.setBleDevices(new ArrayList<>());
                 mListOfAvailableBleDevicesDialog.dismiss();
                 mListOfAvailableBleDevicesDialog = null;
             });
 
             btnScanDialogAvailableDevices.setOnClickListener(v -> {
                 prgTopDialogAvailableBleDevices.setVisibility(VISIBLE);
-                mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
+//                mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE)));
+                mBleDeviceAdapter.setBleDevices(new ArrayList<>());
                 findDevices(this, mBluetoothLEHelper);
             });
 
             findDevices(this, mBluetoothLEHelper);
         } else {
             mListOfAvailableBleDevicesDialog.findViewById(R.id.prg_top_dialog_available_ble_devices).setVisibility(INVISIBLE);
-            mBleDeviceAdapter.setBleDevices(devices);
+
+            if (!devices.isEmpty())
+                mBleDeviceAdapter.setBleDevices(devices);
+            else
+                mBleDeviceAdapter.setBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_TIMEOUT_MODE)));
         }
 
         if (!mListOfAvailableBleDevicesDialog.isShowing())

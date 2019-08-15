@@ -1,35 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="@color/background_main"
-    tools:context="com.projects.company.homes_lock.ui.aboutus.AboutUsActivity">
+    android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/img_logo_activity_about_us"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="64dp"
-        android:contentDescription="@string/content_description_about_us_activity_img_logo"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@color/background_main"
+        android:clickable="true"
+        android:focusable="true"
+        tools:context="com.projects.company.homes_lock.ui.aboutus.AboutUsActivity">
 
-    <TextView
-        android:id="@+id/txv_description_activity_about_us"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textColor="@color/md_white_1000"
-        android:text="@string/about_us_description"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_logo_activity_about_us" />
+        <ImageView
+            android:id="@+id/img_logo_activity_about_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:contentDescription="@string/content_description_about_us_activity_img_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_neurnet" />
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/txv_description_activity_about_us"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:text="@string/about_us_description"
+            android:textColor="@color/md_white_1000"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_logo_activity_about_us" />
+
+        <LinearLayout
+            android:id="@+id/lnl_web_site_activity_about_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txv_description_activity_about_us">
+
+            <ImageView
+                android:id="@+id/img_web_site_activity_about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:contentDescription="@string/content_description_about_us_activity_img_logo"
+                app:srcCompat="@drawable/ic_about_us_web_site" />
+
+            <TextView
+                android:id="@+id/txv_web_site_activity_about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_us_web_site_url"
+                android:textColor="@color/md_white_1000"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_logo_activity_about_us" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnl_email_activity_about_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/lnl_web_site_activity_about_us"
+            app:layout_constraintTop_toBottomOf="@+id/lnl_web_site_activity_about_us">
+
+            <ImageView
+                android:id="@+id/img_email_activity_about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:contentDescription="@string/content_description_about_us_activity_img_logo"
+                app:srcCompat="@drawable/ic_about_us_email" />
+
+            <TextView
+                android:id="@+id/txv_email_activity_about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_us_email_address"
+                android:textColor="@color/md_white_1000"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_logo_activity_about_us" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnl_tell_activity_about_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/lnl_web_site_activity_about_us"
+            app:layout_constraintTop_toBottomOf="@+id/lnl_email_activity_about_us">
+
+            <ImageView
+                android:id="@+id/img_tell_activity_about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:contentDescription="@string/content_description_about_us_activity_img_logo"
+                app:srcCompat="@drawable/ic_about_us_tell" />
+
+            <TextView
+                android:id="@+id/txv_tell_activity_about_us"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_us_tell"
+                android:textColor="@color/md_white_1000"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_logo_activity_about_us" />
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

@@ -110,11 +110,6 @@ public class BleHelper {
     public static final boolean DOOR_INSTALLATION_SETTING_RIGHT_HANDED = true;
     public static final boolean DOOR_INSTALLATION_SETTING_LEFT_HANDED = false;
 
-    public static final int LOCK_STAGES_NINETY_DEGREES = 0;
-    public static final int LOCK_STAGES_ONE_STAGE = 1;
-    public static final int LOCK_STAGES_TWO_STAGE = 2;
-    public static final int LOCK_STAGES_THREE_STAGE = 3;
-
     public static final int TIMES_TO_SCAN_BLE_DEVICES = 3;
     //endregion Declare Constants
 

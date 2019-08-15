@@ -50,4 +50,8 @@ public interface IGatewayPageFragment {
     void onInternetStatusChange(boolean isiState);
 
     void onWifiStatusChange(boolean iswStatus);
+
+    void onGetAvailableBleDevicesEnd();
+
+    void onGetConnectedDevicesEnd();
 }

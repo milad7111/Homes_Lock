@@ -8,6 +8,7 @@
     android:focusable="true">
 
     <com.andexert.library.RippleView
+        android:id="@+id/rpv_available_ble_devices_gateway_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -29,6 +30,34 @@
             app:srcCompat="@drawable/ic_homes_lock_idle" />
 
     </com.andexert.library.RippleView>
+
+    <ImageView
+        android:id="@+id/img_available_ble_devices_gateway_page_ring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/content_description_login_screen_login_fragment"
+        android:focusable="false"
+        android:padding="16dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/rpv_available_ble_devices_gateway_page"
+        app:layout_constraintEnd_toEndOf="@+id/rpv_available_ble_devices_gateway_page"
+        app:layout_constraintStart_toStartOf="@+id/rpv_available_ble_devices_gateway_page"
+        app:layout_constraintTop_toTopOf="@+id/rpv_available_ble_devices_gateway_page"
+        app:srcCompat="@drawable/ic_ring_idle" />
+
+    <ImageView
+        android:id="@+id/img_available_ble_devices_gateway_page_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/content_description_login_screen_login_fragment"
+        android:focusable="false"
+        android:padding="48dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/img_available_ble_devices_gateway_page_ring"
+        app:layout_constraintEnd_toEndOf="@+id/img_available_ble_devices_gateway_page_ring"
+        app:layout_constraintStart_toStartOf="@+id/img_available_ble_devices_gateway_page_ring"
+        app:layout_constraintTop_toTopOf="@+id/img_available_ble_devices_gateway_page_ring"
+        app:srcCompat="@drawable/ic_gateway_connection_status_idle" />
 
     <RelativeLayout
         android:id="@+id/rll_valid_data_status_gateway_page"

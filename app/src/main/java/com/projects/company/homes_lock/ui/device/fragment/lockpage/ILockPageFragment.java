@@ -22,4 +22,6 @@ public interface ILockPageFragment {
     void onDoLockCommandSuccessful(String command);
 
     void onDoLockCommandFailed(String error);
+
+    void onGetConnectedDevicesEnd();
 }

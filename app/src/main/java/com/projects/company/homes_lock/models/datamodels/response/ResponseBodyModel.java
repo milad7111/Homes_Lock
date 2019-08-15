@@ -3,6 +3,7 @@ package com.projects.company.homes_lock.models.datamodels.response;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
+import timber.log.Timber;
 
 public class ResponseBodyModel extends ResponseBody {
 
@@ -16,8 +17,12 @@ public class ResponseBodyModel extends ResponseBody {
         else {
             String text = data.substring(data.indexOf("text=") + 5, data.indexOf("]") - 3) + "}";
 
-            this.mCode = Integer.valueOf(text.substring(text.indexOf("code:") + 9, text.indexOf(",\"message\":")));
-            this.mMessage = (text.substring(text.indexOf("\"message\":") + 11)).substring(0, (text.substring(text.indexOf("\"message\":") + 11)).indexOf("\",\""));
+            try {
+                this.mCode = Integer.valueOf(text.substring(text.indexOf("code:") + 9, text.indexOf(",\"message\":")));
+                this.mMessage = (text.substring(text.indexOf("\"message\":") + 11)).substring(0, (text.substring(text.indexOf("\"message\":") + 11)).indexOf("\",\""));
+            } catch (Exception e) {
+                Timber.e(e.getCause().toString());
+            }
         }
     }
 

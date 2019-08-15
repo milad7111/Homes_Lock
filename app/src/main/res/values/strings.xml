@@ -236,6 +236,9 @@
     <string name="adapter_empty_syncing">Syncing …</string>
     <string name="adapter_empty_scanning">Scanning …</string>
     <string name="adapter_empty_try_again">Try again …</string>
+    <string name="about_us_web_site_url">http://neurnet.se/</string>
+    <string name="about_us_email_address">neurnet@info.se</string>
+    <string name="about_us_tell">+98 9124985424</string>
     <!--//endregion Adapter Empty-->
 
 </resources>

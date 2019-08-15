@@ -10,14 +10,6 @@
     android:gravity="center"
     tools:context=".ui.splash.SplashActivity">
 
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:elevation="10dp"-->
-    <!--android:shadowColor="@color/md_grey_500"-->
-    <!--android:text="Neurnet"-->
-    <!--android:textSize="32sp" />-->
-
     <ImageView
         android:id="@+id/splash_img"
         android:layout_width="0dp"
@@ -26,8 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:padding="100dp"
-        android:elevation="10dp"
+        android:padding="80dp"
         app:srcCompat="@drawable/ic_neurnet" />
 
 </RelativeLayout>

@@ -21,8 +21,6 @@ import com.projects.company.homes_lock.R;
 
 import java.util.Objects;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_SCAN_MODE;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.SEARCHING_TIMEOUT_MODE;
 
@@ -138,17 +136,36 @@ public class ViewHelper {
         imageView.startAnimation(ringImageViewAnimation);
     }
 
-    public static void setAvailableBleDevicesStatusImage(ImageView imageViewConnectedClients, int connectedClientsCount, boolean setDefault) {
-        if (connectedClientsCount == 0)
+    public static void setAvailableBleDevicesStatusImage(
+            ImageView imageViewConnectedClients, ImageView imageViewConnectedClientsRing, ImageView imageViewConnectedClientsCenter,
+            int connectedClientsCount, boolean setDefault) {
+        if (connectedClientsCount == 0) {
             imageViewConnectedClients.setImageResource(
                     setDefault ?
-                            R.drawable.ic_invalid_connected_servers :
-                            R.drawable.ic_valid_no_connected_servers);
-        else
+                            R.drawable.ic_homes_lock_idle :
+                            R.drawable.ic_homes_lock_open);
+            imageViewConnectedClientsRing.setImageResource(
+                    setDefault ?
+                            R.drawable.ic_ring_idle :
+                            R.drawable.ic_ring_unlock);
+            imageViewConnectedClientsCenter.setImageResource(
+                    setDefault ?
+                            R.drawable.ic_gateway_connection_status_idle :
+                            R.drawable.ic_gateway_connection_status_disconnect);
+        } else {
             imageViewConnectedClients.setImageResource(
                     setDefault ?
-                            R.drawable.ic_invalid_connected_servers :
-                            R.drawable.ic_valid_connected_servers);
+                            R.drawable.ic_homes_lock_idle :
+                            R.drawable.ic_homes_lock_close);
+            imageViewConnectedClientsRing.setImageResource(
+                    setDefault ?
+                            R.drawable.ic_ring_idle :
+                            R.drawable.ic_ring_lock);
+            imageViewConnectedClientsCenter.setImageResource(
+                    setDefault ?
+                            R.drawable.ic_gateway_connection_status_idle :
+                            R.drawable.ic_gateway_connection_status_connect);
+        }
     }
 
     public static void setBleConnectionStatusImage(ImageView imageViewBle, boolean bleConnectionStatus) {

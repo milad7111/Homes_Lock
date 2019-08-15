@@ -787,9 +787,10 @@ public class DeviceViewModel extends AndroidViewModel
                             bleBufferStatus = false;
                             Timber.e("Buffer is busy");
                             this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_BCL + BLE_RESPONSE_PUBLIC_WAIT));
-                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END))
+                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END)) {
                             Timber.i("Get connected devices FINISHED.");
-                        else
+                            mILockPageFragment.onGetConnectedDevicesEnd();
+                        } else
                             mILockPageFragment.onGetNewConnectedDevice(
                                     new ConnectedDeviceModel(
                                             0,
@@ -802,9 +803,10 @@ public class DeviceViewModel extends AndroidViewModel
                             bleBufferStatus = false;
                             Timber.e("Buffer is busy");
                             this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_BCL + BLE_RESPONSE_PUBLIC_WAIT));
-                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END))
+                        } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END)) {
                             Timber.i("Get connected devices FINISHED.");
-                        else
+                            mIGatewayPageFragment.onGetConnectedDevicesEnd();
+                        } else
                             mIGatewayPageFragment.onGetNewConnectedDevice(new ConnectedDeviceModel(
                                     0,
                                     keyCommandJson.getString(keyCommand).split(",")[0],
@@ -839,6 +841,7 @@ public class DeviceViewModel extends AndroidViewModel
                             this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(BLE_COMMAND_BLL + BLE_RESPONSE_PUBLIC_WAIT));
                         } else if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_END)) {
                             Timber.i("Get available devices FINISHED.");
+                            mIGatewayPageFragment.onGetAvailableBleDevicesEnd();
                             bleBufferStatus = true;
                         } else
                             mIGatewayPageFragment.onGetNewAvailableBleDevice(new AvailableBleDeviceModel(
