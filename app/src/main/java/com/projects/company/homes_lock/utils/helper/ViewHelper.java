@@ -146,8 +146,8 @@ public class ViewHelper {
                             R.drawable.ic_homes_lock_open);
             imageViewConnectedClientsRing.setImageResource(
                     setDefault ?
-                            R.drawable.ic_ring_idle :
-                            R.drawable.ic_ring_unlock);
+                            R.drawable.ic_gateway_ring_idle :
+                            R.drawable.ic_gateway_ring_disconnect);
             imageViewConnectedClientsCenter.setImageResource(
                     setDefault ?
                             R.drawable.ic_gateway_connection_status_idle :
@@ -159,8 +159,8 @@ public class ViewHelper {
                             R.drawable.ic_homes_lock_close);
             imageViewConnectedClientsRing.setImageResource(
                     setDefault ?
-                            R.drawable.ic_ring_idle :
-                            R.drawable.ic_ring_lock);
+                            R.drawable.ic_gateway_ring_idle :
+                            R.drawable.ic_gateway_ring_connect);
             imageViewConnectedClientsCenter.setImageResource(
                     setDefault ?
                             R.drawable.ic_gateway_connection_status_idle :

@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="@+id/rpv_available_ble_devices_gateway_page"
         app:layout_constraintStart_toStartOf="@+id/rpv_available_ble_devices_gateway_page"
         app:layout_constraintTop_toTopOf="@+id/rpv_available_ble_devices_gateway_page"
-        app:srcCompat="@drawable/ic_ring_idle" />
+        app:srcCompat="@drawable/ic_gateway_ring_idle" />
 
     <ImageView
         android:id="@+id/img_available_ble_devices_gateway_page_center"
