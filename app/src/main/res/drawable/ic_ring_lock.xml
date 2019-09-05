@@ -18,7 +18,7 @@
         android:start="10dp">
         <shape
             android:shape="ring"
-            android:thickness="10dp"
+            android:thickness="5dp"
             android:useLevel="false">
 
             <size
@@ -26,7 +26,7 @@
                 android:height="160dp" />
 
             <gradient
-                android:endColor="#B307F559"
+                android:endColor="#FF0E9155"
                 android:startColor="#3307F559"
                 android:type="sweep" />
 

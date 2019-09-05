@@ -132,7 +132,7 @@ public class ViewHelper {
     }
 
     private static void rotateImageView(Activity activity, ImageView imageView, boolean clockWise) {
-        ringImageViewAnimation = AnimationUtils.loadAnimation(activity, clockWise ? R.anim.rotate_clock_wise : R.anim.rotate_counter_clock_wise);
+        ringImageViewAnimation = AnimationUtils.loadAnimation(activity, clockWise ? R.anim.rotate_counter_clock_wise : R.anim.rotate_clock_wise);
         imageView.startAnimation(ringImageViewAnimation);
     }
 

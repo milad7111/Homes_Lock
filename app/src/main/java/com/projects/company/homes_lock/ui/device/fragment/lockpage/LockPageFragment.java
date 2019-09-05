@@ -117,6 +117,7 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare Variables
     private boolean isConnectedToBleDevice = false;
+    private boolean lockUnlockCommandInProcess = true;
     //endregion Declare Variables
 
     //region Declare Arrays & Lists
@@ -184,7 +185,7 @@ public class LockPageFragment extends BaseFragment
                 if (isSupported) {
                     this.mDeviceViewModel.getLockSpecifiedSettingInfoFromBleDevice(this);
                     this.mDeviceViewModel.getDeviceCommonSettingInfoFromBleDevice(this);
-                    updateViewData(false);
+                    updateViewData(!isConnectedToBleDevice);
                 } else if (!isUserLoggedIn()) {
                     updateViewData(true);
 
@@ -257,7 +258,7 @@ public class LockPageFragment extends BaseFragment
         //endregion Initialize Views
 
         //region Setup Views
-        imgIsLockedLockPage.setOnClickListener(this);
+        imgIsLockedLockPageRing.setOnClickListener(this);
         imgBatteryStatusLockPage.setOnClickListener(this);
         imgConnectedClientsLockPage.setOnClickListener(this);
         imgBleLockPage.setOnClickListener(this);
@@ -308,7 +309,7 @@ public class LockPageFragment extends BaseFragment
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.img_lock_status_lock_page:
+            case R.id.img_lock_status_lock_page_ring:
                 if (isConnectedToBleDevice)
                     sendLockCommand(!mDevice.getIsLocked());
                 else if (isUserLoggedIn()) {
@@ -429,6 +430,7 @@ public class LockPageFragment extends BaseFragment
     public void onDoLockCommandSuccessful(String command) {
         showToast(String.format("%s done.: ", command));
         ViewHelper.changeLockStatus = true;
+        lockUnlockCommandInProcess = false;
     }
 
     @Override
@@ -446,6 +448,8 @@ public class LockPageFragment extends BaseFragment
                 showToast("Please config lock in setting page.");
                 break;
         }
+
+        lockUnlockCommandInProcess = false;
     }
 
     @Override
@@ -557,9 +561,11 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void sendLockCommand(boolean lockCommand) {
-        enableLockCommandRingImageView(getActivity(), imgIsLockedLockPageRing, lockCommand ? 0 : 1);
-//        imgIsLockedLockPage.setEnabled(false);
-        this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
+        if (!lockUnlockCommandInProcess) {
+            lockUnlockCommandInProcess = true;
+            enableLockCommandRingImageView(getActivity(), imgIsLockedLockPageRing, lockCommand ? 0 : 1);
+            this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
+        }
     }
 
     private List<ScannedDeviceModel> getListOfScannedDevices() {
@@ -669,6 +675,12 @@ public class LockPageFragment extends BaseFragment
         Objects.requireNonNull(disconnectClientDialog.getWindow())
                 .setAttributes(getDialogLayoutParams(disconnectClientDialog));
     }
+
+    @Override
+    public void onReadBCQDone() {
+        lockUnlockCommandInProcess = false;
+    }
+
     //endregion Declare BLE Methods
 
     //region Declare Classes & Interfaces

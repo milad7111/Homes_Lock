@@ -174,6 +174,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     private Device lastDeletedDevice = new Device();
     private EventHandler deviceEventHandler = null;
+    private final MutableLiveData<Integer> mQueueCommandsCount = new MutableLiveData<>();
     //endregion Declare Objects
 
     //region Constructor
@@ -692,6 +693,7 @@ public class DeviceViewModel extends AndroidViewModel
                 case BLE_COMMAND_BCQ:
                     Timber.e("bcq setting %s", keyCommandJson.getString(keyCommand));
                     if (mILockPageFragment != null) {
+                        mILockPageFragment.onReadBCQDone();
                         mLocalRepository.updateConnectedClientsCount(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 Integer.valueOf(keyCommandJson.getString(keyCommand).split(",")[1]));
                     } else if (mIGatewayPageFragment != null) {

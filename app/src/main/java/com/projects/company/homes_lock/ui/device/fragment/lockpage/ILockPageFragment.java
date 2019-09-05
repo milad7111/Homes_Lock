@@ -28,4 +28,6 @@ public interface ILockPageFragment {
     void onGetConnectedDevicesEnd();
 
     void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status);
+
+    void onReadBCQDone();
 }

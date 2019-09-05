@@ -7,29 +7,42 @@
     android:clickable="true"
     android:focusable="true">
 
-    <com.andexert.library.RippleView
-        android:id="@+id/rpl_lock_status_lock_page"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+    <ImageView
+        android:id="@+id/img_lock_status_lock_page"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_margin="32dp"
+        android:contentDescription="@string/content_description_lock_status_symbol_lock_page"
+        android:focusable="false"
         app:layout_constraintBottom_toTopOf="@+id/txv_device_name_lock_page"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rv_centered="true">
+        app:srcCompat="@drawable/ic_homes_lock_open" />
 
-        <ImageView
-            android:id="@+id/img_lock_status_lock_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_lock_status_symbol_lock_page"
-            android:focusable="false"
-            app:srcCompat="@drawable/ic_homes_lock_open" />
+    <!--<com.andexert.library.RippleView-->
+    <!--android:id="@+id/rpl_lock_status_lock_page"-->
+    <!--android:layout_width="350dp"-->
+    <!--android:layout_height="350dp"-->
+    <!--android:layout_margin="8dp"-->
+    <!--app:layout_constraintBottom_toTopOf="@+id/txv_device_name_lock_page"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:rv_centered="true"-->
+    <!--app:rv_ripplePadding="32dp"-->
+    <!--app:rv_zoom="true"-->
+    <!--app:rv_zoomDuration="1500">-->
 
-    </com.andexert.library.RippleView>
+    <!--<ImageView-->
+    <!--android:id="@+id/img_lock_status_lock_page"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:contentDescription="@string/content_description_lock_status_symbol_lock_page"-->
+    <!--android:focusable="false"-->
+    <!--app:srcCompat="@drawable/ic_homes_lock_open" />-->
+
+    <!--</com.andexert.library.RippleView>-->
 
     <ImageView
         android:id="@+id/img_lock_status_lock_page_ring"
@@ -39,10 +52,10 @@
         android:focusable="false"
         android:padding="16dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/rpl_lock_status_lock_page"
-        app:layout_constraintEnd_toEndOf="@+id/rpl_lock_status_lock_page"
-        app:layout_constraintStart_toStartOf="@+id/rpl_lock_status_lock_page"
-        app:layout_constraintTop_toTopOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintBottom_toBottomOf="@+id/img_lock_status_lock_page"
+        app:layout_constraintEnd_toEndOf="@+id/img_lock_status_lock_page"
+        app:layout_constraintStart_toStartOf="@+id/img_lock_status_lock_page"
+        app:layout_constraintTop_toTopOf="@+id/img_lock_status_lock_page"
         app:srcCompat="@drawable/ic_ring_unlock" />
 
     <ImageView
@@ -52,10 +65,10 @@
         android:contentDescription="@string/content_description_login_screen_login_fragment"
         android:focusable="false"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/rpl_lock_status_lock_page"
-        app:layout_constraintEnd_toEndOf="@+id/rpl_lock_status_lock_page"
-        app:layout_constraintStart_toStartOf="@+id/rpl_lock_status_lock_page"
-        app:layout_constraintTop_toTopOf="@+id/rpl_lock_status_lock_page"
+        app:layout_constraintBottom_toBottomOf="@+id/img_lock_status_lock_page"
+        app:layout_constraintEnd_toEndOf="@+id/img_lock_status_lock_page"
+        app:layout_constraintStart_toStartOf="@+id/img_lock_status_lock_page"
+        app:layout_constraintTop_toTopOf="@+id/img_lock_status_lock_page"
         app:srcCompat="@drawable/ic_lock_open" />
 
     <RelativeLayout

@@ -140,7 +140,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             super.onReadRemoteRssi(gatt, rssi, status);
-            mCallbacks.onReadRemoteRssi(gatt, rssi, status);
+//            mCallbacks.onReadRemoteRssi(gatt, rssi, status);
         }
     };
     //endregion Declare Objects
