@@ -49,6 +49,8 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     private BluetoothGattCharacteristic mTXCharacteristic;
     private BluetoothGattCharacteristic mRXCharacteristic;
 
+    private BluetoothGatt mBluetoothGatt = null;
+
     private final BleManagerGattCallback mGattCallback = new BleManagerGattCallback() {
 
         @Override
@@ -56,6 +58,8 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
             final LinkedList<Request> requests = new LinkedList<>();
 
             requests.push(Request.newEnableNotificationsRequest(mTXCharacteristic));
+
+            mBluetoothGatt = gatt;
 
             return requests;
         }
@@ -70,17 +74,22 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
             bleBufferStatus = true;
 
+            mBluetoothGatt = gatt;
+
             return mTXCharacteristic != null && mRXCharacteristic != null;
         }
 
         @Override
         protected void onDeviceDisconnected() {
+            mBluetoothGatt = null;
         }
 
         @Override
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
+            mBluetoothGatt = gatt;
+
             if (getNibble(characteristic.getValue()[1], true) == 4) {
-                Log.e("@Me" + getClass().getName(), "Buffer partition is free");
+                Timber.e("Buffer partition is free");
                 bleBufferStatus = true;
                 sendNextCommandFromBlePool();
             }
@@ -96,11 +105,15 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
         @Override
         public void onCharacteristicWrite(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
+            mBluetoothGatt = gatt;
+
             mCallbacks.onDataSent(characteristic);
         }
 
         @Override
         public void onCharacteristicNotified(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
+            mBluetoothGatt = gatt;
+
             if (!Arrays.equals(lastNotifiedData, characteristic.getValue())) {
                 lastNotifiedData = characteristic.getValue();
                 readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
@@ -122,6 +135,12 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 //            } catch (JSONException e) {
 //                readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
 //            }
+        }
+
+        @Override
+        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+            super.onReadRemoteRssi(gatt, rssi, status);
+            mCallbacks.onReadRemoteRssi(gatt, rssi, status);
         }
     };
     //endregion Declare Objects
@@ -157,7 +176,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     }
 
     private void writeCharacteristic(UUID characteristicUUID, byte[] value) {
-        Log.e("@MewriteCharacteristic", "Partition command ---------------------------------> " + new String(value));
+        Timber.e("Partition command ---------------------------------> %s", new String(value));
         BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
 
         if (mBluetoothGattCharacteristic != null)
@@ -165,7 +184,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     }
 
     public void customWriteCharacteristic(UUID characteristicUUID, byte[] value) {
-        Log.e("@MeCWriteCharacteristic", "Full command ************************************************ " + new String(value));
+        Timber.e("Full command ************************************************ %s", new String(value));
         BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
 
         if (mBluetoothGattCharacteristic != null) {
@@ -189,7 +208,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
     private void sendNextCommandFromBlePool() {
         if (mBleCommandsPool.size() > 0 && bleBufferStatus) {
-            Log.e("@Me" + getClass().getName(), "Buffer partition is full");
+            Timber.e("Buffer partition is full");
             bleBufferStatus = false;
             writeCharacteristic(CHARACTERISTIC_UUID_RX, mBleCommandsPool.get(0));
             mBleCommandsPool.remove(0);
@@ -197,7 +216,7 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     }
 
     private void handleReceivedResponse(byte[] responseValue) {
-        Log.e("handlePartitionResponse", new String(responseValue));
+        Timber.e(new String(responseValue));
         String keyValue = new String(subArrayByte(responseValue, 2, responseValue.length - 1));
 
         try {
@@ -206,25 +225,25 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
 
             switch (keyCommand) {
                 case BLE_RESPONSE_PUBLIC_PRT:
-                    Log.e("prt received", new String(responseValue));
+                    Timber.e(new String(responseValue));
                     break;
                 default:
-                    Log.e("other key received", keyCommand + " : " + keyCommandJson.getString(keyCommand));
+                    Timber.e(keyCommand + " : " + keyCommandJson.getString(keyCommand));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void changeNotifyForCharacteristic(UUID characteristicUUID, boolean notifyStatus) {
-        BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
-
-        if (mBluetoothGattCharacteristic != null)
-            if (notifyStatus)
-                enableNotifications(mBluetoothGattCharacteristic);
-            else
-                disableNotifications(mBluetoothGattCharacteristic);
-    }
+//    public void changeNotifyForCharacteristic(UUID characteristicUUID, boolean notifyStatus) {
+//        BluetoothGattCharacteristic mBluetoothGattCharacteristic = getBluetoothGattCharacteristic(characteristicUUID);
+//
+//        if (mBluetoothGattCharacteristic != null)
+//            if (notifyStatus)
+//                enableNotifications(mBluetoothGattCharacteristic);
+//            else
+//                disableNotifications(mBluetoothGattCharacteristic);
+//    }
 
     private BluetoothGattCharacteristic getBluetoothGattCharacteristic(UUID characteristicUUID) {
         if (characteristicUUID.equals(CHARACTERISTIC_UUID_TX) && mTXCharacteristic != null)
@@ -235,6 +254,11 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         Timber.e("BluetoothGattCharacteristic " + characteristicUUID + " Not Ready Yet.");
 
         return null;
+    }
+
+    public void readRemoteRssi() {
+        if (mBluetoothGatt != null)
+            mBluetoothGatt.readRemoteRssi();
     }
     //endregion Declare Methods
 }

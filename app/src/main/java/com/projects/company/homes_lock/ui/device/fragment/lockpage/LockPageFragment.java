@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ import com.projects.company.homes_lock.ui.device.activity.DeviceActivity;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.ManageMembersFragment;
 import com.projects.company.homes_lock.utils.ble.ConnectedClientsAdapter;
+import com.projects.company.homes_lock.utils.ble.CustomBleCallback;
 import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 import com.projects.company.homes_lock.utils.helper.ViewHelper;
@@ -87,6 +90,7 @@ public class LockPageFragment extends BaseFragment
         implements
         IBleScanListener,
         ILockPageFragment,
+        CustomBleCallback,
         View.OnClickListener {
 
     //region Declare Constants
@@ -130,6 +134,8 @@ public class LockPageFragment extends BaseFragment
     private Dialog loseAccessDialog;
 
     private ScheduledFuture freeBleBuffer;
+    private Handler mProximityHandler;
+    private Runnable mProximityRunnable;
     //endregion Declare Objects
 
     //region Constructor
@@ -167,6 +173,10 @@ public class LockPageFragment extends BaseFragment
                     if (mBluetoothLEHelper != null)
                         mBluetoothLEHelper.disconnect();
                 }
+
+                if (isConnected)
+                    startRepeatingReadProximityTask();
+                else stopRepeatingReadProximityTask();
             }
         });
         this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
@@ -195,6 +205,27 @@ public class LockPageFragment extends BaseFragment
         });
         this.mDeviceViewModel.getBleTimeOut().observe(this, this::handleBleBufferStatus);
         //endregion Initialize Objects
+    }
+
+    public void startRepeatingReadProximityTask() {
+        if (mProximityHandler == null)
+            mProximityHandler = new Handler();
+
+        if (mProximityRunnable == null)
+            mProximityRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    LockPageFragment.this.mDeviceViewModel.readRemoteRssi();
+                    mProximityHandler.postDelayed(mProximityRunnable, 2000);
+                }
+            };
+
+        mProximityRunnable.run();
+    }
+
+    public void stopRepeatingReadProximityTask() {
+        if (mProximityHandler != null && mProximityRunnable != null)
+            mProximityHandler.removeCallbacks(mProximityRunnable);
     }
 
     @Override
@@ -424,6 +455,46 @@ public class LockPageFragment extends BaseFragment
                 mConnectedClientsListDialog.findViewById(R.id.prg_top_dialog_connected_device).setVisibility(INVISIBLE);
         });
     }
+
+    @Override
+    public void onBleConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+    }
+
+    @Override
+    public void onBleServiceDiscovered(BluetoothGatt gatt, int status) {
+    }
+
+    @Override
+    public void onBleCharacteristicChange(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+    }
+
+    @Override
+    public void onBleWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+    }
+
+    @Override
+    public void onBleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+    }
+
+    @Override
+    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        if (rssi >= -30)
+            showToast("1   خیلی نزدیک شدی");
+        else if (rssi >= -35)
+            showToast("2   تقریبا نزدیک شدی");
+        else if (rssi >= -40)
+            showToast("3   نزدیک شدی");
+        else if (rssi >= -45)
+            showToast("4   نسبتا دوری");
+        else if (rssi >= -50)
+            showToast("5   نسبتا دوری");
+        else if (rssi >= -60)
+            showToast("6   داری نزدیک میشی");
+        else if (rssi >= -80)
+            showToast("7   خیلی دوری");
+        else
+            showToast("8   خیلی پرتی");
+    }
     //endregion BLE CallBacks
 
     //region Declare BLE Methods
@@ -448,7 +519,7 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void connectToDevice() {
-        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
+        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity(), this);
         BluetoothDevice tempDevice = mBluetoothLEHelper.checkBondedDevices(mDevice.getBleDeviceMacAddress());
 
         if (tempDevice != null) {
@@ -716,6 +787,16 @@ public class LockPageFragment extends BaseFragment
     private void cancelSchedulerFreeBleBuffer() {
         if (freeBleBuffer != null)
             freeBleBuffer.cancel(true);
+    }
+
+    private double calculateDistance(Double txPower, Double rssi) {
+        double ratio = rssi / txPower;
+        if (rssi == 0.0) { // Cannot determine accuracy, return -1.
+            return -1.0;
+        } else if (ratio < 1.0) { //default ratio
+            return Math.pow(ratio, 10.0);
+        }//rssi is greater than transmission strength
+        return (0.89976) * Math.pow(ratio, 7.7095) + 0.111;
     }
     //endregion Declare Methods
 }

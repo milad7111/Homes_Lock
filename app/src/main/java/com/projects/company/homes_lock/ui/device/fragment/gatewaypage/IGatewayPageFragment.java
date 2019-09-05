@@ -1,5 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.gatewaypage;
 
+import android.bluetooth.BluetoothGatt;
+
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.AvailableBleDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
@@ -54,4 +56,6 @@ public interface IGatewayPageFragment {
     void onGetAvailableBleDevicesEnd();
 
     void onGetConnectedDevicesEnd();
+
+    void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status);
 }

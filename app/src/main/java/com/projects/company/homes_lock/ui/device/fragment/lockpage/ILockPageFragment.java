@@ -1,5 +1,7 @@
 package com.projects.company.homes_lock.ui.device.fragment.lockpage;
 
+import android.bluetooth.BluetoothGatt;
+
 import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 
@@ -24,4 +26,6 @@ public interface ILockPageFragment {
     void onDoLockCommandFailed(String error);
 
     void onGetConnectedDevicesEnd();
+
+    void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status);
 }

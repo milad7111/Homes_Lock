@@ -318,7 +318,7 @@ public class AddDeviceFragment extends BaseFragment
 
     //region Declare Methods
     private void addNewDevice() {
-        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
+        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity(), null);
         mTempDevice = new TempDeviceModel();
         if (getScanPermission(this))
 //            handleDialogListOfAvailableBleDevices(Collections.singletonList(new ScannedDeviceModel(SEARCHING_SCAN_MODE))); // Means user clicked Direct Connect
@@ -489,7 +489,7 @@ public class AddDeviceFragment extends BaseFragment
 //    }
 
     private void connectToDevice(ScannedDeviceModel device) {
-        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
+        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity(), null);
         BluetoothDevice tempDevice = mBluetoothLEHelper.checkBondedDevices(device.getMacAddress());
 
         if (tempDevice != null) {

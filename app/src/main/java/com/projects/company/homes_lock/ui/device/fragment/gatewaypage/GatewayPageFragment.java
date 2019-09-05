@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
@@ -486,6 +487,11 @@ public class GatewayPageFragment extends BaseFragment
         if (isrState && isqState)
             showToast("Connect to server successfully.");
     }
+
+    @Override
+    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        showToast(rssi + "");
+    }
     //endregion BLE CallBacks
 
     //region IGatewayPageFragment CallBacks
@@ -760,7 +766,7 @@ public class GatewayPageFragment extends BaseFragment
     }
 
     private void connectToDevice() {
-        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity());
+        mBluetoothLEHelper = new CustomBluetoothLEHelper(getActivity(), null);
         BluetoothDevice tempDevice = mBluetoothLEHelper.checkBondedDevices(mDevice.getBleDeviceMacAddress());
 
         if (tempDevice != null) {

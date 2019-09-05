@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -318,6 +319,14 @@ public class DeviceViewModel extends AndroidViewModel
     @Override
     public void onDataSent(Object response) {
         Timber.d(Arrays.toString(((BluetoothGattCharacteristic) response).getValue()));
+    }
+
+    @Override
+    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        if (mILockPageFragment != null)
+            mILockPageFragment.onReadRemoteRssi(gatt, rssi, status);
+        else if (mIGatewayPageFragment != null)
+            mIGatewayPageFragment.onReadRemoteRssi(gatt, rssi, status);
     }
     //endregion BLE CallBacks
 
@@ -1387,6 +1396,11 @@ public class DeviceViewModel extends AndroidViewModel
 
     public LiveData<Integer> getBleTimeOut() {
         return this.mBleTimeOut;
+    }
+
+    public void readRemoteRssi() {
+        if (mBleDeviceManager != null)
+            mBleDeviceManager.readRemoteRssi();
     }
     //endregion Declare Methods
 
