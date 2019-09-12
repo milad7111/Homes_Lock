@@ -16,14 +16,14 @@ repositories {
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.projects.company.homes_lock"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0-alpha01"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -38,7 +38,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            multiDexKeepFile file('multidex-config.txt')
+            //multiDexKeepFile file('multidex-config.txt')
         }
     }
 
@@ -54,6 +54,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //MultiDex
+    implementation 'com.android.support:multidex:1.0.3'
 
     // ViewPager
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:2.1.2'
