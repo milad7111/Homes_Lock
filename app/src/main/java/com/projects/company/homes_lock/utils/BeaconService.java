@@ -15,13 +15,14 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.projects.company.homes_lock.BuildConfig;
 import com.projects.company.homes_lock.R;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Both RX and RSSI (Received Signal Strength Indication) are indications of the power level being received
@@ -89,7 +90,10 @@ public class BeaconService extends Service implements BluetoothAdapter.LeScanCal
     // BluetoothAdapter through BluetoothManager.
     public BluetoothAdapter getBTService() {
         BluetoothManager btManager = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = btManager.getAdapter();
+
+        if (btManager != null)
+            mBluetoothAdapter = btManager.getAdapter();
+
         return mBluetoothAdapter;
     }
 
@@ -144,7 +148,7 @@ public class BeaconService extends Service implements BluetoothAdapter.LeScanCal
                         @Override
                         public void run() {
                             btGatt = device.connectGatt(getApplicationContext(), false, bleGattCallback);
-                            Log.e(TAG, "onLeScan btGatt value returning from connectGatt " + btGatt);
+                            Timber.e("onLeScan btGatt value returning from connectGatt %s", btGatt);
                         }
                     });
                 }
@@ -163,8 +167,8 @@ public class BeaconService extends Service implements BluetoothAdapter.LeScanCal
             writeLine("Automate service connection state: " + newState);
             if (newState == android.bluetooth.BluetoothProfile.STATE_CONNECTED) {
                 writeLine("Automate service connection state: STATE_CONNECTED");
-                Log.v("BLEService", "BLE Connected now discover services");
-                Log.v("BLEService", "BLE Connected");
+                Timber.tag("BLEService").v("BLE Connected now discover services");
+                Timber.tag("BLEService").v("BLE Connected");
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -174,7 +178,7 @@ public class BeaconService extends Service implements BluetoothAdapter.LeScanCal
                 }).start();
             } else if (newState == android.bluetooth.BluetoothProfile.STATE_DISCONNECTED) {
                 writeLine("Automate service connection state: STATE_DISCONNECTED");
-                Log.v("BLEService", "BLE Disconnected");
+                Timber.tag("BLEService").v("BLE Disconnected");
             }
         }
 
@@ -183,7 +187,7 @@ public class BeaconService extends Service implements BluetoothAdapter.LeScanCal
             super.onServicesDiscovered(gatt, status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 writeLine("Automate service discover service: GATT_SUCCESS");
-                Log.v("BLEService", "BLE Services onServicesDiscovered");
+                Timber.tag("BLEService").v("BLE Services onServicesDiscovered");
                 //Get service
                 List<BluetoothGattService> services = gatt.getServices();
                 writeLine("Automate service discover service imei: " + "imei");
@@ -204,6 +208,6 @@ public class BeaconService extends Service implements BluetoothAdapter.LeScanCal
     private void writeLine(final String message) {
         Handler h = new Handler(getApplicationContext().getMainLooper());
         // Although you need to pass an appropriate context
-        h.post(() -> Log.e("me7112", message));
+        h.post(() -> Timber.e(message));
     }
 }

@@ -74,6 +74,7 @@ public class BleHelper {
     public static final String BLE_COMMAND_BSL = "bsl";
     public static final String BLE_COMMAND_DIS = "dis";
     public static final String BLE_COMMAND_WFL = "wfl";
+    public static final String BLE_COMMAND_WST = "wst";
     public static final String BLE_COMMAND_SSD = "ssd";
     public static final String BLE_COMMAND_PSK = "psk";
     public static final String BLE_COMMAND_SEC = "sec";
