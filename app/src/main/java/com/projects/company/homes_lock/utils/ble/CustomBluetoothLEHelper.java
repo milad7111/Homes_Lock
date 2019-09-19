@@ -49,6 +49,14 @@ public class CustomBluetoothLEHelper {
         }
     }
 
+    public CustomBluetoothLEHelper(CustomBleCallback bleCallback) {
+            BluetoothManager bluetoothManager = (BluetoothManager) act.getSystemService(Context.BLUETOOTH_SERVICE);
+            mBluetoothAdapter = bluetoothManager.getAdapter();
+            mBluetoothAdapter.enable();
+
+            this.bleCallback = bleCallback;
+    }
+
     public void scanLeDevice(boolean enable) {
         Handler mHandler = new Handler();
 

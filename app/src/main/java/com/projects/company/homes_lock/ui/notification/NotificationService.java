@@ -1,58 +1,61 @@
 package com.projects.company.homes_lock.ui.notification;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.backendless.push.BackendlessFCMService;
+import com.projects.company.homes_lock.BuildConfig;
+import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.database.tables.Notification;
+import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
+import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
 import com.projects.company.homes_lock.repositories.local.ILocalRepository;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
+import com.projects.company.homes_lock.utils.ble.CustomBluetoothLEHelper;
+import com.projects.company.homes_lock.utils.ble.IBleScanListener;
 
-import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
-public class NotificationService extends BackendlessFCMService implements ILocalRepository {
+import timber.log.Timber;
+
+import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices;
+
+public class NotificationService extends BackendlessFCMService implements ILocalRepository, IBleScanListener {
 
     //region Declare Objects
-//    private NotificationViewModel mNotificationViewModel;
+    private CustomBluetoothLEHelper mBluetoothLEHelper;
+    private TempDeviceModel mTempDevice;
     //endregion Declare Objects
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-//        this.mNotificationViewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
+//        handleAroundDeviceForProximity();
+    }
+
+    private void handleAroundDeviceForProximity() {
+//        if (BuildConfig.DEBUG)
+//            android.os.Debug.waitForDebugger();
+
+        mBluetoothLEHelper = new CustomBluetoothLEHelper(null);
+        mTempDevice = new TempDeviceModel();
+
+        findDevices(this, mBluetoothLEHelper);
     }
 
     @Override
     public boolean onMessage(Context appContext, Intent msgIntent) {
-//        if (BuildConfig.DEBUG)
-//            android.os.Debug.waitForDebugger();
-
-        Log.i("NotificationService", "Notification Received");
+        Timber.i("Notification Received");
 
         try {
-//            AndroidImmediatePush mAndroidImmediatePush = new Gson()
-//                    .fromJson(msgIntent.getStringExtra("android_immediate_push"), AndroidImmediatePush.class);
-//
-//            LocalRepository mLocalRepository = new LocalRepository(getApplication());
-//            mLocalRepository.insertNotification(
-//                    this, new Notification(
-//                            msgIntent.getStringExtra("messageId"),
-//                            msgIntent.getStringExtra("message"),
-//                            msgIntent.getStringExtra("google.delivered_priority"),
-//                            msgIntent.getStringExtra("google.original_priority"),
-//                            msgIntent.getLongExtra("google.sent_time", 0),
-//                            mAndroidImmediatePush.getContentTitle(),
-//                            mAndroidImmediatePush.getSummarySubText()
-//                    )
-//            );
-
             LocalRepository mLocalRepository = new LocalRepository(getApplication());
             mLocalRepository.insertNotification(this,
                     new Notification(
-                            msgIntent.getStringExtra("messageId"),
-                            msgIntent.getStringExtra("android-ticker-text"),
+                            Objects.requireNonNull(msgIntent.getStringExtra("messageId") != null ? msgIntent.getStringExtra("messageId") : ""),
+                            Objects.requireNonNull(msgIntent.getStringExtra("android-ticker-text") != null ? msgIntent.getStringExtra("android-ticker-text") : ""),
                             msgIntent.getStringExtra("message"),
                             msgIntent.getStringExtra("google.delivered_priority"),
                             msgIntent.getStringExtra("google.original_priority"),
@@ -61,7 +64,7 @@ public class NotificationService extends BackendlessFCMService implements ILocal
                     )
             );
         } catch (Exception e) {
-            Log.e("NotificationService", e.getMessage() != null ? e.getMessage() : e.getCause().getMessage());
+            Timber.e(e.getMessage() != null ? e.getMessage() : e.getCause().getMessage());
         }
 
         return true;
@@ -74,11 +77,31 @@ public class NotificationService extends BackendlessFCMService implements ILocal
     //region INotificationService Callbacks
     @Override
     public void onDataInsert(Object id) {
-        Log.i(getClass().getName(), "Notification inserted in database.");
+        Timber.i("Notification inserted in database.");
     }
 
     @Override
     public void onClearAllData() {
     }
     //endregion INotificationService Callbacks
+
+    //region IBleScanListener
+    @Override
+    public void onFindBleSuccess(List<ScannedDeviceModel> response) {
+        Timber.e("CustomBleHelper in background service: %s", response.toString());
+    }
+
+    @Override
+    public void onFindBleFault() {
+        Timber.e("CustomBleHelper in background service: onFindBleFault");
+    }
+
+    @Override
+    public void onAdapterItemClick(BaseModel value) {
+    }
+
+    @Override
+    public void onBonded(BluetoothDevice device) {
+    }
+    //endregion IBleScanListener
 }

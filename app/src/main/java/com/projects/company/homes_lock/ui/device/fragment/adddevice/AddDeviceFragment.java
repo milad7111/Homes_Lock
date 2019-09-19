@@ -87,7 +87,7 @@ public class AddDeviceFragment extends BaseFragment
 
     private Dialog mAddDeviceOfflineDialog;
     private Dialog mListOfAvailableBleDevicesDialog;
-    private Dialog mAddDeviceOnlineDialog;
+//    private Dialog mAddDeviceOnlineDialog;
 
     private ScannedDeviceModel mDevice;
     private TempDeviceModel mTempDevice;

@@ -6,6 +6,7 @@ package com.projects.company.homes_lock.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
@@ -15,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.projects.company.homes_lock.BuildConfig;
 import com.projects.company.homes_lock.repositories.remote.IRetrofit;
+import com.projects.company.homes_lock.utils.BeaconService;
 
 import io.fabric.sdk.android.Fabric;
 import okhttp3.OkHttpClient;
@@ -54,6 +56,8 @@ public class BaseApplication extends Application {
         logUserCrashesInFabric();
         if (BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
+
+        //startService(new Intent(this, BeaconService.class));
     }
 
     @Override

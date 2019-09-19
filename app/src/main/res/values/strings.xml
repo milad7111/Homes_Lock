@@ -2,7 +2,6 @@
 
     <!--//region Main-->
     <string name="app_name" translatable="false">Neurnet</string>
-    <string name="about_us_description">We create engaging brand assets and trusted content for your site, and then market it to authoritative sites across the web. Clients also get consulting from Jim Boykin and Ann Smarty. We\'ve been trusted since 1999. Peace and Love.</string>
     <string name="activity_description_send_ticket">Customers who are looking for help are often stressed and frustrated, and when they can only communicate with you through text chats or emails. It’s easy for them to feel unimportant or ignored. In my career, I’ve heard versions of “I want to talk to a real person, not a robot!” from customers many times.
     So, I,m a real person, write what ever you want.</string>
     <!--//endregion Main-->
@@ -209,9 +208,6 @@
     <string name="drawer_menu_item_about_us">About us</string>
     <!--//endregion Drawer Menu Items-->
 
-    <!--//region EditText Hints-->
-    <!--//endregion EditText Hints-->
-
     <!--//region Messages-->
     <!--//endregion Messages-->
 
@@ -220,25 +216,24 @@
     <string name="nav_header_subtitle" translatable="false">alimusavi@gmail.com</string>
     <!--//endregion Actions and Menu Items and Nav Header-->
 
-    <!--//region Urls-->
-    <!--//endregion Urls-->
-
-    <!--//region DataBase-->
-    <!--//endregion DataBase-->
-
     <!--//region BLE States-->
     <string name="ble_state_connecting" translatable="false">Connecting…</string>
     <string name="ble_state_discovering_services" translatable="false">Discovering services…</string>
     <string name="ble_state_initializing" translatable="false">Initializing…</string>
+    <string name="ble_not_supported">ble_not_supported</string>
     <!--//endregion BLE States-->
 
     <!--//region Adapter Empty-->
     <string name="adapter_empty_syncing">Syncing …</string>
     <string name="adapter_empty_scanning">Scanning …</string>
     <string name="adapter_empty_try_again">Try again …</string>
+    <!--//endregion Adapter Empty-->
+
+    <!--//region AboutUs Texts-->
+    <string name="about_us_description">We create engaging brand assets and trusted content for your site, and then market it to authoritative sites across the web. Clients also get consulting from Jim Boykin and Ann Smarty. We\'ve been trusted since 1999. Peace and Love.</string>
     <string name="about_us_web_site_url">http://neurnet.se/</string>
     <string name="about_us_email_address">neurnet@info.se</string>
     <string name="about_us_tell">+98 9124985424</string>
-    <!--//endregion Adapter Empty-->
+    <!--//endregion AboutUs Texts-->
 
 </resources>

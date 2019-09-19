@@ -260,7 +260,7 @@ public class BleHelper {
         return 0x00;
     }
 
-    public static void findDevices(Fragment fragment, CustomBluetoothLEHelper mBluetoothLEHelper) {
+    public static void findDevices(IBleScanListener iBleScanListener, CustomBluetoothLEHelper mBluetoothLEHelper) {
         if (mBluetoothLEHelper != null && !mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
             mBluetoothLEHelper.scanLeDevice(true);
@@ -269,9 +269,9 @@ public class BleHelper {
             mHandler.postDelayed(() -> {
                 List<ScannedDeviceModel> tempList = getListOfScannedDevices(mBluetoothLEHelper);
                 if (tempList.size() == 0)
-                    ((IBleScanListener) fragment).onFindBleFault();
+                    iBleScanListener.onFindBleFault();
                 else
-                    ((IBleScanListener) fragment).onFindBleSuccess((List<ScannedDeviceModel>) tempList);
+                    iBleScanListener.onFindBleSuccess(tempList);
             }, mBluetoothLEHelper.getScanPeriod());
         }
     }
