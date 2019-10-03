@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseFragment;
@@ -644,9 +643,11 @@ public class DeviceSettingFragment extends BaseFragment
             });
         }
 
-        mCalibrationLockDialog.show();
-        requireNonNull(mCalibrationLockDialog.getWindow())
-                .setAttributes(ViewHelper.getDialogLayoutParams(mCalibrationLockDialog));
+        if (mCalibrationLockDialog != null) {
+            mCalibrationLockDialog.show();
+            requireNonNull(mCalibrationLockDialog.getWindow())
+                    .setAttributes(ViewHelper.getDialogLayoutParams(mCalibrationLockDialog));
+        }
     }
 
     private void handleLockPositions(String position) {

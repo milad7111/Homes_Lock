@@ -267,8 +267,12 @@ public class DeviceActivity extends BaseActivity
     }
 
     private String getTopActivityClassName() {
-        return ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE))
-                .getRunningTasks(1).get(0).topActivity.getClassName();
+        if (Build.VERSION.SDK_INT >= 29) {
+            return ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE))
+                    .getRunningTasks(1).get(0).topActivity.getClassName();
+        }
+
+        return "";
     }
     //endregion Declare Methods
 }

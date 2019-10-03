@@ -6,6 +6,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.models.datamodels.ble.AvailableBleDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
+import com.projects.company.homes_lock.models.datamodels.ble.WifiStateModel;
 
 /**
  * This is GatewayPageFragment Interface
@@ -13,25 +14,9 @@ import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
 public interface IGatewayPageFragment {
     void onFindNewNetworkAroundDevice(WifiNetworksModel wifiNetworksModel);
 
-    void onSetDeviceWifiNetworkSSIDSuccessful();
-
-    void onSetDeviceWifiNetworkSSIDFailed();
-
-    void onSetDeviceWifiNetworkPasswordSuccessful();
-
-    void onSetDeviceWifiNetworkPasswordFailed();
-
-    void onSetDeviceWifiNetworkAuthenticationTypeSuccessful();
-
-    void onSetDeviceWifiNetworkAuthenticationTypeFailed();
-
     void onSetDeviceWifiNetworkSuccessful();
 
-    void onSetDeviceWifiNetworkFailed();
-
     void onGetUpdatedDevice(Device response);
-
-    void onSendRequestGetAvailableWifiSuccessful();
 
     void onGetNewConnectedDevice(ConnectedDeviceModel connectedDeviceModel);
 
@@ -58,4 +43,8 @@ public interface IGatewayPageFragment {
     void onGetConnectedDevicesEnd();
 
     void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status);
+
+    void onReadWifiState(WifiStateModel wifiState);
+
+    void onCancelDeviceWifiNetworkSuccessful();
 }

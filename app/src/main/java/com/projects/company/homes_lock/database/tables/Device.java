@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BAT;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_BCQ;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_CFG;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_DID;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_FW;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_HW;
@@ -286,6 +287,7 @@ public class Device extends BaseModel {
         handleSn(updatedLock);
         handleMac(updatedLock);
         handleUpdated(updatedLock);
+        handleConfigStatus(updatedLock);
         handleMemberAdminStatus(updatedLock);
     }
 
@@ -544,6 +546,12 @@ public class Device extends BaseModel {
     private void handleUpdated(Map updatedLock) {
         if (updatedLock.containsKey("updated") && updatedLock.get("updated") != null)
             this.mUpdated = Long.valueOf(updatedLock.get("updated").toString());
+    }
+
+    private void handleConfigStatus(Map updatedLock) {
+        if (updatedLock.containsKey(BLE_COMMAND_CFG))
+            this.mWifiStatus = Boolean.valueOf(
+                    updatedLock.get(BLE_COMMAND_CFG) != null ? updatedLock.get(BLE_COMMAND_CFG).toString() : "false");
     }
 
     private void handleMemberAdminStatus(Map updatedLock) {

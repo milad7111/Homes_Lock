@@ -18,6 +18,7 @@ import com.projects.company.homes_lock.models.datamodels.ble.AvailableBleDeviceM
 import com.projects.company.homes_lock.models.datamodels.ble.ConnectedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.ScannedDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.ble.WifiNetworksModel;
+import com.projects.company.homes_lock.models.datamodels.ble.WifiStateModel;
 import com.projects.company.homes_lock.models.datamodels.mqtt.MessageModel;
 import com.projects.company.homes_lock.models.datamodels.request.AddRelationHelperModel;
 import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
@@ -101,6 +102,7 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_TYP;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_ULC;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_WFL;
+import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_COMMAND_WST;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_CONFIG;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_INTER;
 import static com.projects.company.homes_lock.utils.helper.BleHelper.BLE_RESPONSE_ERR_KEY;
@@ -136,6 +138,7 @@ public class DeviceViewModel extends AndroidViewModel
     //endregion Declare Constants
 
     //region Declare Variables
+    private boolean waitForConTrue = false;
     private String requestType = "";
 
     private boolean bleBufferStatus = false;
@@ -175,6 +178,8 @@ public class DeviceViewModel extends AndroidViewModel
     private Device lastDeletedDevice = new Device();
     private EventHandler deviceEventHandler = null;
     private final MutableLiveData<Integer> mQueueCommandsCount = new MutableLiveData<>();
+
+    private BleCommand lastSentBleCommand = new BleCommand();
     //endregion Declare Objects
 
     //region Constructor
@@ -592,6 +597,9 @@ public class DeviceViewModel extends AndroidViewModel
             JSONObject keyCommandJson = new JSONObject(keyValue);
             String keyCommand = keyCommandJson.keys().next();
 
+//            if (!keyCommand.equals(lastSentBleCommand.getCommandType()) && responseValue[1] == 0x40)
+//                Timber.e("Received command does not equal to sent command.");
+//            else
             switch (keyCommand) {
                 case BLE_COMMAND_BAT:
                     if (mILockPageFragment != null)
@@ -754,6 +762,17 @@ public class DeviceViewModel extends AndroidViewModel
                                 keyCommandJson.getBoolean(keyCommand));
                     }
                     break;
+                case BLE_COMMAND_WST:
+                    if (mIGatewayPageFragment != null) {
+                        String[] tempArray = keyCommandJson.getString(keyCommand).split(",");
+                        if (tempArray.length == 1)
+                            mIGatewayPageFragment.onReadWifiState(new WifiStateModel(tempArray[0]));
+                        else
+                            mIGatewayPageFragment.onReadWifiState(
+                                    new WifiStateModel(tempArray[0], tempArray[1], tempArray[2], Integer.valueOf(tempArray[3]))
+                            );
+                    }
+                    break;
                 case BLE_COMMAND_RSS:
                     if (mIGatewayPageFragment != null) {
                         mLocalRepository.updateConnectedWifiStrength(((GatewayPageFragment) mIGatewayPageFragment).getDevice().getObjectId(),
@@ -895,8 +914,13 @@ public class DeviceViewModel extends AndroidViewModel
                 case BLE_COMMAND_CON:
                     if (mIGatewayPageFragment != null) {
                         if (keyCommandJson.get(keyCommand).equals(BLE_RESPONSE_PUBLIC_OK)) {
-                            Timber.i("Connecting to wifi network initializing ...");
-                            mIGatewayPageFragment.onSetDeviceWifiNetworkSuccessful();
+                            if (waitForConTrue) {
+                                Timber.i("Connecting to wifi network initializing ...");
+                                mIGatewayPageFragment.onSetDeviceWifiNetworkSuccessful();
+                            } else {
+                                Timber.i("Disconnecting from wifi network or connecting state initializing ...");
+                                mIGatewayPageFragment.onCancelDeviceWifiNetworkSuccessful();
+                            }
                         }
                     }
                     break;
@@ -1032,7 +1056,10 @@ public class DeviceViewModel extends AndroidViewModel
         }
         //endregion switch response
 
-        sendNextCommandFromBlePool();
+        if (bleBufferStatus) {
+            lastSentBleCommand = new BleCommand();
+            sendNextCommandFromBlePool();
+        }
     }
 
     public void sendLockCommand(Fragment parentFragment, String serialNumber, boolean lockCommand) {
@@ -1055,7 +1082,6 @@ public class DeviceViewModel extends AndroidViewModel
         else if (parentFragment instanceof IGatewayPageFragment)
             this.mIGatewayPageFragment = (IGatewayPageFragment) parentFragment;
 
-        addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_BAT), BLE_COMMAND_BAT));
         addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_TYP), BLE_COMMAND_TYP));
         addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_FW), BLE_COMMAND_FW));
         addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_HW), BLE_COMMAND_HW));
@@ -1072,6 +1098,7 @@ public class DeviceViewModel extends AndroidViewModel
         } else if (parentFragment instanceof IDeviceSettingFragment)
             this.mIDeviceSettingFragment = (IDeviceSettingFragment) parentFragment;
 
+        addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_BAT), BLE_COMMAND_BAT));
         addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_RGH), BLE_COMMAND_RGH));
         addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_ISO), BLE_COMMAND_ISO));
         addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_ISK), BLE_COMMAND_ISK));
@@ -1097,11 +1124,27 @@ public class DeviceViewModel extends AndroidViewModel
 
     private void sendNextCommandFromBlePool() {
         if (mBleCommandsPool.size() > 0 && bleBufferStatus) {
-            Timber.e("Buffer is full");
+            waitForConTrue = Arrays.equals(mBleCommandsPool.get(0).getCommand(), createJSONObjectWithKeyValue(BLE_COMMAND_CON, true).toString().getBytes());
+//            if (lastSentBleCommand.getCommandType() != null && lastSentBleCommand.getCommandType().equals(mBleCommandsPool.get(0).getCommandType())) {
+//                mBleCommandsPool.remove(0);
+//                Timber.e("Command is redundant...");
+//            } else {
+
             bleBufferStatus = false;
-            mBleDeviceManager.customWriteCharacteristic(CHARACTERISTIC_UUID_RX, mBleCommandsPool.get(0).getCommand());
-            this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(mBleCommandsPool.get(0).getCommandType()));
+            lastSentBleCommand = new BleCommand(mBleCommandsPool.get(0));
             mBleCommandsPool.remove(0);
+
+            Timber.e("Buffer is full: %s", new String(lastSentBleCommand.getCommand()));
+
+            mBleDeviceManager.customWriteCharacteristic(CHARACTERISTIC_UUID_RX, lastSentBleCommand.getCommand());
+            this.mBleTimeOut.postValue(getBleTimeOutBaseOnBleCommandType(lastSentBleCommand.getCommandType()));
+
+//            try {
+//                mBleCommandsPool.remove(0);
+//            } catch (IndexOutOfBoundsException e) {
+//                Timber.e("IndexOutOfBoundsException mBleCommandsPool");
+//            }
+//            }
         }
     }
 
@@ -1147,6 +1190,11 @@ public class DeviceViewModel extends AndroidViewModel
     public void disconnectGatewayWifiNetwork(IGatewayPageFragment mIGatewayPageFragment) {
         this.mIGatewayPageFragment = mIGatewayPageFragment;
         addNewCommandToBlePool(new BleCommand(createJSONObjectWithKeyValue(BLE_COMMAND_CON, false).toString().getBytes(), BLE_COMMAND_CON));
+    }
+
+    public void readWifiState(IGatewayPageFragment mIGatewayPageFragment) {
+        this.mIGatewayPageFragment = mIGatewayPageFragment;
+        addNewCommandToBlePool(new BleCommand(createBleReadMessage(BLE_COMMAND_WST), BLE_COMMAND_WST));
     }
 
     public void setDoorInstallation(Fragment parentFragment, boolean doorInstallation) {
@@ -1393,7 +1441,10 @@ public class DeviceViewModel extends AndroidViewModel
 
     public void setBleBufferStatus(boolean status) {
         bleBufferStatus = status;
-        sendNextCommandFromBlePool();
+        if (bleBufferStatus) {
+            lastSentBleCommand = new BleCommand();
+            sendNextCommandFromBlePool();
+        }
     }
 
     public LiveData<Integer> getBleTimeOut() {

@@ -208,27 +208,6 @@ public class LockPageFragment extends BaseFragment
         //endregion Initialize Objects
     }
 
-    public void startRepeatingReadProximityTask() {
-        if (mProximityHandler == null)
-            mProximityHandler = new Handler();
-
-        if (mProximityRunnable == null)
-            mProximityRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    LockPageFragment.this.mDeviceViewModel.readRemoteRssi();
-                    mProximityHandler.postDelayed(mProximityRunnable, 2000);
-                }
-            };
-
-        mProximityRunnable.run();
-    }
-
-    public void stopRepeatingReadProximityTask() {
-        if (mProximityHandler != null && mProximityRunnable != null)
-            mProximityHandler.removeCallbacks(mProximityRunnable);
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_lock_page, container, false);
@@ -737,7 +716,7 @@ public class LockPageFragment extends BaseFragment
     }
 
     private void handleDialogLoseAccess() {
-        loseAccessDialog = new Dialog(Objects.requireNonNull(getContext()));
+        loseAccessDialog = new Dialog(getActivity().getBaseContext());
         loseAccessDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         loseAccessDialog.setContentView(R.layout.dialog_lose_access);
         loseAccessDialog.setCancelable(false);
@@ -809,6 +788,27 @@ public class LockPageFragment extends BaseFragment
             return Math.pow(ratio, 10.0);
         }//rssi is greater than transmission strength
         return (0.89976) * Math.pow(ratio, 7.7095) + 0.111;
+    }
+
+    public void startRepeatingReadProximityTask() {
+        if (mProximityHandler == null)
+            mProximityHandler = new Handler();
+
+        if (mProximityRunnable == null)
+            mProximityRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    LockPageFragment.this.mDeviceViewModel.readRemoteRssi();
+                    mProximityHandler.postDelayed(mProximityRunnable, 2000);
+                }
+            };
+
+        mProximityRunnable.run();
+    }
+
+    public void stopRepeatingReadProximityTask() {
+        if (mProximityHandler != null && mProximityRunnable != null)
+            mProximityHandler.removeCallbacks(mProximityRunnable);
     }
     //endregion Declare Methods
 }

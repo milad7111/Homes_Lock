@@ -85,6 +85,10 @@ public class BleHelper {
     public static final String BLE_COMMAND_OPR = "opr";
     public static final String BLE_COMMAND_NPR = "npr";
 
+    public static final String WIFI_STATE_DISCONNECTED = "dis";
+    public static final String WIFI_STATE_CONNECTING = "ctn";
+    public static final String WIFI_STATE_CONNECTED = "con";
+
     public static final String BLE_RESPONSE_PUBLIC_OK = "ok";
     public static final String BLE_RESPONSE_PUBLIC_END = "end";
     public static final String BLE_RESPONSE_PUBLIC_WAIT = "wait";
@@ -371,6 +375,7 @@ public class BleHelper {
 
             case BLE_COMMAND_CON:
             case BLE_COMMAND_DIS:
+            case BLE_COMMAND_WST:
 
             case BLE_COMMAND_OPS:
             case BLE_COMMAND_NPS:
@@ -412,9 +417,4 @@ public class BleHelper {
         }
     }
     //endregion Declare Methods
-
-    //region Declare Enums
-    public enum BleCommandType {
-    }
-    //endregion Declare Enums
 }

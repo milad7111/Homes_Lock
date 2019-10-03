@@ -4,6 +4,16 @@ public class BleCommand {
     private byte[] command;
     private String commandType;
 
+    public BleCommand() {
+        this.command = new byte[0];
+        this.commandType = null;
+    }
+
+    public BleCommand(BleCommand bleCommand) {
+        this.command = bleCommand.command;
+        this.commandType = bleCommand.commandType;
+    }
+
     public BleCommand(byte[] command, String commandType) {
         this.command = command;
         this.commandType = commandType;
