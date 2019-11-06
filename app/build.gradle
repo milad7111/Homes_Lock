@@ -55,7 +55,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    //MultiDex
+    // MultiDex
     implementation 'com.android.support:multidex:1.0.3'
 
     // ViewPager
@@ -98,7 +98,6 @@ dependencies {
     //handle BLE
     implementation 'no.nordicsemi.android:ble:1.2.0'
     implementation 'no.nordicsemi.android.support.v18:scanner:1.1.0'
-
     implementation "com.ederdoski.ble:simpleble:1.0"
 
     // Log Bluetooth LE events in nRF Logger

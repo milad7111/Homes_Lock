@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import com.projects.company.homes_lock.base.BaseModel;
 import com.projects.company.homes_lock.models.datamodels.request.TempDeviceModel;
-import com.projects.company.homes_lock.utils.helper.DataHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +128,10 @@ public class Device extends BaseModel {
     @SerializedName("registrationId")
     private String mRegistrationId = "NOT_SET";
 
+    @ColumnInfo(name = "cfg")
+    @SerializedName("cfg")
+    private Boolean mConfigStatus = false;
+
     //region Ignore server attributes
     @Ignore
     @SerializedName("created")
@@ -177,9 +180,6 @@ public class Device extends BaseModel {
 
     @ColumnInfo(name = "userDeviceObjectId")
     private String mUserDeviceObjectId = "NOT_SET";
-
-    @ColumnInfo(name = "cfg")
-    private Boolean mConfigStatus = false;
     //endregion Not Server Attributes
 
     //region Constructor
@@ -550,14 +550,20 @@ public class Device extends BaseModel {
 
     private void handleConfigStatus(Map updatedLock) {
         if (updatedLock.containsKey(BLE_COMMAND_CFG))
-            this.mWifiStatus = Boolean.valueOf(
+            this.mConfigStatus = Boolean.valueOf(
                     updatedLock.get(BLE_COMMAND_CFG) != null ? updatedLock.get(BLE_COMMAND_CFG).toString() : "false");
     }
 
     private void handleMemberAdminStatus(Map updatedLock) {
         if (updatedLock.containsKey("memberAdminStatus"))
-            this.mMemberAdminStatus = Boolean.valueOf(
-                    updatedLock.get("memberAdminStatus") != null ? updatedLock.get("memberAdminStatus").toString() : "false");
+            switch (Integer.valueOf(
+                    updatedLock.get("memberAdminStatus") != null ? updatedLock.get("memberAdminStatus").toString() : "1000")) {
+                case 1000:
+                    this.mMemberAdminStatus = true;
+                    break;
+                default:
+                    this.mMemberAdminStatus = false;
+            }
     }
 
     private void handleSn(Map updatedLock) {

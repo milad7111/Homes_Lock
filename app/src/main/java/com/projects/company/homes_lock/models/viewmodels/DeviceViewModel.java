@@ -30,6 +30,8 @@ import com.projects.company.homes_lock.repositories.local.ILocalRepository;
 import com.projects.company.homes_lock.repositories.local.LocalRepository;
 import com.projects.company.homes_lock.repositories.remote.NetworkListener;
 import com.projects.company.homes_lock.repositories.remote.NetworkRepository;
+import com.projects.company.homes_lock.ui.device.activity.INearestBleService;
+import com.projects.company.homes_lock.ui.device.activity.NearestBleService;
 import com.projects.company.homes_lock.ui.device.fragment.adddevice.IAddDeviceFragment;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.IDeviceSettingFragment;
@@ -180,6 +182,7 @@ public class DeviceViewModel extends AndroidViewModel
     private final MutableLiveData<Integer> mQueueCommandsCount = new MutableLiveData<>();
 
     private BleCommand lastSentBleCommand = new BleCommand();
+    private INearestBleService mINearestBleService;
     //endregion Declare Objects
 
     //region Constructor
@@ -211,6 +214,10 @@ public class DeviceViewModel extends AndroidViewModel
 
     public LiveData<Device> getDeviceInfo(String mActiveDeviceObjectId) {
         return mLocalRepository.getADevice(mActiveDeviceObjectId);
+    }
+
+    public LiveData<Device> getADeviceBySerialNumber(String address) {
+        return mLocalRepository.getADeviceBySerialNumber(address);
     }
 
     public void insertLocalDevice(IBleScanListener mIBleScanListener, Device device) {
@@ -578,6 +585,16 @@ public class DeviceViewModel extends AndroidViewModel
             mBleDeviceManager.connect(device.getDevice());
     }
 
+    public void connect(BluetoothDevice device) {
+        final LogSession logSession = Logger.newSession(getApplication(), null, device.getAddress(), device.getName());
+        mBleDeviceManager.setLogger(logSession);
+
+        if (mBleDeviceManager.isConnected())
+            this.mIsConnected.postValue(true);
+        else
+            mBleDeviceManager.connect(device);
+    }
+
     public void disconnect() {
         mBleDeviceManager.disconnect();
     }
@@ -610,10 +627,16 @@ public class DeviceViewModel extends AndroidViewModel
                     if (mILockPageFragment != null)
                         mLocalRepository.updateDeviceIsLocked(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
+                    else if (mINearestBleService != null)
+                        mLocalRepository.updateDeviceIsLocked(((NearestBleService) mINearestBleService).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
                     break;
                 case BLE_COMMAND_ISO:
                     if (mILockPageFragment != null)
                         mLocalRepository.updateDeviceIsDoorClosed(((LockPageFragment) mILockPageFragment).getDevice().getObjectId(),
+                                keyCommandJson.getBoolean(keyCommand));
+                    else if (mINearestBleService != null)
+                        mLocalRepository.updateDeviceIsDoorClosed(((NearestBleService) mINearestBleService).getDevice().getObjectId(),
                                 keyCommandJson.getBoolean(keyCommand));
                     break;
                 case BLE_COMMAND_KNK:
@@ -1076,6 +1099,17 @@ public class DeviceViewModel extends AndroidViewModel
             );
     }
 
+    public void sendLockCommand(INearestBleService mINearestBleService, boolean lockCommand) {
+        bleBufferStatus = true;
+        this.mINearestBleService = mINearestBleService;
+
+        addNewCommandToBlePool(
+                new BleCommand(
+                        createBleReadMessage(lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC),
+                        lockCommand ? BLE_COMMAND_LOC : BLE_COMMAND_ULC)
+        );
+    }
+
     public void getDeviceCommonSettingInfoFromBleDevice(Fragment parentFragment) {
         if (parentFragment instanceof ILockPageFragment)
             this.mILockPageFragment = (ILockPageFragment) parentFragment;
@@ -1409,8 +1443,7 @@ public class DeviceViewModel extends AndroidViewModel
 
     //region Declare Methods
     public void initMQTT(Context context, String deviceSerialNumber) {
-        if (isUserLoggedIn())
-            MQTTHandler.setup(this, context, deviceSerialNumber);
+        MQTTHandler.setup(this, context, deviceSerialNumber);
     }
 
     public void disconnectMQTT() {

@@ -5,8 +5,10 @@ package com.projects.company.homes_lock.base;
  */
 
 import android.app.Application;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
@@ -16,7 +18,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.projects.company.homes_lock.BuildConfig;
 import com.projects.company.homes_lock.repositories.remote.IRetrofit;
-import com.projects.company.homes_lock.utils.BeaconService;
+import com.projects.company.homes_lock.ui.device.activity.DeviceActivity;
+import com.projects.company.homes_lock.ui.device.activity.NearestBleService;
 
 import io.fabric.sdk.android.Fabric;
 import okhttp3.OkHttpClient;
@@ -43,6 +46,7 @@ public class BaseApplication extends Application {
     public static String activeUserEmail = null;
 
     private static volatile IRetrofit IRETROFIT = null;
+    private static Intent mNearestBleService;
     //endregion Declare Objects
 
     //region Main Callbacks
@@ -57,7 +61,7 @@ public class BaseApplication extends Application {
         if (BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
 
-        //startService(new Intent(this, BeaconService.class));
+        mNearestBleService = new Intent(getApplicationContext(), NearestBleService.class);
     }
 
     @Override
@@ -102,6 +106,16 @@ public class BaseApplication extends Application {
         Crashlytics.setUserIdentifier(activeUserObjectId);
         Crashlytics.setUserEmail(activeUserEmail);
         Crashlytics.setUserName(activeUserToken);
+    }
+
+    public void startNearestService(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            context.startForegroundService(mNearestBleService);
+        else context.startService(mNearestBleService);
+    }
+
+    public void stopNearestService(Context context) {
+        context.stopService(mNearestBleService);
     }
     //endregion Declare Methods
 }

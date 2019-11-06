@@ -89,6 +89,10 @@ public class LocalRepository {
         return mDeviceDao.getDevice(mDeviceObjectId);
     }
 
+    public LiveData<Device> getADeviceBySerialNumber(String serialNumber) {
+        return mDeviceDao.getDeviceBySerialNumber(serialNumber);
+    }
+
     public void updateDeviceIsLocked(String mDeviceObjectId, boolean mIsLocked) {
         mDeviceDao.setIsLocked(mDeviceObjectId, mIsLocked);
     }

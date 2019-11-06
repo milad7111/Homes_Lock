@@ -275,7 +275,7 @@ public class GatewayPageFragment extends BaseFragment
             GatewayPageFragment.this.mDeviceViewModel.removeListenerForDevice(this, mDevice);
         }
 
-        GatewayPageFragment.this.mDeviceViewModel.disconnect();
+        disconnectDevice();
 
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
@@ -563,7 +563,7 @@ public class GatewayPageFragment extends BaseFragment
             showToast("This is not available in Login Mode");
         else {
             if (isConnectedToBleDevice)
-                GatewayPageFragment.this.mDeviceViewModel.disconnect();
+                disconnectDevice();
             else
                 connectToDevice();
         }
@@ -1036,6 +1036,17 @@ public class GatewayPageFragment extends BaseFragment
             deviceWifiNetworkDialog.show();
 
         Objects.requireNonNull(deviceWifiNetworkDialog.getWindow()).setAttributes(getDialogLayoutParams(deviceWifiNetworkDialog));
+    }
+
+    public boolean disconnectDevice() {
+        if (isConnectedToBleDevice && this.mDeviceViewModel != null) {
+            this.mDeviceViewModel.disconnect();
+            new Handler().postDelayed(() -> {
+                updateViewData(true);
+            }, 1500);
+            return false;
+        } else
+            return true;
     }
     //endregion Declare BLE Methods
 

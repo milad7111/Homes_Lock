@@ -15,6 +15,7 @@ public class ScannedDeviceModel extends BaseModel {
     private String mMacAddress;
     private String mSerialNumber;
     private int mRSSI;
+    private byte[] mScanRecord;
     //endregion Declare Objects
 
     //region Constructor
@@ -29,6 +30,14 @@ public class ScannedDeviceModel extends BaseModel {
         this.bluetoothDevice = bluetoothDevice;
         this.mName = bluetoothDevice.getName();
         this.mMacAddress = bluetoothDevice.getAddress();
+    }
+
+    public ScannedDeviceModel(final BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
+        this.bluetoothDevice = bluetoothDevice;
+        this.mName = bluetoothDevice.getName();
+        this.mMacAddress = bluetoothDevice.getAddress();
+        this.mRSSI = rssi;
+        this.mScanRecord = scanRecord;
     }
 
     public ScannedDeviceModel(int mRSSI) {
@@ -74,6 +83,14 @@ public class ScannedDeviceModel extends BaseModel {
     }
 
     public void setFavoriteStatus(boolean checked) {
+    }
+
+    public byte[] getScanRecord() {
+        return mScanRecord;
+    }
+
+    public void setRSSI(int rssi) {
+        this.mRSSI = rssi;
     }
     //endregion Declare Methods
 }

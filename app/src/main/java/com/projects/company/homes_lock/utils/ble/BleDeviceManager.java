@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.projects.company.homes_lock.utils.helper.BleHelper;
 
@@ -88,9 +87,6 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         protected void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
             mBluetoothGatt = gatt;
 
-//            if (new String(characteristic.getValue()).equals("@@{\"wst\":\"dis\"}i"))
-                Timber.e("RRR....." + new String(characteristic.getValue()));
-
             if (getNibble(characteristic.getValue()[1], true) == 4) {
                 Timber.e("Buffer partition is free");
                 bleBufferStatus = true;
@@ -117,11 +113,10 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
         public void onCharacteristicNotified(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
             mBluetoothGatt = gatt;
 
-//            if (!Arrays.equals(lastNotifiedData, characteristic.getValue())) {
+            if (!Arrays.equals(lastNotifiedData, characteristic.getValue())) {
                 lastNotifiedData = characteristic.getValue();
-                Timber.e("notification>>>>>>>>" + new String(characteristic.getValue()));
                 readCharacteristic(CHARACTERISTIC_UUID_TX);//Notify just get 20 bytes data, so read data to get all of it
-//            }
+            }
 
 //            try {
 //                String keyValue = new String(subArrayByte(characteristic.getValue(), 2, characteristic.getValue().length - 1));
@@ -152,7 +147,11 @@ public class BleDeviceManager extends BleManager<IBleDeviceManagerCallbacks> {
     //region Constructor
     public BleDeviceManager(final Context context) {
         super(context);
-        BleHelper.myPhoneBleMacAddress = android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
+
+        try {
+            BleHelper.myPhoneBleMacAddress = android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
+        } catch (Exception e) {
+        }
     }
     //endregion Constructor
 

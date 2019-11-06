@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
+import com.projects.company.homes_lock.base.BaseApplication;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.ui.aboutus.AboutUsActivity;
 import com.projects.company.homes_lock.ui.device.fragment.devicesetting.DeviceSettingFragment;
@@ -71,6 +72,8 @@ public class DeviceActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        (new BaseApplication()).stopNearestService(this);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_device);
@@ -172,16 +175,18 @@ public class DeviceActivity extends BaseActivity
                 getSupportFragmentManager().popBackStackImmediate();
             else if (mFragment instanceof DeviceSettingFragment)
                 getSupportFragmentManager().popBackStackImmediate();
-            else if (mViewPager.getChildCount() == 0) {
-                mqttDisconnect();
-                finish();
-            } else {
-                if (mViewPager.getCurrentItem() == 0)
+            else if (mAdapter.checkDisconnectStatus(mViewPager.getCurrentItem())) {
+                if (mViewPager.getChildCount() == 0) {
+                    mqttDisconnect();
                     finish();
-                else if (mViewPager.getCurrentItem() == mViewPager.getChildCount() - 1)
-                    mViewPager.setCurrentItem(0);
-                else
-                    mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+                } else {
+                    if (mViewPager.getCurrentItem() == 0)
+                        finish();
+                    else if (mViewPager.getCurrentItem() == mViewPager.getChildCount() - 1)
+                        mViewPager.setCurrentItem(0);
+                    else
+                        mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+                }
             }
         }
     }
@@ -212,6 +217,7 @@ public class DeviceActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         mqttDisconnect();
+        (new BaseApplication()).startNearestService(DeviceActivity.this);
     }
 
     //endregion Main CallBacks

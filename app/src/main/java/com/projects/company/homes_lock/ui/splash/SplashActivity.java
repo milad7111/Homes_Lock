@@ -2,11 +2,14 @@ package com.projects.company.homes_lock.ui.splash;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
+import com.projects.company.homes_lock.base.BaseApplication;
+import com.projects.company.homes_lock.ui.device.activity.NearestBleService;
 import com.projects.company.homes_lock.ui.login.activity.LoginActivity;
 
 public class SplashActivity extends BaseActivity {
@@ -20,6 +23,6 @@ public class SplashActivity extends BaseActivity {
         (new Handler()).postDelayed(() -> {
             startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             finish();
-        }, 1500);
+        }, 500);
     }
 }

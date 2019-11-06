@@ -250,6 +250,7 @@ public class DeviceSettingFragment extends BaseFragment
                 break;
             case R.id.txv_calibration_lock_setting_fragment:
             case R.id.txv_calibration_description_lock_setting_fragment:
+                v.setEnabled(false);
                 handleInitializeCalibrationLock();
                 break;
             case R.id.txv_change_pairing_password_setting_fragment:

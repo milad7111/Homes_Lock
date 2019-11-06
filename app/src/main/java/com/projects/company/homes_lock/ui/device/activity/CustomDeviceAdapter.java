@@ -8,6 +8,7 @@ import com.projects.company.homes_lock.ui.device.fragment.adddevice.AddDeviceFra
 import com.projects.company.homes_lock.ui.device.fragment.gatewaypage.GatewayPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -15,12 +16,14 @@ public class CustomDeviceAdapter extends SmartFragmentStatePagerAdapter {
 
     //region Declare List & Arrays
     private List<Device> mDeviceList;
+    private List<Fragment> mFragments;
     //endregion Declare List & Arrays
 
     //region Constructor
     public CustomDeviceAdapter(FragmentManager fragmentManager, List<Device> mDeviceList) {
         super(fragmentManager);
         this.mDeviceList = mDeviceList;
+        this.mFragments = new ArrayList<>();
     }
     //endregion Constructor
 
@@ -33,19 +36,45 @@ public class CustomDeviceAdapter extends SmartFragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position != getCount() - 1) {
-            if (mDeviceList.get(position).getDeviceType().equals("LOCK"))
-                return LockPageFragment.newInstance(mDeviceList.get(position));
-            else if (mDeviceList.get(position).getDeviceType().equals("GTWY"))
-                return GatewayPageFragment.newInstance(mDeviceList.get(position));
+            if (mDeviceList.get(position).getDeviceType().equals("LOCK")) {
+                mFragments.add(LockPageFragment.newInstance(mDeviceList.get(position)));
+                return mFragments.get(mFragments.size() - 1);
+            } else if (mDeviceList.get(position).getDeviceType().equals("GTWY")) {
+                mFragments.add(GatewayPageFragment.newInstance(mDeviceList.get(position)));
+                return mFragments.get(mFragments.size() - 1);
+            }
 
             throw new InputMismatchException();
-        } else
-            return AddDeviceFragment.newInstance();
+        } else {
+            mFragments.add(AddDeviceFragment.newInstance());
+            return mFragments.get(mFragments.size() - 1);
+        }
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         return "Page " + position;
+    }
+
+    private boolean isDevicePage(int position) {
+        return position != (getCount() - 1);
+    }
+
+    private String getDeviceType(int position) {
+        return mDeviceList.get(position).getDeviceType();
+    }
+
+    boolean checkDisconnectStatus(int position) {
+        if (isDevicePage(position)) {
+            switch (getDeviceType(position)) {
+                case "LOCK":
+                    return (((LockPageFragment) mFragments.get(position)).disconnectDevice());
+                case "GTWY":
+                    return (((GatewayPageFragment) mFragments.get(position)).disconnectDevice());
+            }
+        }
+
+        return true;
     }
     //endregion Main Callbacks
 

@@ -25,8 +25,8 @@ import static com.projects.company.homes_lock.utils.helper.BleHelper.findDevices
 public class NotificationService extends BackendlessFCMService implements ILocalRepository, IBleScanListener {
 
     //region Declare Objects
-    private CustomBluetoothLEHelper mBluetoothLEHelper;
-    private TempDeviceModel mTempDevice;
+//    private CustomBluetoothLEHelper mBluetoothLEHelper;
+//    private TempDeviceModel mTempDevice;
     //endregion Declare Objects
 
     @Override
@@ -40,10 +40,10 @@ public class NotificationService extends BackendlessFCMService implements ILocal
 //        if (BuildConfig.DEBUG)
 //            android.os.Debug.waitForDebugger();
 
-        mBluetoothLEHelper = new CustomBluetoothLEHelper(null);
-        mTempDevice = new TempDeviceModel();
+//        mBluetoothLEHelper = new CustomBluetoothLEHelper(null);
+//        mTempDevice = new TempDeviceModel();
 
-        findDevices(this, mBluetoothLEHelper);
+//        findDevices(this, mBluetoothLEHelper);
     }
 
     @Override

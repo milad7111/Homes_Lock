@@ -13,12 +13,16 @@ import android.os.Handler;
 
 import com.ederdoski.simpleble.models.BluetoothLE;
 import com.ederdoski.simpleble.utils.Functions;
+import com.projects.company.homes_lock.ui.device.activity.NearestBleService;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 import timber.log.Timber;
+
+import static com.projects.company.homes_lock.utils.helper.BleHelper.SERVICE_UUID_SERIAL;
 
 public class CustomBluetoothLEHelper {
 
@@ -36,7 +40,7 @@ public class CustomBluetoothLEHelper {
 
     private static long SCAN_PERIOD = 10000;
     private static boolean mScanning = false;
-    private static String FILTER_SERVICE = "";
+    private static String FILTER_SERVICE = SERVICE_UUID_SERIAL.toString();
 
     public CustomBluetoothLEHelper(Activity _act, CustomBleCallback bleCallback) {
         if (Functions.isBleSupported(_act)) {
@@ -49,12 +53,11 @@ public class CustomBluetoothLEHelper {
         }
     }
 
-    public CustomBluetoothLEHelper(CustomBleCallback bleCallback) {
-            BluetoothManager bluetoothManager = (BluetoothManager) act.getSystemService(Context.BLUETOOTH_SERVICE);
-            mBluetoothAdapter = bluetoothManager.getAdapter();
-            mBluetoothAdapter.enable();
+    public CustomBluetoothLEHelper(CustomBleCallback bleCallback, BluetoothAdapter bluetoothAdapter) {
+        mBluetoothAdapter = bluetoothAdapter;
+        mBluetoothAdapter.enable();
 
-            this.bleCallback = bleCallback;
+        this.bleCallback = bleCallback;
     }
 
     public void scanLeDevice(boolean enable) {
@@ -85,25 +88,22 @@ public class CustomBluetoothLEHelper {
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
-            act.runOnUiThread(() -> {
-                if (aDevices.size() > 0) {
+            if (bleCallback instanceof NearestBleService) {
+                ((NearestBleService) bleCallback).onLeScan(device, rssi, scanRecord);
+            } else
+                act.runOnUiThread(() -> {
+                    if (aDevices.size() > 0) {
+                        boolean isNewItem = true;
 
-                    boolean isNewItem = true;
+                        for (int i = 0; i < aDevices.size(); i++)
+                            if (aDevices.get(i).getMacAddress().equals(device.getAddress()))
+                                isNewItem = false;
 
-                    for (int i = 0; i < aDevices.size(); i++) {
-                        if (aDevices.get(i).getMacAddress().equals(device.getAddress())) {
-                            isNewItem = false;
-                        }
-                    }
-
-                    if (isNewItem) {
+                        if (isNewItem)
+                            aDevices.add(new BluetoothLE(device.getName(), device.getAddress(), rssi, device));
+                    } else
                         aDevices.add(new BluetoothLE(device.getName(), device.getAddress(), rssi, device));
-                    }
-
-                } else {
-                    aDevices.add(new BluetoothLE(device.getName(), device.getAddress(), rssi, device));
-                }
-            });
+                });
         }
     };
 
@@ -111,53 +111,12 @@ public class CustomBluetoothLEHelper {
         return aDevices;
     }
 
-//    public void connect(BluetoothDevice device, BleCallback _bleCallback) {
-//        if (mBluetoothGatt == null && !isConnected()) {
-//            bleCallback = _bleCallback;
-//            mBluetoothGatt = device.connectGatt(act, false, mGattCallback);
-//        }
-//    }
-
     public void disconnect() {
         if (mBluetoothGatt != null && isConnected()) {
             mBluetoothGatt.close();
             mBluetoothGatt = null;
         }
     }
-
-//    public boolean isReadyForScan() {
-//        return Permissions.checkPermisionStatus(act, Manifest.permission.BLUETOOTH)
-//                && Permissions.checkPermisionStatus(act, Manifest.permission.BLUETOOTH_ADMIN)
-//                && Permissions.checkPermisionStatus(act, Manifest.permission.ACCESS_COARSE_LOCATION) && Functions.getStatusGps(act);
-//    }
-//
-//    public void write(String service, String characteristic, byte[] aBytes) {
-//
-//        BluetoothGattCharacteristic mBluetoothGattCharacteristic;
-//
-//        mBluetoothGattCharacteristic = mBluetoothGatt.getService(UUID.fromString(service)).getCharacteristic(UUID.fromString(characteristic));
-//        mBluetoothGattCharacteristic.setValue(aBytes);
-//
-//        mBluetoothGatt.writeCharacteristic(mBluetoothGattCharacteristic);
-//    }
-
-//    public void write(String service, String characteristic, String aData) {
-//
-//        BluetoothGattCharacteristic mBluetoothGattCharacteristic;
-//
-//        mBluetoothGattCharacteristic = mBluetoothGatt.getService(UUID.fromString(service)).getCharacteristic(UUID.fromString(characteristic));
-//        mBluetoothGattCharacteristic.setValue(aData);
-//
-//        mBluetoothGatt.writeCharacteristic(mBluetoothGattCharacteristic);
-//    }
-//
-//    public void read(String service, String characteristic) {
-//        mBluetoothGatt.readCharacteristic(mBluetoothGatt.getService(UUID.fromString(service)).getCharacteristic(UUID.fromString(characteristic)));
-//    }
-
-//    public void readRemoteRSSI() {
-//        mBluetoothGatt.readRemoteRssi();
-//    }
 
     private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
@@ -199,7 +158,7 @@ public class CustomBluetoothLEHelper {
         }
     };
 
-    public boolean isConnected() {
+    private boolean isConnected() {
         return mConnectionState == STATE_CONNECTED;
     }
 
@@ -215,24 +174,16 @@ public class CustomBluetoothLEHelper {
         return SCAN_PERIOD;
     }
 
-//    public void setFilterService(String filterService) {
-//        FILTER_SERVICE = filterService;
-//    }
-
-//    public void setGatt(BluetoothGattCallback mGattCallback) {
-//        this.mGattCallback = mGattCallback;
-//    }
-
-    public BluetoothGattCallback getGatt() {
-        return mGattCallback;
-    }
-
     public BluetoothDevice checkBondedDevices(String macAddress) {
         for (BluetoothDevice bondedDevice : mBluetoothAdapter.getBondedDevices())
             if (bondedDevice.getAddress().equals(macAddress))
                 return bondedDevice;
 
         return null;
+    }
+
+    public Set<BluetoothDevice> getBondedDevices() {
+        return mBluetoothAdapter.getBondedDevices();
     }
 
     public void unPairDevice(String macAddress) {

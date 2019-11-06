@@ -275,6 +275,7 @@ public class NetworkRepository {
         deviceEventHandler.addBulkUpdateListener(String.format("sn='%s'", mDevice.getSerialNumber()), new AsyncCallback<BulkEvent>() {
             @Override
             public void handleResponse(BulkEvent response) {
+                Timber.e("");
                 if (response.getCount() >= 1) {
                     listener.onResponse(new TempDeviceModel(mDevice.getObjectId()));
                 }

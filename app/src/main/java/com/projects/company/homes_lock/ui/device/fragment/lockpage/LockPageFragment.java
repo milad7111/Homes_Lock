@@ -117,7 +117,7 @@ public class LockPageFragment extends BaseFragment
 
     //region Declare Variables
     private boolean isConnectedToBleDevice = false;
-    private boolean lockUnlockCommandInProcess = true;
+    private boolean lockUnlockCommandInProcess = false;
     //endregion Declare Variables
 
     //region Declare Arrays & Lists
@@ -254,7 +254,7 @@ public class LockPageFragment extends BaseFragment
         if (isUserLoggedIn()) {
             Objects.requireNonNull(LockPageFragment.this.getActivity()).runOnUiThread(() -> {
                 this.mDeviceViewModel.setListenerForDevice(this, mDevice);
-
+                this.mDeviceViewModel.initMQTT(getActivity(), mDevice.getGateWayId());
                 this.mDeviceViewModel.getUserLockInfo(mDevice.getObjectId()).observe(this, new Observer<UserLock>() {
                     @Override
                     public void onChanged(@Nullable UserLock userLock) {
@@ -278,8 +278,10 @@ public class LockPageFragment extends BaseFragment
     public void onDestroy() {
         super.onDestroy();
 
-        this.mDeviceViewModel.disconnect();
-        this.mDeviceViewModel.removeListenerForDevice(this, mDevice);
+        if (isUserLoggedIn()) {
+            disconnectDevice();
+            this.mDeviceViewModel.removeListenerForDevice(this, mDevice);
+        }
 
         if (mBluetoothLEHelper != null)
             mBluetoothLEHelper.disconnect();
@@ -486,10 +488,21 @@ public class LockPageFragment extends BaseFragment
             Toast.makeText(getActivity(), "This is not available in Login Mode", Toast.LENGTH_LONG).show();
         else {
             if (isConnectedToBleDevice)
-                this.mDeviceViewModel.disconnect();
+                disconnectDevice();
             else
                 connectToDevice();
         }
+    }
+
+    public boolean disconnectDevice() {
+        if (isConnectedToBleDevice && this.mDeviceViewModel != null) {
+            this.mDeviceViewModel.disconnect();
+            new Handler().postDelayed(() -> {
+                updateViewData(true);
+            }, 1500);
+            return false;
+        } else
+            return true;
     }
 
     private void handleConnectedClients() {
@@ -517,15 +530,14 @@ public class LockPageFragment extends BaseFragment
 
         if (!mBluetoothLEHelper.isScanning()) {
             mBluetoothLEHelper.setScanPeriod(1000);
-            Handler mHandler = new Handler();
             mBluetoothLEHelper.scanLeDevice(true);
 
-            mHandler.postDelayed(() -> {
+            (new Handler()).postDelayed(() -> {
                 for (int i = 0; i < TIMES_TO_SCAN_BLE_DEVICES; i++)
                     if (connectToSpecificBleDevice(getListOfScannedDevices()))
                         break;
             }, mBluetoothLEHelper.getScanPeriod());
-        }
+        } else mBluetoothLEHelper.scanLeDevice(false);
     }
 
     private boolean connectToSpecificBleDevice(List<ScannedDeviceModel> listOfScannedDevices) {
@@ -542,6 +554,7 @@ public class LockPageFragment extends BaseFragment
     private void sendLockCommand(boolean lockCommand) {
         if (!lockUnlockCommandInProcess) {
             lockUnlockCommandInProcess = true;
+            new Handler().postDelayed(() -> lockUnlockCommandInProcess = false, 60000);
             enableLockCommandRingImageView(getActivity(), imgIsLockedLockPageRing, lockCommand ? 0 : 1);
             this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
         }
@@ -686,15 +699,18 @@ public class LockPageFragment extends BaseFragment
 
         txvDeviceNameLockPage.setText(mDevice.getBleDeviceName());
 
-        txvBriefStatusLockPage.setText(
-                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ?
-                        getString(R.string.fragment_text_view_data_not_synced) :
-                        (!mDevice.getConfigStatus() ? getString(R.string.fragment_text_view_lock_not_config) :
-                                getLockBriefStatusText(mDevice.getIsLocked(), mDevice.getIsDoorClosed())));
-        txvBriefStatusLockPage.setTextColor(
-                (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) :
-                        (!mDevice.getConfigStatus() ? getColor(mContext, R.color.md_red_700) :
-                                getColor(mContext, getLockBriefStatusColor(mDevice.getIsLocked(), mDevice.getIsDoorClosed()))));
+        try {
+            txvBriefStatusLockPage.setText(
+                    (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ?
+                            getString(R.string.fragment_text_view_data_not_synced) :
+                            (!mDevice.getConfigStatus() ? getString(R.string.fragment_text_view_lock_not_config) :
+                                    getLockBriefStatusText(mDevice.getIsLocked(), mDevice.getIsDoorClosed())));
+            txvBriefStatusLockPage.setTextColor(
+                    (!isConnectedToBleDevice && !isUserLoggedIn()) || setDefault ? getColor(mContext, R.color.md_grey_500) :
+                            (!mDevice.getConfigStatus() ? getColor(mContext, R.color.md_red_700) :
+                                    getColor(mContext, getLockBriefStatusColor(mDevice.getIsLocked(), mDevice.getIsDoorClosed()))));
+        } catch (Exception e) {
+        }
 
         txvNewUpdateLockPage.setText(null);
 

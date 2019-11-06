@@ -35,6 +35,9 @@ public interface DeviceDao extends BaseDao<Device> {
     @Query("SELECT * FROM device WHERE objectId = :mDeviceObjectId")
     LiveData<Device> getDevice(final String mDeviceObjectId);
 
+    @Query("SELECT * FROM device WHERE sn = :mDeviceSerialNumber")
+    LiveData<Device> getDeviceBySerialNumber(final String mDeviceSerialNumber);
+
     @Query("UPDATE device SET iso = :mIsDoorClosed WHERE objectId = :mDeviceObjectId")
     void setIsDoorClosed(final String mDeviceObjectId, boolean mIsDoorClosed);
 

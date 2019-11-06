@@ -24,47 +24,49 @@ public class MQTTHandler {
     private static IMQTTListener _mPublisherIMQTTListener;
 
     public static void setup(IMQTTListener mIMQTTListener, Context mContext, String deviceSerialNumber) {
-        _mIMQTTListener = mIMQTTListener;
-        mDeviceSerialNumber = deviceSerialNumber;
-        client = new MqttAndroidClient(
-                mContext,
-                "tcp://185.208.175.56",
-                String.format("Android:%s:%s", deviceSerialNumber, activeUserObjectId));
+        if (_mIMQTTListener == null) {
+            _mIMQTTListener = mIMQTTListener;
+            mDeviceSerialNumber = deviceSerialNumber;
+            client = new MqttAndroidClient(
+                    mContext,
+                    "tcp://185.208.175.56",
+                    String.format("Android:%s:%s", deviceSerialNumber, activeUserObjectId));
 
-        client.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable cause) {
-                if (_mPublisherIMQTTListener != null)
-                    _mPublisherIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
-
-                if (_mIMQTTListener != null)
-                    _mIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
-
-                Timber.w("Connection to broker Lost.");
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) {
-                try {
+            client.setCallback(new MqttCallback() {
+                @Override
+                public void connectionLost(Throwable cause) {
                     if (_mPublisherIMQTTListener != null)
-                        _mPublisherIMQTTListener.onMessageArrived(new MessageModel(topic, message));
+                        _mPublisherIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
 
-                    Timber.i("Message Arrived.");
-                } catch (Exception e) {
-                    Timber.e(e);
+                    if (_mIMQTTListener != null)
+                        _mIMQTTListener.onConnectionToBrokerLost(new FailureModel(cause.getMessage()));
+
+                    Timber.w("Connection to broker Lost.");
                 }
-            }
 
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-                if (_mPublisherIMQTTListener != null)
-                    _mPublisherIMQTTListener.onDeliveryMessageComplete(token);
+                @Override
+                public void messageArrived(String topic, MqttMessage message) {
+                    try {
+                        if (_mPublisherIMQTTListener != null)
+                            _mPublisherIMQTTListener.onMessageArrived(new MessageModel(topic, message));
 
-                Timber.i("Receiving Message Completed.");
-            }
-        });
+                        Timber.i("Message Arrived.");
+                    } catch (Exception e) {
+                        Timber.e(e);
+                    }
+                }
 
-        connect();
+                @Override
+                public void deliveryComplete(IMqttDeliveryToken token) {
+                    if (_mPublisherIMQTTListener != null)
+                        _mPublisherIMQTTListener.onDeliveryMessageComplete(token);
+
+                    Timber.i("Receiving Message Completed.");
+                }
+            });
+
+            connect();
+        }
     }
 
     private static void connect() {

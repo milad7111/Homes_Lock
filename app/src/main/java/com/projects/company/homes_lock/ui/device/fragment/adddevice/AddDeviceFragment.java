@@ -408,7 +408,7 @@ public class AddDeviceFragment extends BaseFragment
             else if (tietDeviceSerialNumberDialogAddNewDevice.getText() == null || tietDeviceSerialNumberDialogAddNewDevice.getText().toString().equals(""))
                 Toast.makeText(getActivity(), "serial number is empty", Toast.LENGTH_SHORT).show();
             else {
-                this.mDeviceViewModel.getDeviceInfo(Objects.requireNonNull(tietDeviceSerialNumberDialogAddNewDevice.getText()).toString())
+                this.mDeviceViewModel.getADeviceBySerialNumber(tietDeviceSerialNumberDialogAddNewDevice.getText().toString())
                         .observe(this, new Observer<Device>() {
                             @Override
                             public void onChanged(@Nullable Device device) {
