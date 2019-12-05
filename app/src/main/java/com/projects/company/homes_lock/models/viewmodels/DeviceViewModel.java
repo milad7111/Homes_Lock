@@ -41,6 +41,7 @@ import com.projects.company.homes_lock.ui.device.fragment.lockpage.ILockPageFrag
 import com.projects.company.homes_lock.ui.device.fragment.lockpage.LockPageFragment;
 import com.projects.company.homes_lock.ui.device.fragment.managemembers.IManageMembersFragment;
 import com.projects.company.homes_lock.ui.login.fragment.login.ILoginFragment;
+import com.projects.company.homes_lock.ui.login.fragment.login.LoginFragment;
 import com.projects.company.homes_lock.utils.ble.BleDeviceManager;
 import com.projects.company.homes_lock.utils.ble.IBleDeviceManagerCallbacks;
 import com.projects.company.homes_lock.utils.ble.IBleScanListener;
@@ -405,7 +406,7 @@ public class DeviceViewModel extends AndroidViewModel
                     break;
                 case "enablePushNotification":
                     if (mILoginFragment != null)
-                        mILoginFragment.onDeviceRegistrationForPushNotificationSuccessful(((ResponseBodyModel) response).getRegistrationId());
+                        mILoginFragment.onDeviceRegistrationForPushNotificationSuccessful((ResponseBodyModel) response);
                     break;
                 default:
                     break;
@@ -1419,7 +1420,10 @@ public class DeviceViewModel extends AndroidViewModel
         mNetworkRepository.setListenerForUser(this, mUserDeviceObjectId);
     }
 
-    public void enablePushNotification(String serialNumber) {
+    public void enablePushNotification(Fragment fragment, String serialNumber) {
+        if (fragment instanceof LoginFragment)
+            mILoginFragment = (ILoginFragment) fragment;
+
         setRequestType("enablePushNotification");
         mNetworkRepository.enablePushNotification(this, serialNumber);
     }
@@ -1488,8 +1492,9 @@ public class DeviceViewModel extends AndroidViewModel
         if (mBleDeviceManager != null)
             mBleDeviceManager.readRemoteRssi();
     }
-    //endregion Declare Methods
 
-    //region SharePreferences
-    //endregion SharePreferences
+    public void updateRegistrationIdBySerialNumber(ResponseBodyModel responseBodyModel) {
+        this.mLocalRepository.updateDeviceRegistrationId(responseBodyModel);
+    }
+    //endregion Declare Methods
 }

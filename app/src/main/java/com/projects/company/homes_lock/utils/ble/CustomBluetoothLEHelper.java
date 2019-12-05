@@ -40,7 +40,7 @@ public class CustomBluetoothLEHelper {
 
     private static long SCAN_PERIOD = 10000;
     private static boolean mScanning = false;
-    private static String FILTER_SERVICE = SERVICE_UUID_SERIAL.toString();
+    private static String FILTER_SERVICE = ""; //SERVICE_UUID_SERIAL.toString();
 
     public CustomBluetoothLEHelper(Activity _act, CustomBleCallback bleCallback) {
         if (Functions.isBleSupported(_act)) {

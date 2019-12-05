@@ -1,9 +1,5 @@
 package com.projects.company.homes_lock.base;
 
-/*
-  This is Application Class of Project
- */
-
 import android.app.Application;
 import android.app.Service;
 import android.content.Context;
@@ -32,6 +28,9 @@ import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS
 import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_APPLICATION_ID;
 import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_BASE_URL_HTTPS_REST;
 
+/*
+  This is Application Class of Project
+ */
 public class BaseApplication extends Application {
 
     //region Declare Objects
@@ -56,12 +55,12 @@ public class BaseApplication extends Application {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Backendless.initApp(this, BACKENDLESS_APPLICATION_ID, BACKENDLESS_ANDROID_API_KEY);
         Fabric.with(this, new Crashlytics());
-        // TODO: Move this to where you establish a user session
+        // TODO: Move this to where you establish a user sessionr
         logUserCrashesInFabric();
         if (BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
 
-        mNearestBleService = new Intent(getApplicationContext(), NearestBleService.class);
+//        mNearestBleService = new Intent(getApplicationContext(), NearestBleService.class);
     }
 
     @Override

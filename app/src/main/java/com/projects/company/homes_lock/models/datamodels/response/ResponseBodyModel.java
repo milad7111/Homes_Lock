@@ -10,12 +10,14 @@ public class ResponseBodyModel extends ResponseBody {
     private int mCode = -1;
     private String mMessage = null;
     private String mRegistrationId = null;
+    private String mSerialNumber = null;
 
-    public ResponseBodyModel(String data, boolean isResisteration) {
-        if (isResisteration)
-            this.mRegistrationId = data;
-        else {
-            String text = data.substring(data.indexOf("text=") + 5, data.indexOf("]") - 3) + "}";
+    public ResponseBodyModel(String registrationId, boolean isRegistration, String serialNumber) {
+        if (isRegistration) {
+            this.mRegistrationId = registrationId;
+            this.mSerialNumber = serialNumber;
+        } else {
+            String text = registrationId.substring(registrationId.indexOf("text=") + 5, registrationId.indexOf("]") - 3) + "}";
 
             try {
                 this.mCode = Integer.valueOf(text.substring(text.indexOf("code:") + 9, text.indexOf(",\"message\":")));
@@ -47,5 +49,9 @@ public class ResponseBodyModel extends ResponseBody {
     @Override
     public BufferedSource source() {
         return null;
+    }
+
+    public String getSerialNumber() {
+        return mSerialNumber;
     }
 }

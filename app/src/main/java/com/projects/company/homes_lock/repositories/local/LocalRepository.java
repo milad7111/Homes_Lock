@@ -17,6 +17,7 @@ import com.projects.company.homes_lock.database.tables.Device;
 import com.projects.company.homes_lock.database.tables.Notification;
 import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 
 import java.util.List;
 
@@ -171,6 +172,10 @@ public class LocalRepository {
 
     public void updateDevice(Device device) {
         new updateDeviceAsyncTask(mDeviceDao).execute(device);
+    }
+
+    public void updateDeviceRegistrationId(ResponseBodyModel responseBodyModel) {
+        mDeviceDao.setRegistrationId(responseBodyModel.getSerialNumber(), responseBodyModel.getRegistrationId());
     }
     //endregion Device table
 

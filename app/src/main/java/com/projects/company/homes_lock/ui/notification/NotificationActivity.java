@@ -9,7 +9,10 @@ import android.support.v7.widget.RecyclerView;
 
 import com.projects.company.homes_lock.R;
 import com.projects.company.homes_lock.base.BaseActivity;
+import com.projects.company.homes_lock.models.viewmodels.ManageMembersViewModelFactory;
 import com.projects.company.homes_lock.models.viewmodels.NotificationViewModel;
+import com.projects.company.homes_lock.models.viewmodels.NotificationViewModelFactory;
+import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 
@@ -33,7 +36,10 @@ public class NotificationActivity extends BaseActivity {
 
         //region Initialize Objects
         mAdapter = new NotificationAdapter(this, new ArrayList<>());
-        this.mNotificationViewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
+        this.mNotificationViewModel = ViewModelProviders.of(
+                this,
+                new NotificationViewModelFactory(getApplication()))
+                .get(NotificationViewModel.class);
         //endregion Initialize Objects
 
         //region Initialize Views

@@ -65,6 +65,9 @@ public interface DeviceDao extends BaseDao<Device> {
     @Query("UPDATE device SET fw = :firmwareVersion  WHERE objectId = :mDeviceObjectId")
     void setFirmwareVersion(String mDeviceObjectId, String firmwareVersion);
 
+    @Query("UPDATE device SET registrationId = :registrationId  WHERE sn = :serialNumber")
+    void setRegistrationId(String serialNumber, String registrationId);
+
     @Query("UPDATE device SET hw = :hardwareVersion  WHERE objectId = :mDeviceObjectId")
     void setHardwareVersion(String mDeviceObjectId, String hardwareVersion);
 

@@ -14,6 +14,7 @@ import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 
 import java.util.Objects;
 
@@ -83,77 +84,62 @@ public class ForgetPasswordFragment extends BaseFragment implements ILoginFragme
     //region ILoginFragment
     @Override
     public void onLoginSuccessful(User user) {
-
     }
 
     @Override
     public void onLoginFailed(FailureModel response) {
-
     }
 
     @Override
     public void onDataInsert(Object id) {
-
     }
 
     @Override
     public void onFindLockInOnlineDataBaseSuccessful(String response) {
-
     }
 
     @Override
     public void onFindLockInOnlineDataBaseFailed(ResponseBodyFailureModel response) {
-
     }
 
     @Override
     public void onInsertUserLockSuccessful(UserLock response) {
-
     }
 
     @Override
     public void onInsertUserLockFailed(FailureModel response) {
-
     }
 
     @Override
     public void onAddLockToUserLockSuccessful(Boolean response) {
-
     }
 
     @Override
     public void onAddLockToUserLockFailed(ResponseBodyFailureModel response) {
-
     }
 
     @Override
     public void onAddUserLockToUserSuccessful(Boolean response) {
-
     }
 
     @Override
     public void onAddUserLockToUserFailed(ResponseBodyFailureModel response) {
-
     }
 
     @Override
     public void onGetUserSuccessful(User response) {
-
     }
 
     @Override
     public void onGetUserFailed(FailureModel response) {
-
     }
 
     @Override
-    public void onDeviceRegistrationForPushNotificationSuccessful(String registrationId) {
-
+    public void onDeviceRegistrationForPushNotificationSuccessful(ResponseBodyModel responseBodyModel) {
     }
 
     @Override
     public void onDeviceRegistrationForPushNotificationFailed(ResponseBodyFailureModel response) {
-
     }
     //endregion ILoginFragment
 

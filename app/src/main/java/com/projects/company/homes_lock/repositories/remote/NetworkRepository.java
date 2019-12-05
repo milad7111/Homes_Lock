@@ -53,7 +53,7 @@ public class NetworkRepository {
                 else
                     listener.onSingleNetworkListenerFailure(
                             new FailureModel((
-                                    new ResponseBodyModel(response.errorBody().source().toString(), false)).getMessage()));
+                                    new ResponseBodyModel(response.errorBody().source().toString(), false, "")).getMessage()));
             }
 
             @Override
@@ -365,7 +365,7 @@ public class NetworkRepository {
         Backendless.Messaging.registerDevice(Collections.singletonList(serialNumber), new AsyncCallback<DeviceRegistrationResult>() {
             @Override
             public void handleResponse(DeviceRegistrationResult response) {
-                listener.onResponse(new ResponseBodyModel(response.getDeviceToken(), true));
+                listener.onResponse(new ResponseBodyModel(response.getDeviceToken(), true, serialNumber));
             }
 
             @Override

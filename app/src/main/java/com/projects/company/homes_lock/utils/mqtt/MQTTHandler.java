@@ -141,15 +141,21 @@ public class MQTTHandler {
             publishToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    if (_mPublisherIMQTTListener != null)
-                        _mPublisherIMQTTListener.onPublishSuccessful(asyncActionToken);
+                    try {
+                        if (_mPublisherIMQTTListener != null)
+                            _mPublisherIMQTTListener.onPublishSuccessful(asyncActionToken);
+                    } catch (Exception e) {
+                    }
                     Timber.i("Publishing Done.");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    if (_mPublisherIMQTTListener != null)
-                        _mPublisherIMQTTListener.onPublishFailure(new FailureModel(exception.getMessage()));
+                    try {
+                        if (_mPublisherIMQTTListener != null)
+                            _mPublisherIMQTTListener.onPublishFailure(new FailureModel(exception.getMessage()));
+                    } catch (Exception e) {
+                    }
                     Timber.e("Publishing Failed.");
                 }
             });

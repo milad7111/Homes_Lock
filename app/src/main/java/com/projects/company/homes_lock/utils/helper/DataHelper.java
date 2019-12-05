@@ -176,14 +176,14 @@ public class DataHelper {
     private static SecurityAlarm getSecurityAlarmMode(boolean isLocked, boolean isDoorClosed) {
         if (isLocked)
             if (isDoorClosed)
-                return SECURE;
-            else
                 return ATTENTION;
+            else
+                return SECURE;
         else {
             if (isDoorClosed)
-                return UNSECURE;
-            else
                 return OPEN;
+            else
+                return UNSECURE;
         }
     }
 

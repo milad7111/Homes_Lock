@@ -41,6 +41,7 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 
+import static com.projects.company.homes_lock.base.BaseApplication.isUserLoggedIn;
 import static com.projects.company.homes_lock.utils.mqtt.MQTTHandler.mqttDisconnect;
 
 public class DeviceActivity extends BaseActivity
@@ -73,7 +74,7 @@ public class DeviceActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        (new BaseApplication()).stopNearestService(this);
+//        (new BaseApplication()).stopNearestService(this);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_device);
@@ -217,7 +218,9 @@ public class DeviceActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         mqttDisconnect();
-        (new BaseApplication()).startNearestService(DeviceActivity.this);
+
+//        if (!isUserLoggedIn())
+//            (new BaseApplication()).startNearestService(DeviceActivity.this);
     }
 
     //endregion Main CallBacks

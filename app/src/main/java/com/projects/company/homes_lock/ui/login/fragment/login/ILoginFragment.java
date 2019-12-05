@@ -4,6 +4,7 @@ import com.projects.company.homes_lock.database.tables.User;
 import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 
 /**
  * This is LoginFragment Interface
@@ -35,7 +36,7 @@ public interface ILoginFragment {
 
     void onGetUserFailed(FailureModel response);
 
-    void onDeviceRegistrationForPushNotificationSuccessful(String registrationId);
+    void onDeviceRegistrationForPushNotificationSuccessful(ResponseBodyModel responseBodyModel);
 
     void onDeviceRegistrationForPushNotificationFailed(ResponseBodyFailureModel response);
 }

@@ -174,10 +174,6 @@ public class LockPageFragment extends BaseFragment
                     if (mBluetoothLEHelper != null)
                         mBluetoothLEHelper.disconnect();
                 }
-
-                if (isConnected)
-                    startRepeatingReadProximityTask();
-                else stopRepeatingReadProximityTask();
             }
         });
         this.mDeviceViewModel.isSupported().observe(this, isSupported -> {
@@ -811,12 +807,9 @@ public class LockPageFragment extends BaseFragment
             mProximityHandler = new Handler();
 
         if (mProximityRunnable == null)
-            mProximityRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    LockPageFragment.this.mDeviceViewModel.readRemoteRssi();
-                    mProximityHandler.postDelayed(mProximityRunnable, 2000);
-                }
+            mProximityRunnable = () -> {
+                LockPageFragment.this.mDeviceViewModel.readRemoteRssi();
+                mProximityHandler.postDelayed(mProximityRunnable, 2000);
             };
 
         mProximityRunnable.run();

@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.util.Log;
 
 import com.projects.company.homes_lock.database.tables.User;
+import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.LoginModel;
 import com.projects.company.homes_lock.models.datamodels.request.RegisterModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
@@ -176,9 +177,9 @@ public class UserViewModel extends AndroidViewModel
         Log.d(getClass().getName(), "Data inserted");
 
         if (object instanceof User) {
-            if (mILoginFragment != null)
+            if (mILoginFragment != null) {
                 mILoginFragment.onDataInsert(object);
-            else if (mIAddDeviceFragment != null)
+            } else if (mIAddDeviceFragment != null)
                 mIAddDeviceFragment.onDataInsert(object);
         }
     }

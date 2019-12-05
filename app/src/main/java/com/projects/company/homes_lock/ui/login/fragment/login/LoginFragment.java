@@ -8,15 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.andexert.library.RippleView;
 import com.crashlytics.android.answers.Answers;
@@ -29,6 +26,7 @@ import com.projects.company.homes_lock.database.tables.UserLock;
 import com.projects.company.homes_lock.models.datamodels.request.UserDeviceModel;
 import com.projects.company.homes_lock.models.datamodels.response.FailureModel;
 import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyFailureModel;
+import com.projects.company.homes_lock.models.datamodels.response.ResponseBodyModel;
 import com.projects.company.homes_lock.models.viewmodels.DeviceViewModel;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModel;
 import com.projects.company.homes_lock.models.viewmodels.UserViewModelFactory;
@@ -38,6 +36,8 @@ import com.projects.company.homes_lock.ui.login.fragment.register.RegisterFragme
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import timber.log.Timber;
 
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserEmail;
 import static com.projects.company.homes_lock.base.BaseApplication.activeUserObjectId;
@@ -286,7 +286,7 @@ public class LoginFragment extends BaseFragment
     @Override
     public void onAddUserLockToUserSuccessful(Boolean response) {
         if (!this.deviceSerialNumber.isEmpty()) {
-            this.mDeviceViewModel.enablePushNotification(this.deviceSerialNumber);
+//            this.mDeviceViewModel.enablePushNotification(this.deviceSerialNumber);
             this.deviceSerialNumber = "";
         }
 
@@ -317,8 +317,9 @@ public class LoginFragment extends BaseFragment
     }
 
     @Override
-    public void onDeviceRegistrationForPushNotificationSuccessful(String registrationId) {
-        showToast(String.format("device registration done: %s", registrationId));
+    public void onDeviceRegistrationForPushNotificationSuccessful(ResponseBodyModel responseBodyModel) {
+        this.mDeviceViewModel.updateRegistrationIdBySerialNumber(responseBodyModel);
+        Timber.d("device registration done. id=\n%s", responseBodyModel.getRegistrationId());
     }
 
     @Override
@@ -328,6 +329,16 @@ public class LoginFragment extends BaseFragment
     @Override
     public void onDataInsert(Object object) {
         closeProgressDialog();
+        this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
+            if (notSavedDevices  != null)
+                notSavedDevices.clear();
+
+            for (Device device : devices){
+                if (device.getRegistrationId().equals("NOT_SET"))
+                    this.mDeviceViewModel.enablePushNotification(this, device.getSerialNumber());
+            }
+        });
+
         if (object instanceof User) {
             Intent deviceActivity = new Intent(getActivity(), DeviceActivity.class);
 
