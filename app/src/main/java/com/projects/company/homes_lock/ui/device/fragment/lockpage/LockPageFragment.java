@@ -550,7 +550,7 @@ public class LockPageFragment extends BaseFragment
     private void sendLockCommand(boolean lockCommand) {
         if (!lockUnlockCommandInProcess) {
             lockUnlockCommandInProcess = true;
-            new Handler().postDelayed(() -> lockUnlockCommandInProcess = false, 60000);
+            new Handler().postDelayed(() -> lockUnlockCommandInProcess = false, 25000);
             enableLockCommandRingImageView(getActivity(), imgIsLockedLockPageRing, lockCommand ? 0 : 1);
             this.mDeviceViewModel.sendLockCommand(this, mDevice.getSerialNumber(), lockCommand);
         }

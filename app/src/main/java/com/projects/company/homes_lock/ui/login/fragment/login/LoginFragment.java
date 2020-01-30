@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +45,7 @@ import static com.projects.company.homes_lock.base.BaseApplication.logUserCrashe
 import static com.projects.company.homes_lock.base.BaseApplication.setUserLoginMode;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.closeProgressDialog;
 import static com.projects.company.homes_lock.utils.helper.ProgressDialogHelper.openProgressDialog;
+import static com.projects.company.homes_lock.utils.helper.UrlHelper.BACKENDLESS_BASE_URL_HTTPS_REST;
 import static com.projects.company.homes_lock.utils.helper.ViewHelper.addFragment;
 
 /**
@@ -237,7 +237,11 @@ public class LoginFragment extends BaseFragment
     @Override
     public void onLoginFailed(FailureModel response) {
         closeProgressDialog();
-        showToast(response.getFailureMessage());
+
+        if (response.getFailureMessage().contains("api.backendless.com"))
+            showToast("Check your internet connection");
+        else
+            showToast(response.getFailureMessage());
     }
 
     @Override
@@ -306,7 +310,6 @@ public class LoginFragment extends BaseFragment
         }
     }
 
-
     @Override
     public void onGetUserSuccessful(User user) {
         mUserViewModel.insertUser(user);
@@ -330,10 +333,10 @@ public class LoginFragment extends BaseFragment
     public void onDataInsert(Object object) {
         closeProgressDialog();
         this.mDeviceViewModel.getAllLocalDevices().observe(this, devices -> {
-            if (notSavedDevices  != null)
+            if (notSavedDevices != null)
                 notSavedDevices.clear();
 
-            for (Device device : devices){
+            for (Device device : devices) {
                 if (device.getRegistrationId().equals("NOT_SET"))
                     this.mDeviceViewModel.enablePushNotification(this, device.getSerialNumber());
             }
