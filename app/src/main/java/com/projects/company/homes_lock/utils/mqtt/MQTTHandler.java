@@ -29,7 +29,7 @@ public class MQTTHandler {
             mDeviceSerialNumber = deviceSerialNumber;
             client = new MqttAndroidClient(
                     mContext,
-                    "tcp://185.208.175.56",
+                    "tcp://185.8.174.194", //185.208.175.56
                     String.format("Android:%s:%s", deviceSerialNumber, activeUserObjectId));
 
             client.setCallback(new MqttCallback() {
